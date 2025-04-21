@@ -170,7 +170,11 @@ class _NavDrawerState extends State<NavDrawer> {
                               initData: magazine,
                               onUpdate: (newValue) {
                                 setState(() {
-                                  subbedMagazines![index] = newValue;
+                                  final newSubbedMagazines = [
+                                    ...subbedMagazines!
+                                  ];
+                                  newSubbedMagazines[index] = newValue;
+                                  subbedMagazines = newSubbedMagazines;
                                 });
                               },
                             ),
@@ -220,7 +224,9 @@ class _NavDrawerState extends State<NavDrawer> {
                             initData: user,
                             onUpdate: (newValue) {
                               setState(() {
-                                subbedUsers![index] = newValue;
+                                final newSubbedUsers = [...subbedUsers!];
+                                newSubbedUsers[index] = newValue;
+                                subbedUsers = newSubbedUsers;
                               });
                             },
                           ),
@@ -263,7 +269,9 @@ class _NavDrawerState extends State<NavDrawer> {
                             initData: domain,
                             onUpdate: (newValue) {
                               setState(() {
-                                subbedDomains![index] = domain;
+                                final newSubbedDomains = [...subbedDomains!];
+                                newSubbedDomains[index] = newValue;
+                                subbedDomains = newSubbedDomains;
                               });
                             },
                           ),
