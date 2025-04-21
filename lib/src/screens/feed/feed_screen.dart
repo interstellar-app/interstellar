@@ -13,6 +13,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/floating_menu.dart';
+import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -260,7 +261,7 @@ class _FeedScreenState extends State<FeedScreen>
           child: child,
         ),
       ),
-      child: Scaffold(
+      child: AdvancedScaffold(
         appBar: AppBar(
           title: ListTile(
             contentPadding: EdgeInsets.zero,
@@ -377,7 +378,8 @@ class _FeedScreenState extends State<FeedScreen>
                         userCanModerate: userCanModerate,
                       ),
                       // TODO: Remove once federation filter is added to mbin api.
-                      if (context.read<AppController>().serverSoftware != ServerSoftware.mbin)
+                      if (context.read<AppController>().serverSoftware !=
+                          ServerSoftware.mbin)
                         FeedScreenBody(
                           key: _getFeedKey(4),
                           source: FeedSource.local,
@@ -555,46 +557,45 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
       // Not in PieFed
       if (!isPiefed) ...[
         SelectionMenuItem(
-          value: FeedSort.commented,
-          title: l(context).sort_commented,
-          icon: Symbols.chat_rounded,
+            value: FeedSort.commented,
+            title: l(context).sort_commented,
+            icon: Symbols.chat_rounded,
             subItems: isLemmy || isPiefed
                 ? null
                 : [
                     SelectionMenuItem(
-                        value: FeedSort.commentedThreeHour,
-                        title: l(context).sort_commented_3h,
+                      value: FeedSort.commentedThreeHour,
+                      title: l(context).sort_commented_3h,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commentedSixHour,
-                        title: l(context).sort_commented_6h,
+                      value: FeedSort.commentedSixHour,
+                      title: l(context).sort_commented_6h,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commentedTwelveHour,
-                        title: l(context).sort_commented_12h,
+                      value: FeedSort.commentedTwelveHour,
+                      title: l(context).sort_commented_12h,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commentedDay,
-                        title: l(context).sort_commented_1d,
+                      value: FeedSort.commentedDay,
+                      title: l(context).sort_commented_1d,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commentedWeek,
-                        title: l(context).sort_commented_1w,
+                      value: FeedSort.commentedWeek,
+                      title: l(context).sort_commented_1w,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commentedMonth,
-                        title: l(context).sort_commented_1m,
+                      value: FeedSort.commentedMonth,
+                      title: l(context).sort_commented_1m,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commentedYear,
-                        title: l(context).sort_commented_1y,
+                      value: FeedSort.commentedYear,
+                      title: l(context).sort_commented_1y,
                     ),
                     SelectionMenuItem(
-                        value: FeedSort.commented,
-                        title: l(context).sort_commented_all,
+                      value: FeedSort.commented,
+                      title: l(context).sort_commented_all,
                     ),
-            ]
-        ),
+                  ]),
         SelectionMenuItem(
           value: FeedSort.oldest,
           title: l(context).sort_oldest,
@@ -984,7 +985,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                               );
                         }),
                         onTap: onPostTap,
-                        filterListWarnings: _filterListWarnings[(item.type, item.id)],
+                        filterListWarnings:
+                            _filterListWarnings[(item.type, item.id)],
                         userCanModerate: widget.userCanModerate,
                         isTopLevel: true,
                         isCompact: true,
@@ -1014,20 +1016,17 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                       onTap: onPostTap,
                       isPreview: true,
                       onReply: whenLoggedIn(context, (body) async {
-                        await context
-                            .read<AppController>()
-                            .api
-                            .comments
-                            .create(
+                        await context.read<AppController>().api.comments.create(
                               item.type,
                               item.id,
                               body,
                             );
                       }),
-                      filterListWarnings: _filterListWarnings[(item.type, item.id)],
+                      filterListWarnings:
+                          _filterListWarnings[(item.type, item.id)],
                       userCanModerate: widget.userCanModerate,
                       isTopLevel: true,
-                    )
+                    ),
                   );
                 }
               },
