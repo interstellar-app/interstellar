@@ -177,11 +177,24 @@ class _ContentItemState extends State<ContentItem> {
   }
 
   void getTranslation() async {
-    if (context.read<AppController>().profile.autoTranslate && widget.lang != context.read<AppController>().profile.defaultPostLanguage && widget.body != null && widget.lang != null) {
-      final translation = await context.read<AppController>().translator.translateSimply(widget.body!, to: context.read<AppController>().profile.defaultPostLanguage);
-      setState(() {
-        _translation = translation;
-      });
+    if (context.read<AppController>().profile.autoTranslate &&
+        widget.lang != context.read<AppController>().profile.defaultPostLanguage &&
+        widget.body != null && widget.lang != null) {
+      try {
+        final translation = await context
+            .read<AppController>()
+            .translator
+            .translateSimply(widget.body!, to: context
+            .read<AppController>()
+            .profile
+            .defaultPostLanguage);
+        if (!mounted) return;
+        setState(() {
+          _translation = translation;
+        });
+      } catch (e) {
+        // ignore translation errors
+      }
     }
   }
 
@@ -197,7 +210,9 @@ class _ContentItemState extends State<ContentItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(widget.body!),
+              Text(widget.body!,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,),
               Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -208,7 +223,9 @@ class _ContentItemState extends State<ContentItem> {
                 ],
               ),
               Divider(),
-              Text(_translation!.translations.text),
+              Text(_translation!.translations.text,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,),
             ],
           )
         : Column(
@@ -229,8 +246,8 @@ class _ContentItemState extends State<ContentItem> {
               Markdown(_translation!.translations.text, widget.originInstance),
             ],
           )
-              : widget.isPreview
-              ? Text(
+        : widget.isPreview
+        ? Text(
             widget.body!,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
