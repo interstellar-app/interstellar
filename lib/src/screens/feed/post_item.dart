@@ -50,6 +50,7 @@ class PostItem extends StatelessWidget {
       image: item.image,
       link: item.url != null ? Uri.parse(item.url!) : null,
       body: item.body,
+      lang: item.lang,
       createdAt: item.createdAt,
       editedAt: item.editedAt,
       isPreview: item.type == PostType.microblog ? false : isPreview,

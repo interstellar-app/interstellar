@@ -103,6 +103,7 @@ class _PostCommentState extends State<PostComment> {
       originInstance: getNameHost(context, widget.comment.user.name),
       image: widget.comment.image,
       body: widget.comment.body ?? '_${l(context).commentDeleted}_',
+      lang: widget.comment.lang,
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
       user: widget.comment.user.name,
