@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,8 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/report_content.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:simplytranslate/simplytranslate.dart';
+import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
 void showContentMenu(
     BuildContext context,
@@ -258,6 +261,31 @@ void showContentMenu(
                       ),
                     ),
                   ),
+                if (widget.body != null)
+                  LoadingListTile(
+                    title: Text('Translate'),
+                    onTap: () async {
+                      final translated = await ac.translator.translateSimply(
+                          widget.body!, to: ac.profile.defaultPostLanguage);
+                      if (!context.mounted) return;
+                      showTranslateDialog(context, widget, translated);
+                      // widget.
+                    },
+                    trailing: LoadingIconButton(
+                      onPressed: () async {
+                        final langCode = await languageSelectionMenu(context)
+                          .askSelection(
+                          context, ac.selectedProfileValue.defaultPostLanguage);
+
+                        if (langCode == null || !context.mounted) return;
+                        final translated = await ac.translator.translateSimply(
+                            widget.body!, to: langCode);
+                        if (!context.mounted) return;
+                        showTranslateDialog(context, widget, translated);
+                      },
+                      icon: Icon(Symbols.arrow_forward_rounded)
+                    ),
+                  ),
                 if (widget.onModeratePin != null ||
                     widget.onModerateMarkNSFW != null ||
                     widget.onModerateDelete != null ||
@@ -400,4 +428,53 @@ void showModerateMenu(BuildContext context, ContentItem widget) {
       ]
     );
   });
+}
+
+void showTranslateDialog(BuildContext context, ContentItem widget, Translation translated) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(l(context).viewSource),
+      content: Card.outlined(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SelectableText(widget.body!),
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(translated.sourceLanguage.name),
+                  Icon(Symbols.arrow_right),
+                  Text(translated.targetLanguage.name),
+                ],
+              ),
+              Divider(),
+              SelectableText(translated.translations.text),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        OutlinedButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l(context).close),
+        ),
+        LoadingTonalButton(
+          onPressed: () async {
+            await Clipboard.setData(
+              ClipboardData(text: translated.translations.text),
+            );
+
+            if (!context.mounted) return;
+            Navigator.pop(context);
+          },
+          label: Text(l(context).copy),
+        ),
+      ],
+    ),
+  );
 }
