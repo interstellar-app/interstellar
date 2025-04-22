@@ -338,7 +338,6 @@ class _FeedScreenState extends State<FeedScreen>
                 sourceId: widget.sourceId,
                 sort: sort,
                 view: _view,
-                details: widget.details,
               )
             : TabBarView(
                 physics: appTabViewPhysics(context),
@@ -350,7 +349,6 @@ class _FeedScreenState extends State<FeedScreen>
                         source: FeedSource.subscribed,
                         sort: sort,
                         view: _view,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                       FeedScreenBody(
@@ -358,7 +356,6 @@ class _FeedScreenState extends State<FeedScreen>
                         source: FeedSource.moderated,
                         sort: sort,
                         view: _view,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                       FeedScreenBody(
@@ -366,7 +363,6 @@ class _FeedScreenState extends State<FeedScreen>
                         source: FeedSource.favorited,
                         sort: sort,
                         view: _view,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                       FeedScreenBody(
@@ -374,7 +370,6 @@ class _FeedScreenState extends State<FeedScreen>
                         source: FeedSource.all,
                         sort: sort,
                         view: _view,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                       // TODO: Remove once federation filter is added to mbin api.
@@ -385,7 +380,6 @@ class _FeedScreenState extends State<FeedScreen>
                           source: FeedSource.local,
                           sort: sort,
                           view: _view,
-                          details: widget.details,
                           userCanModerate: userCanModerate,
                         ),
                     ],
@@ -396,7 +390,6 @@ class _FeedScreenState extends State<FeedScreen>
                         sourceId: widget.sourceId,
                         sort: _sort ?? _defaultSortFromMode(FeedView.threads),
                         view: FeedView.threads,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                       FeedScreenBody(
@@ -405,7 +398,6 @@ class _FeedScreenState extends State<FeedScreen>
                         sourceId: widget.sourceId,
                         sort: _sort ?? _defaultSortFromMode(FeedView.microblog),
                         view: FeedView.microblog,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                       FeedScreenBody(
@@ -414,7 +406,6 @@ class _FeedScreenState extends State<FeedScreen>
                         sourceId: widget.sourceId,
                         sort: FeedSort.newest,
                         view: FeedView.timeline,
-                        details: widget.details,
                         userCanModerate: userCanModerate,
                       ),
                     ],
@@ -439,7 +430,7 @@ class _FeedScreenState extends State<FeedScreen>
               )
               .toList(),
         ),
-        drawer: widget.sourceId != null ? null : const NavDrawer(),
+        drawer: widget.sourceId != null ? widget.details : const NavDrawer(),
       ),
     );
   }
@@ -666,7 +657,6 @@ class FeedScreenBody extends StatefulWidget {
   final int? sourceId;
   final FeedSort sort;
   final FeedView view;
-  final Widget? details;
   final bool userCanModerate;
 
   const FeedScreenBody({
@@ -675,7 +665,6 @@ class FeedScreenBody extends StatefulWidget {
     this.sourceId,
     required this.sort,
     required this.view,
-    this.details,
     this.userCanModerate = false,
   });
 
@@ -925,10 +914,6 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
       child: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          if (widget.details != null)
-            SliverToBoxAdapter(
-              child: widget.details,
-            ),
           PagedSliverList(
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<PostModel>(
