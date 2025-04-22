@@ -160,8 +160,8 @@ class BehaviorSettingsScreen extends StatelessWidget {
                 ac.selectedProfileValue.copyWith(hapticFeedback: newValue)),
           ),
           ListTileSwitch(
-            leading: const Icon(Symbols.vibration_rounded),
-            title: Text(l(context).settings_hapticFeedback),
+            leading: const Icon(Symbols.translate_rounded),
+            title: Text(l(context).settings_autoTranslate),
             value: ac.profile.autoTranslate,
             onChanged: (newValue) => ac.updateProfile(
                 ac.selectedProfileValue.copyWith(autoTranslate: newValue)),
