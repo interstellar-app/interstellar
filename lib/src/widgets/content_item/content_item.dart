@@ -18,10 +18,12 @@ import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:interstellar/src/widgets/video.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
+import 'package:interstellar/src/utils/language.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
+import 'package:simplytranslate/simplytranslate.dart';
 
 class ContentItem extends StatefulWidget {
   final String originInstance;
@@ -30,6 +32,9 @@ class ContentItem extends StatefulWidget {
   final ImageModel? image;
   final Uri? link;
   final String? body;
+  final Translation? translation;
+  final String? lang;
+  final Future<void> Function(String lang)? onTranslate;
   final DateTime? createdAt;
   final DateTime? editedAt;
 
@@ -103,6 +108,9 @@ class ContentItem extends StatefulWidget {
     this.image,
     this.link,
     this.body,
+    this.translation,
+    this.lang,
+    this.onTranslate,
     this.createdAt,
     this.editedAt,
     this.isPreview = false,
@@ -168,6 +176,65 @@ class _ContentItemState extends State<ContentItem> {
   @override
   Widget build(BuildContext context) {
     return widget.isCompact ? compact() : full();
+  }
+
+  Widget contentBody(BuildContext context) {
+    return widget.translation != null
+        // A translation is available
+        ? widget.isPreview
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.body!,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(getLanguageName(context, widget.lang!)),
+                      Icon(Symbols.arrow_right),
+                      Text(widget.translation!.targetLanguage.name),
+                    ],
+                  ),
+                  Divider(),
+                  Text(
+                    widget.translation!.translations.text,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Markdown(widget.body!, widget.originInstance),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(getLanguageName(context, widget.lang!)),
+                      Icon(Symbols.arrow_right),
+                      Text(widget.translation!.targetLanguage.name),
+                    ],
+                  ),
+                  Divider(),
+                  Markdown(
+                      widget.translation!.translations.text, widget.originInstance),
+                ],
+              )
+        // No translation is available
+        : widget.isPreview
+            ? Text(
+                widget.body!,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+              )
+            : Markdown(widget.body!, widget.originInstance);
   }
 
   Widget full() {
@@ -305,7 +372,8 @@ class _ContentItemState extends State<ContentItem> {
               widget,
               onEdit: () => setState(() {
                 _editTextController = TextEditingController(text: widget.body);
-              })
+              }),
+              onTranslate: widget.onTranslate,
           );
         },
       );
@@ -494,13 +562,7 @@ class _ContentItemState extends State<ContentItem> {
                                       .watch<AppController>()
                                       .profile
                                       .compactMode))
-                            widget.isPreview
-                                ? Text(
-                                    widget.body!,
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
-                                  )
-                                : Markdown(widget.body!, widget.originInstance),
+                            contentBody(context),
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child:

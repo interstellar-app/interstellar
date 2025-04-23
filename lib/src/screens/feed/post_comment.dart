@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:simplytranslate/simplytranslate.dart';
 
 class PostComment extends StatefulWidget {
   const PostComment(
@@ -42,6 +43,36 @@ class PostComment extends StatefulWidget {
 class _PostCommentState extends State<PostComment> {
   final ExpandableController _expandableController =
       ExpandableController(initialExpanded: true);
+
+  Translation? _translation;
+
+  @override
+  void initState() {
+    super.initState();
+    if (context.read<AppController>().profile.autoTranslate &&
+        widget.comment.lang != context.read<AppController>().profile.defaultPostLanguage &&
+        widget.comment.body != null && widget.comment.lang != null) {
+      getTranslation(context
+          .read<AppController>()
+          .profile
+          .defaultPostLanguage);
+    }
+  }
+
+  Future<void> getTranslation(String lang) async {
+    try {
+      final translation = await context
+          .read<AppController>()
+          .translator
+          .translateSimply(widget.comment.body!, to: lang);
+      if (!mounted) return;
+      setState(() {
+        _translation = translation;
+      });
+    } catch (e) {
+      // ignore translation errors
+    }
+  }
 
   void collapse() {
     setState(() {
@@ -103,6 +134,8 @@ class _PostCommentState extends State<PostComment> {
       originInstance: getNameHost(context, widget.comment.user.name),
       image: widget.comment.image,
       body: widget.comment.body ?? '_${l(context).commentDeleted}_',
+      translation: _translation,
+      lang: widget.comment.lang,
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
       user: widget.comment.user.name,
@@ -310,8 +343,11 @@ class _PostCommentState extends State<PostComment> {
       icon: const Icon(Symbols.more_vert_rounded),
       onPressed: () {
         showContentMenu(
-            context,
-            contentItem,
+          context,
+          contentItem,
+          onTranslate: (String lang) async {
+              await getTranslation(lang);
+          }
         );
       },
     );
@@ -323,8 +359,20 @@ class _PostCommentState extends State<PostComment> {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: widget.onClick ?? collapse,
-          onLongPress: () => showContentMenu(context, contentItem),
-          onSecondaryTap: () => showContentMenu(context, contentItem),
+          onLongPress: () => showContentMenu(
+              context,
+              contentItem,
+              onTranslate: (String lang) async {
+                  await getTranslation(lang);
+              }
+          ),
+          onSecondaryTap: () => showContentMenu(
+              context,
+              contentItem,
+              onTranslate: (String lang) async {
+                  await getTranslation(lang);
+              }
+          ),
           child: Container(
             padding: const EdgeInsets.fromLTRB(12, 0, 8, 0),
             child: Row(
@@ -368,8 +416,20 @@ class _PostCommentState extends State<PostComment> {
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: widget.onClick ?? collapse,
-              onLongPress: () => showContentMenu(context, contentItem),
-              onSecondaryTap: () => showContentMenu(context, contentItem),
+              onLongPress: () => showContentMenu(
+                  context,
+                  contentItem,
+                  onTranslate: (String lang) async {
+                      await getTranslation(lang);
+                  }
+              ),
+              onSecondaryTap: () => showContentMenu(
+                  context,
+                  contentItem,
+                  onTranslate: (String lang) async {
+                      await getTranslation(lang);
+                  }
+              ),
               child: contentItem,
             ),
           ),
