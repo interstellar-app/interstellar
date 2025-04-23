@@ -576,7 +576,7 @@ class AppController with ChangeNotifier {
       api.threads.markAsRead(postId, read);
     }
     if (await isRead(postId)) return;
-    _readStore.record(_selectedAccount).add(db, {'postId': postId, 'read': read});
+    await _readStore.add(db, {'postId': postId, 'read': read, 'account': _selectedAccount});
   }
 
   Future<bool> isRead(int postId) async {
@@ -584,6 +584,6 @@ class AppController with ChangeNotifier {
       filter: Filter.equals('postId', postId)
     )));
 
-    return records.map((record) => record.key == _selectedAccount ? record : null).firstOrNull != null;
+    return records.where((record) => record.value['account'] == _selectedAccount).firstOrNull != null;
   }
 }

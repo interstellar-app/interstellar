@@ -74,6 +74,7 @@ class ContentItem extends StatefulWidget {
   final Future<void> Function(String)? onReport;
   final Future<void> Function(String)? onEdit;
   final Future<void> Function()? onDelete;
+  final Future<void> Function()? onMarkAsRead;
 
   final Future<void> Function()? onModeratePin;
   final Future<void> Function()? onModerateMarkNSFW;
@@ -138,6 +139,7 @@ class ContentItem extends StatefulWidget {
     this.onReport,
     this.onEdit,
     this.onDelete,
+    this.onMarkAsRead,
     this.onModeratePin,
     this.onModerateMarkNSFW,
     this.onModerateDelete,
@@ -330,6 +332,7 @@ class _ContentItemState extends State<ContentItem> {
                           _replyTextController = TextEditingController();
                         })
                     : () {},
+                onMarkAsRead: widget.onMarkAsRead,
                 onModeratePin: widget.onModeratePin,
                 onModerateMarkNSFW: widget.onModerateMarkNSFW,
                 onModerateDelete: widget.onModerateDelete,

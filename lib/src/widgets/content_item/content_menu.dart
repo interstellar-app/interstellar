@@ -165,6 +165,14 @@ void showContentMenu(
                     ),
                     onTap: () => showBookmarksMenu(context, widget),
                   ),
+                if (widget.onMarkAsRead != null)
+                  ListTile(
+                    title: Text(l(context).action_markRead),
+                    onTap: () {
+                      widget.onMarkAsRead!();
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 if (widget.onReport != null)
                   ListTile(
                     title: Text(l(context).report),

@@ -159,6 +159,13 @@ class BehaviorSettingsScreen extends StatelessWidget {
             onChanged: (newValue) => ac.updateProfile(
                 ac.selectedProfileValue.copyWith(hapticFeedback: newValue)),
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.visibility_off_rounded),
+            title: Text(l(context).settings_hideReadPosts),
+            value: ac.profile.hideReadPosts,
+            onChanged: (newValue) => ac.updateProfile(
+                ac.selectedProfileValue.copyWith(hideReadPosts: newValue)),
+          ),
         ],
       ),
     );

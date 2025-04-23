@@ -896,7 +896,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                 ? item.copyWith(read: true)
                 : item));
 
-      _pagingController.appendPage(finalItems, nextPageKey);
+      _pagingController.appendPage(finalItems.where((item) =>
+          !(ac.profile.hideReadPosts && (item.read != null && item.read!)))
+          .toList(), nextPageKey);
     } catch (error) {
       _pagingController.error = error;
     }

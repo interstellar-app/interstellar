@@ -109,6 +109,10 @@ class PostItem extends StatelessWidget {
       }),
       onEdit: onEdit,
       onDelete: onDelete,
+      onMarkAsRead: () async {
+        await ac.markAsRead(item.id, !item.read!);
+        onUpdate(item.copyWith(read: !item.read!));
+      },
       onModeratePin: !canModerate
           ? null
           : () async {
