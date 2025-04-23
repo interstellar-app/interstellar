@@ -33,6 +33,7 @@ class AppController with ChangeNotifier {
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
+  final _readStore = StoreRef<String, JsonMap>('read');
 
   late final _mainProfileRecord = _mainStore.record('mainProfile');
   late final _selectedProfileRecord = _mainStore.record('selectedProfile');
@@ -568,5 +569,21 @@ class AppController with ChangeNotifier {
         HapticFeedback.vibrate();
         break;
     }
+  }
+
+  Future<void> markAsRead(int postId, bool read) async {
+    if (serverSoftware == ServerSoftware.lemmy && isLoggedIn) {
+      api.threads.markAsRead(postId, read);
+    }
+    if (await isRead(postId)) return;
+    _readStore.record(_selectedAccount).add(db, {'postId': postId, 'read': read});
+  }
+
+  Future<bool> isRead(int postId) async {
+    final records = (await _readStore.find(db, finder: Finder(
+      filter: Filter.equals('postId', postId)
+    )));
+
+    return records.map((record) => record.key == _selectedAccount ? record : null).firstOrNull != null;
   }
 }

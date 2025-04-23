@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -885,7 +886,17 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         return true;
       }).toList();
 
-      _pagingController.appendPage(items, nextPageKey);
+      final ac = context.read<AppController>();
+
+      final finalItems = ac.serverSoftware
+          == ServerSoftware.lemmy && ac.isLoggedIn
+          ? items
+          : await Future.wait(items.map((item) async =>
+            (await ac.isRead(item.id))
+                ? item.copyWith(read: true)
+                : item));
+
+      _pagingController.appendPage(finalItems, nextPageKey);
     } catch (error) {
       _pagingController.error = error;
     }
@@ -963,31 +974,38 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      PostItem(
-                        item,
-                        (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                        onReply: whenLoggedIn(context, (body) async {
-                          await context
-                              .read<AppController>()
-                              .api
-                              .comments
-                              .create(
-                                item.type,
-                                item.id,
-                                body,
-                              );
-                        }),
-                        onTap: onPostTap,
-                        filterListWarnings: _filterListWarnings[(item.type, item.id)],
-                        userCanModerate: widget.userCanModerate,
-                        isTopLevel: true,
-                        isCompact: true,
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: item.read != null && item.read!
+                              ? Theme.of(context).cardColor.lighten(10)
+                              : null,
+                        ),
+                        child: PostItem(
+                          item,
+                          (newValue) {
+                            var newList = _pagingController.itemList;
+                            newList![index] = newValue;
+                            setState(() {
+                              _pagingController.itemList = newList;
+                            });
+                          },
+                          onReply: whenLoggedIn(context, (body) async {
+                            await context
+                                .read<AppController>()
+                                .api
+                                .comments
+                                .create(
+                                  item.type,
+                                  item.id,
+                                  body,
+                                );
+                          }),
+                          onTap: onPostTap,
+                          filterListWarnings: _filterListWarnings[(item.type, item.id)],
+                          userCanModerate: widget.userCanModerate,
+                          isTopLevel: true,
+                          isCompact: true,
+                        ),
                       ),
                       const Divider(
                         height: 1,
@@ -997,6 +1015,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   );
                 } else {
                   return Card(
+                    color: item.read != null && item.read!
+                        ? Theme.of(context).cardColor.lighten(10)
+                        : null,
                     margin: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,

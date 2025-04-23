@@ -52,6 +52,7 @@ class _PostPageState extends State<PostPage> {
   void _initData() async {
     if (widget.initData != null) {
       _data = widget.initData!;
+      _markAsRead();
     } else if (widget.postType != null && widget.postId != null) {
       final newPost = await switch (widget.postType!) {
         PostType.thread =>
@@ -61,6 +62,7 @@ class _PostPageState extends State<PostPage> {
       };
       setState(() {
         _data = newPost;
+        _markAsRead();
       });
     } else {
       throw Exception('Post data was uninitialized');
@@ -74,6 +76,14 @@ class _PostPageState extends State<PostPage> {
       _data = newValue;
     });
     widget.onUpdate?.call(newValue);
+  }
+
+  void _markAsRead() async {
+    // delay marking as read to prevent error caused by triggering parent build during child build
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return;
+    context.read<AppController>().markAsRead(_data?.id ?? widget.postId!, true);
+    widget.onUpdate?.call(_data!.copyWith(read: true));
   }
 
   Future<void> _fetchPage(String pageKey) async {
