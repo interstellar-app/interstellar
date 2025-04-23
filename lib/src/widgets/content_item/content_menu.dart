@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +13,13 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/report_content.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
 void showContentMenu(
     BuildContext context,
     ContentItem widget, {
       Function()? onEdit,
+      Function(String lang)? onTranslate,
 }) {
   final ac = context.read<AppController>();
 
@@ -264,6 +267,28 @@ void showContentMenu(
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                if (widget.body != null && onTranslate != null)
+                  LoadingListTile(
+                    title: Text('Translate'),
+                    onTap: () async {
+                      await onTranslate(ac.profile.defaultPostLanguage);
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    },
+                    trailing: LoadingIconButton(
+                      onPressed: () async {
+                        final langCode = await languageSelectionMenu(context)
+                          .askSelection(
+                          context, ac.selectedProfileValue.defaultPostLanguage);
+
+                        if (langCode == null) return;
+                        await onTranslate(langCode);
+                        if (!context.mounted) return;
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Symbols.arrow_forward_rounded)
                     ),
                   ),
                 if (widget.onModeratePin != null ||

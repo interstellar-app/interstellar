@@ -31,6 +31,7 @@ class ProfileRequired with _$ProfileRequired {
     required bool autoPlayVideos,
     required bool hapticFeedback,
     required bool hideReadPosts,
+    required bool autoTranslate,
     // Display settings
     required String appLanguage,
     required ThemeMode themeMode,
@@ -90,6 +91,7 @@ class ProfileRequired with _$ProfileRequired {
         hapticFeedback:
             profile?.hapticFeedback ?? defaultProfile.hapticFeedback,
         hideReadPosts: profile?.hideReadPosts ?? defaultProfile.hideReadPosts,
+        autoTranslate: profile?.autoTranslate ?? defaultProfile.autoTranslate,
         appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
         themeMode: profile?.themeMode ?? defaultProfile.themeMode,
         colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -156,6 +158,7 @@ class ProfileRequired with _$ProfileRequired {
     autoPlayVideos: false,
     hapticFeedback: true,
     hideReadPosts: false,
+    autoTranslate: false,
     appLanguage: '',
     themeMode: ThemeMode.system,
     colorScheme: FlexScheme.custom,
@@ -206,6 +209,7 @@ class ProfileOptional with _$ProfileOptional {
     required bool? autoPlayVideos,
     required bool? hapticFeedback,
     required bool? hideReadPosts,
+    required bool? autoTranslate,
     // Display settings
     required String? appLanguage,
     required ThemeMode? themeMode,
@@ -255,6 +259,7 @@ class ProfileOptional with _$ProfileOptional {
     autoPlayVideos: null,
     hapticFeedback: null,
     hideReadPosts: null,
+    autoTranslate: null,
     appLanguage: null,
     themeMode: null,
     colorScheme: null,
@@ -302,6 +307,7 @@ class ProfileOptional with _$ProfileOptional {
       autoPlayVideos: other.autoPlayVideos ?? autoPlayVideos,
       hapticFeedback: other.hapticFeedback ?? hapticFeedback,
       hideReadPosts: other.hideReadPosts ?? hideReadPosts,
+      autoTranslate: other.autoTranslate ?? autoTranslate,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
       colorScheme: other.colorScheme ?? colorScheme,

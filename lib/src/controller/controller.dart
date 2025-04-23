@@ -15,6 +15,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:sembast/sembast_io.dart';
+import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
@@ -87,6 +88,9 @@ class AppController with ChangeNotifier {
 
   late Function refreshState;
 
+  late SimplyTranslator _translator;
+  SimplyTranslator get translator => _translator;
+
   Future<void> init() async {
     refreshState = () {};
 
@@ -140,6 +144,8 @@ class AppController with ChangeNotifier {
 
     _filterLists = Map.fromEntries((await _filterListStore.find(db)).map(
         (record) => MapEntry(record.key, FilterList.fromJson(record.value))));
+
+    _translator = SimplyTranslator(EngineType.libre);
 
     await _updateAPI();
   }

@@ -182,6 +182,7 @@
   "settings_autoPlayVideos": "Auto play videos",
   "settings_hapticFeedback": "Haptic feedback",
   "settings_hideReadPosts": "Hide read posts",
+  "settings_autoTranslate": "Auto translate posts/comments",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
   "settings_themeMode_light": "Light",

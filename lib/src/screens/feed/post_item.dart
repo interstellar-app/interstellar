@@ -9,8 +9,9 @@ import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/content_item/content_menu.dart';
 import 'package:provider/provider.dart';
+import 'package:simplytranslate/simplytranslate.dart';
 
-class PostItem extends StatelessWidget {
+class PostItem extends StatefulWidget {
   const PostItem(
     this.item,
     this.onUpdate, {
@@ -39,119 +40,162 @@ class PostItem extends StatelessWidget {
   final bool isCompact;
 
   @override
+  State<PostItem> createState() => _PostItemState();
+
+}
+
+class _PostItemState extends State<PostItem> {
+
+  Translation? _translation;
+
+  @override
+  void initState() {
+    super.initState();
+    if (context.read<AppController>().profile.autoTranslate &&
+        widget.item.lang != context.read<AppController>().profile.defaultPostLanguage &&
+        widget.item.body != null && widget.item.lang != null) {
+      getTranslation(context
+          .read<AppController>()
+          .profile
+          .defaultPostLanguage);
+    }
+  }
+
+  Future<void> getTranslation(String lang) async {
+    try {
+      final translation = await context
+          .read<AppController>()
+          .translator
+          .translateSimply(widget.item.body!, to: lang);
+      if (!mounted) return;
+      setState(() {
+        _translation = translation;
+      });
+    } catch (e) {
+      // ignore translation errors
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
-    final canModerate = userCanModerate || (item.canAuthUserModerate ?? false);
+    final canModerate = widget.userCanModerate || (widget.item.canAuthUserModerate ?? false);
 
     final contentItem = ContentItem(
-      originInstance: getNameHost(context, item.user.name),
-      title: item.title,
-      image: item.image,
-      link: item.url != null ? Uri.parse(item.url!) : null,
-      body: item.body,
-      createdAt: item.createdAt,
-      editedAt: item.editedAt,
-      isPreview: item.type == PostType.microblog ? false : isPreview,
-      fullImageSize: isPreview
-          ? switch (item.type) {
+      originInstance: getNameHost(context, widget.item.user.name),
+      title: widget.item.title,
+      image: widget.item.image,
+      link: widget.item.url != null ? Uri.parse(widget.item.url!) : null,
+      body: widget.item.body,
+      translation: _translation,
+      lang: widget.item.lang,
+      onTranslate: (String lang) async {
+        await getTranslation(lang);
+      },
+      createdAt: widget.item.createdAt,
+      editedAt: widget.item.editedAt,
+      isPreview: widget.item.type == PostType.microblog ? false : widget.isPreview,
+      fullImageSize: widget.isPreview
+          ? switch (widget.item.type) {
               PostType.thread => ac.profile.fullImageSizeThreads,
               PostType.microblog => ac.profile.fullImageSizeMicroblogs,
             }
           : true,
-      showMagazineFirst: item.type == PostType.thread,
-      isPinned: item.isPinned,
-      isNSFW: item.isNSFW,
-      isOC: item.isOC == true,
-      user: item.user.name,
-      userIcon: item.user.avatar,
-      userIdOnClick: item.user.id,
-      userCakeDay: item.user.createdAt,
-      userIsBot: item.user.isBot,
-      magazine: item.magazine.name,
-      magazineIcon: item.magazine.icon,
-      magazineIdOnClick: item.magazine.id,
-      domain: item.domain?.name,
-      domainIdOnClick: item.domain?.id,
-      boosts: item.boosts,
-      isBoosted: item.myBoost == true,
+      showMagazineFirst: widget.item.type == PostType.thread,
+      isPinned: widget.item.isPinned,
+      isNSFW: widget.item.isNSFW,
+      isOC: widget.item.isOC == true,
+      user: widget.item.user.name,
+      userIcon: widget.item.user.avatar,
+      userIdOnClick: widget.item.user.id,
+      userCakeDay: widget.item.user.createdAt,
+      userIsBot: widget.item.user.isBot,
+      magazine: widget.item.magazine.name,
+      magazineIcon: widget.item.magazine.icon,
+      magazineIdOnClick: widget.item.magazine.id,
+      domain: widget.item.domain?.name,
+      domainIdOnClick: widget.item.domain?.id,
+      boosts: widget.item.boosts,
+      isBoosted: widget.item.myBoost == true,
       onBoost: whenLoggedIn(context, () async {
-        onUpdate(await switch (item.type) {
-          PostType.thread => ac.api.threads.boost(item.id),
-          PostType.microblog => ac.api.microblogs.putVote(item.id, 1),
+        widget.onUpdate(await switch (widget.item.type) {
+          PostType.thread => ac.api.threads.boost(widget.item.id),
+          PostType.microblog => ac.api.microblogs.putVote(widget.item.id, 1),
         });
       }),
-      upVotes: item.upvotes,
-      isUpVoted: item.myVote == 1,
+      upVotes: widget.item.upvotes,
+      isUpVoted: widget.item.myVote == 1,
       onUpVote: whenLoggedIn(context, () async {
-        onUpdate(await switch (item.type) {
+        widget.onUpdate(await switch (widget.item.type) {
           PostType.thread =>
-            ac.api.threads.vote(item.id, 1, item.myVote == 1 ? 0 : 1),
-          PostType.microblog => ac.api.microblogs.putFavorite(item.id),
+            ac.api.threads.vote(widget.item.id, 1, widget.item.myVote == 1 ? 0 : 1),
+          PostType.microblog => ac.api.microblogs.putFavorite(widget.item.id),
         });
       }),
-      downVotes: item.downvotes,
-      isDownVoted: item.myVote == -1,
+      downVotes: widget.item.downvotes,
+      isDownVoted: widget.item.myVote == -1,
       onDownVote: whenLoggedIn(context, () async {
-        onUpdate(await switch (item.type) {
+        widget.onUpdate(await switch (widget.item.type) {
           PostType.thread =>
-            ac.api.threads.vote(item.id, -1, item.myVote == -1 ? 0 : -1),
-          PostType.microblog => ac.api.microblogs.putVote(item.id, -1),
+            ac.api.threads.vote(widget.item.id, -1, widget.item.myVote == -1 ? 0 : -1),
+          PostType.microblog => ac.api.microblogs.putVote(widget.item.id, -1),
         });
       }),
       contentTypeName: l(context).post,
-      onReply: onReply,
+      onReply: widget.onReply,
       onReport: whenLoggedIn(context, (reason) async {
-        await switch (item.type) {
-          PostType.thread => ac.api.threads.report(item.id, reason),
-          PostType.microblog => ac.api.microblogs.report(item.id, reason),
+        await switch (widget.item.type) {
+          PostType.thread => ac.api.threads.report(widget.item.id, reason),
+          PostType.microblog => ac.api.microblogs.report(widget.item.id, reason),
         };
       }),
-      onEdit: onEdit,
-      onDelete: onDelete,
+      onEdit: widget.onEdit,
+      onDelete: widget.onDelete,
       onMarkAsRead: () async {
-        await ac.markAsRead(item.id, !item.read!);
-        onUpdate(item.copyWith(read: !item.read!));
+        await ac.markAsRead(widget.item.id, !widget.item.read!);
+        widget.onUpdate(widget.item.copyWith(read: !widget.item.read!));
       },
       onModeratePin: !canModerate
           ? null
           : () async {
-              onUpdate(await ac.api.moderation.postPin(item.type, item.id));
+              widget.onUpdate(
+                  await ac.api.moderation.postPin(widget.item.type, widget.item.id));
             },
       onModerateMarkNSFW: !canModerate
           ? null
           : () async {
-              onUpdate(await ac.api.moderation
-                  .postMarkNSFW(item.type, item.id, !item.isNSFW));
+              widget.onUpdate(await ac.api.moderation
+                  .postMarkNSFW(widget.item.type, widget.item.id, !widget.item.isNSFW));
             },
       onModerateDelete: !canModerate
           ? null
           : () async {
-              onUpdate(
-                  await ac.api.moderation.postDelete(item.type, item.id, true));
+              widget.onUpdate(
+                  await ac.api.moderation.postDelete(widget.item.type, widget.item.id, true));
             },
       onModerateBan: !canModerate
           ? null
           : () async {
               await openBanDialog(context,
-                  user: item.user, magazine: item.magazine);
+                  user: widget.item.user, magazine: widget.item.magazine);
             },
-      numComments: item.numComments,
+      numComments: widget.item.numComments,
       openLinkUri: Uri.https(
         ac.instanceHost,
         ac.serverSoftware == ServerSoftware.mbin
-            ? '/m/${item.magazine.name}/${switch (item.type) {
+            ? '/m/${widget.item.magazine.name}/${switch (widget.item.type) {
                 PostType.thread => 't',
                 PostType.microblog => 'p',
-              }}/${item.id}'
-            : '/post/${item.id}',
+              }}/${widget.item.id}'
+            : '/post/${widget.item.id}',
       ),
       editDraftResourceId:
-          'edit:${item.type.name}:${ac.instanceHost}:${item.id}',
+          'edit:${widget.item.type.name}:${ac.instanceHost}:${widget.item.id}',
       replyDraftResourceId:
-          'reply:${item.type.name}:${ac.instanceHost}:${item.id}',
-      filterListWarnings: filterListWarnings,
-      activeBookmarkLists: item.bookmarks,
+          'reply:${widget.item.type.name}:${ac.instanceHost}:${widget.item.id}',
+      filterListWarnings: widget.filterListWarnings,
+      activeBookmarkLists: widget.item.bookmarks,
       loadPossibleBookmarkLists: whenLoggedIn(
         context,
         () async => (await ac.api.bookmark.getBookmarkLists())
@@ -162,70 +206,82 @@ class PostItem extends StatelessWidget {
       onAddBookmark: whenLoggedIn(context, () async {
         final newBookmarks = await ac.api.bookmark.addBookmarkToDefault(
           subjectType: BookmarkListSubject.fromPostType(
-              postType: item.type, isComment: false),
-          subjectId: item.id,
+              postType: widget.item.type, isComment: false),
+          subjectId: widget.item.id,
         );
-        onUpdate(item.copyWith(bookmarks: newBookmarks));
+        widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
       }),
       onAddBookmarkToList: whenLoggedIn(
         context,
         (String listName) async {
           final newBookmarks = await ac.api.bookmark.addBookmarkToList(
             subjectType: BookmarkListSubject.fromPostType(
-                postType: item.type, isComment: false),
-            subjectId: item.id,
+                postType: widget.item.type, isComment: false),
+            subjectId: widget.item.id,
             listName: listName,
           );
-          onUpdate(item.copyWith(bookmarks: newBookmarks));
+          widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
         },
         matchesSoftware: ServerSoftware.mbin,
       ),
       onRemoveBookmark: whenLoggedIn(context, () async {
         final newBookmarks = await ac.api.bookmark.removeBookmarkFromAll(
           subjectType: BookmarkListSubject.fromPostType(
-              postType: item.type, isComment: false),
-          subjectId: item.id,
+              postType: widget.item.type, isComment: false),
+          subjectId: widget.item.id,
         );
-        onUpdate(item.copyWith(bookmarks: newBookmarks));
+        widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
       }),
       onRemoveBookmarkFromList: whenLoggedIn(
         context,
         (String listName) async {
           final newBookmarks = await ac.api.bookmark.removeBookmarkFromList(
             subjectType: BookmarkListSubject.fromPostType(
-                postType: item.type, isComment: false),
-            subjectId: item.id,
+                postType: widget.item.type, isComment: false),
+            subjectId: widget.item.id,
             listName: listName,
           );
-          onUpdate(item.copyWith(bookmarks: newBookmarks));
+          widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
         },
         matchesSoftware: ServerSoftware.mbin,
       ),
-      notificationControlStatus: item.notificationControlStatus,
-      onNotificationControlStatusChange: item.notificationControlStatus == null
+      notificationControlStatus: widget.item.notificationControlStatus,
+      onNotificationControlStatusChange: widget.item.notificationControlStatus == null
           ? null
           : (newStatus) async {
               await ac.api.notifications.updateControl(
-                targetType: switch (item.type) {
+                targetType: switch (widget.item.type) {
                   PostType.thread => NotificationControlUpdateTargetType.entry,
                   PostType.microblog =>
                     NotificationControlUpdateTargetType.post,
                 },
-                targetId: item.id,
+                targetId: widget.item.id,
                 status: newStatus,
               );
 
-              onUpdate(item.copyWith(notificationControlStatus: newStatus));
+              widget.onUpdate(widget.item.copyWith(notificationControlStatus: newStatus));
             },
-      isCompact: isCompact,
+      isCompact: widget.isCompact,
     );
 
-    return !isTopLevel
+    return !widget.isTopLevel
         ? contentItem
         : InkWell(
-          onTap: onTap,
-          onLongPress: () => showContentMenu(context, contentItem),
-          onSecondaryTap: () => showContentMenu(context, contentItem),
+          onTap: widget.onTap,
+          onLongPress: () => showContentMenu(
+              context,
+              contentItem,
+              onTranslate: (String lang) async {
+                await getTranslation(lang);
+              }
+          ),
+          onSecondaryTap: () => showContentMenu(
+              context,
+              contentItem,
+              onTranslate: (String lang) async {
+                await getTranslation(lang);
+              }
+          ),
           child: contentItem,
         );
   }
