@@ -60,6 +60,14 @@ ActionItem feedActionSetView(BuildContext context) => ActionItem(
       name: l(context).action_setView,
       icon: Symbols.tab_rounded,
     );
+ActionItem feedActionHideReadPosts(BuildContext context) => ActionItem(
+      name: l(context).settings_hideReadPosts,
+      icon: Symbols.visibility_off_rounded,
+    );
+ActionItem feedActionShowReadPosts(BuildContext context) => ActionItem(
+  name: l(context).action_showReadPosts,
+  icon: Symbols.visibility_rounded,
+);
 
 SelectionMenu<ActionLocation> actionLocationSelect(BuildContext context) =>
     SelectionMenu(

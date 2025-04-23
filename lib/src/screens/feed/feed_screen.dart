@@ -46,6 +46,7 @@ class _FeedScreenState extends State<FeedScreen>
   late FeedSource _filter;
   late FeedView _view;
   FeedSort? _sort;
+  late bool _hideReadPosts;
 
   @override
   bool get wantKeepAlive => true;
@@ -77,6 +78,7 @@ class _FeedScreenState extends State<FeedScreen>
     _view = context.read<AppController>().serverSoftware == ServerSoftware.mbin
         ? context.read<AppController>().profile.feedDefaultView
         : FeedView.threads;
+    _hideReadPosts = context.read<AppController>().profile.hideReadPosts;
   }
 
   @override
@@ -189,6 +191,19 @@ class _FeedScreenState extends State<FeedScreen>
           _fabKey.currentState?.toggle();
         },
       ),
+      _hideReadPosts
+          ? feedActionShowReadPosts(context).withProps(
+              ActionLocation.fabMenu,
+                () => setState(() {
+                  _hideReadPosts = !_hideReadPosts;
+                })
+            )
+          : feedActionHideReadPosts(context).withProps(
+              ActionLocation.fabMenu,
+              () => setState(() {
+                _hideReadPosts = !_hideReadPosts;
+              }),
+            ),
     ];
 
     final tabsAction = [
@@ -339,6 +354,7 @@ class _FeedScreenState extends State<FeedScreen>
                 sort: sort,
                 view: _view,
                 details: widget.details,
+                hideReadPosts: _hideReadPosts,
               )
             : TabBarView(
                 physics: appTabViewPhysics(context),
@@ -352,6 +368,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(1),
@@ -360,6 +377,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(2),
@@ -368,6 +386,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(3),
@@ -376,6 +395,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       // TODO: Remove once federation filter is added to mbin api.
                       if (context.read<AppController>().serverSoftware != ServerSoftware.mbin)
@@ -386,6 +406,7 @@ class _FeedScreenState extends State<FeedScreen>
                           view: _view,
                           details: widget.details,
                           userCanModerate: userCanModerate,
+                          hideReadPosts: _hideReadPosts,
                         ),
                     ],
                   String name when name == feedActionSetView(context).name => [
@@ -397,6 +418,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: FeedView.threads,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(1),
@@ -406,6 +428,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: FeedView.microblog,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(2),
@@ -415,6 +438,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: FeedView.timeline,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                     ],
                   _ => [],
@@ -668,6 +692,7 @@ class FeedScreenBody extends StatefulWidget {
   final FeedView view;
   final Widget? details;
   final bool userCanModerate;
+  final bool hideReadPosts;
 
   const FeedScreenBody({
     super.key,
@@ -677,6 +702,7 @@ class FeedScreenBody extends StatefulWidget {
     required this.view,
     this.details,
     this.userCanModerate = false,
+    this.hideReadPosts = false,
   });
 
   @override
@@ -896,9 +922,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                 ? item.copyWith(read: true)
                 : item));
 
-      _pagingController.appendPage(finalItems.where((item) =>
-          !(ac.profile.hideReadPosts && (item.read != null && item.read!)))
-          .toList(), nextPageKey);
+      _pagingController.appendPage(finalItems, nextPageKey);
     } catch (error) {
       _pagingController.error = error;
     }
@@ -954,6 +978,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                 onTryAgain: _pagingController.retryLastFailedRequest,
               ),
               itemBuilder: (context, item, index) {
+                if ((widget.hideReadPosts && (item.read != null && item.read!))) {
+                  return Container();
+                }
                 void onPostTap() {
                   Navigator.of(context).push(
                     MaterialPageRoute(

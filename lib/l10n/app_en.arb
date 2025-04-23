@@ -417,6 +417,7 @@
   "action_setFilter": "Set Filter",
   "action_setSort": "Set Sort",
   "action_setView": "Set View",
+  "action_showReadPosts": "Show Read Posts",
   "action_upvote": "Upvote",
   "action_downvote": "Downvote",
   "action_boost": "Boost",
