@@ -205,54 +205,61 @@ class _ContentItemState extends State<ContentItem> {
 
   Widget contentBody(BuildContext context) {
     return _translation != null
+        // A translation is available
         ? widget.isPreview
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(widget.body!,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,),
-              Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(getLanguageName(context, widget.lang!)),
-                  Icon(Symbols.arrow_right),
-                  Text(_translation!.targetLanguage.name),
+                  Text(
+                    widget.body!,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(getLanguageName(context, widget.lang!)),
+                      Icon(Symbols.arrow_right),
+                      Text(_translation!.targetLanguage.name),
+                    ],
+                  ),
+                  Divider(),
+                  Text(
+                    _translation!.translations.text,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
-              ),
-              Divider(),
-              Text(_translation!.translations.text,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,),
-            ],
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Markdown(widget.body!, widget.originInstance),
-              Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(getLanguageName(context, widget.lang!)),
-                  Icon(Symbols.arrow_right),
-                  Text(_translation!.targetLanguage.name),
+                  Markdown(widget.body!, widget.originInstance),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(getLanguageName(context, widget.lang!)),
+                      Icon(Symbols.arrow_right),
+                      Text(_translation!.targetLanguage.name),
+                    ],
+                  ),
+                  Divider(),
+                  Markdown(
+                      _translation!.translations.text, widget.originInstance),
                 ],
-              ),
-              Divider(),
-              Markdown(_translation!.translations.text, widget.originInstance),
-            ],
-          )
+              )
+        // No translation is available
         : widget.isPreview
-        ? Text(
-            widget.body!,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-          )
-        : Markdown(widget.body!, widget.originInstance);
+            ? Text(
+                widget.body!,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+              )
+            : Markdown(widget.body!, widget.originInstance);
   }
 
   Widget full() {
