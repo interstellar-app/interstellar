@@ -32,7 +32,9 @@ class ContentItem extends StatefulWidget {
   final ImageModel? image;
   final Uri? link;
   final String? body;
+  final Translation? translation;
   final String? lang;
+  final Future<void> Function(String lang)? onTranslate;
   final DateTime? createdAt;
   final DateTime? editedAt;
 
@@ -106,7 +108,9 @@ class ContentItem extends StatefulWidget {
     this.image,
     this.link,
     this.body,
+    this.translation,
     this.lang,
+    this.onTranslate,
     this.createdAt,
     this.editedAt,
     this.isPreview = false,
@@ -168,35 +172,6 @@ class ContentItem extends StatefulWidget {
 class _ContentItemState extends State<ContentItem> {
   TextEditingController? _replyTextController;
   TextEditingController? _editTextController;
-  Translation? _translation;
-
-  @override
-  void initState() {
-    super.initState();
-    getTranslation();
-  }
-
-  void getTranslation() async {
-    if (context.read<AppController>().profile.autoTranslate &&
-        widget.lang != context.read<AppController>().profile.defaultPostLanguage &&
-        widget.body != null && widget.lang != null) {
-      try {
-        final translation = await context
-            .read<AppController>()
-            .translator
-            .translateSimply(widget.body!, to: context
-            .read<AppController>()
-            .profile
-            .defaultPostLanguage);
-        if (!mounted) return;
-        setState(() {
-          _translation = translation;
-        });
-      } catch (e) {
-        // ignore translation errors
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +179,7 @@ class _ContentItemState extends State<ContentItem> {
   }
 
   Widget contentBody(BuildContext context) {
-    return _translation != null
+    return widget.translation != null
         // A translation is available
         ? widget.isPreview
             ? Column(
@@ -222,12 +197,12 @@ class _ContentItemState extends State<ContentItem> {
                     children: [
                       Text(getLanguageName(context, widget.lang!)),
                       Icon(Symbols.arrow_right),
-                      Text(_translation!.targetLanguage.name),
+                      Text(widget.translation!.targetLanguage.name),
                     ],
                   ),
                   Divider(),
                   Text(
-                    _translation!.translations.text,
+                    widget.translation!.translations.text,
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -244,12 +219,12 @@ class _ContentItemState extends State<ContentItem> {
                     children: [
                       Text(getLanguageName(context, widget.lang!)),
                       Icon(Symbols.arrow_right),
-                      Text(_translation!.targetLanguage.name),
+                      Text(widget.translation!.targetLanguage.name),
                     ],
                   ),
                   Divider(),
                   Markdown(
-                      _translation!.translations.text, widget.originInstance),
+                      widget.translation!.translations.text, widget.originInstance),
                 ],
               )
         // No translation is available
@@ -397,7 +372,8 @@ class _ContentItemState extends State<ContentItem> {
               widget,
               onEdit: () => setState(() {
                 _editTextController = TextEditingController(text: widget.body);
-              })
+              }),
+              onTranslate: widget.onTranslate,
           );
         },
       );

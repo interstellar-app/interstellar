@@ -13,13 +13,13 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/report_content.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:simplytranslate/simplytranslate.dart';
 import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
 void showContentMenu(
     BuildContext context,
     ContentItem widget, {
       Function()? onEdit,
+      Function(String lang)? onTranslate,
 }) {
   final ac = context.read<AppController>();
 
@@ -261,15 +261,13 @@ void showContentMenu(
                       ),
                     ),
                   ),
-                if (widget.body != null)
+                if (widget.body != null && onTranslate != null)
                   LoadingListTile(
                     title: Text('Translate'),
                     onTap: () async {
-                      final translated = await ac.translator.translateSimply(
-                          widget.body!, to: ac.profile.defaultPostLanguage);
+                      await onTranslate(ac.profile.defaultPostLanguage);
                       if (!context.mounted) return;
-                      showTranslateDialog(context, widget, translated);
-                      // widget.
+                      Navigator.pop(context);
                     },
                     trailing: LoadingIconButton(
                       onPressed: () async {
@@ -277,11 +275,10 @@ void showContentMenu(
                           .askSelection(
                           context, ac.selectedProfileValue.defaultPostLanguage);
 
-                        if (langCode == null || !context.mounted) return;
-                        final translated = await ac.translator.translateSimply(
-                            widget.body!, to: langCode);
+                        if (langCode == null) return;
+                        await onTranslate(langCode);
                         if (!context.mounted) return;
-                        showTranslateDialog(context, widget, translated);
+                        Navigator.pop(context);
                       },
                       icon: Icon(Symbols.arrow_forward_rounded)
                     ),
@@ -428,53 +425,4 @@ void showModerateMenu(BuildContext context, ContentItem widget) {
       ]
     );
   });
-}
-
-void showTranslateDialog(BuildContext context, ContentItem widget, Translation translated) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(l(context).viewSource),
-      content: Card.outlined(
-        margin: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SelectableText(widget.body!),
-              Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(translated.sourceLanguage.name),
-                  Icon(Symbols.arrow_right),
-                  Text(translated.targetLanguage.name),
-                ],
-              ),
-              Divider(),
-              SelectableText(translated.translations.text),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l(context).close),
-        ),
-        LoadingTonalButton(
-          onPressed: () async {
-            await Clipboard.setData(
-              ClipboardData(text: translated.translations.text),
-            );
-
-            if (!context.mounted) return;
-            Navigator.pop(context);
-          },
-          label: Text(l(context).copy),
-        ),
-      ],
-    ),
-  );
 }
