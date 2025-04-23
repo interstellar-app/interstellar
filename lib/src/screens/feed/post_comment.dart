@@ -64,10 +64,7 @@ class _PostCommentState extends State<PostComment> {
       final translation = await context
           .read<AppController>()
           .translator
-          .translateSimply(widget.comment.body!, to: context
-          .read<AppController>()
-          .profile
-          .defaultPostLanguage);
+          .translateSimply(widget.comment.body!, to: lang);
       if (!mounted) return;
       setState(() {
         _translation = translation;
