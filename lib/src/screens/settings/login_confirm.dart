@@ -79,7 +79,8 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                   TextEditor(
                     _totpTokenTextController,
                     label: l(context).totpToken,
-                    keyboardType: TextInputType.visiblePassword,
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
                   ),
                 ]
               ]),

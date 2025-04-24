@@ -10,7 +10,7 @@
   "usernameOrEmail": "Username or Email",
   "password": "Password",
   "login": "Login",
-  "totpToken": "TOTP Token",
+  "totpToken": "TOTP Token (if needed)",
   "cancel": "Cancel",
   "continue_": "Continue",
   "remove": "Remove",
