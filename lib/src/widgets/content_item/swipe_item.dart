@@ -14,6 +14,7 @@ class SwipeItem extends StatefulWidget {
     this.onBoost,
     this.onBookmark,
     this.onReply,
+    this.onMarkAsRead,
     this.onModeratePin,
     this.onModerateMarkNSFW,
     this.onModerateDelete,
@@ -27,6 +28,7 @@ class SwipeItem extends StatefulWidget {
   final void Function()? onBoost;
   final void Function()? onBookmark;
   final void Function()? onReply;
+  final void Function()? onMarkAsRead;
   final Future<void> Function()? onModeratePin;
   final Future<void> Function()? onModerateMarkNSFW;
   final Future<void> Function()? onModerateDelete;
@@ -55,6 +57,8 @@ class _SwipeItemState extends State<SwipeItem> {
           .withProps(ActionLocation.hide, widget.onBookmark),
       SwipeAction.reply => swipeActionReply(context)
           .withProps(ActionLocation.hide, widget.onReply),
+      SwipeAction.markAsRead => swipeActionMarkRead(context)
+          .withProps(ActionLocation.hide, widget.onMarkAsRead),
       SwipeAction.moderatePin => swipeActionModeratePin(context)
           .withProps(ActionLocation.hide, widget.onModeratePin),
       SwipeAction.moderateMarkNSFW => swipeActionModerateMarkNSFW(context)

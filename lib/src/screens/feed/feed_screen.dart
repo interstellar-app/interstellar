@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -45,6 +46,7 @@ class _FeedScreenState extends State<FeedScreen>
   late FeedSource _filter;
   late FeedView _view;
   FeedSort? _sort;
+  late bool _hideReadPosts;
 
   @override
   bool get wantKeepAlive => true;
@@ -76,6 +78,7 @@ class _FeedScreenState extends State<FeedScreen>
     _view = context.read<AppController>().serverSoftware == ServerSoftware.mbin
         ? context.read<AppController>().profile.feedDefaultView
         : FeedView.threads;
+    _hideReadPosts = context.read<AppController>().profile.feedDefaultHideReadPosts;
   }
 
   @override
@@ -188,6 +191,19 @@ class _FeedScreenState extends State<FeedScreen>
           _fabKey.currentState?.toggle();
         },
       ),
+      _hideReadPosts
+          ? feedActionShowReadPosts(context).withProps(
+              context.watch<AppController>().profile.feedActionHideReadPosts,
+              () => setState(() {
+                _hideReadPosts = !_hideReadPosts;
+              })
+            )
+          : feedActionHideReadPosts(context).withProps(
+              context.watch<AppController>().profile.feedActionHideReadPosts,
+              () => setState(() {
+                _hideReadPosts = !_hideReadPosts;
+              }),
+            ),
     ];
 
     final tabsAction = [
@@ -338,6 +354,7 @@ class _FeedScreenState extends State<FeedScreen>
                 sort: sort,
                 view: _view,
                 details: widget.details,
+                hideReadPosts: _hideReadPosts,
               )
             : TabBarView(
                 physics: appTabViewPhysics(context),
@@ -351,6 +368,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(1),
@@ -359,6 +377,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(2),
@@ -367,6 +386,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(3),
@@ -375,6 +395,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: _view,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       // TODO: Remove once federation filter is added to mbin api.
                       if (context.read<AppController>().serverSoftware != ServerSoftware.mbin)
@@ -385,6 +406,7 @@ class _FeedScreenState extends State<FeedScreen>
                           view: _view,
                           details: widget.details,
                           userCanModerate: userCanModerate,
+                          hideReadPosts: _hideReadPosts,
                         ),
                     ],
                   String name when name == feedActionSetView(context).name => [
@@ -396,6 +418,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: FeedView.threads,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(1),
@@ -405,6 +428,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: FeedView.microblog,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                       FeedScreenBody(
                         key: _getFeedKey(2),
@@ -414,6 +438,7 @@ class _FeedScreenState extends State<FeedScreen>
                         view: FeedView.timeline,
                         details: widget.details,
                         userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
                       ),
                     ],
                   _ => [],
@@ -667,6 +692,7 @@ class FeedScreenBody extends StatefulWidget {
   final FeedView view;
   final Widget? details;
   final bool userCanModerate;
+  final bool hideReadPosts;
 
   const FeedScreenBody({
     super.key,
@@ -676,6 +702,7 @@ class FeedScreenBody extends StatefulWidget {
     required this.view,
     this.details,
     this.userCanModerate = false,
+    this.hideReadPosts = false,
   });
 
   @override
@@ -885,7 +912,17 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         return true;
       }).toList();
 
-      _pagingController.appendPage(items, nextPageKey);
+      final ac = context.read<AppController>();
+
+      final finalItems = ac.serverSoftware
+          == ServerSoftware.lemmy && ac.isLoggedIn
+          ? items
+          : await Future.wait(items.map((item) async =>
+            (await ac.isRead(item.id))
+                ? item.copyWith(read: true)
+                : item));
+
+      _pagingController.appendPage(finalItems, nextPageKey);
     } catch (error) {
       _pagingController.error = error;
     }
@@ -941,6 +978,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                 onTryAgain: _pagingController.retryLastFailedRequest,
               ),
               itemBuilder: (context, item, index) {
+                if ((widget.hideReadPosts && item.read)) {
+                  return Container();
+                }
                 void onPostTap() {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -963,31 +1003,38 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      PostItem(
-                        item,
-                        (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                        onReply: whenLoggedIn(context, (body) async {
-                          await context
-                              .read<AppController>()
-                              .api
-                              .comments
-                              .create(
-                                item.type,
-                                item.id,
-                                body,
-                              );
-                        }),
-                        onTap: onPostTap,
-                        filterListWarnings: _filterListWarnings[(item.type, item.id)],
-                        userCanModerate: widget.userCanModerate,
-                        isTopLevel: true,
-                        isCompact: true,
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: item.read
+                              ? Theme.of(context).cardColor.darken(3)
+                              : null,
+                        ),
+                        child: PostItem(
+                          item,
+                          (newValue) {
+                            var newList = _pagingController.itemList;
+                            newList![index] = newValue;
+                            setState(() {
+                              _pagingController.itemList = newList;
+                            });
+                          },
+                          onReply: whenLoggedIn(context, (body) async {
+                            await context
+                                .read<AppController>()
+                                .api
+                                .comments
+                                .create(
+                                  item.type,
+                                  item.id,
+                                  body,
+                                );
+                          }),
+                          onTap: onPostTap,
+                          filterListWarnings: _filterListWarnings[(item.type, item.id)],
+                          userCanModerate: widget.userCanModerate,
+                          isTopLevel: true,
+                          isCompact: true,
+                        ),
                       ),
                       const Divider(
                         height: 1,
@@ -997,6 +1044,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   );
                 } else {
                   return Card(
+                    color: item.read
+                        ? Theme.of(context).cardColor.darken(3)
+                        : null,
                     margin: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,

@@ -7,6 +7,8 @@ import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/list_tile_switch.dart';
+
 class FeedDefaultSettingsScreen extends StatelessWidget {
   const FeedDefaultSettingsScreen({super.key});
 
@@ -83,6 +85,13 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
               ac.selectedProfileValue
                   .copyWith(feedDefaultCommentSort: newValue),
             ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.visibility_off_rounded),
+            title: Text(l(context).settings_feedDefaults_hideReadPosts),
+            value: ac.profile.feedDefaultHideReadPosts,
+            onChanged: (newValue) => ac.updateProfile(
+                ac.selectedProfileValue.copyWith(feedDefaultHideReadPosts: newValue)),
           ),
         ],
       ),

@@ -104,6 +104,18 @@ class FeedActionsSettingsScreen extends StatelessWidget {
                   .copyWith(feedActionSetView: newValue),
             ),
           ),
+          ListTileSelect(
+            title: l(context).action_markRead,
+            icon: Symbols.visibility_off_rounded,
+            selectionMenu: actionLocationSelect(context),
+            value: ac.profile.feedActionHideReadPosts,
+            oldValue: ac.selectedProfileValue.feedActionHideReadPosts,
+            onChange: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue
+                  .cleanupActions(newValue.name, ac.profile)
+                  .copyWith(feedActionHideReadPosts: newValue),
+            ),
+          ),
           const Divider(),
           ListTileSwitch(
             leading: const Icon(Symbols.swipe),

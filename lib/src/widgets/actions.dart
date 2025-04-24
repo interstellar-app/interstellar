@@ -60,6 +60,14 @@ ActionItem feedActionSetView(BuildContext context) => ActionItem(
       name: l(context).action_setView,
       icon: Symbols.tab_rounded,
     );
+ActionItem feedActionHideReadPosts(BuildContext context) => ActionItem(
+      name: l(context).settings_feedDefaults_hideReadPosts,
+      icon: Symbols.visibility_off_rounded,
+    );
+ActionItem feedActionShowReadPosts(BuildContext context) => ActionItem(
+  name: l(context).action_showReadPosts,
+  icon: Symbols.visibility_rounded,
+);
 
 SelectionMenu<ActionLocation> actionLocationSelect(BuildContext context) =>
     SelectionMenu(
@@ -137,6 +145,7 @@ enum SwipeAction {
   boost,
   bookmark,
   reply,
+  markAsRead,
   moderatePin,
   moderateMarkNSFW,
   moderateDelete,
@@ -167,6 +176,11 @@ ActionItem swipeActionReply(BuildContext context) => ActionItem(
       name: l(context).action_reply,
       icon: Symbols.reply_rounded,
       color: Colors.cyanAccent,
+    );
+ActionItem swipeActionMarkRead(BuildContext context) => ActionItem(
+      name: l(context).action_markRead,
+      icon: Symbols.mark_chat_read,
+      color: Colors.amberAccent,
     );
 ActionItem swipeActionModeratePin(BuildContext context) => ActionItem(
       name: l(context).action_moderatePin,
@@ -217,6 +231,11 @@ SelectionMenu<SwipeAction> swipeActionSelect(BuildContext context) =>
           value: SwipeAction.reply,
           title: l(context).action_reply,
           icon: Symbols.reply_rounded,
+        ),
+        SelectionMenuItem(
+          value: SwipeAction.markAsRead,
+          title: l(context).action_markRead,
+          icon: Symbols.mark_chat_read,
         ),
         SelectionMenuItem(
           value: SwipeAction.moderatePin,

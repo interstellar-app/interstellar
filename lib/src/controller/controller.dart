@@ -10,6 +10,7 @@ import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
@@ -34,6 +35,7 @@ class AppController with ChangeNotifier {
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
+  final _readStore = StoreRef<String, JsonMap>('read');
 
   late final _mainProfileRecord = _mainStore.record('mainProfile');
   late final _selectedProfileRecord = _mainStore.record('selectedProfile');
@@ -333,6 +335,9 @@ class AppController with ChangeNotifier {
               .toJson());
     }
 
+    // Remove read posts associated with account
+    _readStore.delete(db, finder: Finder(filter: Filter.equals('account', key)));
+
     _rebuildProfile();
 
     _accounts.remove(key);
@@ -574,5 +579,22 @@ class AppController with ChangeNotifier {
         HapticFeedback.vibrate();
         break;
     }
+  }
+
+  Future<PostModel> markAsRead(PostModel post, bool read) async {
+    if (serverSoftware == ServerSoftware.lemmy && isLoggedIn) {
+      await api.threads.markAsRead(post.id, read);
+      return post.copyWith(read: read);
+    }
+    if (await isRead(post.id)) return post.copyWith(read: true);
+    await _readStore.add(db, {'postId': post.id, 'read': read, 'account': _selectedAccount});
+    return post.copyWith(read: read);
+  }
+
+  Future<bool> isRead(int postId) async {
+    return (await _readStore.find(db, finder: Finder(
+      filter: Filter.equals('postId', postId) &
+              Filter.equals('account', _selectedAccount)
+    ))).firstOrNull != null;
   }
 }

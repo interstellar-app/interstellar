@@ -48,6 +48,7 @@ class ProfileRequired with _$ProfileRequired {
     required FeedSort feedDefaultMicroblogSort,
     required FeedSort feedDefaultExploreSort,
     required CommentSort feedDefaultCommentSort,
+    required bool feedDefaultHideReadPosts,
     // Feed actions
     required ActionLocation feedActionBackToTop,
     required ActionLocation feedActionCreateNew,
@@ -56,6 +57,7 @@ class ProfileRequired with _$ProfileRequired {
     required ActionLocationWithTabs feedActionSetFilter,
     required ActionLocation feedActionSetSort,
     required ActionLocationWithTabs feedActionSetView,
+    required ActionLocation feedActionHideReadPosts,
     // Swipe Actions
     required bool enableSwipeActions,
     required SwipeAction swipeActionLeftShort,
@@ -116,6 +118,8 @@ class ProfileRequired with _$ProfileRequired {
             defaultProfile.feedDefaultExploreSort,
         feedDefaultCommentSort: profile?.feedDefaultCommentSort ??
             defaultProfile.feedDefaultCommentSort,
+        feedDefaultHideReadPosts: profile?.feedDefaultHideReadPosts ??
+            defaultProfile.feedDefaultHideReadPosts,
         feedActionBackToTop:
             profile?.feedActionBackToTop ?? defaultProfile.feedActionBackToTop,
         feedActionCreateNew:
@@ -130,6 +134,8 @@ class ProfileRequired with _$ProfileRequired {
             profile?.feedActionSetSort ?? defaultProfile.feedActionSetSort,
         feedActionSetView:
             profile?.feedActionSetView ?? defaultProfile.feedActionSetView,
+        feedActionHideReadPosts:
+            profile?.feedActionHideReadPosts ?? defaultProfile.feedActionHideReadPosts,
         enableSwipeActions:
             profile?.enableSwipeActions ?? defaultProfile.enableSwipeActions,
         swipeActionLeftShort: profile?.swipeActionLeftShort ??
@@ -171,6 +177,7 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultMicroblogSort: FeedSort.hot,
     feedDefaultExploreSort: FeedSort.newest,
     feedDefaultCommentSort: CommentSort.hot,
+    feedDefaultHideReadPosts: false,
     feedActionBackToTop: ActionLocation.fabMenu,
     feedActionCreateNew: ActionLocation.fabMenu,
     feedActionExpandFab: ActionLocation.fabTap,
@@ -178,6 +185,7 @@ class ProfileRequired with _$ProfileRequired {
     feedActionSetFilter: ActionLocationWithTabs.tabs,
     feedActionSetSort: ActionLocation.appBar,
     feedActionSetView: ActionLocationWithTabs.appBar,
+    feedActionHideReadPosts: ActionLocation.fabMenu,
     enableSwipeActions: false,
     swipeActionLeftShort: SwipeAction.upvote,
     swipeActionLeftLong: SwipeAction.boost,
@@ -223,6 +231,7 @@ class ProfileOptional with _$ProfileOptional {
     required FeedSort? feedDefaultMicroblogSort,
     required FeedSort? feedDefaultExploreSort,
     required CommentSort? feedDefaultCommentSort,
+    required bool? feedDefaultHideReadPosts,
     // Feed actions
     required ActionLocation? feedActionBackToTop,
     required ActionLocation? feedActionCreateNew,
@@ -231,6 +240,7 @@ class ProfileOptional with _$ProfileOptional {
     required ActionLocationWithTabs? feedActionSetFilter,
     required ActionLocation? feedActionSetSort,
     required ActionLocationWithTabs? feedActionSetView,
+    required ActionLocation? feedActionHideReadPosts,
     required bool? enableSwipeActions,
     required SwipeAction? swipeActionLeftShort,
     required SwipeAction? swipeActionLeftLong,
@@ -270,6 +280,7 @@ class ProfileOptional with _$ProfileOptional {
     feedDefaultMicroblogSort: null,
     feedDefaultExploreSort: null,
     feedDefaultCommentSort: null,
+    feedDefaultHideReadPosts: null,
     feedActionBackToTop: null,
     feedActionCreateNew: null,
     feedActionExpandFab: null,
@@ -277,6 +288,7 @@ class ProfileOptional with _$ProfileOptional {
     feedActionSetFilter: null,
     feedActionSetSort: null,
     feedActionSetView: null,
+    feedActionHideReadPosts: null,
     enableSwipeActions: null,
     swipeActionLeftShort: null,
     swipeActionLeftLong: null,
@@ -323,6 +335,8 @@ class ProfileOptional with _$ProfileOptional {
           other.feedDefaultExploreSort ?? feedDefaultExploreSort,
       feedDefaultCommentSort:
           other.feedDefaultCommentSort ?? feedDefaultCommentSort,
+      feedDefaultHideReadPosts:
+          other.feedDefaultHideReadPosts ?? feedDefaultHideReadPosts,
       feedActionBackToTop:
           other.feedActionBackToTop ?? this.feedActionBackToTop,
       feedActionCreateNew:
@@ -334,6 +348,8 @@ class ProfileOptional with _$ProfileOptional {
           other.feedActionSetFilter ?? this.feedActionSetFilter,
       feedActionSetSort: other.feedActionSetSort ?? this.feedActionSetSort,
       feedActionSetView: other.feedActionSetView ?? this.feedActionSetView,
+      feedActionHideReadPosts:
+          other.feedActionHideReadPosts ?? this.feedActionHideReadPosts,
       enableSwipeActions: other.enableSwipeActions ?? this.enableSwipeActions,
       swipeActionLeftShort:
           other.swipeActionLeftShort ?? this.swipeActionLeftShort,
