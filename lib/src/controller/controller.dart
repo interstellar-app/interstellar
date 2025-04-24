@@ -586,7 +586,7 @@ class AppController with ChangeNotifier {
       await api.threads.markAsRead(post.id, read);
       return post.copyWith(read: read);
     }
-    if (await isRead(post.id)) return post;
+    if (await isRead(post.id)) return post.copyWith(read: true);
     await _readStore.add(db, {'postId': post.id, 'read': read, 'account': _selectedAccount});
     return post.copyWith(read: read);
   }
