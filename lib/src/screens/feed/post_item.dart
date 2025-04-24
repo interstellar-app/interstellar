@@ -103,7 +103,7 @@ class _PostItemState extends State<PostItem> {
             }
           : true,
       showMagazineFirst: widget.item.type == PostType.thread,
-      read: widget.item.read,
+      read: widget.isTopLevel && widget.item.read,
       isPinned: widget.item.isPinned,
       isNSFW: widget.item.isNSFW,
       isOC: widget.item.isOC == true,

@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -179,7 +180,13 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.isCompact ? compact() : full();
+    return DefaultTextStyle(
+      style: widget.read
+          ? Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: Theme.of(context).textTheme.bodyMedium?.color?.darken(10))
+          : Theme.of(context).textTheme.bodyMedium!,
+      child: widget.isCompact ? compact() : full()
+    );
   }
 
   Widget contentBody(BuildContext context) {
@@ -361,8 +368,14 @@ class _ContentItemState extends State<ContentItem> {
                     ));
 
       final titleStyle = hasWideSize
-          ? Theme.of(context).textTheme.titleLarge!
-          : Theme.of(context).textTheme.titleMedium!;
+          ? Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: widget.read
+                ? Theme.of(context).textTheme.titleLarge!.color!.darken(10)
+                : null)
+          : Theme.of(context).textTheme.titleMedium!.copyWith(
+            color: widget.read
+                ? Theme.of(context).textTheme.titleMedium!.color!.darken(10)
+                : null);
       final titleOverflow =
           widget.isPreview && context.watch<AppController>().profile.compactMode
               ? TextOverflow.ellipsis
@@ -639,7 +652,12 @@ class _ContentItemState extends State<ContentItem> {
                                     padding: const EdgeInsets.only(right: 8),
                                     child: Row(
                                       children: [
-                                        const Icon(Symbols.comment_rounded),
+                                        Icon(
+                                          Symbols.comment_rounded,
+                                          color: widget.read
+                                              ? Theme.of(context).textTheme.bodyMedium!.color!.darken(10)
+                                              : null,
+                                        ),
                                         const SizedBox(width: 4),
                                         Text(intFormat(widget.numComments!))
                                       ],
