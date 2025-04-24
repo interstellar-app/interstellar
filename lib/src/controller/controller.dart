@@ -10,12 +10,12 @@ import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:sembast/sembast_io.dart';
-import 'package:sembast/utils/value_utils.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
@@ -581,12 +581,14 @@ class AppController with ChangeNotifier {
     }
   }
 
-  Future<void> markAsRead(int postId, bool read) async {
+  Future<PostModel> markAsRead(PostModel post, bool read) async {
     if (serverSoftware == ServerSoftware.lemmy && isLoggedIn) {
-      api.threads.markAsRead(postId, read);
+      await api.threads.markAsRead(post.id, read);
+      return post.copyWith(read: read);
     }
-    if (await isRead(postId)) return;
-    await _readStore.add(db, {'postId': postId, 'read': read, 'account': _selectedAccount});
+    if (await isRead(post.id)) return post;
+    await _readStore.add(db, {'postId': post.id, 'read': read, 'account': _selectedAccount});
+    return post.copyWith(read: read);
   }
 
   Future<bool> isRead(int postId) async {

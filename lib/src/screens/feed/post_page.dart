@@ -82,8 +82,8 @@ class _PostPageState extends State<PostPage> {
     // delay marking as read to prevent error caused by triggering parent build during child build
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
-    context.read<AppController>().markAsRead(_data!.id, true);
-    widget.onUpdate?.call(_data!.copyWith(read: true));
+    widget.onUpdate?.call(
+        await context.read<AppController>().markAsRead(_data!, true));
   }
 
   Future<void> _fetchPage(String pageKey) async {
