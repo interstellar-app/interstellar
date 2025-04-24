@@ -1,5 +1,5 @@
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +21,8 @@ class _NotificationBadgeState extends State<NotificationBadge> {
 
     return Wrapper(
       shouldWrap: count != 0,
-      parentBuilder: (child) => badges.Badge(
-        badgeContent: Text(count.toString()),
+      parentBuilder: (child) => Badge(
+        label: Text(intFormat(count)),
         child: child,
       ),
       child: widget.child,
