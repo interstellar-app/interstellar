@@ -78,7 +78,7 @@ class _FeedScreenState extends State<FeedScreen>
     _view = context.read<AppController>().serverSoftware == ServerSoftware.mbin
         ? context.read<AppController>().profile.feedDefaultView
         : FeedView.threads;
-    _hideReadPosts = context.read<AppController>().profile.hideReadPosts;
+    _hideReadPosts = context.read<AppController>().profile.feedDefaultHideReadPosts;
   }
 
   @override
@@ -193,13 +193,13 @@ class _FeedScreenState extends State<FeedScreen>
       ),
       _hideReadPosts
           ? feedActionShowReadPosts(context).withProps(
-              ActionLocation.fabMenu,
-                () => setState(() {
-                  _hideReadPosts = !_hideReadPosts;
-                })
+              context.watch<AppController>().profile.feedActionHideReadPosts,
+              () => setState(() {
+                _hideReadPosts = !_hideReadPosts;
+              })
             )
           : feedActionHideReadPosts(context).withProps(
-              ActionLocation.fabMenu,
+              context.watch<AppController>().profile.feedActionHideReadPosts,
               () => setState(() {
                 _hideReadPosts = !_hideReadPosts;
               }),
@@ -978,7 +978,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                 onTryAgain: _pagingController.retryLastFailedRequest,
               ),
               itemBuilder: (context, item, index) {
-                if ((widget.hideReadPosts && (item.read != null && item.read!))) {
+                if ((widget.hideReadPosts && item.read)) {
                   return Container();
                 }
                 void onPostTap() {
@@ -1005,8 +1005,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     children: [
                       DecoratedBox(
                         decoration: BoxDecoration(
-                          color: item.read != null && item.read!
-                              ? Theme.of(context).cardColor.lighten(10)
+                          color: item.read
+                              ? Theme.of(context).cardColor.darken(3)
                               : null,
                         ),
                         child: PostItem(
@@ -1044,8 +1044,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   );
                 } else {
                   return Card(
-                    color: item.read != null && item.read!
-                        ? Theme.of(context).cardColor.lighten(10)
+                    color: item.read
+                        ? Theme.of(context).cardColor.darken(3)
                         : null,
                     margin: const EdgeInsets.symmetric(
                       horizontal: 12,

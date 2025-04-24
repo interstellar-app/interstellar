@@ -15,6 +15,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:sembast/sembast_io.dart';
+import 'package:sembast/utils/value_utils.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
@@ -334,6 +335,9 @@ class AppController with ChangeNotifier {
               .toJson());
     }
 
+    // Remove read posts associated with account
+    _readStore.delete(db, finder: Finder(filter: Filter.equals('account', key)));
+
     _rebuildProfile();
 
     _accounts.remove(key);
@@ -586,10 +590,9 @@ class AppController with ChangeNotifier {
   }
 
   Future<bool> isRead(int postId) async {
-    final records = (await _readStore.find(db, finder: Finder(
-      filter: Filter.equals('postId', postId)
-    )));
-
-    return records.where((record) => record.value['account'] == _selectedAccount).firstOrNull != null;
+    return (await _readStore.find(db, finder: Finder(
+      filter: Filter.equals('postId', postId) &
+              Filter.equals('account', _selectedAccount)
+    ))).firstOrNull != null;
   }
 }

@@ -170,7 +170,7 @@ void showContentMenu(
                   ),
                 if (widget.onMarkAsRead != null)
                   ListTile(
-                    title: Text(l(context).action_markRead),
+                    title: Text(widget.read ? l(context).action_markUnread : l(context).action_markRead),
                     onTap: () {
                       widget.onMarkAsRead!();
                       Navigator.of(context).pop();

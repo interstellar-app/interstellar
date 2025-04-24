@@ -76,7 +76,7 @@ class PostModel with _$PostModel {
     required bool? canAuthUserModerate,
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
-    required bool? read,
+    required bool read,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -196,7 +196,7 @@ class PostModel with _$PostModel {
         // Empty string indicates post is saved. No string indicates post is not saved.
         if (json['saved'] as bool) '',
       ],
-      read: json['read'] as bool?
+      read: json['read'] as bool? ?? false
     );
   }
 

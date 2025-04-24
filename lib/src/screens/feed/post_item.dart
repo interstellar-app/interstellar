@@ -103,6 +103,7 @@ class _PostItemState extends State<PostItem> {
             }
           : true,
       showMagazineFirst: widget.item.type == PostType.thread,
+      read: widget.item.read,
       isPinned: widget.item.isPinned,
       isNSFW: widget.item.isNSFW,
       isOC: widget.item.isOC == true,
@@ -153,8 +154,8 @@ class _PostItemState extends State<PostItem> {
       onEdit: widget.onEdit,
       onDelete: widget.onDelete,
       onMarkAsRead: () async {
-        await ac.markAsRead(widget.item.id, !widget.item.read!);
-        widget.onUpdate(widget.item.copyWith(read: !widget.item.read!));
+        await ac.markAsRead(widget.item.id, !widget.item.read);
+        widget.onUpdate(widget.item.copyWith(read: !widget.item.read));
       },
       onModeratePin: !canModerate
           ? null

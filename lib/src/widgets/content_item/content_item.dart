@@ -41,6 +41,7 @@ class ContentItem extends StatefulWidget {
   final bool isPreview;
   final bool fullImageSize;
   final bool showMagazineFirst;
+  final bool read;
 
   final bool isPinned;
   final bool isNSFW;
@@ -117,6 +118,7 @@ class ContentItem extends StatefulWidget {
     this.isPreview = false,
     this.fullImageSize = false,
     this.showMagazineFirst = false,
+    this.read = false,
     this.isPinned = false,
     this.isNSFW = false,
     this.isOC = false,

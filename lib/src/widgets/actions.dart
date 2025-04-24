@@ -61,7 +61,7 @@ ActionItem feedActionSetView(BuildContext context) => ActionItem(
       icon: Symbols.tab_rounded,
     );
 ActionItem feedActionHideReadPosts(BuildContext context) => ActionItem(
-      name: l(context).settings_hideReadPosts,
+      name: l(context).settings_feedDefaults_hideReadPosts,
       icon: Symbols.visibility_off_rounded,
     );
 ActionItem feedActionShowReadPosts(BuildContext context) => ActionItem(

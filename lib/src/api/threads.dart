@@ -591,7 +591,6 @@ class APIThreads {
         final response = await client.post(
           path,
           body: {
-            'post_id': postId,
             'post_ids': [postId],
             'read': read,
           }
