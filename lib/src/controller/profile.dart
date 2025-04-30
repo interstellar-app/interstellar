@@ -37,8 +37,7 @@ class ProfileRequired with _$ProfileRequired {
     required FlexScheme colorScheme,
     required bool enableTrueBlack,
     required bool compactMode,
-    required bool hideVoteButtons,
-    required bool hideCommentButtons,
+    required bool hideActionButtons,
     required bool alwaysShowInstance,
     required bool coverMediaMarkedSensitive,
     required bool fullImageSizeThreads,
@@ -100,10 +99,8 @@ class ProfileRequired with _$ProfileRequired {
         enableTrueBlack:
             profile?.enableTrueBlack ?? defaultProfile.enableTrueBlack,
         compactMode: profile?.compactMode ?? defaultProfile.compactMode,
-        hideVoteButtons:
-            profile?.hideVoteButtons ?? defaultProfile.hideVoteButtons,
-        hideCommentButtons:
-            profile?.hideCommentButtons ?? defaultProfile.hideCommentButtons,
+        hideActionButtons:
+            profile?.hideActionButtons ?? defaultProfile.hideActionButtons,
         alwaysShowInstance:
             profile?.alwaysShowInstance ?? defaultProfile.alwaysShowInstance,
         coverMediaMarkedSensitive: profile?.coverMediaMarkedSensitive ??
@@ -173,8 +170,7 @@ class ProfileRequired with _$ProfileRequired {
     colorScheme: FlexScheme.custom,
     enableTrueBlack: false,
     compactMode: false,
-    hideVoteButtons: false,
-    hideCommentButtons: false,
+    hideActionButtons: false,
     alwaysShowInstance: false,
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
@@ -228,8 +224,7 @@ class ProfileOptional with _$ProfileOptional {
     required FlexScheme? colorScheme,
     required bool? enableTrueBlack,
     required bool? compactMode,
-    required bool? hideVoteButtons,
-    required bool? hideCommentButtons,
+    required bool? hideActionButtons,
     required bool? alwaysShowInstance,
     required bool? coverMediaMarkedSensitive,
     required bool? fullImageSizeThreads,
@@ -280,8 +275,7 @@ class ProfileOptional with _$ProfileOptional {
     colorScheme: null,
     enableTrueBlack: null,
     compactMode: null,
-    hideVoteButtons: null,
-    hideCommentButtons: null,
+    hideActionButtons: null,
     alwaysShowInstance: null,
     coverMediaMarkedSensitive: null,
     fullImageSizeThreads: null,
@@ -331,8 +325,7 @@ class ProfileOptional with _$ProfileOptional {
       colorScheme: other.colorScheme ?? colorScheme,
       enableTrueBlack: other.enableTrueBlack ?? enableTrueBlack,
       compactMode: other.compactMode ?? compactMode,
-      hideVoteButtons: other.hideVoteButtons ?? hideVoteButtons,
-      hideCommentButtons: other.hideCommentButtons ?? hideCommentButtons,
+      hideActionButtons: other.hideActionButtons ?? hideActionButtons,
       alwaysShowInstance: other.alwaysShowInstance ?? alwaysShowInstance,
       coverMediaMarkedSensitive:
           other.coverMediaMarkedSensitive ?? coverMediaMarkedSensitive,

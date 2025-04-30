@@ -90,19 +90,12 @@ class DisplaySettingsScreen extends StatelessWidget {
             ),
           ),
           ListTileSwitch(
-            leading: const Icon(Symbols.view_agenda_rounded),
-            title: Text(l(context).settings_hideVoteButtons),
-            value: ac.profile.hideVoteButtons,
+            leading: const Icon(Symbols.view_day_rounded),
+            title: Text(l(context).settings_hideActionButtons),
+            subtitle: Text(l(context).settings_hideActionButtons_help),
+            value: ac.profile.hideActionButtons,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(hideVoteButtons: newValue),
-            ),
-          ),
-          ListTileSwitch(
-            leading: const Icon(Symbols.view_agenda_rounded),
-            title: Text(l(context).settings_hideCommentButtons),
-            value: ac.profile.hideCommentButtons,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(hideCommentButtons: newValue),
+              ac.selectedProfileValue.copyWith(hideActionButtons: newValue),
             ),
           ),
           const Divider(),

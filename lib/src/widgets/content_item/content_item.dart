@@ -577,11 +577,7 @@ class _ContentItemState extends State<ContentItem> {
                           if (!context
                                   .read<AppController>()
                                   .profile
-                                  .hideVoteButtons ||
-                              !context
-                                  .read<AppController>()
-                                  .profile
-                                  .hideCommentButtons)
+                                  .hideActionButtons)
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child:
@@ -672,41 +668,25 @@ class _ContentItemState extends State<ContentItem> {
                                 return constrains.maxWidth < 300
                                     ? Column(
                                         children: [
-                                          if (!context
-                                              .read<AppController>()
-                                              .profile
-                                              .hideVoteButtons)
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: votingWidgets,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: votingWidgets,
+                                          ),
                                           const SizedBox(height: 4),
-                                          if (!context
-                                              .read<AppController>()
-                                              .profile
-                                              .hideCommentButtons)
-                                            Row(
-                                              children: <Widget>[
-                                                ...commentWidgets,
-                                                const Spacer(),
-                                              ],
-                                            ),
+                                          Row(
+                                            children: <Widget>[
+                                              ...commentWidgets,
+                                              const Spacer(),
+                                            ],
+                                          ),
                                         ],
                                       )
                                     : Row(
                                         children: <Widget>[
-                                          if (!context
-                                              .read<AppController>()
-                                              .profile
-                                              .hideCommentButtons)
-                                            ...commentWidgets,
+                                          ...commentWidgets,
                                           const Spacer(),
-                                          if (!context
-                                              .read<AppController>()
-                                              .profile
-                                              .hideVoteButtons)
-                                            ...votingWidgets,
+                                          ...votingWidgets,
                                         ],
                                       );
                               }),
@@ -716,7 +696,8 @@ class _ContentItemState extends State<ContentItem> {
                               widget.onNotificationControlStatusChange !=
                                   null &&
                               context.read<AppController>().serverSoftware !=
-                                  ServerSoftware.piefed)
+                                  ServerSoftware.piefed &&
+                              !context.read<AppController>().profile.hideActionButtons)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Row(
