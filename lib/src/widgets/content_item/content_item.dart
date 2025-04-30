@@ -1,4 +1,3 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -105,6 +104,8 @@ class ContentItem extends StatefulWidget {
       onNotificationControlStatusChange;
   final bool isCompact;
 
+  final void Function()? onClick;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -167,6 +168,7 @@ class ContentItem extends StatefulWidget {
     this.notificationControlStatus,
     this.onNotificationControlStatusChange,
     this.isCompact = false,
+    this.onClick,
     super.key,
   });
 
@@ -180,7 +182,36 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.isCompact ? compact() : full();
+    return Wrapper(
+      shouldWrap: widget.onClick != null,
+      parentBuilder: (child) {
+        return InkWell(
+          onTap: widget.onClick,
+          onLongPress: () => showContentMenu(
+            context,
+            widget,
+            onTranslate: widget.onTranslate,
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                  _replyTextController = TextEditingController();
+                })
+                : () {}
+          ),
+          onSecondaryTap: () => showContentMenu(
+            context,
+            widget,
+            onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                    _replyTextController = TextEditingController();
+                  })
+                  : () {}
+          ),
+          child: child,
+        );
+      },
+      child: widget.isCompact ? compact() : full(),
+    );
   }
 
   Widget contentBody(BuildContext context) {
@@ -385,6 +416,11 @@ class _ContentItemState extends State<ContentItem> {
               _editTextController = TextEditingController(text: widget.body);
             }),
             onTranslate: widget.onTranslate,
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                  _replyTextController = TextEditingController();
+                })
+                : () {}
           );
         },
       );
@@ -575,125 +611,130 @@ class _ContentItemState extends State<ContentItem> {
                                       .profile
                                       .compactMode))
                             contentBody(context),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child:
-                                LayoutBuilder(builder: (context, constrains) {
-                              final votingWidgets = [
-                                if (widget.activeBookmarkLists != null)
-                                  widget.activeBookmarkLists!.isEmpty
-                                      ? LoadingIconButton(
-                                          onPressed: widget.onAddBookmark,
-                                          icon: const Icon(
-                                            Symbols.bookmark_rounded,
-                                            fill: 0,
+                          if (!context
+                                  .read<AppController>()
+                                  .profile
+                                  .hideActionButtons)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child:
+                                  LayoutBuilder(builder: (context, constrains) {
+                                final votingWidgets = [
+                                  if (widget.activeBookmarkLists != null)
+                                    widget.activeBookmarkLists!.isEmpty
+                                        ? LoadingIconButton(
+                                            onPressed: widget.onAddBookmark,
+                                            icon: const Icon(
+                                              Symbols.bookmark_rounded,
+                                              fill: 0,
+                                            ),
+                                          )
+                                        : LoadingIconButton(
+                                            onPressed: widget.onRemoveBookmark,
+                                            icon: const Icon(
+                                              Symbols.bookmark_rounded,
+                                              fill: 1,
+                                            ),
                                           ),
-                                        )
-                                      : LoadingIconButton(
-                                          onPressed: widget.onRemoveBookmark,
-                                          icon: const Icon(
-                                            Symbols.bookmark_rounded,
-                                            fill: 1,
+                                  if (widget.boosts != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                                Symbols.rocket_launch_rounded),
+                                            color: widget.isBoosted
+                                                ? Colors.purple.shade400
+                                                : null,
+                                            onPressed: widget.onBoost,
                                           ),
-                                        ),
-                                if (widget.boosts != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Row(
+                                          Text(intFormat(widget.boosts!))
+                                        ],
+                                      ),
+                                    ),
+                                  if (widget.upVotes != null ||
+                                      widget.downVotes != null)
+                                    Row(
                                       children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                              Symbols.rocket_launch_rounded),
-                                          color: widget.isBoosted
-                                              ? Colors.purple.shade400
-                                              : null,
-                                          onPressed: widget.onBoost,
-                                        ),
-                                        Text(intFormat(widget.boosts!))
+                                        if (widget.upVotes != null)
+                                          IconButton(
+                                            icon: const Icon(
+                                                Symbols.arrow_upward_rounded),
+                                            color: widget.isUpVoted
+                                                ? Colors.green.shade400
+                                                : null,
+                                            onPressed: widget.onUpVote,
+                                          ),
+                                        Text(intFormat((widget.upVotes ?? 0) -
+                                            (widget.downVotes ?? 0))),
+                                        if (widget.downVotes != null)
+                                          IconButton(
+                                            icon: const Icon(
+                                                Symbols.arrow_downward_rounded),
+                                            color: widget.isDownVoted
+                                                ? Colors.red.shade400
+                                                : null,
+                                            onPressed: widget.onDownVote,
+                                          ),
                                       ],
                                     ),
-                                  ),
-                                if (widget.upVotes != null ||
-                                    widget.downVotes != null)
-                                  Row(
-                                    children: [
-                                      if (widget.upVotes != null)
-                                        IconButton(
-                                          icon: const Icon(
-                                              Symbols.arrow_upward_rounded),
-                                          color: widget.isUpVoted
-                                              ? Colors.green.shade400
-                                              : null,
-                                          onPressed: widget.onUpVote,
-                                        ),
-                                      Text(intFormat((widget.upVotes ?? 0) -
-                                          (widget.downVotes ?? 0))),
-                                      if (widget.downVotes != null)
-                                        IconButton(
-                                          icon: const Icon(
-                                              Symbols.arrow_downward_rounded),
-                                          color: widget.isDownVoted
-                                              ? Colors.red.shade400
-                                              : null,
-                                          onPressed: widget.onDownVote,
-                                        ),
-                                    ],
-                                  ),
-                              ];
-                              final commentWidgets = [
-                                if (widget.numComments != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Row(
-                                      children: [
-                                        Icon(Symbols.comment_rounded),
-                                        const SizedBox(width: 4),
-                                        Text(intFormat(widget.numComments!))
-                                      ],
+                                ];
+                                final commentWidgets = [
+                                  if (widget.numComments != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Row(
+                                        children: [
+                                          Icon(Symbols.comment_rounded),
+                                          const SizedBox(width: 4),
+                                          Text(intFormat(widget.numComments!))
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                if (widget.onReply != null)
-                                  IconButton(
-                                    icon: const Icon(Symbols.reply_rounded),
-                                    onPressed: () => setState(() {
-                                      _replyTextController =
-                                          TextEditingController();
-                                    }),
-                                  ),
-                              ];
+                                  if (widget.onReply != null)
+                                    IconButton(
+                                      icon: const Icon(Symbols.reply_rounded),
+                                      onPressed: () => setState(() {
+                                        _replyTextController =
+                                            TextEditingController();
+                                      }),
+                                    ),
+                                ];
 
-                              return constrains.maxWidth < 300
-                                  ? Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: votingWidgets,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Row(
-                                          children: <Widget>[
-                                            ...commentWidgets,
-                                            const Spacer(),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  : Row(
-                                      children: <Widget>[
-                                        ...commentWidgets,
-                                        const Spacer(),
-                                        ...votingWidgets,
-                                      ],
-                                    );
-                            }),
-                          ),
+                                return constrains.maxWidth < 300
+                                    ? Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: votingWidgets,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: <Widget>[
+                                              ...commentWidgets,
+                                              const Spacer(),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : Row(
+                                        children: <Widget>[
+                                          ...commentWidgets,
+                                          const Spacer(),
+                                          ...votingWidgets,
+                                        ],
+                                      );
+                              }),
+                            ),
                           if (!widget.isPreview &&
                               widget.notificationControlStatus != null &&
                               widget.onNotificationControlStatusChange !=
                                   null &&
                               context.read<AppController>().serverSoftware !=
-                                  ServerSoftware.piefed)
+                                  ServerSoftware.piefed &&
+                              !context.read<AppController>().profile.hideActionButtons)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Row(
