@@ -4,6 +4,7 @@ import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_config_share.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
+import 'package:interstellar/src/widgets/video.dart';
 
 import './markdown_mention.dart';
 import './markdown_spoiler.dart';
@@ -40,6 +41,9 @@ class Markdown extends StatelessWidget {
         }
       },
       imageBuilder: (uri, title, alt) {
+        if (uri.path.split('.').last == 'mp4') {
+          return VideoPlayer(uri);
+        }
         return AdvancedImage(
           ImageModel(
             src: uri.toString(),
