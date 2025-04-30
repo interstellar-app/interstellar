@@ -7,7 +7,6 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:interstellar/src/widgets/content_item/content_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
@@ -80,7 +79,7 @@ class _PostItemState extends State<PostItem> {
     final canModerate =
         widget.userCanModerate || (widget.item.canAuthUserModerate ?? false);
 
-    final contentItem = ContentItem(
+    return ContentItem(
       originInstance: getNameHost(context, widget.item.user.name),
       title: widget.item.title,
       image: widget.item.image,
@@ -274,27 +273,7 @@ class _PostItemState extends State<PostItem> {
                   widget.item.copyWith(notificationControlStatus: newStatus));
             },
       isCompact: widget.isCompact,
+      onClick: widget.isTopLevel ? widget.onTap : null,
     );
-
-    return !widget.isTopLevel
-        ? contentItem
-        : InkWell(
-            onTap: widget.onTap,
-            onLongPress: () => showContentMenu(
-              context,
-              contentItem,
-              onTranslate: (String lang) async {
-                await getTranslation(lang);
-              },
-            ),
-            onSecondaryTap: () => showContentMenu(
-              context,
-              contentItem,
-              onTranslate: (String lang) async {
-                await getTranslation(lang);
-              },
-            ),
-            child: contentItem,
-          );
   }
 }

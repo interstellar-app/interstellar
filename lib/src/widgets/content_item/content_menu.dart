@@ -20,6 +20,7 @@ void showContentMenu(
   ContentItem widget, {
   Function()? onEdit,
   Function(String lang)? onTranslate,
+  Function()? onReply,
 }) {
   final ac = context.read<AppController>();
 
@@ -160,6 +161,14 @@ void showContentMenu(
                           ),
                         ),
                       ),
+                    ),
+                  if (widget.onReply != null && onReply != null)
+                    ListTile(
+                      title: Text(l(context).reply),
+                      onTap: () {
+                        onReply();
+                        Navigator.pop(context);
+                      },
                     ),
                   if (widget.activeBookmarkLists != null &&
                       widget.loadPossibleBookmarkLists != null &&

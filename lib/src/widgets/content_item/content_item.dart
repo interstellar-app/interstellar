@@ -104,6 +104,8 @@ class ContentItem extends StatefulWidget {
       onNotificationControlStatusChange;
   final bool isCompact;
 
+  final void Function()? onClick;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -166,6 +168,7 @@ class ContentItem extends StatefulWidget {
     this.notificationControlStatus,
     this.onNotificationControlStatusChange,
     this.isCompact = false,
+    this.onClick,
     super.key,
   });
 
@@ -179,7 +182,36 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.isCompact ? compact() : full();
+    return Wrapper(
+      shouldWrap: widget.onClick != null,
+      parentBuilder: (child) {
+        return InkWell(
+          onTap: widget.onClick,
+          onLongPress: () => showContentMenu(
+            context,
+            widget,
+            onTranslate: widget.onTranslate,
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                  _replyTextController = TextEditingController();
+                })
+                : () {}
+          ),
+          onSecondaryTap: () => showContentMenu(
+            context,
+            widget,
+            onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                    _replyTextController = TextEditingController();
+                  })
+                  : () {}
+          ),
+          child: child,
+        );
+      },
+      child: widget.isCompact ? compact() : full(),
+    );
   }
 
   Widget contentBody(BuildContext context) {
@@ -384,6 +416,11 @@ class _ContentItemState extends State<ContentItem> {
               _editTextController = TextEditingController(text: widget.body);
             }),
             onTranslate: widget.onTranslate,
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                  _replyTextController = TextEditingController();
+                })
+                : () {}
           );
         },
       );

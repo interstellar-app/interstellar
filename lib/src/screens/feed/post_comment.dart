@@ -337,6 +337,7 @@ class _PostCommentState extends State<PostComment> {
                   widget.onUpdate(widget.comment
                       .copyWith(notificationControlStatus: newStatus));
                 },
+      onClick: widget.onClick ?? collapse,
     );
 
     final menuWidget = IconButton(
@@ -414,24 +415,7 @@ class _PostCommentState extends State<PostComment> {
           Card(
             margin: const EdgeInsets.only(top: 8),
             clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: widget.onClick ?? collapse,
-              onLongPress: () => showContentMenu(
-                  context,
-                  contentItem,
-                  onTranslate: (String lang) async {
-                      await getTranslation(lang);
-                  }
-              ),
-              onSecondaryTap: () => showContentMenu(
-                  context,
-                  contentItem,
-                  onTranslate: (String lang) async {
-                      await getTranslation(lang);
-                  }
-              ),
-              child: contentItem,
-            ),
+            child: contentItem
           ),
           if (widget.comment.childCount > 0 &&
               _expandableController.expanded &&
