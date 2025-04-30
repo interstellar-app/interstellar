@@ -89,6 +89,22 @@ class DisplaySettingsScreen extends StatelessWidget {
               ac.selectedProfileValue.copyWith(compactMode: newValue),
             ),
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.view_agenda_rounded),
+            title: Text(l(context).settings_hideVoteButtons),
+            value: ac.profile.hideVoteButtons,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(hideVoteButtons: newValue),
+            ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.view_agenda_rounded),
+            title: Text(l(context).settings_hideCommentButtons),
+            value: ac.profile.hideCommentButtons,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(hideCommentButtons: newValue),
+            ),
+          ),
           const Divider(),
           ListTileSwitch(
             leading: const Icon(Symbols.globe_rounded),

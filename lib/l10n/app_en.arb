@@ -189,6 +189,8 @@
   "settings_enableTrueBlack": "Enable true black",
   "settings_enableTrueBlack_help": "Might save power on AMOLED displays",
   "settings_compactMode": "Compact mode",
+  "settings_hideVoteButtons": "Hide vote buttons",
+  "settings_hideCommentButtons": "Hide comment buttons",
   "settings_alwaysShowInstance": "Always show instance",
   "settings_alwaysShowInstance_help": "When enabled, the instance of a user/magazine will always display after their username",
   "settings_coverMediaMarkedSensitive": "Cover up media marked as sensitive",
