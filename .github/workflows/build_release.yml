@@ -173,8 +173,6 @@ jobs:
           wget "${PKG_URL_PREFIX}/llvm-libs-nano-${PKG_URL_SUFFIX}" -O /tmp/llvm-libs.pkg.tar.zst
           wget "${PKG_URL_PREFIX}/libxml2-iculess-${PKG_URL_SUFFIX}" -O /tmp/libxml2.pkg.tar.zst
           wget "${PKG_URL_PREFIX}/ffmpeg-mini-${PKG_URL_SUFFIX}" -O /tmp/ffmpeg-mini.pkg.tar.zst
-          wget "${PKG_URL_PREFIX}/mesa-mini-${PKG_URL_SUFFIX}" -O /tmp/mesa-mini.pkg.tar.zst
-          wget "${PKG_URL_PREFIX}/opus-nano-${PKG_URL_SUFFIX}" -O /tmp/opus-nano.pkg.tar.zst
 
           pacman -U --noconfirm /tmp/*.pkg.tar.zst
           pacman -Scc --noconfirm
