@@ -37,7 +37,6 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
         String.fromCharCode(parser.charAt(parser.pos)) == '[';
     bool isAutoLink = String.fromCharCode(parser.charAt(parser.pos)) == '<';
     if (isAutoLink) {
-     parser.consume(1);
      startMatchPos += 1;
     }
 
@@ -59,7 +58,7 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
       }
     }
     if (isAutoLink && String.fromCharCode(parser.charAt(match.end)) == '>') {
-      parser.consume(1);
+      parser.consume(2);
       startMatchPos += 1;
     }
 

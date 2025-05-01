@@ -7,7 +7,6 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:interstellar/src/widgets/content_item/content_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
@@ -41,23 +40,20 @@ class PostItem extends StatefulWidget {
 
   @override
   State<PostItem> createState() => _PostItemState();
-
 }
 
 class _PostItemState extends State<PostItem> {
-
   Translation? _translation;
 
   @override
   void initState() {
     super.initState();
     if (context.read<AppController>().profile.autoTranslate &&
-        widget.item.lang != context.read<AppController>().profile.defaultPostLanguage &&
-        widget.item.body != null && widget.item.lang != null) {
-      getTranslation(context
-          .read<AppController>()
-          .profile
-          .defaultPostLanguage);
+        widget.item.lang !=
+            context.read<AppController>().profile.defaultPostLanguage &&
+        widget.item.body != null &&
+        widget.item.lang != null) {
+      getTranslation(context.read<AppController>().profile.defaultPostLanguage);
     }
   }
 
@@ -80,9 +76,10 @@ class _PostItemState extends State<PostItem> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
-    final canModerate = widget.userCanModerate || (widget.item.canAuthUserModerate ?? false);
+    final canModerate =
+        widget.userCanModerate || (widget.item.canAuthUserModerate ?? false);
 
-    final contentItem = ContentItem(
+    return ContentItem(
       originInstance: getNameHost(context, widget.item.user.name),
       title: widget.item.title,
       image: widget.item.image,
@@ -95,7 +92,8 @@ class _PostItemState extends State<PostItem> {
       },
       createdAt: widget.item.createdAt,
       editedAt: widget.item.editedAt,
-      isPreview: widget.item.type == PostType.microblog ? false : widget.isPreview,
+      isPreview:
+          widget.item.type == PostType.microblog ? false : widget.isPreview,
       fullImageSize: widget.isPreview
           ? switch (widget.item.type) {
               PostType.thread => ac.profile.fullImageSizeThreads,
@@ -120,35 +118,45 @@ class _PostItemState extends State<PostItem> {
       boosts: widget.item.boosts,
       isBoosted: widget.item.myBoost == true,
       onBoost: whenLoggedIn(context, () async {
-        widget.onUpdate(await ac.markAsRead(await switch (widget.item.type) {
-          PostType.thread => ac.api.threads.boost(widget.item.id),
-          PostType.microblog => ac.api.microblogs.putVote(widget.item.id, 1),
-        }, true));
+        widget.onUpdate(await ac.markAsRead(
+          await switch (widget.item.type) {
+            PostType.thread => ac.api.threads.boost(widget.item.id),
+            PostType.microblog => ac.api.microblogs.putVote(widget.item.id, 1),
+          },
+          true,
+        ));
       }),
       upVotes: widget.item.upvotes,
       isUpVoted: widget.item.myVote == 1,
       onUpVote: whenLoggedIn(context, () async {
-        widget.onUpdate(await ac.markAsRead(await switch (widget.item.type) {
-          PostType.thread =>
-            ac.api.threads.vote(widget.item.id, 1, widget.item.myVote == 1 ? 0 : 1),
-          PostType.microblog => ac.api.microblogs.putFavorite(widget.item.id),
-        }, true));
+        widget.onUpdate(await ac.markAsRead(
+          await switch (widget.item.type) {
+            PostType.thread => ac.api.threads
+                .vote(widget.item.id, 1, widget.item.myVote == 1 ? 0 : 1),
+            PostType.microblog => ac.api.microblogs.putFavorite(widget.item.id),
+          },
+          true,
+        ));
       }),
       downVotes: widget.item.downvotes,
       isDownVoted: widget.item.myVote == -1,
       onDownVote: whenLoggedIn(context, () async {
-        widget.onUpdate(await ac.markAsRead(await switch (widget.item.type) {
-          PostType.thread =>
-            ac.api.threads.vote(widget.item.id, -1, widget.item.myVote == -1 ? 0 : -1),
-          PostType.microblog => ac.api.microblogs.putVote(widget.item.id, -1),
-        }, true));
+        widget.onUpdate(await ac.markAsRead(
+          await switch (widget.item.type) {
+            PostType.thread => ac.api.threads
+                .vote(widget.item.id, -1, widget.item.myVote == -1 ? 0 : -1),
+            PostType.microblog => ac.api.microblogs.putVote(widget.item.id, -1),
+          },
+          true,
+        ));
       }),
       contentTypeName: l(context).post,
       onReply: widget.onReply,
       onReport: whenLoggedIn(context, (reason) async {
         await switch (widget.item.type) {
           PostType.thread => ac.api.threads.report(widget.item.id, reason),
-          PostType.microblog => ac.api.microblogs.report(widget.item.id, reason),
+          PostType.microblog =>
+            ac.api.microblogs.report(widget.item.id, reason),
         };
       }),
       onEdit: widget.onEdit,
@@ -159,20 +167,20 @@ class _PostItemState extends State<PostItem> {
       onModeratePin: !canModerate
           ? null
           : () async {
-              widget.onUpdate(
-                  await ac.api.moderation.postPin(widget.item.type, widget.item.id));
+              widget.onUpdate(await ac.api.moderation
+                  .postPin(widget.item.type, widget.item.id));
             },
       onModerateMarkNSFW: !canModerate
           ? null
           : () async {
-              widget.onUpdate(await ac.api.moderation
-                  .postMarkNSFW(widget.item.type, widget.item.id, !widget.item.isNSFW));
+              widget.onUpdate(await ac.api.moderation.postMarkNSFW(
+                  widget.item.type, widget.item.id, !widget.item.isNSFW));
             },
       onModerateDelete: !canModerate
           ? null
           : () async {
-              widget.onUpdate(
-                  await ac.api.moderation.postDelete(widget.item.type, widget.item.id, true));
+              widget.onUpdate(await ac.api.moderation
+                  .postDelete(widget.item.type, widget.item.id, true));
             },
       onModerateBan: !canModerate
           ? null
@@ -246,7 +254,9 @@ class _PostItemState extends State<PostItem> {
         matchesSoftware: ServerSoftware.mbin,
       ),
       notificationControlStatus: widget.item.notificationControlStatus,
-      onNotificationControlStatusChange: widget.item.notificationControlStatus == null
+      onNotificationControlStatusChange: widget
+                  .item.notificationControlStatus ==
+              null
           ? null
           : (newStatus) async {
               await ac.api.notifications.updateControl(
@@ -259,30 +269,11 @@ class _PostItemState extends State<PostItem> {
                 status: newStatus,
               );
 
-              widget.onUpdate(widget.item.copyWith(notificationControlStatus: newStatus));
+              widget.onUpdate(
+                  widget.item.copyWith(notificationControlStatus: newStatus));
             },
       isCompact: widget.isCompact,
+      onClick: widget.isTopLevel ? widget.onTap : null,
     );
-
-    return !widget.isTopLevel
-        ? contentItem
-        : InkWell(
-          onTap: widget.onTap,
-          onLongPress: () => showContentMenu(
-              context,
-              contentItem,
-              onTranslate: (String lang) async {
-                await getTranslation(lang);
-              }
-          ),
-          onSecondaryTap: () => showContentMenu(
-              context,
-              contentItem,
-              onTranslate: (String lang) async {
-                await getTranslation(lang);
-              }
-          ),
-          child: contentItem,
-        );
   }
 }

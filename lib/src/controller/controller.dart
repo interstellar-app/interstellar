@@ -336,7 +336,8 @@ class AppController with ChangeNotifier {
     }
 
     // Remove read posts associated with account
-    _readStore.delete(db, finder: Finder(filter: Filter.equals('account', key)));
+    _readStore.delete(db,
+        finder: Finder(filter: Filter.equals('account', key)));
 
     _rebuildProfile();
 
@@ -581,20 +582,41 @@ class AppController with ChangeNotifier {
     }
   }
 
+  Finder _readStoreFinder(PostModel post) => Finder(
+        filter: Filter.and([
+          Filter.equals('account', _selectedAccount),
+          Filter.equals('postType', post.type.name),
+          Filter.equals('postId', post.id),
+        ]),
+      );
+
   Future<PostModel> markAsRead(PostModel post, bool read) async {
+    // Use Lemmy's read API when available
     if (serverSoftware == ServerSoftware.lemmy && isLoggedIn) {
       await api.threads.markAsRead(post.id, read);
-      return post.copyWith(read: read);
     }
-    if (await isRead(post.id)) return post.copyWith(read: true);
-    await _readStore.add(db, {'postId': post.id, 'read': read, 'account': _selectedAccount});
+    // Use local database otherwise.
+    // If marking as read, then check for a db row first, and add one if not present.
+    else if (read) {
+      if (!await isRead(post)) {
+        await _readStore.add(db, {
+          'account': _selectedAccount,
+          'postType': post.type.name,
+          'postId': post.id,
+        });
+      }
+    }
+    // If marking as unread, then delete any matching database rows.
+    else {
+      await _readStore.delete(db, finder: _readStoreFinder(post));
+    }
+
     return post.copyWith(read: read);
   }
 
-  Future<bool> isRead(int postId) async {
-    return (await _readStore.find(db, finder: Finder(
-      filter: Filter.equals('postId', postId) &
-              Filter.equals('account', _selectedAccount)
-    ))).firstOrNull != null;
+  Future<bool> isRead(PostModel post) async {
+    return (await _readStore.find(db, finder: _readStoreFinder(post)))
+            .firstOrNull !=
+        null;
   }
 }

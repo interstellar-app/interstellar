@@ -78,7 +78,8 @@ class _FeedScreenState extends State<FeedScreen>
     _view = context.read<AppController>().serverSoftware == ServerSoftware.mbin
         ? context.read<AppController>().profile.feedDefaultView
         : FeedView.threads;
-    _hideReadPosts = context.read<AppController>().profile.feedDefaultHideReadPosts;
+    _hideReadPosts =
+        context.read<AppController>().profile.feedDefaultHideReadPosts;
   }
 
   @override
@@ -196,7 +197,7 @@ class _FeedScreenState extends State<FeedScreen>
               context.watch<AppController>().profile.feedActionHideReadPosts,
               () => setState(() {
                 _hideReadPosts = !_hideReadPosts;
-              })
+              }),
             )
           : feedActionHideReadPosts(context).withProps(
               context.watch<AppController>().profile.feedActionHideReadPosts,
@@ -398,7 +399,8 @@ class _FeedScreenState extends State<FeedScreen>
                         hideReadPosts: _hideReadPosts,
                       ),
                       // TODO: Remove once federation filter is added to mbin api.
-                      if (context.read<AppController>().serverSoftware != ServerSoftware.mbin)
+                      if (context.read<AppController>().serverSoftware !=
+                          ServerSoftware.mbin)
                         FeedScreenBody(
                           key: _getFeedKey(4),
                           source: FeedSource.local,
@@ -583,42 +585,42 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
           value: FeedSort.commented,
           title: l(context).sort_commented,
           icon: Symbols.chat_rounded,
-            subItems: isLemmy || isPiefed
-                ? null
-                : [
-                    SelectionMenuItem(
-                        value: FeedSort.commentedThreeHour,
-                        title: l(context).sort_commented_3h,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commentedSixHour,
-                        title: l(context).sort_commented_6h,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commentedTwelveHour,
-                        title: l(context).sort_commented_12h,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commentedDay,
-                        title: l(context).sort_commented_1d,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commentedWeek,
-                        title: l(context).sort_commented_1w,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commentedMonth,
-                        title: l(context).sort_commented_1m,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commentedYear,
-                        title: l(context).sort_commented_1y,
-                    ),
-                    SelectionMenuItem(
-                        value: FeedSort.commented,
-                        title: l(context).sort_commented_all,
-                    ),
-            ]
+          subItems: isLemmy || isPiefed
+              ? null
+              : [
+                  SelectionMenuItem(
+                    value: FeedSort.commentedThreeHour,
+                    title: l(context).sort_commented_3h,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commentedSixHour,
+                    title: l(context).sort_commented_6h,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commentedTwelveHour,
+                    title: l(context).sort_commented_12h,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commentedDay,
+                    title: l(context).sort_commented_1d,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commentedWeek,
+                    title: l(context).sort_commented_1w,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commentedMonth,
+                    title: l(context).sort_commented_1m,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commentedYear,
+                    title: l(context).sort_commented_1y,
+                  ),
+                  SelectionMenuItem(
+                    value: FeedSort.commented,
+                    title: l(context).sort_commented_all,
+                  ),
+                ],
         ),
         SelectionMenuItem(
           value: FeedSort.oldest,
@@ -914,13 +916,11 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
       final ac = context.read<AppController>();
 
-      final finalItems = ac.serverSoftware
-          == ServerSoftware.lemmy && ac.isLoggedIn
-          ? items
-          : await Future.wait(items.map((item) async =>
-            (await ac.isRead(item.id))
-                ? item.copyWith(read: true)
-                : item));
+      final finalItems =
+          ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
+              ? items
+              : await Future.wait(items.map((item) async =>
+                  (await ac.isRead(item)) ? item.copyWith(read: true) : item));
 
       _pagingController.appendPage(finalItems, nextPageKey);
     } catch (error) {
@@ -1030,7 +1030,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                 );
                           }),
                           onTap: onPostTap,
-                          filterListWarnings: _filterListWarnings[(item.type, item.id)],
+                          filterListWarnings:
+                              _filterListWarnings[(item.type, item.id)],
                           userCanModerate: widget.userCanModerate,
                           isTopLevel: true,
                           isCompact: true,
@@ -1064,20 +1065,17 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                       onTap: onPostTap,
                       isPreview: true,
                       onReply: whenLoggedIn(context, (body) async {
-                        await context
-                            .read<AppController>()
-                            .api
-                            .comments
-                            .create(
+                        await context.read<AppController>().api.comments.create(
                               item.type,
                               item.id,
                               body,
                             );
                       }),
-                      filterListWarnings: _filterListWarnings[(item.type, item.id)],
+                      filterListWarnings:
+                          _filterListWarnings[(item.type, item.id)],
                       userCanModerate: widget.userCanModerate,
                       isTopLevel: true,
-                    )
+                    ),
                   );
                 }
               },

@@ -1,4 +1,3 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -105,6 +104,8 @@ class ContentItem extends StatefulWidget {
       onNotificationControlStatusChange;
   final bool isCompact;
 
+  final void Function()? onClick;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -167,6 +168,7 @@ class ContentItem extends StatefulWidget {
     this.notificationControlStatus,
     this.onNotificationControlStatusChange,
     this.isCompact = false,
+    this.onClick,
     super.key,
   });
 
@@ -180,12 +182,35 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: widget.read
-          ? Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: Theme.of(context).textTheme.bodyMedium?.color?.darken(10))
-          : Theme.of(context).textTheme.bodyMedium!,
-      child: widget.isCompact ? compact() : full()
+    return Wrapper(
+      shouldWrap: widget.onClick != null,
+      parentBuilder: (child) {
+        return InkWell(
+          onTap: widget.onClick,
+          onLongPress: () => showContentMenu(
+            context,
+            widget,
+            onTranslate: widget.onTranslate,
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                  _replyTextController = TextEditingController();
+                })
+                : () {}
+          ),
+          onSecondaryTap: () => showContentMenu(
+            context,
+            widget,
+            onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                    _replyTextController = TextEditingController();
+                  })
+                  : () {}
+          ),
+          child: child,
+        );
+      },
+      child: widget.isCompact ? compact() : full(),
     );
   }
 
@@ -234,8 +259,8 @@ class _ContentItemState extends State<ContentItem> {
                     ],
                   ),
                   Divider(),
-                  Markdown(
-                      widget.translation!.translations.text, widget.originInstance),
+                  Markdown(widget.translation!.translations.text,
+                      widget.originInstance),
                 ],
               )
         // No translation is available
@@ -368,14 +393,14 @@ class _ContentItemState extends State<ContentItem> {
                     ));
 
       final titleStyle = hasWideSize
-          ? Theme.of(context).textTheme.titleLarge!.copyWith(
-            color: widget.read
-                ? Theme.of(context).textTheme.titleLarge!.color!.darken(10)
-                : null)
-          : Theme.of(context).textTheme.titleMedium!.copyWith(
-            color: widget.read
-                ? Theme.of(context).textTheme.titleMedium!.color!.darken(10)
-                : null);
+          ? Theme.of(context)
+              .textTheme
+              .titleLarge!
+              .copyWith(fontWeight: widget.read ? FontWeight.w100 : null)
+          : Theme.of(context)
+              .textTheme
+              .titleMedium!
+              .copyWith(fontWeight: widget.read ? FontWeight.w100 : null);
       final titleOverflow =
           widget.isPreview && context.watch<AppController>().profile.compactMode
               ? TextOverflow.ellipsis
@@ -385,12 +410,17 @@ class _ContentItemState extends State<ContentItem> {
         icon: const Icon(Symbols.more_vert_rounded),
         onPressed: () {
           showContentMenu(
-              context,
-              widget,
-              onEdit: () => setState(() {
-                _editTextController = TextEditingController(text: widget.body);
-              }),
-              onTranslate: widget.onTranslate,
+            context,
+            widget,
+            onEdit: () => setState(() {
+              _editTextController = TextEditingController(text: widget.body);
+            }),
+            onTranslate: widget.onTranslate,
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                  _replyTextController = TextEditingController();
+                })
+                : () {}
           );
         },
       );
@@ -581,129 +611,130 @@ class _ContentItemState extends State<ContentItem> {
                                       .profile
                                       .compactMode))
                             contentBody(context),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child:
-                                LayoutBuilder(builder: (context, constrains) {
-                              final votingWidgets = [
-                                if (widget.activeBookmarkLists != null)
-                                  widget.activeBookmarkLists!.isEmpty
-                                      ? LoadingIconButton(
-                                          onPressed: widget.onAddBookmark,
-                                          icon: const Icon(
-                                            Symbols.bookmark_rounded,
-                                            fill: 0,
+                          if (!context
+                                  .read<AppController>()
+                                  .profile
+                                  .hideActionButtons)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child:
+                                  LayoutBuilder(builder: (context, constrains) {
+                                final votingWidgets = [
+                                  if (widget.activeBookmarkLists != null)
+                                    widget.activeBookmarkLists!.isEmpty
+                                        ? LoadingIconButton(
+                                            onPressed: widget.onAddBookmark,
+                                            icon: const Icon(
+                                              Symbols.bookmark_rounded,
+                                              fill: 0,
+                                            ),
+                                          )
+                                        : LoadingIconButton(
+                                            onPressed: widget.onRemoveBookmark,
+                                            icon: const Icon(
+                                              Symbols.bookmark_rounded,
+                                              fill: 1,
+                                            ),
                                           ),
-                                        )
-                                      : LoadingIconButton(
-                                          onPressed: widget.onRemoveBookmark,
-                                          icon: const Icon(
-                                            Symbols.bookmark_rounded,
-                                            fill: 1,
+                                  if (widget.boosts != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                                Symbols.rocket_launch_rounded),
+                                            color: widget.isBoosted
+                                                ? Colors.purple.shade400
+                                                : null,
+                                            onPressed: widget.onBoost,
                                           ),
-                                        ),
-                                if (widget.boosts != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Row(
+                                          Text(intFormat(widget.boosts!))
+                                        ],
+                                      ),
+                                    ),
+                                  if (widget.upVotes != null ||
+                                      widget.downVotes != null)
+                                    Row(
                                       children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                              Symbols.rocket_launch_rounded),
-                                          color: widget.isBoosted
-                                              ? Colors.purple.shade400
-                                              : null,
-                                          onPressed: widget.onBoost,
-                                        ),
-                                        Text(intFormat(widget.boosts!))
+                                        if (widget.upVotes != null)
+                                          IconButton(
+                                            icon: const Icon(
+                                                Symbols.arrow_upward_rounded),
+                                            color: widget.isUpVoted
+                                                ? Colors.green.shade400
+                                                : null,
+                                            onPressed: widget.onUpVote,
+                                          ),
+                                        Text(intFormat((widget.upVotes ?? 0) -
+                                            (widget.downVotes ?? 0))),
+                                        if (widget.downVotes != null)
+                                          IconButton(
+                                            icon: const Icon(
+                                                Symbols.arrow_downward_rounded),
+                                            color: widget.isDownVoted
+                                                ? Colors.red.shade400
+                                                : null,
+                                            onPressed: widget.onDownVote,
+                                          ),
                                       ],
                                     ),
-                                  ),
-                                if (widget.upVotes != null ||
-                                    widget.downVotes != null)
-                                  Row(
-                                    children: [
-                                      if (widget.upVotes != null)
-                                        IconButton(
-                                          icon: const Icon(
-                                              Symbols.arrow_upward_rounded),
-                                          color: widget.isUpVoted
-                                              ? Colors.green.shade400
-                                              : null,
-                                          onPressed: widget.onUpVote,
-                                        ),
-                                      Text(intFormat((widget.upVotes ?? 0) -
-                                          (widget.downVotes ?? 0))),
-                                      if (widget.downVotes != null)
-                                        IconButton(
-                                          icon: const Icon(
-                                              Symbols.arrow_downward_rounded),
-                                          color: widget.isDownVoted
-                                              ? Colors.red.shade400
-                                              : null,
-                                          onPressed: widget.onDownVote,
-                                        ),
-                                    ],
-                                  ),
-                              ];
-                              final commentWidgets = [
-                                if (widget.numComments != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Symbols.comment_rounded,
-                                          color: widget.read
-                                              ? Theme.of(context).textTheme.bodyMedium!.color!.darken(10)
-                                              : null,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(intFormat(widget.numComments!))
-                                      ],
+                                ];
+                                final commentWidgets = [
+                                  if (widget.numComments != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Row(
+                                        children: [
+                                          Icon(Symbols.comment_rounded),
+                                          const SizedBox(width: 4),
+                                          Text(intFormat(widget.numComments!))
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                if (widget.onReply != null)
-                                  IconButton(
-                                    icon: const Icon(Symbols.reply_rounded),
-                                    onPressed: () => setState(() {
-                                      _replyTextController =
-                                          TextEditingController();
-                                    }),
-                                  ),
-                              ];
+                                  if (widget.onReply != null)
+                                    IconButton(
+                                      icon: const Icon(Symbols.reply_rounded),
+                                      onPressed: () => setState(() {
+                                        _replyTextController =
+                                            TextEditingController();
+                                      }),
+                                    ),
+                                ];
 
-                              return constrains.maxWidth < 300
-                                  ? Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: votingWidgets,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Row(
-                                          children: <Widget>[
-                                            ...commentWidgets,
-                                            const Spacer(),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  : Row(
-                                      children: <Widget>[
-                                        ...commentWidgets,
-                                        const Spacer(),
-                                        ...votingWidgets,
-                                      ],
-                                    );
-                            }),
-                          ),
+                                return constrains.maxWidth < 300
+                                    ? Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: votingWidgets,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: <Widget>[
+                                              ...commentWidgets,
+                                              const Spacer(),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : Row(
+                                        children: <Widget>[
+                                          ...commentWidgets,
+                                          const Spacer(),
+                                          ...votingWidgets,
+                                        ],
+                                      );
+                              }),
+                            ),
                           if (!widget.isPreview &&
                               widget.notificationControlStatus != null &&
-                              widget.onNotificationControlStatusChange != null &&
+                              widget.onNotificationControlStatusChange !=
+                                  null &&
                               context.read<AppController>().serverSoftware !=
-                                  ServerSoftware.piefed)
+                                  ServerSoftware.piefed &&
+                              !context.read<AppController>().profile.hideActionButtons)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Row(
@@ -825,72 +856,72 @@ class _ContentItemState extends State<ContentItem> {
     final imageWidget = widget.image == null
         ? null
         : SizedBox(
-      height: 96,
-      width: 96,
-      child: AdvancedImage(
-        widget.image!,
-        fit: BoxFit.cover,
-        openTitle: widget.title,
-        enableBlur: widget.isNSFW &&
-            context
-                .watch<AppController>()
-                .profile
-                .coverMediaMarkedSensitive,
-      ),
-    );
+            height: 96,
+            width: 96,
+            child: AdvancedImage(
+              widget.image!,
+              fit: BoxFit.cover,
+              openTitle: widget.title,
+              enableBlur: widget.isNSFW &&
+                  context
+                      .watch<AppController>()
+                      .profile
+                      .coverMediaMarkedSensitive,
+            ),
+          );
 
     final Widget? userWidget = widget.user != null
         ? Flexible(
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: DisplayName(
-                widget.user!,
-                onTap: widget.userIdOnClick != null
-                    ? () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => UserScreen(
-                      widget.userIdOnClick!,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: DisplayName(
+                      widget.user!,
+                      onTap: widget.userIdOnClick != null
+                          ? () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => UserScreen(
+                                    widget.userIdOnClick!,
+                                  ),
+                                ),
+                              )
+                          : null,
                     ),
                   ),
-                )
-                    : null,
-              ),
-            ),
-            UserStatusIcons(
-              cakeDay: widget.userCakeDay,
-              isBot: widget.userIsBot,
-            ),
-          ],
-        ),
-      ),
-    )
-        : null;
-    final Widget? magazineWidget = widget.magazine != null
-        ? Flexible(
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: DisplayName(
-          widget.magazine!,
-          onTap: widget.magazineIdOnClick != null
-              ? () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => MagazineScreen(
-                widget.magazineIdOnClick!,
+                  UserStatusIcons(
+                    cakeDay: widget.userCakeDay,
+                    isBot: widget.userIsBot,
+                  ),
+                ],
               ),
             ),
           )
-              : null,
-        ),
-      ),
-    )
+        : null;
+    final Widget? magazineWidget = widget.magazine != null
+        ? Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: DisplayName(
+                widget.magazine!,
+                onTap: widget.magazineIdOnClick != null
+                    ? () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MagazineScreen(
+                              widget.magazineIdOnClick!,
+                            ),
+                          ),
+                        )
+                    : null,
+              ),
+            ),
+          )
         : null;
 
     final replyDraftController =
-    context.watch<DraftsController>().auto(widget.replyDraftResourceId);
+        context.watch<DraftsController>().auto(widget.replyDraftResourceId);
 
     return Wrapper(
       shouldWrap: context.watch<AppController>().profile.enableSwipeActions,
@@ -909,8 +940,8 @@ class _ContentItemState extends State<ContentItem> {
         },
         onReply: widget.onReply != null
             ? () => setState(() {
-          _replyTextController = TextEditingController();
-        })
+                  _replyTextController = TextEditingController();
+                })
             : () {},
         onModeratePin: widget.onModeratePin,
         onModerateMarkNSFW: widget.onModerateMarkNSFW,
@@ -929,7 +960,8 @@ class _ContentItemState extends State<ContentItem> {
                 children: [
                   Text(
                     widget.title ?? '',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: widget.read ? FontWeight.w100 : null),
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -955,8 +987,8 @@ class _ContentItemState extends State<ContentItem> {
                           child: Tooltip(
                             message: l(context).pinnedInMagazine,
                             triggerMode: TooltipTriggerMode.tap,
-                            child: const Icon(Symbols.push_pin_rounded,
-                                size: 20),
+                            child:
+                                const Icon(Symbols.push_pin_rounded, size: 20),
                           ),
                         ),
                       if (widget.isNSFW)
@@ -998,15 +1030,15 @@ class _ContentItemState extends State<ContentItem> {
                           padding: const EdgeInsets.only(right: 10),
                           child: Tooltip(
                             message: l(context).createdAt(
-                                dateTimeFormat(widget.createdAt!)) +
+                                    dateTimeFormat(widget.createdAt!)) +
                                 (widget.editedAt == null
                                     ? ''
                                     : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
                             triggerMode: TooltipTriggerMode.tap,
                             child: Text(
                               dateDiffFormat(widget.createdAt!),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w300),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w300),
                             ),
                           ),
                         ),
@@ -1042,9 +1074,9 @@ class _ContentItemState extends State<ContentItem> {
                             children: [
                               OutlinedButton(
                                   onPressed: () => setState(() {
-                                    _replyTextController!.dispose();
-                                    _replyTextController = null;
-                                  }),
+                                        _replyTextController!.dispose();
+                                        _replyTextController = null;
+                                      }),
                                   child: Text(l(context).cancel)),
                               const SizedBox(width: 8),
                               LoadingFilledButton(
@@ -1073,7 +1105,7 @@ class _ContentItemState extends State<ContentItem> {
           ),
           if (imageWidget != null) imageWidget,
         ],
-      )
+      ),
     );
   }
 }
