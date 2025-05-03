@@ -756,7 +756,7 @@
   "@filterList_name": {},
   "filterList_showWithContentWarning": "Weergeven met inhoudswaarschuwing",
   "@filterList_showWithContentWarning": {},
-  "filterListWarningX": "Waarschuwing: dit bericht is gekoppeld aan de volgende filterlijsten: {lists}",
+  "filterListWarningX": "Filterlijst overeenkomsten: {lists}",
   "@filterListWarningX": {
     "placeholders": {
       "lists": {
@@ -958,5 +958,47 @@
         "type": "int"
       }
     }
-  }
+  },
+  "sort_top_1h": "Top 1 uur",
+  "@sort_top_1h": {},
+  "sort_top_3h": "Top 3 uren",
+  "@sort_top_3h": {},
+  "sort_top_6h": "Top 6 uren",
+  "@sort_top_6h": {},
+  "sort_top_12h": "Top 12 uren",
+  "@sort_top_12h": {},
+  "sort_top_1d": "Top 1 dag",
+  "@sort_top_1d": {},
+  "sort_top_1w": "Top 1 week",
+  "@sort_top_1w": {},
+  "sort_top_1m": "Top 1 maand",
+  "@sort_top_1m": {},
+  "sort_top_1y": "Top 1 jaar",
+  "@sort_top_1y": {},
+  "sort_top_all": "Top aller tijden",
+  "@sort_top_all": {},
+  "sort_commented_3h": "Commentaren 3 uren",
+  "@sort_commented_3h": {},
+  "sort_commented_6h": "Commentaren 6 uren",
+  "@sort_commented_6h": {},
+  "sort_commented_12h": "Commentaren 12 uren",
+  "@sort_commented_12h": {},
+  "sort_commented_1d": "Commentaren 1 dag",
+  "@sort_commented_1d": {},
+  "sort_commented_all": "Commentaren aller tijden",
+  "@sort_commented_all": {},
+  "sort_commented_1m": "Commentaren 1 maand",
+  "@sort_commented_1m": {},
+  "settings_hapticFeedback": "Haptische feedback",
+  "@settings_hapticFeedback": {},
+  "sort_top_9m": "Top 9 maanden",
+  "@sort_top_9m": {},
+  "sort_top_6m": "Top 6 maanden",
+  "@sort_top_6m": {},
+  "sort_top_3m": "Top 3 maanden",
+  "@sort_top_3m": {},
+  "sort_commented_1w": "Commentaren 1 week",
+  "@sort_commented_1w": {},
+  "sort_commented_1y": "Commentaren 1 jaar",
+  "@sort_commented_1y": {}
 }
