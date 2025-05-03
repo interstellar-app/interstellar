@@ -196,6 +196,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                           filled: true,
                           hintText: l(context).searchTheFediverse,
                         ),
+                        onTapOutside: (event) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
                       ),
                       const SizedBox(height: 12),
                       Row(
