@@ -35,6 +35,13 @@ class NotificationListModel with _$NotificationListModel {
         ],
         nextPage: null,
       );
+
+  factory NotificationListModel.fromPiefed(JsonMap json) =>
+      NotificationListModel(
+          items: (json['items'] as List<dynamic>)
+              .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
+              .toList(),
+          nextPage: null); // NotificationListModel
 }
 
 @freezed
@@ -97,12 +104,25 @@ class NotificationModel with _$NotificationModel {
       creator: UserModel.fromLemmy(json['creator'] as JsonMap),
     );
   }
+
+  factory NotificationModel.fromPiefed(JsonMap json) {
+    final subject = json;
+
+    return NotificationModel(
+        id: json['notif_id'] as int,
+        type: notificationTypeMap[json['notif_subtype']],
+        isRead: json['status'] == 'read',
+        subject: subject,
+        creator: UserModel.fromPiefed(json['author'] as JsonMap));
+  }
 }
 
 enum NotificationStatus { all, new_, read }
 
 enum NotificationType {
   mention,
+  postMention, //piefed
+  commentMention, //piefed
   reply, // Lemmy specific type
   entryCreated,
   entryEdited,
@@ -151,6 +171,14 @@ const notificationTypeMap = {
   'report_rejected_notification': NotificationType.reportRejected,
   'report_approved_notification': NotificationType.reportApproved,
   'new_signup': NotificationType.newSignup,
+  'new_post_from_followed_user': NotificationType.entryCreated,
+  'new_post_in_followed_community': NotificationType.entryCreated,
+  'new_post_in_followed_topic': NotificationType.entryCreated,
+  'top_level_comment_on_followed_post': NotificationType.entryCommentCreated,
+  'new_reply_on_followed_comment': NotificationType.entryCommentReply,
+  'new_post_in_followed_feed': NotificationType.entryCreated,
+  'comment_mention': NotificationType.commentMention,
+  'post_mention': NotificationType.postMention,
 };
 
 enum NotificationControlStatus {

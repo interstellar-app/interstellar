@@ -62,7 +62,13 @@ class APINotifications {
             nextPage: lemmyCalcNextIntPage(result.items, page));
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path =
+            '/user/notifications/${filter == NotificationsFilter.new_ ? 'new' : (filter?.name ?? 'all')}';
+        final query = {'p': page};
+
+        final response = await client.get(path, queryParams: query);
+
+        return NotificationListModel.fromPiefed(response.bodyJson);
     }
   }
 
@@ -158,7 +164,12 @@ class APINotifications {
         };
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path =
+            '/user/notifications/$notificationId/${readState ? 'read' : 'unread'}';
+
+        final response = await client.put(path);
+
+        return NotificationModel.fromPiefed(response.bodyJson);
     }
   }
 

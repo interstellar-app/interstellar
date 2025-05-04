@@ -82,8 +82,7 @@ class _NotificationItemState extends State<NotificationItem> {
             widget.item.subject['comment']['content'] as String,
           _ => throw Exception('invalid notification type for lemmy'),
         },
-      ServerSoftware.piefed =>
-        throw UnsupportedError('no notification support for piefed'),
+      ServerSoftware.piefed => (widget.item.subject['notif_body']) as String,
     };
 
     final void Function()? onTap = switch (software) {
@@ -165,8 +164,59 @@ class _NotificationItemState extends State<NotificationItem> {
             },
           _ => throw Exception('invalid notification type for lemmy'),
         },
-      ServerSoftware.piefed =>
-        throw UnsupportedError('no notification support for piefed'),
+      ServerSoftware.piefed => switch (widget.item.type!) {
+          NotificationType.entryCreated => () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PostPage(
+                    postType: PostType.thread,
+                    postId: widget.item.subject['post_id'] as int,
+                  ),
+                ),
+              );
+            },
+          NotificationType.entryCommentCreated => () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PostCommentScreen(
+                    PostType.thread,
+                    widget.item.subject['comment_id'] as int,
+                  ),
+                ),
+              );
+            },
+          NotificationType.entryCommentReply => () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PostCommentScreen(
+                    PostType.thread,
+                    widget.item.subject['comment_id'] as int,
+                  ),
+                ),
+              );
+            },
+          NotificationType.postMention => () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PostPage(
+                    postType: PostType.thread,
+                    postId: widget.item.subject['post_id'] as int,
+                  ),
+                ),
+              );
+            },
+          NotificationType.commentMention => () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PostCommentScreen(
+                    PostType.thread,
+                    widget.item.subject['comment_id'] as int,
+                  ),
+                ),
+              );
+            },
+          _ => throw Exception('invalid notification type for piefed'),
+        }
     };
 
     return Card.outlined(
