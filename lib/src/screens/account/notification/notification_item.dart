@@ -20,6 +20,8 @@ import 'notification_count_controller.dart';
 
 const notificationTitle = {
   NotificationType.mention: 'mentioned you',
+  NotificationType.postMention: 'mentioned you in a post',
+  NotificationType.commentMention: 'mentioned you in a comment',
   NotificationType.reply: 'replied to you',
   NotificationType.entryCreated: 'created a thread',
   NotificationType.entryEdited: 'edited your thread',
