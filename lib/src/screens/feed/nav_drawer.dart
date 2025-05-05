@@ -36,32 +36,32 @@ class _NavDrawerState extends State<NavDrawer> {
           .api
           .magazines
           .list(filter: ExploreFilter.subscribed)
-          .then((value) => setState(() {
-                if (value.items.isNotEmpty) {
-                  subbedMagazines = value.items;
-                }
-              }));
+          .then((value) {
+        if (mounted && value.items.isNotEmpty) {
+          setState(() => subbedMagazines = value.items);
+        }
+      });
       if (context.read<AppController>().serverSoftware == ServerSoftware.mbin) {
         context
             .read<AppController>()
             .api
             .users
             .list(filter: ExploreFilter.subscribed)
-            .then((value) => setState(() {
-                  if (value.items.isNotEmpty) {
-                    subbedUsers = value.items;
-                  }
-                }));
+            .then((value) {
+          if (mounted && value.items.isNotEmpty) {
+            setState(() => subbedUsers = value.items);
+          }
+        });
         context
             .read<AppController>()
             .api
             .domains
             .list(filter: ExploreFilter.subscribed)
-            .then((value) => setState(() {
-                  if (value.items.isNotEmpty) {
-                    subbedDomains = value.items;
-                  }
-                }));
+            .then((value) {
+          if (mounted && value.items.isNotEmpty) {
+            setState(() => subbedDomains = value.items);
+          }
+        });
       }
     }
   }
