@@ -194,7 +194,7 @@ SelectionMenu<NotificationsFilter> notificationFilterSelect(
           icon: Symbols.nest_eco_leaf_rounded,
         ),
         if (context.read<AppController>().serverSoftware ==
-                ServerSoftware.mbin &&
+                ServerSoftware.mbin ||
             context.read<AppController>().serverSoftware ==
                 ServerSoftware.piefed)
           SelectionMenuItem(

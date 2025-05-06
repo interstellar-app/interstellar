@@ -62,9 +62,11 @@ class APINotifications {
             nextPage: lemmyCalcNextIntPage(result.items, page));
 
       case ServerSoftware.piefed:
-        final path =
-            '/user/notifications/${filter == NotificationsFilter.new_ ? 'new' : (filter?.name ?? 'all')}';
-        final query = {'p': page};
+        final path = '/user/notifications';
+        final status = filter == NotificationsFilter.new_
+            ? 'new'
+            : (filter?.name ?? 'all');
+        final query = {'page': page, 'status_request': status};
 
         final response = await client.get(path, queryParams: query);
 
@@ -125,7 +127,6 @@ class APINotifications {
       case ServerSoftware.mbin:
         final path =
             '/notifications/$notificationId/${readState ? 'read' : 'unread'}';
-
         final response = await client.put(path);
 
         return NotificationModel.fromMbin(response.bodyJson);
@@ -164,10 +165,14 @@ class APINotifications {
         };
 
       case ServerSoftware.piefed:
-        final path =
-            '/user/notifications/$notificationId/${readState ? 'read' : 'unread'}';
+        final path = '/user/notification_state';
+        final notifId = notificationId;
+        final query = {
+          'notif_id': notifId.toString(),
+          'read_state': readState.toString()
+        };
 
-        final response = await client.put(path);
+        final response = await client.put(path, queryParams: query);
 
         return NotificationModel.fromPiefed(response.bodyJson);
     }
