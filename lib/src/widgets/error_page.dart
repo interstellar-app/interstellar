@@ -94,3 +94,62 @@ class NewPageErrorIndicator extends StatelessWidget {
         ),
       );
 }
+
+class NoItemsFoundIndicator extends StatefulWidget {
+  const NoItemsFoundIndicator({
+    required this.nextPageKey,
+    required this.onTryAgain,
+    super.key,
+  });
+
+  final String? nextPageKey;
+  final void Function(String, {bool toEnd}) onTryAgain;
+
+  @override
+  State<NoItemsFoundIndicator> createState() => _NoItemsFoundIndicatorState();
+}
+
+class _NoItemsFoundIndicatorState extends State<NoItemsFoundIndicator> {
+  bool _loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return InkWell(
+        onTap: () {
+          widget.onTryAgain(widget.nextPageKey ?? '1', toEnd: true);
+          setState(() {
+            _loading = true;
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'You\'re all caught up.\nLoad older items?',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                const Icon(
+                  Icons.arrow_downward_rounded,
+                  // size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+}

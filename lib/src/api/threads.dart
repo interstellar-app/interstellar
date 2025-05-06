@@ -581,20 +581,17 @@ class APIThreads {
     }
   }
 
-  Future<void> markAsRead(int postId, bool read) async {
+  Future<void> markAsRead(List<int> postIds, bool read) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         throw UnsupportedError('Mbin doesnt support marking posts as read');
       case ServerSoftware.lemmy:
         const path = '/post/mark_as_read';
 
-        final response = await client.post(
-          path,
-          body: {
-            'post_ids': [postId],
-            'read': read,
-          }
-        );
+        final response = await client.post(path, body: {
+          'post_ids': postIds,
+          'read': read,
+        });
       case ServerSoftware.piefed:
         throw UnsupportedError('Piefed doesnt support marking posts as read');
     }

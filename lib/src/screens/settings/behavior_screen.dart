@@ -166,6 +166,20 @@ class BehaviorSettingsScreen extends StatelessWidget {
             onChanged: (newValue) => ac.updateProfile(
                 ac.selectedProfileValue.copyWith(autoTranslate: newValue)),
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.playlist_add_check_rounded),
+            title: Text(l(context).settings_markThreadsReadOnScroll),
+            value: ac.profile.markThreadsReadOnScroll,
+            onChanged: (newValue) => ac.updateProfile(ac.selectedProfileValue
+                .copyWith(markThreadsReadOnScroll: newValue)),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.playlist_add_check_rounded),
+            title: Text(l(context).settings_markMicroblogsReadOnScroll),
+            value: ac.profile.markMicroblogsReadOnScroll,
+            onChanged: (newValue) => ac.updateProfile(ac.selectedProfileValue
+                .copyWith(markMicroblogsReadOnScroll: newValue)),
+          ),
         ],
       ),
     );

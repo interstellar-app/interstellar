@@ -118,37 +118,46 @@ class _PostItemState extends State<PostItem> {
       boosts: widget.item.boosts,
       isBoosted: widget.item.myBoost == true,
       onBoost: whenLoggedIn(context, () async {
-        widget.onUpdate(await ac.markAsRead(
-          await switch (widget.item.type) {
-            PostType.thread => ac.api.threads.boost(widget.item.id),
-            PostType.microblog => ac.api.microblogs.putVote(widget.item.id, 1),
-          },
+        widget.onUpdate((await ac.markAsRead(
+          [
+            await switch (widget.item.type) {
+              PostType.thread => ac.api.threads.boost(widget.item.id),
+              PostType.microblog =>
+                ac.api.microblogs.putVote(widget.item.id, 1),
+            }
+          ],
           true,
-        ));
+        )).first);
       }),
       upVotes: widget.item.upvotes,
       isUpVoted: widget.item.myVote == 1,
       onUpVote: whenLoggedIn(context, () async {
-        widget.onUpdate(await ac.markAsRead(
-          await switch (widget.item.type) {
-            PostType.thread => ac.api.threads
-                .vote(widget.item.id, 1, widget.item.myVote == 1 ? 0 : 1),
-            PostType.microblog => ac.api.microblogs.putFavorite(widget.item.id),
-          },
+        widget.onUpdate((await ac.markAsRead(
+          [
+            await switch (widget.item.type) {
+              PostType.thread => ac.api.threads
+                  .vote(widget.item.id, 1, widget.item.myVote == 1 ? 0 : 1),
+              PostType.microblog =>
+                ac.api.microblogs.putFavorite(widget.item.id),
+            }
+          ],
           true,
-        ));
+        )).first);
       }),
       downVotes: widget.item.downvotes,
       isDownVoted: widget.item.myVote == -1,
       onDownVote: whenLoggedIn(context, () async {
-        widget.onUpdate(await ac.markAsRead(
-          await switch (widget.item.type) {
-            PostType.thread => ac.api.threads
-                .vote(widget.item.id, -1, widget.item.myVote == -1 ? 0 : -1),
-            PostType.microblog => ac.api.microblogs.putVote(widget.item.id, -1),
-          },
+        widget.onUpdate((await ac.markAsRead(
+          [
+            await switch (widget.item.type) {
+              PostType.thread => ac.api.threads
+                  .vote(widget.item.id, -1, widget.item.myVote == -1 ? 0 : -1),
+              PostType.microblog =>
+                ac.api.microblogs.putVote(widget.item.id, -1),
+            }
+          ],
           true,
-        ));
+        )).first);
       }),
       contentTypeName: l(context).post,
       onReply: widget.onReply,
@@ -162,7 +171,8 @@ class _PostItemState extends State<PostItem> {
       onEdit: widget.onEdit,
       onDelete: widget.onDelete,
       onMarkAsRead: () async {
-        widget.onUpdate(await ac.markAsRead(widget.item, !widget.item.read));
+        widget.onUpdate(
+            (await ac.markAsRead([widget.item], !widget.item.read)).first);
       },
       onModeratePin: !canModerate
           ? null
