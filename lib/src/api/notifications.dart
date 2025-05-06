@@ -93,7 +93,11 @@ class APINotifications {
             (response.bodyJson['private_messages'] as int);
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/notifications_count';
+
+        final response = await client.get(path);
+
+        return response.bodyJson['count'] as int;
     }
   }
 
@@ -114,7 +118,11 @@ class APINotifications {
         return;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/mark_all_notifications_read';
+
+        final response = await client.put(path);
+
+        return;
     }
   }
 
