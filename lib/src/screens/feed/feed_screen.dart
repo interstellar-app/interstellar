@@ -725,6 +725,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   final _pagingController =
       PagingController<String, PostModel>(firstPageKey: '');
   final _scrollController = ScrollController();
+  ScrollDirection _scrollDirection = ScrollDirection.idle;
 
   // Map of postId to FilterList names for posts that match lists that are marked as warnings.
   // If a post matches any FilterList that is not shown with warning, then the post is not shown at all.
@@ -742,6 +743,11 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     super.initState();
 
     _pagingController.addPageRequestListener(_fetchPage);
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollDirection = _scrollController.position.userScrollDirection;
+      });
+    });
   }
 
   @override
@@ -1054,8 +1060,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                         onVisibilityChanged: (VisibilityInfo info) {
                           if (index <= _lastVisibleIndex &&
                               info.visibleFraction == 0 &&
-                              _scrollController.position.userScrollDirection ==
-                                  ScrollDirection.reverse) {
+                              _scrollDirection == ScrollDirection.reverse) {
                             _markAsReadDebounce.run(() async {
                               List<int> readPosts = [];
                               for (int i = index; i >= 0; i--) {

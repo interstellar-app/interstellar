@@ -613,5 +613,6 @@
   },
   "errorPage_firstPage": "Something went wrong",
   "errorPage_firstPage_button": "Try Again",
-  "errorPage_newPage": "Something went wrong. Tap to try again."
+  "errorPage_newPage": "Something went wrong. Tap to try again.",
+  "errorPage_caughtUp": "You're all caught up.\nLoad older items?"
 }
