@@ -11,6 +11,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/password_editor.dart';
 import 'package:interstellar/src/widgets/redirect_listen.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
@@ -67,12 +68,9 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                   autofillHints: [AutofillHints.username, AutofillHints.email],
                 ),
                 const SizedBox(height: 12),
-                TextEditor(
+                PasswordEditor(
                   _passwordTextController,
-                  label: l(context).password,
-                  keyboardType: TextInputType.visiblePassword,
                   onChanged: (_) => setState(() {}),
-                  autofillHints: [AutofillHints.password],
                 ),
                 if (widget.software == ServerSoftware.lemmy) ...[
                   const SizedBox(height: 12),

@@ -29,7 +29,7 @@ class TextEditor extends StatelessWidget {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
-        label: label != null ? Text(label!) : null,
+        labelText: label,
         hintText: hint,
       ),
       onChanged: onChanged,
