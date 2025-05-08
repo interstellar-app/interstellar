@@ -38,10 +38,11 @@ class NotificationListModel with _$NotificationListModel {
 
   factory NotificationListModel.fromPiefed(JsonMap json) =>
       NotificationListModel(
-          items: (json['items'] as List<dynamic>)
-              .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
-              .toList(),
-          nextPage: null); // NotificationListModel
+        items: (json['items'] as List<dynamic>)
+            .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
+            .toList(),
+        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+      ); // NotificationListModel
 }
 
 @freezed
