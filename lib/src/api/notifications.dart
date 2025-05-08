@@ -63,9 +63,10 @@ class APINotifications {
 
       case ServerSoftware.piefed:
         final path = '/user/notifications';
-        final status = filter == NotificationsFilter.new_
-            ? 'new'
-            : (filter?.name ?? 'all');
+        String status = 'All'; // default to All
+        if (filter == NotificationsFilter.new_) status = 'New';
+        if (filter == NotificationsFilter.read) status = 'Read';
+
         final query = {'page': page, 'status_request': status};
 
         final response = await client.get(path, queryParams: query);
@@ -174,13 +175,10 @@ class APINotifications {
 
       case ServerSoftware.piefed:
         final path = '/user/notification_state';
-        final notifId = notificationId;
-        final query = {
-          'notif_id': notifId.toString(),
-          'read_state': readState.toString()
-        };
 
-        final response = await client.put(path, queryParams: query);
+        final body = {'notif_id': notificationId, 'read_state': readState};
+
+        final response = await client.put(path, body: body);
 
         return NotificationModel.fromPiefed(response.bodyJson);
     }
