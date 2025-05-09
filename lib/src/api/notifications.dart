@@ -62,7 +62,16 @@ class APINotifications {
             nextPage: lemmyCalcNextIntPage(result.items, page));
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/user/notifications';
+        String status = 'All'; // default to All
+        if (filter == NotificationsFilter.new_) status = 'New';
+        if (filter == NotificationsFilter.read) status = 'Read';
+
+        final query = {'page': page, 'status_request': status};
+
+        final response = await client.get(path, queryParams: query);
+
+        return NotificationListModel.fromPiefed(response.bodyJson);
     }
   }
 
@@ -85,7 +94,11 @@ class APINotifications {
             (response.bodyJson['private_messages'] as int);
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/notifications_count';
+
+        final response = await client.get(path);
+
+        return response.bodyJson['count'] as int;
     }
   }
 
@@ -106,7 +119,11 @@ class APINotifications {
         return;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/mark_all_notifications_read';
+
+        final response = await client.put(path);
+
+        return;
     }
   }
 
@@ -119,7 +136,6 @@ class APINotifications {
       case ServerSoftware.mbin:
         final path =
             '/notifications/$notificationId/${readState ? 'read' : 'unread'}';
-
         final response = await client.put(path);
 
         return NotificationModel.fromMbin(response.bodyJson);
@@ -158,7 +174,13 @@ class APINotifications {
         };
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/user/notification_state';
+
+        final body = {'notif_id': notificationId, 'read_state': readState};
+
+        final response = await client.put(path, body: body);
+
+        return NotificationModel.fromPiefed(response.bodyJson);
     }
   }
 
