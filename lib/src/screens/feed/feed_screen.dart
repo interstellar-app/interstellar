@@ -1064,6 +1064,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                             _markAsReadDebounce.run(() async {
                               List<int> readPosts = [];
                               for (int i = index; i >= 0; i--) {
+                                if (_pagingController.itemList == null) return;
                                 final post = _pagingController.itemList![i];
                                 if (post.read || readPosts.contains(i)) {
                                   continue;
