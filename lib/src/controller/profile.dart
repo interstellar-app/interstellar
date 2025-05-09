@@ -31,6 +31,8 @@ class ProfileRequired with _$ProfileRequired {
     required bool autoPlayVideos,
     required bool hapticFeedback,
     required bool autoTranslate,
+    required bool markThreadsReadOnScroll,
+    required bool markMicroblogsReadOnScroll,
     // Display settings
     required String appLanguage,
     required ThemeMode themeMode,
@@ -93,6 +95,10 @@ class ProfileRequired with _$ProfileRequired {
         hapticFeedback:
             profile?.hapticFeedback ?? defaultProfile.hapticFeedback,
         autoTranslate: profile?.autoTranslate ?? defaultProfile.autoTranslate,
+        markThreadsReadOnScroll: profile?.markThreadsReadOnScroll ??
+            defaultProfile.markThreadsReadOnScroll,
+        markMicroblogsReadOnScroll: profile?.markMicroblogsReadOnScroll ??
+            defaultProfile.markMicroblogsReadOnScroll,
         appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
         themeMode: profile?.themeMode ?? defaultProfile.themeMode,
         colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -137,8 +143,8 @@ class ProfileRequired with _$ProfileRequired {
             profile?.feedActionSetSort ?? defaultProfile.feedActionSetSort,
         feedActionSetView:
             profile?.feedActionSetView ?? defaultProfile.feedActionSetView,
-        feedActionHideReadPosts:
-            profile?.feedActionHideReadPosts ?? defaultProfile.feedActionHideReadPosts,
+        feedActionHideReadPosts: profile?.feedActionHideReadPosts ??
+            defaultProfile.feedActionHideReadPosts,
         enableSwipeActions:
             profile?.enableSwipeActions ?? defaultProfile.enableSwipeActions,
         swipeActionLeftShort: profile?.swipeActionLeftShort ??
@@ -165,6 +171,8 @@ class ProfileRequired with _$ProfileRequired {
     autoPlayVideos: false,
     hapticFeedback: true,
     autoTranslate: false,
+    markThreadsReadOnScroll: false,
+    markMicroblogsReadOnScroll: false,
     appLanguage: '',
     themeMode: ThemeMode.system,
     colorScheme: FlexScheme.custom,
@@ -218,6 +226,8 @@ class ProfileOptional with _$ProfileOptional {
     required bool? autoPlayVideos,
     required bool? hapticFeedback,
     required bool? autoTranslate,
+    required bool? markThreadsReadOnScroll,
+    required bool? markMicroblogsReadOnScroll,
     // Display settings
     required String? appLanguage,
     required ThemeMode? themeMode,
@@ -270,6 +280,8 @@ class ProfileOptional with _$ProfileOptional {
     autoPlayVideos: null,
     hapticFeedback: null,
     autoTranslate: null,
+    markThreadsReadOnScroll: null,
+    markMicroblogsReadOnScroll: null,
     appLanguage: null,
     themeMode: null,
     colorScheme: null,
@@ -320,6 +332,10 @@ class ProfileOptional with _$ProfileOptional {
       autoPlayVideos: other.autoPlayVideos ?? autoPlayVideos,
       hapticFeedback: other.hapticFeedback ?? hapticFeedback,
       autoTranslate: other.autoTranslate ?? autoTranslate,
+      markThreadsReadOnScroll:
+          other.markThreadsReadOnScroll ?? markThreadsReadOnScroll,
+      markMicroblogsReadOnScroll:
+          other.markMicroblogsReadOnScroll ?? markMicroblogsReadOnScroll,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
       colorScheme: other.colorScheme ?? colorScheme,

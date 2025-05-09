@@ -182,6 +182,8 @@
   "settings_autoPlayVideos": "Auto play videos",
   "settings_hapticFeedback": "Haptic feedback",
   "settings_autoTranslate": "Auto translate posts/comments",
+  "settings_markThreadsReadOnScroll": "Mark threads read on scroll",
+  "settings_markMicroblogsReadOnScroll": "Mark microblogs read on scroll",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
   "settings_themeMode_light": "Light",
@@ -611,5 +613,6 @@
   },
   "errorPage_firstPage": "Something went wrong",
   "errorPage_firstPage_button": "Try Again",
-  "errorPage_newPage": "Something went wrong. Tap to try again."
+  "errorPage_newPage": "Something went wrong. Tap to try again.",
+  "errorPage_caughtUp": "You're all caught up.\nLoad older items?"
 }

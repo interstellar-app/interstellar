@@ -68,7 +68,9 @@ class _PostPageState extends State<PostPage> {
 
     _pagingController.addPageRequestListener(_fetchPage);
 
-    _onUpdate(await context.read<AppController>().markAsRead(_data!, true));
+    if (!mounted) return;
+    _onUpdate(
+        (await context.read<AppController>().markAsRead([_data!], true)).first);
   }
 
   void _onUpdate(PostModel newValue) {

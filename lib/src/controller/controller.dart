@@ -590,28 +590,36 @@ class AppController with ChangeNotifier {
         ]),
       );
 
-  Future<PostModel> markAsRead(PostModel post, bool read) async {
+  Future<List<PostModel>> markAsRead(List<PostModel> posts, bool read) async {
     // Use Lemmy's read API when available
     if (serverSoftware == ServerSoftware.lemmy && isLoggedIn) {
-      await api.threads.markAsRead(post.id, read);
+      await api.threads.markAsRead(posts.map((post) => post.id).toList(), read);
     }
     // Use local database otherwise.
     // If marking as read, then check for a db row first, and add one if not present.
     else if (read) {
-      if (!await isRead(post)) {
-        await _readStore.add(db, {
-          'account': _selectedAccount,
-          'postType': post.type.name,
-          'postId': post.id,
-        });
-      }
+      await db.transaction((txn) async {
+        for (var post in posts) {
+          if (!await isRead(post)) {
+            await _readStore.add(txn, {
+              'account': _selectedAccount,
+              'postType': post.type.name,
+              'postId': post.id,
+            });
+          }
+        }
+      });
     }
     // If marking as unread, then delete any matching database rows.
     else {
-      await _readStore.delete(db, finder: _readStoreFinder(post));
+      await db.transaction((txn) async {
+        for (var post in posts) {
+          await _readStore.delete(txn, finder: _readStoreFinder(post));
+        }
+      });
     }
 
-    return post.copyWith(read: read);
+    return posts.map((post) => post.copyWith(read: read)).toList();
   }
 
   Future<bool> isRead(PostModel post) async {
