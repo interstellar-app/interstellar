@@ -116,7 +116,7 @@ class NotificationModel with _$NotificationModel {
     return NotificationModel(
         id: json['notif_id'] as int,
         type: notificationTypeMap[json['notif_subtype']],
-        isRead: json['status'] == 'read',
+        isRead: json['status'] == 'Read',
         subject: subject,
         creator: UserModel.fromPiefed(json['author'] as JsonMap));
   }
