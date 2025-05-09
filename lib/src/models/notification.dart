@@ -38,11 +38,15 @@ class NotificationListModel with _$NotificationListModel {
 
   factory NotificationListModel.fromPiefed(JsonMap json) =>
       NotificationListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      ); // NotificationListModel
+          items: (json['items'] as List<dynamic>)
+              .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
+              .toList(),
+          // if next_page is None we have reached the end of the notifications
+          // so set nextPage to null. Otherwise set it to the next page number
+          // to request
+          nextPage: (json['next_page'] as String?) != 'None'
+              ? json['next_page'] as String?
+              : null);
 }
 
 @freezed
