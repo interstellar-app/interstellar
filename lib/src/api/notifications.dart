@@ -63,9 +63,11 @@ class APINotifications {
 
       case ServerSoftware.piefed:
         final path = '/user/notifications';
-        String status = 'All'; // default to All
-        if (filter == NotificationsFilter.new_) status = 'New';
-        if (filter == NotificationsFilter.read) status = 'Read';
+        final status = switch (filter) {
+          NotificationsFilter.new_ => 'New',
+          NotificationsFilter.read => 'Read',
+          NotificationsFilter.all || null => 'All',
+        };
 
         final query = {'page': page, 'status_request': status};
 
