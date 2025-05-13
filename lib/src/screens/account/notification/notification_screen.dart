@@ -193,7 +193,10 @@ SelectionMenu<NotificationsFilter> notificationFilterSelect(
           title: l(context).filter_new,
           icon: Symbols.nest_eco_leaf_rounded,
         ),
-        if (context.read<AppController>().serverSoftware == ServerSoftware.mbin)
+        if (context.read<AppController>().serverSoftware ==
+                ServerSoftware.mbin ||
+            context.read<AppController>().serverSoftware ==
+                ServerSoftware.piefed)
           SelectionMenuItem(
             value: NotificationsFilter.read,
             title: l(context).filter_read,
