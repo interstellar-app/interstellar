@@ -16,6 +16,7 @@ class AdvancedImage extends StatelessWidget {
   final BoxFit fit;
   final String? openTitle;
   final bool enableBlur;
+  final String? hero;
 
   const AdvancedImage(
     this.image, {
@@ -23,6 +24,7 @@ class AdvancedImage extends StatelessWidget {
     this.fit = BoxFit.contain,
     this.openTitle,
     this.enableBlur = false,
+    this.hero,
   });
 
   @override
@@ -31,47 +33,52 @@ class AdvancedImage extends StatelessWidget {
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
-    return Wrapper(
-      shouldWrap: openTitle != null,
-      parentBuilder: (child) => GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AdvancedImagePage(
-                image,
-                title: openTitle!,
-              ),
-            ),
-          );
-        },
-        child: child,
-      ),
+    return Hero(
+      tag: image.toString() + (hero?? ''),
       child: Wrapper(
-        shouldWrap: enableBlur,
-        parentBuilder: (child) => Blur(child),
-        child: Stack(
-          alignment: Alignment.center,
-          fit: StackFit.passthrough,
-          children: [
-            if (image.blurHash != null)
-              Image(
-                fit: fit,
-                image: BlurhashFfiImage(
-                  image.blurHash!,
-                  decodingWidth:
-                      (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
-                  decodingHeight:
-                      (blurHashSizeFactor * image.blurHashHeight!).ceil(),
-                  scale: blurHashSizeFactor,
+        shouldWrap: openTitle != null,
+        parentBuilder: (child) => GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                transitionDuration: Duration(seconds: 1),
+                pageBuilder: (context, _, __) => AdvancedImagePage(
+                  image,
+                  title: openTitle!,
+                  hero: hero
                 ),
               ),
-            Image.network(
-              image.src,
-              fit: fit,
-            ),
-          ],
+            );
+          },
+          child: child,
         ),
-      ),
+        child: Wrapper(
+          shouldWrap: enableBlur,
+          parentBuilder: (child) => Blur(child),
+          child: Stack(
+            alignment: Alignment.center,
+            fit: StackFit.passthrough,
+            children: [
+              if (image.blurHash != null)
+                Image(
+                  fit: fit,
+                  image: BlurhashFfiImage(
+                    image.blurHash!,
+                    decodingWidth:
+                        (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
+                    decodingHeight:
+                        (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                    scale: blurHashSizeFactor,
+                  ),
+                ),
+              Image.network(
+                image.src,
+                fit: fit,
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
@@ -79,8 +86,9 @@ class AdvancedImage extends StatelessWidget {
 class AdvancedImagePage extends StatefulWidget {
   final ImageModel image;
   final String title;
+  final String? hero;
 
-  const AdvancedImagePage(this.image, {super.key, required this.title});
+  const AdvancedImagePage(this.image, {super.key, required this.title, this.hero});
 
   @override
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
@@ -130,7 +138,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
           Positioned.fill(
             child: InteractiveViewer(
               child: SafeArea(
-                child: AdvancedImage(widget.image),
+                child: AdvancedImage(widget.image, hero: widget.hero),
               ),
             ),
           ),

@@ -372,6 +372,7 @@ class _ContentItemState extends State<ContentItem> {
                             .watch<AppController>()
                             .profile
                             .coverMediaMarkedSensitive,
+                    hero: '${widget.magazine}${widget.user}${widget.createdAt}',
                   ),
                 )
               : (!widget.fullImageSize
@@ -383,6 +384,8 @@ class _ContentItemState extends State<ContentItem> {
                         fit: BoxFit.cover,
                         openTitle: imageOpenTitle,
                         enableBlur: widget.isNSFW,
+                        hero:
+                          '${widget.magazine}${widget.user}${widget.createdAt}',
                       ),
                     )
                   : AdvancedImage(
@@ -390,6 +393,8 @@ class _ContentItemState extends State<ContentItem> {
                       openTitle: imageOpenTitle,
                       fit: BoxFit.scaleDown,
                       enableBlur: widget.isNSFW,
+                      hero:
+                        '${widget.magazine}${widget.user}${widget.createdAt}',
                     ));
 
       final titleStyle = hasWideSize
@@ -867,6 +872,7 @@ class _ContentItemState extends State<ContentItem> {
                       .watch<AppController>()
                       .profile
                       .coverMediaMarkedSensitive,
+              hero: '${widget.magazine}${widget.user}${widget.createdAt}',
             ),
           );
 
