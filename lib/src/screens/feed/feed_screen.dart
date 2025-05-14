@@ -1027,8 +1027,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
               itemBuilder: (context, item, index) {
                 void onPostTap() {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PostPage(
+                    PageRouteBuilder(
+                      pageBuilder: (context, _, __) => PostPage(
                         initData: item,
                         onUpdate: (newValue) {
                           var newList = _pagingController.itemList;
@@ -1038,8 +1038,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                           });
                         },
                         userCanModerate: widget.userCanModerate,
-                      ),
-                    ),
+                      )
+                    )
                   );
                 }
 

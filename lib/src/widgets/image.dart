@@ -9,6 +9,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/blur.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
+import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AdvancedImage extends StatelessWidget {
@@ -33,7 +34,7 @@ class AdvancedImage extends StatelessWidget {
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
-    return Hero(
+    return SuperHero(
       tag: image.toString() + (hero?? ''),
       child: Wrapper(
         shouldWrap: openTitle != null,
@@ -41,7 +42,6 @@ class AdvancedImage extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               PageRouteBuilder(
-                transitionDuration: Duration(seconds: 1),
                 pageBuilder: (context, _, __) => AdvancedImagePage(
                   image,
                   title: openTitle!,
