@@ -9,6 +9,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/blur.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
+import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AdvancedImage extends StatelessWidget {
@@ -16,6 +17,7 @@ class AdvancedImage extends StatelessWidget {
   final BoxFit fit;
   final String? openTitle;
   final bool enableBlur;
+  final String? hero;
 
   const AdvancedImage(
     this.image, {
@@ -23,6 +25,7 @@ class AdvancedImage extends StatelessWidget {
     this.fit = BoxFit.contain,
     this.openTitle,
     this.enableBlur = false,
+    this.hero,
   });
 
   @override
@@ -31,47 +34,52 @@ class AdvancedImage extends StatelessWidget {
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
-    return Wrapper(
-      shouldWrap: openTitle != null,
-      parentBuilder: (child) => GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AdvancedImagePage(
-                image,
-                title: openTitle!,
-              ),
-            ),
-          );
-        },
-        child: child,
-      ),
+    return SuperHero(
+      tag: image.toString() + (hero?? ''),
       child: Wrapper(
-        shouldWrap: enableBlur,
-        parentBuilder: (child) => Blur(child),
-        child: Stack(
-          alignment: Alignment.center,
-          fit: StackFit.passthrough,
-          children: [
-            if (image.blurHash != null)
-              Image(
-                fit: fit,
-                image: BlurhashFfiImage(
-                  image.blurHash!,
-                  decodingWidth:
-                      (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
-                  decodingHeight:
-                      (blurHashSizeFactor * image.blurHashHeight!).ceil(),
-                  scale: blurHashSizeFactor,
+        shouldWrap: openTitle != null,
+        parentBuilder: (child) => GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                pageBuilder: (context, _, __) => AdvancedImagePage(
+                  image,
+                  title: openTitle!,
+                  hero: hero,
+                  fit: fit,
                 ),
               ),
-            Image.network(
-              image.src,
-              fit: fit,
-            ),
-          ],
+            );
+          },
+          child: child,
         ),
-      ),
+        child: Wrapper(
+          shouldWrap: enableBlur,
+          parentBuilder: (child) => Blur(child),
+          child: Stack(
+            alignment: Alignment.center,
+            fit: StackFit.passthrough,
+            children: [
+              if (image.blurHash != null)
+                Image(
+                  fit: fit,
+                  image: BlurhashFfiImage(
+                    image.blurHash!,
+                    decodingWidth:
+                        (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
+                    decodingHeight:
+                        (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                    scale: blurHashSizeFactor,
+                  ),
+                ),
+              Image.network(
+                image.src,
+                fit: fit,
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
@@ -79,8 +87,11 @@ class AdvancedImage extends StatelessWidget {
 class AdvancedImagePage extends StatefulWidget {
   final ImageModel image;
   final String title;
+  final String? hero;
+  final BoxFit fit;
 
-  const AdvancedImagePage(this.image, {super.key, required this.title});
+  const AdvancedImagePage(this.image,
+      {super.key, required this.title, this.hero, this.fit = BoxFit.contain});
 
   @override
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
@@ -130,7 +141,9 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
           Positioned.fill(
             child: InteractiveViewer(
               child: SafeArea(
-                child: AdvancedImage(widget.image),
+                child: Center(
+                    child: AdvancedImage(widget.image,
+                        hero: widget.hero, fit: widget.fit)),
               ),
             ),
           ),
