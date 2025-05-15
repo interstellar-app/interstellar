@@ -45,7 +45,8 @@ class AdvancedImage extends StatelessWidget {
                 pageBuilder: (context, _, __) => AdvancedImagePage(
                   image,
                   title: openTitle!,
-                  hero: hero
+                  hero: hero,
+                  fit: fit,
                 ),
               ),
             );
@@ -87,8 +88,10 @@ class AdvancedImagePage extends StatefulWidget {
   final ImageModel image;
   final String title;
   final String? hero;
+  final BoxFit fit;
 
-  const AdvancedImagePage(this.image, {super.key, required this.title, this.hero});
+  const AdvancedImagePage(this.image,
+      {super.key, required this.title, this.hero, this.fit = BoxFit.contain});
 
   @override
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
@@ -138,7 +141,9 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
           Positioned.fill(
             child: InteractiveViewer(
               child: SafeArea(
-                child: AdvancedImage(widget.image, hero: widget.hero),
+                child: Center(
+                    child: AdvancedImage(widget.image,
+                        hero: widget.hero, fit: widget.fit)),
               ),
             ),
           ),
