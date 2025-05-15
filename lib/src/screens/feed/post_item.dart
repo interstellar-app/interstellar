@@ -83,6 +83,7 @@ class _PostItemState extends State<PostItem> {
     return SuperHero(
       tag: widget.item.toString(),
       child: Material(
+        color: Colors.transparent,
         child: ContentItem(
           originInstance: getNameHost(context, widget.item.user.name),
           title: widget.item.title,
