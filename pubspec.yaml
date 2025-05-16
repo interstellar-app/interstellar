@@ -75,5 +75,8 @@ flutter_launcher_icons:
   adaptive_icon_foreground: 'assets/icons/logo-foreground.png'
   adaptive_icon_background: '#294062'
   adaptive_icon_monochrome: 'assets/icons/logo-monochrome.png'
+  ios: true
+  macos:
+    generate: true
   windows:
     generate: true
