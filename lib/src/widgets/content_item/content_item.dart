@@ -248,7 +248,8 @@ class _ContentItemState extends State<ContentItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Markdown(widget.body!, widget.originInstance),
+                  Markdown(widget.body!, widget.originInstance,
+                      nsfw: widget.isNSFW),
                   Divider(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -260,7 +261,8 @@ class _ContentItemState extends State<ContentItem> {
                   ),
                   Divider(),
                   Markdown(widget.translation!.translations.text,
-                      widget.originInstance),
+                      widget.originInstance,
+                      nsfw: widget.isNSFW),
                 ],
               )
         // No translation is available
@@ -270,7 +272,8 @@ class _ContentItemState extends State<ContentItem> {
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
               )
-            : Markdown(widget.body!, widget.originInstance);
+            : Markdown(widget.body!, widget.originInstance,
+                nsfw: widget.isNSFW);
   }
 
   Widget full() {
