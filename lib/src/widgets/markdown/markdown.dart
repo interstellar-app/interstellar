@@ -15,11 +15,13 @@ class Markdown extends StatelessWidget {
   final String data;
   final String originInstance;
   final ThemeData? themeData;
+  final bool nsfw;
 
   const Markdown(
     this.data,
     this.originInstance, {
     this.themeData,
+    this.nsfw = false,
     super.key,
   });
 
@@ -53,6 +55,7 @@ class Markdown extends StatelessWidget {
             blurHashHeight: null,
           ),
           openTitle: title ?? '',
+          enableBlur: nsfw,
         );
       },
       inlineSyntaxes: [
