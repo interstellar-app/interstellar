@@ -105,6 +105,7 @@ class APIComments {
           'page': page,
           'sort': lemmyCommentSortMap[sort],
           'max_depth': '8',
+          'type_': 'All'
         };
 
         final response = await client.get(path, queryParams: query);
