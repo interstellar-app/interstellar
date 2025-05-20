@@ -60,6 +60,8 @@ dev_dependencies:
   json_serializable: ^6.9.5
 
 flutter:
+  uses-material-design: true
+
   # Enable generation of localized Strings from arb files.
   generate: true
 
