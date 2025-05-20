@@ -149,12 +149,12 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
           ),
           if (widget.image.altText != null)
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomRight,
               child: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: GestureDetector(
-                    onTap: () => showDialog(
+                  child: TextButton(
+                    onPressed: () => showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text(l(context).altText),
@@ -167,17 +167,11 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                         ],
                       ),
                     ),
-                    child: Text(
-                      widget.image.altText!,
-                      textAlign: TextAlign.center,
-                      style: titleStyle,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
+                    child: Text('ALT', style: TextStyle(fontSize: 20)),
+                  )
+                )
               ),
-            ),
+            )
         ],
       ),
     );
