@@ -66,8 +66,8 @@ class UserStatusIcons extends StatelessWidget {
 
     return Row(
       children: [
-        if (botWidget != null) botWidget,
-        if (cakeDayWidget != null) cakeDayWidget,
+        ?botWidget,
+        ?cakeDayWidget,
       ]
           .map((widget) => Padding(
                 padding: const EdgeInsets.only(left: 5),

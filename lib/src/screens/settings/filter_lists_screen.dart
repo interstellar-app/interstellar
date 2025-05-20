@@ -96,8 +96,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                     onChanged: (value) {
                       ac.updateProfile(
                         ac.selectedProfileValue.copyWith(filterLists: {
-                          if (ac.selectedProfileValue.filterLists != null)
-                            ...ac.selectedProfileValue.filterLists!,
+                          ...?ac.selectedProfileValue.filterLists,
                           name: value,
                         }),
                       );
@@ -179,8 +178,7 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
               onChanged: (value) {
                 ac.updateProfile(
                   ac.selectedProfileValue.copyWith(filterLists: {
-                    if (ac.selectedProfileValue.filterLists != null)
-                      ...ac.selectedProfileValue.filterLists!,
+                   ...?ac.selectedProfileValue.filterLists,
                     widget.filterList!: value,
                   }),
                 );

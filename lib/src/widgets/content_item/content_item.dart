@@ -572,12 +572,10 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
-                                    if (!widget.showMagazineFirst &&
-                                        userWidget != null)
-                                      userWidget,
-                                    if (widget.showMagazineFirst &&
-                                        magazineWidget != null)
-                                      magazineWidget,
+                                    if (!widget.showMagazineFirst)
+                                      ?userWidget,
+                                    if (widget.showMagazineFirst)
+                                      ?magazineWidget,
                                     if (widget.createdAt != null)
                                       Padding(
                                         padding:
@@ -597,12 +595,10 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
-                                    if (widget.showMagazineFirst &&
-                                        userWidget != null)
-                                      userWidget,
-                                    if (!widget.showMagazineFirst &&
-                                        magazineWidget != null)
-                                      magazineWidget,
+                                    if (widget.showMagazineFirst)
+                                      ?userWidget,
+                                    if (!widget.showMagazineFirst)
+                                      ?magazineWidget,
                                   ],
                                 ),
                               ),
@@ -1030,10 +1026,10 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
-                      if (!widget.showMagazineFirst && userWidget != null)
-                        userWidget,
-                      if (widget.showMagazineFirst && magazineWidget != null)
-                        magazineWidget,
+                      if (!widget.showMagazineFirst)
+                        ?userWidget,
+                      if (widget.showMagazineFirst)
+                        ?magazineWidget,
                       if (widget.createdAt != null)
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
@@ -1051,10 +1047,10 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
-                      if (widget.showMagazineFirst && userWidget != null)
-                        userWidget,
-                      if (!widget.showMagazineFirst && magazineWidget != null)
-                        magazineWidget,
+                      if (widget.showMagazineFirst)
+                        ?userWidget,
+                      if (!widget.showMagazineFirst)
+                        ?magazineWidget,
                     ],
                   ),
                   const SizedBox(height: 4),
@@ -1112,7 +1108,7 @@ class _ContentItemState extends State<ContentItem> {
               ),
             ),
           ),
-          if (imageWidget != null) imageWidget,
+          ?imageWidget,
         ],
       ),
     );
