@@ -46,8 +46,11 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
   */
   static const String _mdLinkPattern =
       r'\[.*?\]\(\s*' + _mentionPattern + r'(?:\s*".*?")?\s*\)';
-  static final _mdLinkPatternRegExp =
-      RegExp(_mdLinkPattern, multiLine: true, caseSensitive: true);
+  static final _mdLinkPatternRegExp = RegExp(
+    _mdLinkPattern,
+    multiLine: true,
+    caseSensitive: true,
+  );
 
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
 
@@ -111,12 +114,14 @@ class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     return RichText(
-      text: TextSpan(children: [
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: MentionWidget(element.textContent, originInstance),
-        ),
-      ]),
+      text: TextSpan(
+        children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: MentionWidget(element.textContent, originInstance),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -162,12 +167,15 @@ class MentionWidgetState extends State<MentionWidget> {
     try {
       if (modifier == '@') {
         if (!userMentionCache.containsKey(cacheKey)) {
-          userMentionCache[cacheKey] =
-              await context.read<AppController>().api.users.getByName(
-                    host == context.read<AppController>().instanceHost
-                        ? name
-                        : '$name@$host',
-                  );
+          userMentionCache[cacheKey] = await context
+              .read<AppController>()
+              .api
+              .users
+              .getByName(
+                host == context.read<AppController>().instanceHost
+                    ? name
+                    : '$name@$host',
+              );
         }
         final user = userMentionCache[cacheKey]!;
 
@@ -183,12 +191,15 @@ class MentionWidgetState extends State<MentionWidget> {
         });
       } else if (modifier == '!') {
         if (!magazineMentionCache.containsKey(cacheKey)) {
-          magazineMentionCache[cacheKey] =
-              await context.read<AppController>().api.magazines.getByName(
-                    host == context.read<AppController>().instanceHost
-                        ? name
-                        : '$name@$host',
-                  );
+          magazineMentionCache[cacheKey] = await context
+              .read<AppController>()
+              .api
+              .magazines
+              .getByName(
+                host == context.read<AppController>().instanceHost
+                    ? name
+                    : '$name@$host',
+              );
         }
         final magazine = magazineMentionCache[cacheKey]!;
 
@@ -215,8 +226,9 @@ class MentionWidgetState extends State<MentionWidget> {
       label: Text(_displayName),
       avatar: _icon != null ? Avatar(_icon!) : null,
       onPressed: _onClick,
-      visualDensity:
-          const VisualDensity(vertical: VisualDensity.minimumDensity),
+      visualDensity: const VisualDensity(
+        vertical: VisualDensity.minimumDensity,
+      ),
     );
   }
 }

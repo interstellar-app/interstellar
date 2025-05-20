@@ -36,19 +36,18 @@ class FloatingMenuState extends State<FloatingMenu>
 
     for (var i = 0; i < widget.menuActions.length; i++) {
       _slideAnimations.add(
-        Tween<Offset>(
-          begin: const Offset(1.5, 0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Interval(
-            (gapDuration / totalDuration) * i,
-            1 -
-                (gapDuration / totalDuration) *
-                    (widget.menuActions.length - 1 - i),
-            curve: Curves.easeInOut,
+        Tween<Offset>(begin: const Offset(1.5, 0), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Interval(
+              (gapDuration / totalDuration) * i,
+              1 -
+                  (gapDuration / totalDuration) *
+                      (widget.menuActions.length - 1 - i),
+              curve: Curves.easeInOut,
+            ),
           ),
-        )),
+        ),
       );
     }
   }
@@ -69,25 +68,27 @@ class FloatingMenuState extends State<FloatingMenu>
         ...widget.menuActions
             .asMap()
             .entries
-            .map((entry) => SlideTransition(
-                  position: _slideAnimations[entry.key],
-                  child: Container(
-                    width: 45,
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          entry.value.callback!();
-                          _animationController.reverse();
-                        },
-                        heroTag: null,
-                        tooltip: entry.value.name,
-                        child: Icon(entry.value.icon),
-                      ),
+            .map(
+              (entry) => SlideTransition(
+                position: _slideAnimations[entry.key],
+                child: Container(
+                  width: 45,
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        entry.value.callback!();
+                        _animationController.reverse();
+                      },
+                      heroTag: null,
+                      tooltip: entry.value.name,
+                      child: Icon(entry.value.icon),
                     ),
                   ),
-                ))
+                ),
+              ),
+            )
             .toList()
             .reversed,
         if (widget.tapAction != null || widget.holdAction != null)

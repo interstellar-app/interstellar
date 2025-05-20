@@ -26,34 +26,37 @@ class SubscriptionButton extends StatelessWidget {
       icon: const Icon(Symbols.people_rounded),
       label: Text(intFormat(subscriptionCount)),
       onSelected: whenLoggedIn(
-          context,
-          context.watch<AppController>().profile.askBeforeUnsubscribing
-              ? (newValue) async {
-                  // Only show confirm dialog for unsubscribes, not subscribes
-                  final confirm = newValue
-                      ? true
-                      : await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(followMode
+        context,
+        context.watch<AppController>().profile.askBeforeUnsubscribing
+            ? (newValue) async {
+                // Only show confirm dialog for unsubscribes, not subscribes
+                final confirm = newValue
+                    ? true
+                    : await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(
+                            followMode
                                 ? l(context).confirmUnfollow
-                                : l(context).confirmUnsubscribe),
-                            actions: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(l(context).cancel),
-                              ),
-                              FilledButton(
-                                onPressed: () => Navigator.pop(context, true),
-                                child: Text(l(context).continue_),
-                              ),
-                            ],
+                                : l(context).confirmUnsubscribe,
                           ),
-                        );
+                          actions: [
+                            OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(l(context).cancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: Text(l(context).continue_),
+                            ),
+                          ],
+                        ),
+                      );
 
-                  if (confirm == true) await onSubscribe(newValue);
-                }
-              : onSubscribe),
+                if (confirm == true) await onSubscribe(newValue);
+              }
+            : onSubscribe,
+      ),
     );
   }
 }

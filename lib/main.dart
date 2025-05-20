@@ -59,11 +59,13 @@ void main() async {
     await initPushNotifications(ac);
   }
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider.value(value: ac),
-      ChangeNotifierProvider(create: (context) => DraftsController())
-    ],
-    child: const App(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: ac),
+        ChangeNotifierProvider(create: (context) => DraftsController()),
+      ],
+      child: const App(),
+    ),
+  );
 }

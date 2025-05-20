@@ -59,76 +59,67 @@ class ExploreScreenItem extends StatelessWidget {
       };
       final onSubscribe = switch (item) {
         DetailedMagazineModel i => (selected) async {
-            var newValue = await context
-                .read<AppController>()
-                .api
-                .magazines
-                .subscribe(i.id, selected);
+          var newValue = await context
+              .read<AppController>()
+              .api
+              .magazines
+              .subscribe(i.id, selected);
 
-            onUpdate(newValue);
-          },
+          onUpdate(newValue);
+        },
         DetailedUserModel i => (selected) async {
-            var newValue = await context
-                .read<AppController>()
-                .api
-                .users
-                .follow(i.id, selected);
+          var newValue = await context.read<AppController>().api.users.follow(
+            i.id,
+            selected,
+          );
 
-            onUpdate(newValue);
-          },
+          onUpdate(newValue);
+        },
         DomainModel i => (selected) async {
-            var newValue = await context
-                .read<AppController>()
-                .api
-                .domains
-                .putSubscribe(i.id, selected);
+          var newValue = await context
+              .read<AppController>()
+              .api
+              .domains
+              .putSubscribe(i.id, selected);
 
-            onUpdate(newValue);
-          },
+          onUpdate(newValue);
+        },
         _ => throw 'Unreachable',
       };
       final onClick = switch (item) {
         DetailedMagazineModel i => () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return MagazineScreen(
-                  i.id,
-                  initData: i,
-                  onUpdate: onUpdate,
-                );
-              }),
-            ),
+          MaterialPageRoute(
+            builder: (context) {
+              return MagazineScreen(i.id, initData: i, onUpdate: onUpdate);
+            },
+          ),
+        ),
         DetailedUserModel i => () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return UserScreen(
-                  i.id,
-                  initData: i,
-                  onUpdate: onUpdate,
-                );
-              }),
-            ),
+          MaterialPageRoute(
+            builder: (context) {
+              return UserScreen(i.id, initData: i, onUpdate: onUpdate);
+            },
+          ),
+        ),
         DomainModel i => () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return DomainScreen(
-                  i.id,
-                  initData: i,
-                  onUpdate: onUpdate,
-                );
-              }),
-            ),
+          MaterialPageRoute(
+            builder: (context) {
+              return DomainScreen(i.id, initData: i, onUpdate: onUpdate);
+            },
+          ),
+        ),
         _ => throw 'Unreachable',
       };
 
       return ListTile(
-        leading:
-            icon == null ? const SizedBox(width: 16) : Avatar(icon, radius: 16),
+        leading: icon == null
+            ? const SizedBox(width: 16)
+            : Avatar(icon, radius: 16),
         title: Row(
           children: [
             Flexible(child: Text(title, overflow: TextOverflow.ellipsis)),
             if (item is DetailedUserModel)
-              UserStatusIcons(
-                cakeDay: item.createdAt,
-                isBot: item.isBot,
-              ),
+              UserStatusIcons(cakeDay: item.createdAt, isBot: item.isBot),
           ],
         ),
         subtitle: subtitle == null ? null : Text(subtitle),
@@ -150,39 +141,37 @@ class ExploreScreenItem extends StatelessWidget {
     // Card based items
     return switch (item) {
       PostModel item => Card(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return PostPage(
-                  initData: item,
-                  onUpdate: onUpdate,
-                );
-              }),
-            ),
-            child: PostItem(
-              item,
-              onUpdate,
-              isPreview: item.type != PostType.microblog,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return PostPage(initData: item, onUpdate: onUpdate);
+              },
             ),
           ),
-        ),
-      CommentModel item => Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: PostComment(
+          child: PostItem(
             item,
             onUpdate,
-            onClick: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
+            isPreview: item.type != PostType.microblog,
+          ),
+        ),
+      ),
+      CommentModel item => Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        child: PostComment(
+          item,
+          onUpdate,
+          onClick: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
                 return PostCommentScreen(item.postType, item.id);
-              }),
+              },
             ),
           ),
         ),
+      ),
       _ => throw Exception('Unrecognized search item'),
     };
   }

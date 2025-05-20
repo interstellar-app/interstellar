@@ -31,9 +31,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
     final ac = context.watch<AppController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).filterLists),
-      ),
+      appBar: AppBar(title: Text(l(context).filterLists)),
       body: ListView(
         children: [
           ...ac.filterLists.keys.map(
@@ -50,8 +48,9 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                     ),
                     trailing: IconButton(
                       onPressed: () async {
-                        final filterList =
-                            context.read<AppController>().filterLists[name]!;
+                        final filterList = context
+                            .read<AppController>()
+                            .filterLists[name]!;
 
                         final config = await ConfigShare.create(
                           type: ConfigShareType.filterList,
@@ -62,7 +61,8 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                         if (!mounted) return;
                         String magazineName = mbinConfigsMagazineName;
                         if (magazineName.endsWith(
-                            context.read<AppController>().instanceHost)) {
+                          context.read<AppController>().instanceHost,
+                        )) {
                           magazineName = magazineName.split('@').first;
                         }
 
@@ -95,10 +95,12 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                     value: ac.profile.filterLists[name] == true,
                     onChanged: (value) {
                       ac.updateProfile(
-                        ac.selectedProfileValue.copyWith(filterLists: {
-                          ...?ac.selectedProfileValue.filterLists,
-                          name: value,
-                        }),
+                        ac.selectedProfileValue.copyWith(
+                          filterLists: {
+                            ...?ac.selectedProfileValue.filterLists,
+                            name: value,
+                          },
+                        ),
                       );
                     },
                   ),
@@ -150,8 +152,9 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
       if (widget.importFilterList != null) {
         filterListData = widget.importFilterList!;
       } else {
-        filterListData =
-            context.read<AppController>().filterLists[widget.filterList!]!;
+        filterListData = context
+            .read<AppController>()
+            .filterLists[widget.filterList!]!;
       }
     }
   }
@@ -162,11 +165,13 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.importFilterList != null
-            ? l(context).filterList_import
-            : widget.filterList == null
-                ? l(context).filterList_new
-                : l(context).filterList_edit),
+        title: Text(
+          widget.importFilterList != null
+              ? l(context).filterList_import
+              : widget.filterList == null
+              ? l(context).filterList_new
+              : l(context).filterList_edit,
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -177,10 +182,12 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
               value: ac.profile.filterLists[widget.filterList] == true,
               onChanged: (value) {
                 ac.updateProfile(
-                  ac.selectedProfileValue.copyWith(filterLists: {
-                   ...?ac.selectedProfileValue.filterLists,
-                    widget.filterList!: value,
-                  }),
+                  ac.selectedProfileValue.copyWith(
+                    filterLists: {
+                      ...?ac.selectedProfileValue.filterLists,
+                      widget.filterList!: value,
+                    },
+                  ),
                 );
               },
             ),
@@ -211,8 +218,9 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                             newPhrases.remove(phrase);
 
                             setState(() {
-                              filterListData =
-                                  filterListData.copyWith(phrases: newPhrases);
+                              filterListData = filterListData.copyWith(
+                                phrases: newPhrases,
+                              );
                             });
                           },
                         ),
@@ -239,8 +247,9 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                                 ),
                                 LoadingFilledButton(
                                   onPressed: () async {
-                                    Navigator.of(context)
-                                        .pop(phraseTextEditingController.text);
+                                    Navigator.of(
+                                      context,
+                                    ).pop(phraseTextEditingController.text);
                                   },
                                   label: Text(l(context).filterList_addPhrase),
                                 ),
@@ -255,16 +264,17 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                           newPhrases.add(phrase);
 
                           setState(() {
-                            filterListData =
-                                filterListData.copyWith(phrases: newPhrases);
+                            filterListData = filterListData.copyWith(
+                              phrases: newPhrases,
+                            );
                           });
                         },
                         icon: const Icon(Icons.add),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           ListTileSwitch(
@@ -295,7 +305,8 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
             padding: const EdgeInsets.only(top: 16),
             child: LoadingFilledButton(
               icon: const Icon(Symbols.save_rounded),
-              onPressed: nameController.text.isEmpty ||
+              onPressed:
+                  nameController.text.isEmpty ||
                       ((nameController.text != widget.filterList ||
                               widget.importFilterList != null) &&
                           ac.filterLists.containsKey(nameController.text))
@@ -305,10 +316,7 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
 
                       if (widget.filterList == null ||
                           widget.importFilterList != null) {
-                        await ac.setFilterList(
-                          name,
-                          FilterList.nullFilterList,
-                        );
+                        await ac.setFilterList(name, FilterList.nullFilterList);
                       } else if (name != widget.filterList) {
                         await ac.renameFilterList(widget.filterList!, name);
                       }
@@ -361,24 +369,21 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
 }
 
 SelectionMenu<FilterListMatchMode> _filterListMatchModeSelect(
-        BuildContext context) =>
-    SelectionMenu(
-      l(context).filterList_matchMode,
-      [
-        SelectionMenuItem(
-          value: FilterListMatchMode.simple,
-          title: l(context).filterList_matchMode_simple,
-          subtitle: l(context).filterList_matchMode_simple_help,
-        ),
-        SelectionMenuItem(
-          value: FilterListMatchMode.wholeWords,
-          title: l(context).filterList_matchMode_wholeWords,
-          subtitle: l(context).filterList_matchMode_wholeWords_help,
-        ),
-        SelectionMenuItem(
-          value: FilterListMatchMode.regex,
-          title: l(context).filterList_matchMode_regex,
-          subtitle: l(context).filterList_matchMode_regex_help,
-        ),
-      ],
-    );
+  BuildContext context,
+) => SelectionMenu(l(context).filterList_matchMode, [
+  SelectionMenuItem(
+    value: FilterListMatchMode.simple,
+    title: l(context).filterList_matchMode_simple,
+    subtitle: l(context).filterList_matchMode_simple_help,
+  ),
+  SelectionMenuItem(
+    value: FilterListMatchMode.wholeWords,
+    title: l(context).filterList_matchMode_wholeWords,
+    subtitle: l(context).filterList_matchMode_wholeWords_help,
+  ),
+  SelectionMenuItem(
+    value: FilterListMatchMode.regex,
+    title: l(context).filterList_matchMode_regex,
+    subtitle: l(context).filterList_matchMode_regex_help,
+  ),
+]);

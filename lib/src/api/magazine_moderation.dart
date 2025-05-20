@@ -8,10 +8,7 @@ class APIMagazineModeration {
 
   APIMagazineModeration(this.client);
 
-  Future<MagazineBanListModel> listBans(
-    int magazineId, {
-    String? page,
-  }) async {
+  Future<MagazineBanListModel> listBans(int magazineId, {String? page}) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/moderate/magazine/$magazineId/bans';
@@ -41,10 +38,7 @@ class APIMagazineModeration {
 
         final response = await client.post(
           path,
-          body: {
-            'reason': reason,
-            'expiredAt': expiredAt?.toIso8601String(),
-          },
+          body: {'reason': reason, 'expiredAt': expiredAt?.toIso8601String()},
         );
 
         return MagazineBanModel.fromMbin(response.bodyJson);
@@ -113,7 +107,8 @@ class APIMagazineModeration {
         );
 
         return DetailedMagazineModel.fromLemmy(
-            response.bodyJson['community_view'] as JsonMap);
+          response.bodyJson['community_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/community';
@@ -186,8 +181,9 @@ class APIMagazineModeration {
       case ServerSoftware.mbin:
         final path = '/moderate/magazine/$magazineId/mod/$userId';
 
-        final response =
-            state ? await client.post(path) : await client.delete(path);
+        final response = state
+            ? await client.post(path)
+            : await client.delete(path);
 
         return DetailedMagazineModel.fromMbin(response.bodyJson);
 
@@ -233,10 +229,7 @@ class APIMagazineModeration {
 
         final response = await client.post(
           path,
-          body: {
-            'community_id': magazineId,
-            'deleted': true,
-          },
+          body: {'community_id': magazineId, 'deleted': true},
         );
     }
   }

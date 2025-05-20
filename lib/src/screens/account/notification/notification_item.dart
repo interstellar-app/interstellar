@@ -63,162 +63,164 @@ class _NotificationItemState extends State<NotificationItem> {
     final software = context.watch<AppController>().serverSoftware;
 
     MagazineModel? bannedMagazine = switch (software) {
-      ServerSoftware.mbin => widget.item.type == NotificationType.ban &&
-              widget.item.subject['magazine'] != null
-          ? MagazineModel.fromMbin(widget.item.subject['magazine'] as JsonMap)
-          : null,
+      ServerSoftware.mbin =>
+        widget.item.type == NotificationType.ban &&
+                widget.item.subject['magazine'] != null
+            ? MagazineModel.fromMbin(widget.item.subject['magazine'] as JsonMap)
+            : null,
       ServerSoftware.lemmy => null,
       ServerSoftware.piefed => null,
     };
 
     final String body = switch (software) {
-      ServerSoftware.mbin => (widget.item.subject['body'] ??
-          widget.item.subject['reason'] ??
-          '') as String,
+      ServerSoftware.mbin =>
+        (widget.item.subject['body'] ?? widget.item.subject['reason'] ?? '')
+            as String,
       ServerSoftware.lemmy => switch (widget.item.type!) {
-          NotificationType.message =>
-            widget.item.subject['private_message']['content'] as String,
-          NotificationType.mention =>
-            widget.item.subject['comment']['content'] as String,
-          NotificationType.reply =>
-            widget.item.subject['comment']['content'] as String,
-          _ => throw Exception('invalid notification type for lemmy'),
-        },
+        NotificationType.message =>
+          widget.item.subject['private_message']['content'] as String,
+        NotificationType.mention =>
+          widget.item.subject['comment']['content'] as String,
+        NotificationType.reply =>
+          widget.item.subject['comment']['content'] as String,
+        _ => throw Exception('invalid notification type for lemmy'),
+      },
       ServerSoftware.piefed => (widget.item.subject['notif_body']) as String,
     };
 
     final void Function()? onTap = switch (software) {
-      ServerSoftware.mbin => widget.item.subject.containsKey('threadId')
-          ? () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => MessageThreadScreen(
-                    threadId: widget.item.subject['threadId'] as int,
-                  ),
-                ),
-              );
-            }
-          : widget.item.subject.containsKey('commentId')
-              ? () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PostCommentScreen(
-                        widget.item.subject.containsKey('postId')
-                            ? PostType.microblog
-                            : PostType.thread,
-                        widget.item.subject['commentId'] as int,
-                      ),
+      ServerSoftware.mbin =>
+        widget.item.subject.containsKey('threadId')
+            ? () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MessageThreadScreen(
+                      threadId: widget.item.subject['threadId'] as int,
                     ),
-                  );
-                }
-              : widget.item.subject.containsKey('entryId')
-                  ? () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => PostPage(
-                            postType: PostType.thread,
-                            postId: widget.item.subject['entryId'] as int,
-                          ),
-                        ),
-                      );
-                    }
-                  : widget.item.subject.containsKey('postId')
-                      ? () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => PostPage(
-                                postType: PostType.microblog,
-                                postId: widget.item.subject['postId'] as int,
-                              ),
-                            ),
-                          );
-                        }
-                      : null,
+                  ),
+                );
+              }
+            : widget.item.subject.containsKey('commentId')
+            ? () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PostCommentScreen(
+                      widget.item.subject.containsKey('postId')
+                          ? PostType.microblog
+                          : PostType.thread,
+                      widget.item.subject['commentId'] as int,
+                    ),
+                  ),
+                );
+              }
+            : widget.item.subject.containsKey('entryId')
+            ? () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PostPage(
+                      postType: PostType.thread,
+                      postId: widget.item.subject['entryId'] as int,
+                    ),
+                  ),
+                );
+              }
+            : widget.item.subject.containsKey('postId')
+            ? () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PostPage(
+                      postType: PostType.microblog,
+                      postId: widget.item.subject['postId'] as int,
+                    ),
+                  ),
+                );
+              }
+            : null,
       ServerSoftware.lemmy => switch (widget.item.type!) {
-          NotificationType.message => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => MessageThreadScreen(
-                    threadId: widget.item.subject['creator']['id'] as int,
-                  ),
-                ),
-              );
-            },
-          NotificationType.mention => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostCommentScreen(
-                    PostType.thread,
-                    widget.item.subject['comment']['id'] as int,
-                  ),
-                ),
-              );
-            },
-          NotificationType.reply => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostCommentScreen(
-                    PostType.thread,
-                    widget.item.subject['comment']['id'] as int,
-                  ),
-                ),
-              );
-            },
-          _ => throw Exception('invalid notification type for lemmy'),
+        NotificationType.message => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MessageThreadScreen(
+                threadId: widget.item.subject['creator']['id'] as int,
+              ),
+            ),
+          );
         },
+        NotificationType.mention => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostCommentScreen(
+                PostType.thread,
+                widget.item.subject['comment']['id'] as int,
+              ),
+            ),
+          );
+        },
+        NotificationType.reply => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostCommentScreen(
+                PostType.thread,
+                widget.item.subject['comment']['id'] as int,
+              ),
+            ),
+          );
+        },
+        _ => throw Exception('invalid notification type for lemmy'),
+      },
       ServerSoftware.piefed => switch (widget.item.type!) {
-          NotificationType.entryCreated => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostPage(
-                    postType: PostType.thread,
-                    postId: widget.item.subject['post_id'] as int,
-                  ),
-                ),
-              );
-            },
-          NotificationType.entryCommentCreated => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostCommentScreen(
-                    PostType.thread,
-                    widget.item.subject['comment_id'] as int,
-                  ),
-                ),
-              );
-            },
-          NotificationType.entryCommentReply => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostCommentScreen(
-                    PostType.thread,
-                    widget.item.subject['comment_id'] as int,
-                  ),
-                ),
-              );
-            },
-          NotificationType.postMention => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostPage(
-                    postType: PostType.thread,
-                    postId: widget.item.subject['post_id'] as int,
-                  ),
-                ),
-              );
-            },
-          NotificationType.commentMention => () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostCommentScreen(
-                    PostType.thread,
-                    widget.item.subject['comment_id'] as int,
-                  ),
-                ),
-              );
-            },
-          _ => throw Exception('invalid notification type for piefed'),
-        }
+        NotificationType.entryCreated => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostPage(
+                postType: PostType.thread,
+                postId: widget.item.subject['post_id'] as int,
+              ),
+            ),
+          );
+        },
+        NotificationType.entryCommentCreated => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostCommentScreen(
+                PostType.thread,
+                widget.item.subject['comment_id'] as int,
+              ),
+            ),
+          );
+        },
+        NotificationType.entryCommentReply => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostCommentScreen(
+                PostType.thread,
+                widget.item.subject['comment_id'] as int,
+              ),
+            ),
+          );
+        },
+        NotificationType.postMention => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostPage(
+                postType: PostType.thread,
+                postId: widget.item.subject['post_id'] as int,
+              ),
+            ),
+          );
+        },
+        NotificationType.commentMention => () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PostCommentScreen(
+                PostType.thread,
+                widget.item.subject['comment_id'] as int,
+              ),
+            ),
+          );
+        },
+        _ => throw Exception('invalid notification type for piefed'),
+      },
     };
 
     return Card.outlined(
@@ -228,12 +230,7 @@ class _NotificationItemState extends State<NotificationItem> {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.only(
-            top: 4,
-            right: 4,
-            bottom: 8,
-            left: 8,
-          ),
+          padding: const EdgeInsets.only(top: 4, right: 4, bottom: 8, left: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

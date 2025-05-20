@@ -35,7 +35,7 @@ class AdvancedImage extends StatelessWidget {
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
     return SuperHero(
-      tag: image.toString() + (hero?? ''),
+      tag: image.toString() + (hero ?? ''),
       child: Wrapper(
         shouldWrap: openTitle != null,
         parentBuilder: (child) => GestureDetector(
@@ -65,21 +65,18 @@ class AdvancedImage extends StatelessWidget {
                   fit: fit,
                   image: BlurhashFfiImage(
                     image.blurHash!,
-                    decodingWidth:
-                        (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
-                    decodingHeight:
-                        (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                    decodingWidth: (blurHashSizeFactor! * image.blurHashWidth!)
+                        .ceil(),
+                    decodingHeight: (blurHashSizeFactor * image.blurHashHeight!)
+                        .ceil(),
                     scale: blurHashSizeFactor,
                   ),
                 ),
-              Image.network(
-                image.src,
-                fit: fit,
-              ),
+              Image.network(image.src, fit: fit),
             ],
           ),
         ),
-      )
+      ),
     );
   }
 }
@@ -90,8 +87,13 @@ class AdvancedImagePage extends StatefulWidget {
   final String? hero;
   final BoxFit fit;
 
-  const AdvancedImagePage(this.image,
-      {super.key, required this.title, this.hero, this.fit = BoxFit.contain});
+  const AdvancedImagePage(
+    this.image, {
+    super.key,
+    required this.title,
+    this.hero,
+    this.fit = BoxFit.contain,
+  });
 
   @override
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
@@ -101,20 +103,18 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
   @override
   Widget build(BuildContext context) {
     const shadows = <Shadow>[
-      Shadow(color: Colors.black, blurRadius: 1.0, offset: Offset(0, 1))
+      Shadow(color: Colors.black, blurRadius: 1.0, offset: Offset(0, 1)),
     ];
 
-    final titleStyle =
-        Theme.of(context).textTheme.titleLarge!.copyWith(shadows: shadows);
+    final titleStyle = Theme.of(
+      context,
+    ).textTheme.titleLarge!.copyWith(shadows: shadows);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(widget.title, style: titleStyle),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-          shadows: shadows,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white, shadows: shadows),
         backgroundColor: Colors.transparent,
         actions: [
           LoadingIconButton(
@@ -142,8 +142,12 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
             child: InteractiveViewer(
               child: SafeArea(
                 child: Center(
-                    child: AdvancedImage(widget.image,
-                        hero: widget.hero, fit: widget.fit)),
+                  child: AdvancedImage(
+                    widget.image,
+                    hero: widget.hero,
+                    fit: widget.fit,
+                  ),
+                ),
               ),
             ),
           ),
@@ -168,10 +172,10 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                       ),
                     ),
                     child: Text('ALT', style: TextStyle(fontSize: 20)),
-                  )
-                )
+                  ),
+                ),
               ),
-            )
+            ),
         ],
       ),
     );

@@ -21,8 +21,11 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
   static const String _mdLinkPattern =
       r'\[(.*?)\]\(\s*' + _youtubePattern + r'(?:\s*".*?")?\s*\)';
 
-  static final _mdLinkPatternRegExp =
-      RegExp(_mdLinkPattern, multiLine: true, caseSensitive: true);
+  static final _mdLinkPatternRegExp = RegExp(
+    _mdLinkPattern,
+    multiLine: true,
+    caseSensitive: true,
+  );
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
 
   YoutubeEmbedSyntax() : super(_youtubePattern);
@@ -33,11 +36,10 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
   bool tryMatch(md.InlineParser parser, [int? startMatchPos]) {
     startMatchPos ??= parser.pos;
 
-    _isMarkdownLink =
-        String.fromCharCode(parser.charAt(parser.pos)) == '[';
+    _isMarkdownLink = String.fromCharCode(parser.charAt(parser.pos)) == '[';
     bool isAutoLink = String.fromCharCode(parser.charAt(parser.pos)) == '<';
     if (isAutoLink) {
-     startMatchPos += 1;
+      startMatchPos += 1;
     }
 
     if (parser.pos > 0 && !_isMarkdownLink && !isAutoLink) {
@@ -70,9 +72,8 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
-
-    final link = 'https://www.youtube.com/watch?v=${match[_isMarkdownLink
-        ? 2 : 1]!}';
+    final link =
+        'https://www.youtube.com/watch?v=${match[_isMarkdownLink ? 2 : 1]!}';
 
     final anchor = md.Element.text('a', match[_isMarkdownLink ? 1 : 0]!);
     anchor.attributes['href'] = link;

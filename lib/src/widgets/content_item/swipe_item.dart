@@ -47,26 +47,36 @@ class _SwipeItemState extends State<SwipeItem> {
 
   ActionItem getSwipeAction(SwipeAction action) {
     return switch (action) {
-      SwipeAction.upvote => swipeActionUpvote(context)
-          .withProps(ActionLocation.hide, widget.onUpVote),
-      SwipeAction.downvote => swipeActionDownvote(context)
-          .withProps(ActionLocation.hide, widget.onDownVote),
-      SwipeAction.boost => swipeActionBoost(context)
-          .withProps(ActionLocation.hide, widget.onBoost),
-      SwipeAction.bookmark => swipeActionBookmark(context)
-          .withProps(ActionLocation.hide, widget.onBookmark),
-      SwipeAction.reply => swipeActionReply(context)
-          .withProps(ActionLocation.hide, widget.onReply),
-      SwipeAction.markAsRead => swipeActionMarkRead(context)
-          .withProps(ActionLocation.hide, widget.onMarkAsRead),
-      SwipeAction.moderatePin => swipeActionModeratePin(context)
-          .withProps(ActionLocation.hide, widget.onModeratePin),
-      SwipeAction.moderateMarkNSFW => swipeActionModerateMarkNSFW(context)
-          .withProps(ActionLocation.hide, widget.onModerateMarkNSFW),
-      SwipeAction.moderateDelete => swipeActionModerateDelete(context)
-          .withProps(ActionLocation.hide, widget.onModerateDelete),
-      SwipeAction.moderateBan => swipeActionModerateBan(context)
-          .withProps(ActionLocation.hide, widget.onModerateBan),
+      SwipeAction.upvote => swipeActionUpvote(
+        context,
+      ).withProps(ActionLocation.hide, widget.onUpVote),
+      SwipeAction.downvote => swipeActionDownvote(
+        context,
+      ).withProps(ActionLocation.hide, widget.onDownVote),
+      SwipeAction.boost => swipeActionBoost(
+        context,
+      ).withProps(ActionLocation.hide, widget.onBoost),
+      SwipeAction.bookmark => swipeActionBookmark(
+        context,
+      ).withProps(ActionLocation.hide, widget.onBookmark),
+      SwipeAction.reply => swipeActionReply(
+        context,
+      ).withProps(ActionLocation.hide, widget.onReply),
+      SwipeAction.markAsRead => swipeActionMarkRead(
+        context,
+      ).withProps(ActionLocation.hide, widget.onMarkAsRead),
+      SwipeAction.moderatePin => swipeActionModeratePin(
+        context,
+      ).withProps(ActionLocation.hide, widget.onModeratePin),
+      SwipeAction.moderateMarkNSFW => swipeActionModerateMarkNSFW(
+        context,
+      ).withProps(ActionLocation.hide, widget.onModerateMarkNSFW),
+      SwipeAction.moderateDelete => swipeActionModerateDelete(
+        context,
+      ).withProps(ActionLocation.hide, widget.onModerateDelete),
+      SwipeAction.moderateBan => swipeActionModerateBan(
+        context,
+      ).withProps(ActionLocation.hide, widget.onModerateBan),
     };
   }
 
@@ -84,88 +94,95 @@ class _SwipeItemState extends State<SwipeItem> {
     ];
 
     return Listener(
-        onPointerUp: (event) {
-          final actionSelectorValue =
-              _dismissDirection == DismissDirection.endToStart ? 2 : 0;
+      onPointerUp: (event) {
+        final actionSelectorValue =
+            _dismissDirection == DismissDirection.endToStart ? 2 : 0;
 
-          for (int i = 0; i < 2; i++) {
-            if (_dismissThreshold > actionThreshold &&
-                (_dismissThreshold < (actionThreshold * (i + 2)) || i == 1)) {
-              _dismissThreshold = 0;
-              if (actions[i + actionSelectorValue].callback != null) {
-                actions[i + actionSelectorValue].callback!();
-                ac.vibrate(HapticsType.medium);
-              }
-              break;
+        for (int i = 0; i < 2; i++) {
+          if (_dismissThreshold > actionThreshold &&
+              (_dismissThreshold < (actionThreshold * (i + 2)) || i == 1)) {
+            _dismissThreshold = 0;
+            if (actions[i + actionSelectorValue].callback != null) {
+              actions[i + actionSelectorValue].callback!();
+              ac.vibrate(HapticsType.medium);
             }
+            break;
           }
-        },
-        child: Dismissible(
-          key: ObjectKey(widget.child.key),
-          background: Container(
-            color: _color,
-            alignment: _dismissDirection == DismissDirection.startToEnd
-                ? Alignment.centerLeft
-                : Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(_dismissDirection == DismissDirection.startToEnd
+        }
+      },
+      child: Dismissible(
+        key: ObjectKey(widget.child.key),
+        background: Container(
+          color: _color,
+          alignment: _dismissDirection == DismissDirection.startToEnd
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              _dismissDirection == DismissDirection.startToEnd
                   ? actions[_currentAction].icon
-                  : actions[_currentAction + 2].icon),
+                  : actions[_currentAction + 2].icon,
             ),
           ),
-          dismissThresholds: const {
-            DismissDirection.startToEnd: 1,
-            DismissDirection.endToStart: 1
-          },
-          onUpdate: (DismissUpdateDetails newDetails) {
-            final oldDetails = _oldDismissDetails;
-            _oldDismissDetails = newDetails;
-            _dismissThreshold = newDetails.progress;
-            if (_dismissDirection != newDetails.direction) {
-              setState(() {
-                _dismissDirection = newDetails.direction;
-              });
-            }
+        ),
+        dismissThresholds: const {
+          DismissDirection.startToEnd: 1,
+          DismissDirection.endToStart: 1,
+        },
+        onUpdate: (DismissUpdateDetails newDetails) {
+          final oldDetails = _oldDismissDetails;
+          _oldDismissDetails = newDetails;
+          _dismissThreshold = newDetails.progress;
+          if (_dismissDirection != newDetails.direction) {
+            setState(() {
+              _dismissDirection = newDetails.direction;
+            });
+          }
 
-            bool isRangeNewlyEntered(double startInclusive,
-                    [double? endExclusive]) =>
-                ((oldDetails?.progress ?? 0) < startInclusive &&
-                    newDetails.progress >= startInclusive) ||
-                (endExclusive != null &&
-                    (oldDetails?.progress ?? 0) >= endExclusive &&
-                    newDetails.progress < endExclusive);
+          bool isRangeNewlyEntered(
+            double startInclusive, [
+            double? endExclusive,
+          ]) =>
+              ((oldDetails?.progress ?? 0) < startInclusive &&
+                  newDetails.progress >= startInclusive) ||
+              (endExclusive != null &&
+                  (oldDetails?.progress ?? 0) >= endExclusive &&
+                  newDetails.progress < endExclusive);
 
-            if (isRangeNewlyEntered(actionThreshold) ||
-                isRangeNewlyEntered(actionThreshold * 2)) {
-              ac.vibrate(HapticsType.light);
-            }
+          if (isRangeNewlyEntered(actionThreshold) ||
+              isRangeNewlyEntered(actionThreshold * 2)) {
+            ac.vibrate(HapticsType.light);
+          }
 
-            final actionSelectorValue =
-                newDetails.direction == DismissDirection.endToStart ? 2 : 0;
+          final actionSelectorValue =
+              newDetails.direction == DismissDirection.endToStart ? 2 : 0;
 
-            if (oldDetails == null ||
-                oldDetails.progress == 0 ||
-                oldDetails.direction != newDetails.direction ||
-                isRangeNewlyEntered(0, actionThreshold)) {
-              setState(() {
-                _color = actions[0 + actionSelectorValue].color!.darken(30);
-              });
-            } else if (isRangeNewlyEntered(
-                actionThreshold, actionThreshold * 2)) {
-              setState(() {
-                _color = actions[0 + actionSelectorValue].color!;
-                _currentAction = 0;
-              });
-            } else if (isRangeNewlyEntered(actionThreshold * 2)) {
-              setState(() {
-                _color = actions[1 + actionSelectorValue].color!;
-                _currentAction = 1;
-              });
-            }
-          },
-          confirmDismiss: (direction) async => false,
-          child: widget.child,
-        ));
+          if (oldDetails == null ||
+              oldDetails.progress == 0 ||
+              oldDetails.direction != newDetails.direction ||
+              isRangeNewlyEntered(0, actionThreshold)) {
+            setState(() {
+              _color = actions[0 + actionSelectorValue].color!.darken(30);
+            });
+          } else if (isRangeNewlyEntered(
+            actionThreshold,
+            actionThreshold * 2,
+          )) {
+            setState(() {
+              _color = actions[0 + actionSelectorValue].color!;
+              _currentAction = 0;
+            });
+          } else if (isRangeNewlyEntered(actionThreshold * 2)) {
+            setState(() {
+              _color = actions[1 + actionSelectorValue].color!;
+              _currentAction = 1;
+            });
+          }
+        },
+        confirmDismiss: (direction) async => false,
+        child: widget.child,
+      ),
+    );
   }
 }

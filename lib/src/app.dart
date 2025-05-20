@@ -55,15 +55,17 @@ class _AppState extends State<App> {
       builder: (lightColorScheme, darkColorScheme) {
         final dynamicLightColorScheme =
             ac.profile.colorScheme == FlexScheme.custom
-                ? lightColorScheme
-                : null;
+            ? lightColorScheme
+            : null;
         final dynamicDarkColorScheme =
             ac.profile.colorScheme == FlexScheme.custom
-                ? darkColorScheme
-                : null;
+            ? darkColorScheme
+            : null;
 
-        return ChangeNotifierProxyProvider<AppController,
-            NotificationCountController>(
+        return ChangeNotifierProxyProvider<
+          AppController,
+          NotificationCountController
+        >(
           create: (_) => NotificationCountController(),
           update: (_, ac, notificationCountController) =>
               notificationCountController!..updateAppController(ac),
@@ -113,104 +115,126 @@ class _AppState extends State<App> {
                             NavigationDestination(
                               label: l(context).feed,
                               icon: const Icon(Symbols.home_rounded),
-                              selectedIcon:
-                                  const Icon(Symbols.home_rounded, fill: 1),
+                              selectedIcon: const Icon(
+                                Symbols.home_rounded,
+                                fill: 1,
+                              ),
                             ),
                             NavigationDestination(
                               label: l(context).explore,
                               icon: const Icon(Symbols.explore_rounded),
-                              selectedIcon:
-                                  const Icon(Symbols.explore_rounded, fill: 1),
+                              selectedIcon: const Icon(
+                                Symbols.explore_rounded,
+                                fill: 1,
+                              ),
                             ),
                             NavigationDestination(
                               label: l(context).account,
                               icon: Wrapper(
-                                shouldWrap:
-                                    context.watch<AppController>().isLoggedIn,
+                                shouldWrap: context
+                                    .watch<AppController>()
+                                    .isLoggedIn,
                                 parentBuilder: (child) =>
                                     NotificationBadge(child: child),
                                 child: const Icon(Symbols.person_rounded),
                               ),
                               selectedIcon: Wrapper(
-                                shouldWrap:
-                                    context.watch<AppController>().isLoggedIn,
+                                shouldWrap: context
+                                    .watch<AppController>()
+                                    .isLoggedIn,
                                 parentBuilder: (child) =>
                                     NotificationBadge(child: child),
-                                child:
-                                    const Icon(Symbols.person_rounded, fill: 1),
+                                child: const Icon(
+                                  Symbols.person_rounded,
+                                  fill: 1,
+                                ),
                               ),
                             ),
                             NavigationDestination(
                               label: l(context).settings,
                               icon: const Icon(Symbols.settings_rounded),
-                              selectedIcon:
-                                  const Icon(Symbols.settings_rounded, fill: 1),
+                              selectedIcon: const Icon(
+                                Symbols.settings_rounded,
+                                fill: 1,
+                              ),
                             ),
                           ],
                           selectedIndex: _navIndex,
                           onDestinationSelected: _changeNav,
                         )
                       : null,
-                  body: Row(children: [
-                    if (orientation == Orientation.landscape)
-                      NavigationRail(
-                        selectedIndex: _navIndex,
-                        onDestinationSelected: _changeNav,
-                        labelType: NavigationRailLabelType.all,
-                        destinations: [
-                          NavigationRailDestination(
+                  body: Row(
+                    children: [
+                      if (orientation == Orientation.landscape)
+                        NavigationRail(
+                          selectedIndex: _navIndex,
+                          onDestinationSelected: _changeNav,
+                          labelType: NavigationRailLabelType.all,
+                          destinations: [
+                            NavigationRailDestination(
                               label: Text(l(context).feed),
                               icon: const Icon(Symbols.feed_rounded),
-                              selectedIcon:
-                                  const Icon(Symbols.feed_rounded, fill: 1)),
-                          NavigationRailDestination(
+                              selectedIcon: const Icon(
+                                Symbols.feed_rounded,
+                                fill: 1,
+                              ),
+                            ),
+                            NavigationRailDestination(
                               label: Text(l(context).explore),
                               icon: const Icon(Symbols.explore_rounded),
-                              selectedIcon:
-                                  const Icon(Symbols.explore_rounded, fill: 1)),
-                          NavigationRailDestination(
-                            label: Text(l(context).account),
-                            icon: Wrapper(
-                              shouldWrap:
-                                  context.watch<AppController>().isLoggedIn,
-                              parentBuilder: (child) =>
-                                  NotificationBadge(child: child),
-                              child: const Icon(Symbols.person_rounded),
+                              selectedIcon: const Icon(
+                                Symbols.explore_rounded,
+                                fill: 1,
+                              ),
                             ),
-                            selectedIcon: Wrapper(
-                              shouldWrap:
-                                  context.watch<AppController>().isLoggedIn,
-                              parentBuilder: (child) =>
-                                  NotificationBadge(child: child),
-                              child:
-                                  const Icon(Symbols.person_rounded, fill: 1),
+                            NavigationRailDestination(
+                              label: Text(l(context).account),
+                              icon: Wrapper(
+                                shouldWrap: context
+                                    .watch<AppController>()
+                                    .isLoggedIn,
+                                parentBuilder: (child) =>
+                                    NotificationBadge(child: child),
+                                child: const Icon(Symbols.person_rounded),
+                              ),
+                              selectedIcon: Wrapper(
+                                shouldWrap: context
+                                    .watch<AppController>()
+                                    .isLoggedIn,
+                                parentBuilder: (child) =>
+                                    NotificationBadge(child: child),
+                                child: const Icon(
+                                  Symbols.person_rounded,
+                                  fill: 1,
+                                ),
+                              ),
                             ),
-                          ),
-                          NavigationRailDestination(
-                            label: Text(l(context).settings),
-                            icon: const Icon(Symbols.settings_rounded),
-                            selectedIcon:
-                                const Icon(Symbols.settings_rounded, fill: 1),
-                          ),
-                        ],
-                      ),
-                    if (orientation == Orientation.landscape)
-                      const VerticalDivider(
-                        thickness: 1,
-                        width: 1,
-                      ),
-                    Expanded(
+                            NavigationRailDestination(
+                              label: Text(l(context).settings),
+                              icon: const Icon(Symbols.settings_rounded),
+                              selectedIcon: const Icon(
+                                Symbols.settings_rounded,
+                                fill: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (orientation == Orientation.landscape)
+                        const VerticalDivider(thickness: 1, width: 1),
+                      Expanded(
                         child: PageView(
-                      controller: _pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        FeedScreen(key: _feedKey),
-                        ExploreScreen(key: _exploreKey),
-                        AccountScreen(key: _accountKey),
-                        SettingsScreen(),
-                      ],
-                    )),
-                  ]),
+                          controller: _pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            FeedScreen(key: _feedKey),
+                            ExploreScreen(key: _exploreKey),
+                            AccountScreen(key: _accountKey),
+                            SettingsScreen(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

@@ -66,124 +66,131 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                 ),
               ),
               IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text(l(context).profile_about_title),
-                        content: SingleChildScrollView(
-                            child: Markdown(l(context).profile_about_body,
-                                ac.instanceHost)),
-                        actions: [
-                          OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(l(context).close),
-                          ),
-                        ],
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(l(context).profile_about_title),
+                      content: SingleChildScrollView(
+                        child: Markdown(
+                          l(context).profile_about_body,
+                          ac.instanceHost,
+                        ),
                       ),
-                    );
-                  },
-                  icon: const Icon(Symbols.help_rounded))
+                      actions: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(l(context).close),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                icon: const Icon(Symbols.help_rounded),
+              ),
             ],
           ),
         ),
         if (profileList != null)
           Flexible(
-            child: ListView(shrinkWrap: true, children: [
-              ...profileList!.map(
-                (profileName) => ListTile(
-                  title: Text(profileName),
-                  subtitle: profileName == ac.mainProfile
-                      ? Text(l(context).profile_main)
-                      : null,
-                  onTap: () async {
-                    Navigator.pop(context);
-                    await ac.switchProfiles(profileName);
-                  },
-                  selected: profileName == ac.selectedProfile,
-                  selectedTileColor: Theme.of(context)
-                      .colorScheme
-                      .primaryContainer
-                      .withOpacity(0.2),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => EditProfileScreen(
-                                profile: profileName,
-                                profileList: profileList!,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                ...profileList!.map(
+                  (profileName) => ListTile(
+                    title: Text(profileName),
+                    subtitle: profileName == ac.mainProfile
+                        ? Text(l(context).profile_main)
+                        : null,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await ac.switchProfiles(profileName);
+                    },
+                    selected: profileName == ac.selectedProfile,
+                    selectedTileColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withOpacity(0.2),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(
+                                  profile: profileName,
+                                  profileList: profileList!,
+                                ),
                               ),
-                            ),
-                          );
-                          getProfiles();
-                        },
-                        icon: const Icon(Symbols.edit_rounded),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          final profile = (await context
-                                  .read<AppController>()
-                                  .getProfile(profileName))
-                              .exportReady();
+                            );
+                            getProfiles();
+                          },
+                          icon: const Icon(Symbols.edit_rounded),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            final profile =
+                                (await context.read<AppController>().getProfile(
+                                  profileName,
+                                )).exportReady();
 
-                          final config = await ConfigShare.create(
-                            type: ConfigShareType.profile,
-                            name: profileName,
-                            payload: profile.toJson(),
-                          );
+                            final config = await ConfigShare.create(
+                              type: ConfigShareType.profile,
+                              name: profileName,
+                              payload: profile.toJson(),
+                            );
 
-                          if (!mounted) return;
-                          String magazineName = mbinConfigsMagazineName;
-                          if (magazineName.endsWith(
-                              context.read<AppController>().instanceHost)) {
-                            magazineName = magazineName.split('@').first;
-                          }
+                            if (!mounted) return;
+                            String magazineName = mbinConfigsMagazineName;
+                            if (magazineName.endsWith(
+                              context.read<AppController>().instanceHost,
+                            )) {
+                              magazineName = magazineName.split('@').first;
+                            }
 
-                          final magazine = await context
-                              .read<AppController>()
-                              .api
-                              .magazines
-                              .getByName(magazineName);
+                            final magazine = await context
+                                .read<AppController>()
+                                .api
+                                .magazines
+                                .getByName(magazineName);
 
-                          if (!mounted) return;
+                            if (!mounted) return;
 
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => CreateScreen(
-                                initTitle: '[Profile] $profileName',
-                                initBody:
-                                    'Short description here...\n\n${config.toMarkdown()}',
-                                initMagazine: magazine,
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => CreateScreen(
+                                  initTitle: '[Profile] $profileName',
+                                  initBody:
+                                      'Short description here...\n\n${config.toMarkdown()}',
+                                  initMagazine: magazine,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Symbols.share_rounded),
-                      ),
-                    ],
+                            );
+                          },
+                          icon: const Icon(Symbols.share_rounded),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              ListTile(
-                leading: const Icon(Symbols.add_rounded),
-                title: Text(l(context).profile_new),
-                onTap: () async {
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => EditProfileScreen(
-                        profile: null,
-                        profileList: profileList!,
+                ListTile(
+                  leading: const Icon(Symbols.add_rounded),
+                  title: Text(l(context).profile_new),
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(
+                          profile: null,
+                          profileList: profileList!,
+                        ),
                       ),
-                    ),
-                  );
-                  getProfiles();
-                },
-              ),
-              const SizedBox(height: 16),
-            ]),
+                    );
+                    getProfiles();
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
       ],
     );
@@ -245,11 +252,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.importProfile != null
-            ? l(context).profile_import
-            : widget.profile == null
-                ? l(context).profile_new
-                : l(context).profile_edit),
+        title: Text(
+          widget.importProfile != null
+              ? l(context).profile_import
+              : widget.profile == null
+              ? l(context).profile_new
+              : l(context).profile_edit,
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -266,8 +275,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onChanged: isMainProfile
                 ? null
                 : (newValue) => setState(() {
-                      setAsMain = newValue;
-                    }),
+                    setAsMain = newValue;
+                  }),
           ),
           ListTileSwitch(
             title: Text(l(context).profile_autoSelect),
@@ -279,16 +288,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ListTile(
             title: Text(l(context).profile_autoSelectAccount),
             subtitle: Text(
-                autoSelectAccount ?? l(context).profile_autoSelectAccount_none),
+              autoSelectAccount ?? l(context).profile_autoSelectAccount_none,
+            ),
             onTap: () async {
-              final newAutoSelectAccount =
-                  await selectAccountWithNone(context, autoSelectAccount ?? '');
+              final newAutoSelectAccount = await selectAccountWithNone(
+                context,
+                autoSelectAccount ?? '',
+              );
 
               if (newAutoSelectAccount == null) return;
 
               setState(() {
-                autoSelectAccount =
-                    newAutoSelectAccount.isEmpty ? null : newAutoSelectAccount;
+                autoSelectAccount = newAutoSelectAccount.isEmpty
+                    ? null
+                    : newAutoSelectAccount;
               });
             },
           ),
@@ -296,7 +309,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             padding: const EdgeInsets.only(top: 16),
             child: LoadingFilledButton(
               icon: const Icon(Symbols.save_rounded),
-              onPressed: nameController.text.isEmpty ||
+              onPressed:
+                  nameController.text.isEmpty ||
                       ((nameController.text != widget.profile ||
                               widget.importProfile != null) &&
                           widget.profileList.contains(nameController.text))
@@ -306,10 +320,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                       if (widget.profile == null ||
                           widget.importProfile != null) {
-                        await ac.setProfile(
-                          name,
-                          ProfileOptional.nullProfile,
-                        );
+                        await ac.setProfile(name, ProfileOptional.nullProfile);
                       } else if (name != widget.profile) {
                         await ac.renameProfile(widget.profile!, name);
                       }
@@ -319,17 +330,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       }
 
                       if (oldAutoSelect != newAutoSelect) {
-                        await ac
-                            .setAutoSelectProfile(newAutoSelect ? name : null);
+                        await ac.setAutoSelectProfile(
+                          newAutoSelect ? name : null,
+                        );
                       }
 
                       final newProfileValue = await ac.getProfile(name);
                       if (autoSelectAccount !=
                           newProfileValue.autoSwitchAccount) {
                         await ac.setProfile(
-                            name,
-                            newProfileValue.copyWith(
-                                autoSwitchAccount: autoSelectAccount));
+                          name,
+                          newProfileValue.copyWith(
+                            autoSwitchAccount: autoSelectAccount,
+                          ),
+                        );
                       }
 
                       if (!context.mounted) return;

@@ -31,56 +31,47 @@ enum APIExploreSort {
 
   static List<APIExploreSort> valuesBySoftware(ServerSoftware software) =>
       switch (software) {
-        ServerSoftware.mbin => [
-            hot,
-            active,
-            newest,
-          ],
+        ServerSoftware.mbin => [hot, active, newest],
         ServerSoftware.lemmy => values,
-        ServerSoftware.piefed => [
-            hot,
-            topAll,
-            newest,
-            active,
-          ],
+        ServerSoftware.piefed => [hot, topAll, newest, active],
       };
 
   String nameBySoftware(ServerSoftware software) => switch (software) {
-        ServerSoftware.mbin => switch (this) {
-            APIExploreSort.active => 'active',
-            APIExploreSort.hot => 'hot',
-            APIExploreSort.newest => 'newest',
-            _ => 'hot',
-          },
-        ServerSoftware.lemmy => switch (this) {
-            APIExploreSort.active => 'Active',
-            APIExploreSort.hot => 'Hot',
-            APIExploreSort.newest => 'New',
-            APIExploreSort.topAll => 'TopAll',
-            APIExploreSort.oldest => 'Old',
-            APIExploreSort.mostComments => 'MostComments',
-            APIExploreSort.newComments => 'NewComments',
-            APIExploreSort.topDay => 'TopDay',
-            APIExploreSort.topWeek => 'TopWeek',
-            APIExploreSort.topMonth => 'TopMonth',
-            APIExploreSort.topYear => 'TopYear',
-            APIExploreSort.topHour => 'TopHour',
-            APIExploreSort.topSixHour => 'TopSixHour',
-            APIExploreSort.topTwelveHour => 'TopTwelveHour',
-            APIExploreSort.topThreeMonths => 'TopThreeMonths',
-            APIExploreSort.topSixMonths => 'TopSixMonths',
-            APIExploreSort.topNineMonths => 'TopNineMonths',
-            APIExploreSort.controversial => 'Controversial',
-            APIExploreSort.scaled => 'Scaled',
-          },
-        ServerSoftware.piefed => switch (this) {
-            APIExploreSort.active => 'Active',
-            APIExploreSort.hot => 'Hot',
-            APIExploreSort.newest => 'New',
-            APIExploreSort.topAll => 'Top',
-            _ => 'Hot',
-          },
-      };
+    ServerSoftware.mbin => switch (this) {
+      APIExploreSort.active => 'active',
+      APIExploreSort.hot => 'hot',
+      APIExploreSort.newest => 'newest',
+      _ => 'hot',
+    },
+    ServerSoftware.lemmy => switch (this) {
+      APIExploreSort.active => 'Active',
+      APIExploreSort.hot => 'Hot',
+      APIExploreSort.newest => 'New',
+      APIExploreSort.topAll => 'TopAll',
+      APIExploreSort.oldest => 'Old',
+      APIExploreSort.mostComments => 'MostComments',
+      APIExploreSort.newComments => 'NewComments',
+      APIExploreSort.topDay => 'TopDay',
+      APIExploreSort.topWeek => 'TopWeek',
+      APIExploreSort.topMonth => 'TopMonth',
+      APIExploreSort.topYear => 'TopYear',
+      APIExploreSort.topHour => 'TopHour',
+      APIExploreSort.topSixHour => 'TopSixHour',
+      APIExploreSort.topTwelveHour => 'TopTwelveHour',
+      APIExploreSort.topThreeMonths => 'TopThreeMonths',
+      APIExploreSort.topSixMonths => 'TopSixMonths',
+      APIExploreSort.topNineMonths => 'TopNineMonths',
+      APIExploreSort.controversial => 'Controversial',
+      APIExploreSort.scaled => 'Scaled',
+    },
+    ServerSoftware.piefed => switch (this) {
+      APIExploreSort.active => 'Active',
+      APIExploreSort.hot => 'Hot',
+      APIExploreSort.newest => 'New',
+      APIExploreSort.topAll => 'Top',
+      _ => 'Hot',
+    },
+  };
 }
 
 class APIMagazines {
@@ -96,7 +87,8 @@ class APIMagazines {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = (filter == null ||
+        final path =
+            (filter == null ||
                 filter == ExploreFilter.all ||
                 filter == ExploreFilter.local)
             ? '/magazines'
@@ -125,9 +117,10 @@ class APIMagazines {
               ExploreFilter.local => 'Local',
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
-              ExploreFilter.blocked =>
-                throw Exception('Can not filter magazines by blocked on Lemmy'),
-              null => 'All'
+              ExploreFilter.blocked => throw Exception(
+                'Can not filter magazines by blocked on Lemmy',
+              ),
+              null => 'All',
             },
             'limit': '50',
             'sort': sort.nameBySoftware(client.software),
@@ -138,8 +131,10 @@ class APIMagazines {
 
           final json = response.bodyJson;
 
-          json['next_page'] =
-              lemmyCalcNextIntPage(json['communities'] as List<dynamic>, page);
+          json['next_page'] = lemmyCalcNextIntPage(
+            json['communities'] as List<dynamic>,
+            page,
+          );
 
           return DetailedMagazineListModel.fromLemmy(json);
         } else {
@@ -151,9 +146,10 @@ class APIMagazines {
               ExploreFilter.local => 'Local',
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
-              ExploreFilter.blocked =>
-                throw Exception('Can not filter magazines by blocked on Lemmy'),
-              null => 'All'
+              ExploreFilter.blocked => throw Exception(
+                'Can not filter magazines by blocked on Lemmy',
+              ),
+              null => 'All',
             },
             'limit': '50',
             'sort': sort.nameBySoftware(client.software),
@@ -165,8 +161,10 @@ class APIMagazines {
 
           final json = response.bodyJson;
 
-          json['next_page'] =
-              lemmyCalcNextIntPage(json['communities'] as List<dynamic>, page);
+          json['next_page'] = lemmyCalcNextIntPage(
+            json['communities'] as List<dynamic>,
+            page,
+          );
 
           return DetailedMagazineListModel.fromLemmy(json);
         }
@@ -180,9 +178,10 @@ class APIMagazines {
               ExploreFilter.local => 'Local',
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
-              ExploreFilter.blocked =>
-                throw Exception('Can not filter magazines by blocked on Lemmy'),
-              null => 'All'
+              ExploreFilter.blocked => throw Exception(
+                'Can not filter magazines by blocked on Lemmy',
+              ),
+              null => 'All',
             },
             'limit': '50',
             'sort': sort.nameBySoftware(client.software),
@@ -193,8 +192,10 @@ class APIMagazines {
 
           final json = response.bodyJson;
 
-          json['next_page'] =
-              lemmyCalcNextIntPage(json['communities'] as List<dynamic>, page);
+          json['next_page'] = lemmyCalcNextIntPage(
+            json['communities'] as List<dynamic>,
+            page,
+          );
 
           return DetailedMagazineListModel.fromPiefed(json);
         } else {
@@ -206,9 +207,10 @@ class APIMagazines {
               ExploreFilter.local => 'Local',
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
-              ExploreFilter.blocked =>
-                throw Exception('Can not filter magazines by blocked on Lemmy'),
-              null => 'All'
+              ExploreFilter.blocked => throw Exception(
+                'Can not filter magazines by blocked on Lemmy',
+              ),
+              null => 'All',
             },
             'limit': '50',
             'sort': sort.nameBySoftware(client.software),
@@ -220,8 +222,10 @@ class APIMagazines {
 
           final json = response.bodyJson;
 
-          json['next_page'] =
-              lemmyCalcNextIntPage(json['communities'] as List<dynamic>, page);
+          json['next_page'] = lemmyCalcNextIntPage(
+            json['communities'] as List<dynamic>,
+            page,
+          );
 
           return DetailedMagazineListModel.fromPiefed(json);
         }
@@ -244,7 +248,8 @@ class APIMagazines {
         final response = await client.get(path, queryParams: query);
 
         return DetailedMagazineModel.fromLemmy(
-            response.bodyJson['community_view'] as JsonMap);
+          response.bodyJson['community_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/community';
@@ -272,7 +277,8 @@ class APIMagazines {
         final response = await client.get(path, queryParams: query);
 
         return DetailedMagazineModel.fromLemmy(
-            response.bodyJson['community_view'] as JsonMap);
+          response.bodyJson['community_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/community';
@@ -299,24 +305,19 @@ class APIMagazines {
 
         final response = await client.post(
           path,
-          body: {
-            'community_id': magazineId,
-            'follow': state,
-          },
+          body: {'community_id': magazineId, 'follow': state},
         );
 
         return DetailedMagazineModel.fromLemmy(
-            response.bodyJson['community_view'] as JsonMap);
+          response.bodyJson['community_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/community/follow';
 
         final response = await client.post(
           path,
-          body: {
-            'community_id': magazineId,
-            'follow': state,
-          },
+          body: {'community_id': magazineId, 'follow': state},
         );
 
         return DetailedMagazineModel.fromPiefed(response.bodyJson);
@@ -337,24 +338,19 @@ class APIMagazines {
 
         final response = await client.post(
           path,
-          body: {
-            'community_id': magazineId,
-            'block': state,
-          },
+          body: {'community_id': magazineId, 'block': state},
         );
 
         return DetailedMagazineModel.fromLemmy(
-            response.bodyJson['community_view'] as JsonMap);
+          response.bodyJson['community_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/community/block';
 
         final response = await client.post(
           path,
-          body: {
-            'community_id': magazineId,
-            'block': state,
-          },
+          body: {'community_id': magazineId, 'block': state},
         );
 
         return DetailedMagazineModel.fromPiefed(response.bodyJson);

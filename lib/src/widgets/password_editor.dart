@@ -5,11 +5,7 @@ class PasswordEditor extends StatefulWidget {
   final TextEditingController controller;
   final void Function(String)? onChanged;
 
-  const PasswordEditor(
-    this.controller, {
-    this.onChanged,
-    super.key,
-  });
+  const PasswordEditor(this.controller, {this.onChanged, super.key});
 
   @override
   State<PasswordEditor> createState() => _PasswordEditorState();

@@ -27,10 +27,7 @@ class SubscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final String textContent = element.textContent;
 
-    return SubscriptSuperscriptWidget(
-      text: textContent,
-      isSuperscript: false,
-    );
+    return SubscriptSuperscriptWidget(text: textContent, isSuperscript: false);
   }
 }
 
@@ -39,10 +36,7 @@ class SuperscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final String textContent = element.textContent;
 
-    return SubscriptSuperscriptWidget(
-      text: textContent,
-      isSuperscript: true,
-    );
+    return SubscriptSuperscriptWidget(text: textContent, isSuperscript: true);
   }
 }
 
@@ -66,10 +60,9 @@ class SubscriptSuperscriptWidget extends StatelessWidget {
               offset: Offset(0.0, isSuperscript ? -5.0 : 3.0),
               child: Text(
                 text,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(fontSize: 11),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontSize: 11),
               ),
             ),
           ),

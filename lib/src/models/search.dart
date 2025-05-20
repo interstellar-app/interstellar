@@ -63,7 +63,9 @@ class SearchListModel with _$SearchListModel {
     }
 
     return SearchListModel(
-        items: items, nextPage: json['next_page'] as String?);
+      items: items,
+      nextPage: json['next_page'] as String?,
+    );
   }
 
   factory SearchListModel.fromPiefed(Map<String, dynamic> json) {
@@ -86,6 +88,8 @@ class SearchListModel with _$SearchListModel {
     }
 
     return SearchListModel(
-        items: items, nextPage: json['next_page'] as String?);
+      items: items,
+      nextPage: json['next_page'] as String?,
+    );
   }
 }

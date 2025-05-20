@@ -17,9 +17,7 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
     final ac = context.watch<AppController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_feedDefaults),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_feedDefaults)),
       body: ListView(
         children: [
           ListTileSelect(
@@ -49,8 +47,9 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             value: ac.profile.feedDefaultThreadsSort,
             oldValue: ac.selectedProfileValue.feedDefaultThreadsSort,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(feedDefaultThreadsSort: newValue),
+              ac.selectedProfileValue.copyWith(
+                feedDefaultThreadsSort: newValue,
+              ),
             ),
           ),
           ListTileSelect(
@@ -60,8 +59,9 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             value: ac.profile.feedDefaultMicroblogSort,
             oldValue: ac.selectedProfileValue.feedDefaultMicroblogSort,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(feedDefaultMicroblogSort: newValue),
+              ac.selectedProfileValue.copyWith(
+                feedDefaultMicroblogSort: newValue,
+              ),
             ),
           ),
           ListTileSelect(
@@ -71,8 +71,9 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             value: ac.profile.feedDefaultExploreSort,
             oldValue: ac.selectedProfileValue.feedDefaultExploreSort,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(feedDefaultExploreSort: newValue),
+              ac.selectedProfileValue.copyWith(
+                feedDefaultExploreSort: newValue,
+              ),
             ),
           ),
           ListTileSelect(
@@ -82,8 +83,9 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             value: ac.profile.feedDefaultCommentSort,
             oldValue: ac.selectedProfileValue.feedDefaultCommentSort,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(feedDefaultCommentSort: newValue),
+              ac.selectedProfileValue.copyWith(
+                feedDefaultCommentSort: newValue,
+              ),
             ),
           ),
           ListTileSwitch(
@@ -91,7 +93,10 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             title: Text(l(context).settings_feedDefaults_hideReadPosts),
             value: ac.profile.feedDefaultHideReadPosts,
             onChanged: (newValue) => ac.updateProfile(
-                ac.selectedProfileValue.copyWith(feedDefaultHideReadPosts: newValue)),
+              ac.selectedProfileValue.copyWith(
+                feedDefaultHideReadPosts: newValue,
+              ),
+            ),
           ),
         ],
       ),

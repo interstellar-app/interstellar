@@ -44,10 +44,7 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
     final shouldPop = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginConfirmScreen(
-          software,
-          host,
-        ),
+        builder: (context) => LoginConfirmScreen(software, host),
       ),
     );
 
@@ -62,9 +59,7 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).addAccount),
-      ),
+      appBar: AppBar(title: Text(l(context).addAccount)),
       body: ListView(
         children: [
           Padding(
@@ -89,17 +84,19 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(children: [
-              Text(
-                l(context).recommendedInstances,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 4),
-              ..._recommendedInstances.map((v) => ListTile(
-                    title: Text(v),
-                    onTap: () => _initiateLogin(v),
-                  ))
-            ]),
+            child: Column(
+              children: [
+                Text(
+                  l(context).recommendedInstances,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 4),
+                ..._recommendedInstances.map(
+                  (v) =>
+                      ListTile(title: Text(v), onTap: () => _initiateLogin(v)),
+                ),
+              ],
+            ),
           ),
         ],
       ),

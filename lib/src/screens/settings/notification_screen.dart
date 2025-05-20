@@ -28,8 +28,11 @@ class _NotificationSettingsScreenState
   }
 
   void _initSettings() async {
-    final settings =
-        await context.read<AppController>().api.users.getUserSettings();
+    final settings = await context
+        .read<AppController>()
+        .api
+        .users
+        .getUserSettings();
     setState(() {
       _settings = settings;
     });
@@ -59,9 +62,11 @@ class _NotificationSettingsScreenState
           if (Platform.isAndroid) ...[
             ListTileSwitch(
               leading: const Icon(Symbols.notifications_active_rounded),
-              title: Text(context.watch<AppController>().isPushRegistered
-                  ? l(context).notifications_unregisterPush
-                  : l(context).notifications_registerPush),
+              title: Text(
+                context.watch<AppController>().isPushRegistered
+                    ? l(context).notifications_unregisterPush
+                    : l(context).notifications_registerPush,
+              ),
               value: ac.isPushRegistered,
               onChanged: (bool? value) async {
                 if (value == true) {
@@ -105,8 +110,9 @@ class _NotificationSettingsScreenState
               },
             ),
             ListTileSwitch(
-              title:
-                  Text(l(context).account_settings_notifyOnThreadCommentReply),
+              title: Text(
+                l(context).account_settings_notifyOnThreadCommentReply,
+              ),
               value: _settings!.notifyOnNewEntryCommentReply!,
               onChanged: (bool? value) {
                 setState(() {
@@ -127,7 +133,8 @@ class _NotificationSettingsScreenState
             ),
             ListTileSwitch(
               title: Text(
-                  l(context).account_settings_notifyOnMicroblogCommentReply),
+                l(context).account_settings_notifyOnMicroblogCommentReply,
+              ),
               value: _settings!.notifyOnNewPostCommentReply!,
               onChanged: (bool? value) {
                 setState(() {
@@ -136,7 +143,7 @@ class _NotificationSettingsScreenState
                 });
               },
             ),
-          ]
+          ],
         ],
       ),
     );

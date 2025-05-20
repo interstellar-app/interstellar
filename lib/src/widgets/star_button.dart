@@ -6,10 +6,7 @@ import 'package:provider/provider.dart';
 class StarButton extends StatelessWidget {
   final String name;
 
-  const StarButton(
-    this.name, {
-    super.key,
-  });
+  const StarButton(this.name, {super.key});
 
   @override
   Widget build(BuildContext context) {

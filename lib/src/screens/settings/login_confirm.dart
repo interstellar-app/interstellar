@@ -35,9 +35,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).addAccount),
-      ),
+      appBar: AppBar(title: Text(l(context).addAccount)),
       body: ListView(
         children: [
           Padding(
@@ -59,29 +57,34 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
               widget.software == ServerSoftware.piefed)
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(children: [
-                TextEditor(
-                  _usernameEmailTextController,
-                  label: l(context).usernameOrEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (_) => setState(() {}),
-                  autofillHints: [AutofillHints.username, AutofillHints.email],
-                ),
-                const SizedBox(height: 12),
-                PasswordEditor(
-                  _passwordTextController,
-                  onChanged: (_) => setState(() {}),
-                ),
-                if (widget.software == ServerSoftware.lemmy) ...[
-                  const SizedBox(height: 12),
+              child: Column(
+                children: [
                   TextEditor(
-                    _totpTokenTextController,
-                    label: l(context).totpToken,
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
+                    _usernameEmailTextController,
+                    label: l(context).usernameOrEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (_) => setState(() {}),
+                    autofillHints: [
+                      AutofillHints.username,
+                      AutofillHints.email,
+                    ],
                   ),
-                ]
-              ]),
+                  const SizedBox(height: 12),
+                  PasswordEditor(
+                    _passwordTextController,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  if (widget.software == ServerSoftware.lemmy) ...[
+                    const SizedBox(height: 12),
+                    TextEditor(
+                      _totpTokenTextController,
+                      label: l(context).totpToken,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                    ),
+                  ],
+                ],
+              ),
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -89,9 +92,11 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
               OutlinedButton(
                 onPressed: () {
                   String account = '@${widget.server}';
-                  context
-                      .read<AppController>()
-                      .setAccount(account, const Account(), switchNow: true);
+                  context.read<AppController>().setAccount(
+                    account,
+                    const Account(),
+                    switchNow: true,
+                  );
 
                   Navigator.pop(context, true);
                 },
@@ -100,7 +105,8 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
               const SizedBox(width: 12),
               LoadingFilledButton(
                 label: Text(l(context).login),
-                onPressed: widget.software == ServerSoftware.lemmy &&
+                onPressed:
+                    widget.software == ServerSoftware.lemmy &&
                         (_usernameEmailTextController.text.isEmpty ||
                             _passwordTextController.text.isEmpty)
                     ? null
@@ -110,8 +116,10 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           final loginPath =
                               '${widget.software.apiPathPrefix}/user/login';
 
-                          final loginEndpoint =
-                              Uri.https(widget.server, loginPath);
+                          final loginEndpoint = Uri.https(
+                            widget.server,
+                            loginPath,
+                          );
 
                           final response = await http.post(
                             loginEndpoint,
@@ -120,40 +128,53 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                               switch (widget.software) {
                                 ServerSoftware.lemmy => 'username_or_email',
                                 ServerSoftware.piefed => 'username',
-                                ServerSoftware.mbin =>
-                                  throw Exception('unreachable'),
+                                ServerSoftware.mbin => throw Exception(
+                                  'unreachable',
+                                ),
                               }: _usernameEmailTextController.text,
                               'password': _passwordTextController.text,
                               if (widget.software == ServerSoftware.lemmy)
-                                'totp_2fa_token':
-                                    nullIfEmpty(_totpTokenTextController.text),
+                                'totp_2fa_token': nullIfEmpty(
+                                  _totpTokenTextController.text,
+                                ),
                             }),
                           );
                           ServerClient.checkResponseSuccess(
-                              loginEndpoint, response);
+                            loginEndpoint,
+                            response,
+                          );
 
                           final jwt = response.bodyJson['jwt'] as String;
-                          final user = await API(ServerClient(
-                            httpClient: JwtHttpClient(jwt),
-                            software: widget.software,
-                            domain: widget.server,
-                          )).users.getMe();
+                          final user = await API(
+                            ServerClient(
+                              httpClient: JwtHttpClient(jwt),
+                              software: widget.software,
+                              domain: widget.server,
+                            ),
+                          ).users.getMe();
 
                           // Check BuildContext
                           if (!mounted) return;
                           context.read<AppController>().setAccount(
-                              '${user.name}@${widget.server}',
-                              Account(jwt: response.bodyJson['jwt'] as String));
+                            '${user.name}@${widget.server}',
+                            Account(jwt: response.bodyJson['jwt'] as String),
+                          );
                         } else {
-                          final authorizationEndpoint =
-                              Uri.https(widget.server, '/authorize');
-                          final tokenEndpoint =
-                              Uri.https(widget.server, '/token');
+                          final authorizationEndpoint = Uri.https(
+                            widget.server,
+                            '/authorize',
+                          );
+                          final tokenEndpoint = Uri.https(
+                            widget.server,
+                            '/token',
+                          );
 
                           String identifier = await context
                               .read<AppController>()
                               .getMbinOAuthIdentifier(
-                                  widget.software, widget.server);
+                                widget.software,
+                                widget.server,
+                              );
 
                           final grant = oauth2.AuthorizationCodeGrant(
                             identifier,
@@ -162,8 +183,9 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           );
 
                           Uri authorizationUrl = grant.getAuthorizationUrl(
-                              Uri.parse(redirectUri),
-                              scopes: oauthScopes);
+                            Uri.parse(redirectUri),
+                            scopes: oauthScopes,
+                          );
 
                           // Check BuildContext
                           if (!mounted) return;
@@ -171,10 +193,11 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           Map<String, String>? result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RedirectListener(
-                                      authorizationUrl,
-                                      title: widget.server,
-                                    )),
+                              builder: (context) => RedirectListener(
+                                authorizationUrl,
+                                title: widget.server,
+                              ),
+                            ),
                           );
 
                           if (result == null || !result.containsKey('code')) {
@@ -185,23 +208,26 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                             );
                           }
 
-                          var client =
-                              await grant.handleAuthorizationResponse(result);
+                          var client = await grant.handleAuthorizationResponse(
+                            result,
+                          );
 
-                          var user = await API(ServerClient(
-                            httpClient: client,
-                            software: widget.software,
-                            domain: widget.server,
-                          )).users.getMe();
+                          var user = await API(
+                            ServerClient(
+                              httpClient: client,
+                              software: widget.software,
+                              domain: widget.server,
+                            ),
+                          ).users.getMe();
 
                           // Check BuildContext
                           if (!mounted) return;
 
                           context.read<AppController>().setAccount(
-                                '${user.name}@${widget.server}',
-                                Account(oauth: client.credentials),
-                                switchNow: true,
-                              );
+                            '${user.name}@${widget.server}',
+                            Account(oauth: client.credentials),
+                            switchNow: true,
+                          );
                         }
 
                         Navigator.pop(context, true);

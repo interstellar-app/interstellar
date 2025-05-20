@@ -56,8 +56,9 @@ class _NotificationsScreenState extends State<NotificationsScreen>
 
       // Prevent duplicates
       final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems =
-          newPage.items.where((e) => !currentItemIds.contains(e.id)).toList();
+      final newItems = newPage.items
+          .where((e) => !currentItemIds.contains(e.id))
+          .toList();
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
@@ -68,13 +69,12 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final currentNotificationFilter =
-        notificationFilterSelect(context).getOption(filter);
+    final currentNotificationFilter = notificationFilterSelect(
+      context,
+    ).getOption(filter);
 
     return RefreshIndicator(
-      onRefresh: () => Future.sync(
-        () => _pagingController.refresh(),
-      ),
+      onRefresh: () => Future.sync(() => _pagingController.refresh()),
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -95,8 +95,9 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                         ],
                       ),
                       onPressed: () async {
-                        final result = await notificationFilterSelect(context)
-                            .askSelection(context, filter);
+                        final result = await notificationFilterSelect(
+                          context,
+                        ).askSelection(context, filter);
 
                         if (result != null) {
                           setState(() {
@@ -131,9 +132,9 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             builderDelegate: PagedChildBuilderDelegate<NotificationModel>(
               firstPageErrorIndicatorBuilder: (context) =>
                   FirstPageErrorIndicator(
-                error: _pagingController.error,
-                onTryAgain: _pagingController.retryLastFailedRequest,
-              ),
+                    error: _pagingController.error,
+                    onTryAgain: _pagingController.retryLastFailedRequest,
+                  ),
               newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
                 error: _pagingController.error,
                 onTryAgain: _pagingController.retryLastFailedRequest,
@@ -141,31 +142,31 @@ class _NotificationsScreenState extends State<NotificationsScreen>
               itemBuilder: (context, item, index) =>
                   // Hide notifications that could not be matched correctly
                   item.type == null ||
-                          item.subject == null ||
-                          item.creator == null ||
-                          // If Lemmy, then hide items that come from the current user, in order to show only real "notifications".
-                          // You also can't change the read state of said items anyway.
-                          context.watch<AppController>().serverSoftware ==
-                                  ServerSoftware.lemmy &&
-                              item.creator?.name ==
-                                  context.watch<AppController>().localName
-                      ? SizedBox()
-                      : Padding(
-                          padding: const EdgeInsets.only(
-                            left: 16,
-                            right: 16,
-                            bottom: 8,
-                          ),
-                          child: NotificationItem(item, (newValue) {
-                            var newList = _pagingController.itemList;
-                            newList![index] = newValue;
-                            setState(() {
-                              _pagingController.itemList = newList;
-                            });
-                          }),
-                        ),
+                      item.subject == null ||
+                      item.creator == null ||
+                      // If Lemmy, then hide items that come from the current user, in order to show only real "notifications".
+                      // You also can't change the read state of said items anyway.
+                      context.watch<AppController>().serverSoftware ==
+                              ServerSoftware.lemmy &&
+                          item.creator?.name ==
+                              context.watch<AppController>().localName
+                  ? SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        bottom: 8,
+                      ),
+                      child: NotificationItem(item, (newValue) {
+                        var newList = _pagingController.itemList;
+                        newList![index] = newValue;
+                        setState(() {
+                          _pagingController.itemList = newList;
+                        });
+                      }),
+                    ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -179,28 +180,23 @@ class _NotificationsScreenState extends State<NotificationsScreen>
 }
 
 SelectionMenu<NotificationsFilter> notificationFilterSelect(
-        BuildContext context) =>
-    SelectionMenu(
-      l(context).filter,
-      [
-        SelectionMenuItem(
-          value: NotificationsFilter.all,
-          title: l(context).filter_all,
-          icon: Symbols.filter_list_rounded,
-        ),
-        SelectionMenuItem(
-          value: NotificationsFilter.new_,
-          title: l(context).filter_new,
-          icon: Symbols.nest_eco_leaf_rounded,
-        ),
-        if (context.read<AppController>().serverSoftware ==
-                ServerSoftware.mbin ||
-            context.read<AppController>().serverSoftware ==
-                ServerSoftware.piefed)
-          SelectionMenuItem(
-            value: NotificationsFilter.read,
-            title: l(context).filter_read,
-            icon: Symbols.mark_chat_read_rounded,
-          ),
-      ],
-    );
+  BuildContext context,
+) => SelectionMenu(l(context).filter, [
+  SelectionMenuItem(
+    value: NotificationsFilter.all,
+    title: l(context).filter_all,
+    icon: Symbols.filter_list_rounded,
+  ),
+  SelectionMenuItem(
+    value: NotificationsFilter.new_,
+    title: l(context).filter_new,
+    icon: Symbols.nest_eco_leaf_rounded,
+  ),
+  if (context.read<AppController>().serverSoftware == ServerSoftware.mbin ||
+      context.read<AppController>().serverSoftware == ServerSoftware.piefed)
+    SelectionMenuItem(
+      value: NotificationsFilter.read,
+      title: l(context).filter_read,
+      icon: Symbols.mark_chat_read_rounded,
+    ),
+]);

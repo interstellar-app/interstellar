@@ -146,9 +146,10 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                       border: action.showDivider
                                           ? Border(
                                               right: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .outlineVariant),
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.outlineVariant,
+                                              ),
                                             )
                                           : null,
                                     ),
@@ -162,12 +163,14 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                           execAction(action.action);
                                         },
                                         icon: Icon(action.icon),
-                                        tooltip: action.tooltip +
+                                        tooltip:
+                                            action.tooltip +
                                             (action.shortcut == null
                                                 ? ''
                                                 : ' (${readableShortcut(action.shortcut!)})'),
                                         style: TextButton.styleFrom(
-                                            shape: const LinearBorder()),
+                                          shape: const LinearBorder(),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -176,9 +179,10 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   decoration: BoxDecoration(
                                     border: Border(
                                       right: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outlineVariant),
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.outlineVariant,
+                                      ),
                                     ),
                                   ),
                                   child: SizedBox(
@@ -186,8 +190,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                     height: 40,
                                     child: IconButton(
                                       onPressed: () async {
-                                        final config =
-                                            await showDialog<String?>(
+                                        final config = await showDialog<String?>(
                                           context: context,
                                           builder: (BuildContext context) {
                                             return const _MarkdownEditorConfigShareDialog();
@@ -199,12 +202,15 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                         if (config == null) return;
 
                                         execAction(
-                                            _MarkdownEditorActionInsertSection(
-                                                config));
+                                          _MarkdownEditorActionInsertSection(
+                                            config,
+                                          ),
+                                        );
                                       },
                                       icon: const Icon(Symbols.share_rounded),
                                       style: TextButton.styleFrom(
-                                          shape: const LinearBorder()),
+                                        shape: const LinearBorder(),
+                                      ),
                                       tooltip: l(context).configShare,
                                     ),
                                   ),
@@ -216,13 +222,16 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                           Expanded(
                             child: CallbackShortcuts(
                               bindings: <ShortcutActivator, VoidCallback>{
-                                const SingleActivator(LogicalKeyboardKey.enter):
-                                    () => execAction(
-                                        const _MarkdownEditorActionEnter()),
-                                for (var action in _actions(context)
-                                    .where((action) => action.shortcut != null))
+                                const SingleActivator(
+                                  LogicalKeyboardKey.enter,
+                                ): () => execAction(
+                                  const _MarkdownEditorActionEnter(),
+                                ),
+                                for (var action in _actions(
+                                  context,
+                                ).where((action) => action.shortcut != null))
                                   action.shortcut!: () =>
-                                      execAction(action.action)
+                                      execAction(action.action),
                               },
                               child: TextField(
                                 controller: widget.controller,
@@ -256,9 +265,10 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Markdown(
-                              widget.controller.text,
-                              widget.originInstance ??
-                                  context.watch<AppController>().instanceHost),
+                            widget.controller.text,
+                            widget.originInstance ??
+                                context.watch<AppController>().instanceHost,
+                          ),
                         ),
                       ),
                       Column(
@@ -275,17 +285,22 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                           await context
                                               .read<DraftsController>()
                                               .manualSave(
-                                                  widget.controller.text);
+                                                widget.controller.text,
+                                              );
                                         },
-                                  label: Text(l(context)
-                                      .markdownEditor_drafts_manuallySave),
+                                  label: Text(
+                                    l(
+                                      context,
+                                    ).markdownEditor_drafts_manuallySave,
+                                  ),
                                   icon: const Icon(Symbols.save_rounded),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8),
                                 child: LoadingOutlinedButton(
-                                  onPressed: context
+                                  onPressed:
+                                      context
                                           .watch<DraftsController>()
                                           .drafts
                                           .isEmpty
@@ -295,38 +310,45 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                               .read<DraftsController>()
                                               .removeAll();
                                         },
-                                  label: Text(l(context)
-                                      .markdownEditor_drafts_discardAll),
+                                  label: Text(
+                                    l(context).markdownEditor_drafts_discardAll,
+                                  ),
                                   icon: const Icon(
-                                      Symbols.delete_forever_rounded),
+                                    Symbols.delete_forever_rounded,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                           Expanded(
-                            child: Builder(builder: (context) {
-                              return ListView(
-                                children: context
-                                    .watch<DraftsController>()
-                                    .drafts
-                                    .reversed
-                                    .map((draft) => _MarkdownEditorDraftItem(
+                            child: Builder(
+                              builder: (context) {
+                                return ListView(
+                                  children: context
+                                      .watch<DraftsController>()
+                                      .drafts
+                                      .reversed
+                                      .map(
+                                        (draft) => _MarkdownEditorDraftItem(
                                           draft: draft,
                                           onApply: () {
                                             widget.controller.text = draft.body;
 
-                                            DefaultTabController.of(context)
-                                                .animateTo(0);
+                                            DefaultTabController.of(
+                                              context,
+                                            ).animateTo(0);
                                           },
                                           originInstance:
                                               widget.originInstance ??
-                                                  context
-                                                      .watch<AppController>()
-                                                      .instanceHost,
-                                        ))
-                                    .toList(),
-                              );
-                            }),
+                                              context
+                                                  .watch<AppController>()
+                                                  .instanceHost,
+                                        ),
+                                      )
+                                      .toList(),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -343,115 +365,136 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
 }
 
 List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionBlock('### '),
-        icon: Symbols.title_rounded,
-        tooltip: l(context).markdownEditor_heading,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyH, control: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('**'),
-        icon: Symbols.format_bold_rounded,
-        tooltip: l(context).markdownEditor_bold,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyB, control: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('_'),
-        icon: Symbols.format_italic_rounded,
-        tooltip: l(context).markdownEditor_italic,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyI, control: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('~~'),
-        icon: Symbols.strikethrough_s_rounded,
-        tooltip: l(context).markdownEditor_strikethrough,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyX,
-            control: true, alt: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('`'),
-        icon: Symbols.code_rounded,
-        tooltip: l(context).markdownEditor_inlineCode,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyE, control: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('\n```\n'),
-        icon: Symbols.segment_rounded,
-        tooltip: l(context).markdownEditor_codeBlock,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyE,
-            control: true, alt: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionLink(),
-        icon: Symbols.link_rounded,
-        tooltip: l(context).markdownEditor_link,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyK, control: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionLink(isImage: true),
-        icon: Symbols.image_rounded,
-        tooltip: l(context).markdownEditor_image,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyK,
-            control: true, alt: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('~'),
-        icon: Symbols.subscript_rounded,
-        tooltip: l(context).markdownEditor_subscript,
-        shortcut:
-            const SingleActivator(LogicalKeyboardKey.comma, control: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInline('^'),
-        icon: Symbols.superscript_rounded,
-        tooltip: l(context).markdownEditor_superscript,
-        shortcut:
-            const SingleActivator(LogicalKeyboardKey.period, control: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionBlock('> '),
-        icon: Symbols.format_quote_rounded,
-        tooltip: l(context).markdownEditor_quote,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyQ,
-            control: true, alt: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionInsertSection('---'),
-        icon: Symbols.horizontal_rule_rounded,
-        tooltip: l(context).markdownEditor_horizontalRule,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyH,
-            control: true, alt: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionBlock('- '),
-        icon: Symbols.format_list_bulleted_rounded,
-        tooltip: l(context).markdownEditor_bulletedList,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyL, control: true),
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionBlock('1. '),
-        icon: Symbols.format_list_numbered_rounded,
-        tooltip: l(context).markdownEditor_numberedList,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyL,
-            control: true, alt: true),
-        showDivider: true,
-      ),
-      _MarkdownEditorActionInfo(
-        action: const _MarkdownEditorActionBlock(
-            '\n::: spoiler PREVIEW_HERE\n', '\n:::\n'),
-        icon: Symbols.warning_rounded,
-        tooltip: l(context).markdownEditor_spoiler,
-        shortcut: const SingleActivator(LogicalKeyboardKey.keyS,
-            control: true, alt: true),
-        showDivider: true,
-      ),
-    ];
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionBlock('### '),
+    icon: Symbols.title_rounded,
+    tooltip: l(context).markdownEditor_heading,
+    shortcut: const SingleActivator(LogicalKeyboardKey.keyH, control: true),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('**'),
+    icon: Symbols.format_bold_rounded,
+    tooltip: l(context).markdownEditor_bold,
+    shortcut: const SingleActivator(LogicalKeyboardKey.keyB, control: true),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('_'),
+    icon: Symbols.format_italic_rounded,
+    tooltip: l(context).markdownEditor_italic,
+    shortcut: const SingleActivator(LogicalKeyboardKey.keyI, control: true),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('~~'),
+    icon: Symbols.strikethrough_s_rounded,
+    tooltip: l(context).markdownEditor_strikethrough,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyX,
+      control: true,
+      alt: true,
+    ),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('`'),
+    icon: Symbols.code_rounded,
+    tooltip: l(context).markdownEditor_inlineCode,
+    shortcut: const SingleActivator(LogicalKeyboardKey.keyE, control: true),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('\n```\n'),
+    icon: Symbols.segment_rounded,
+    tooltip: l(context).markdownEditor_codeBlock,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyE,
+      control: true,
+      alt: true,
+    ),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionLink(),
+    icon: Symbols.link_rounded,
+    tooltip: l(context).markdownEditor_link,
+    shortcut: const SingleActivator(LogicalKeyboardKey.keyK, control: true),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionLink(isImage: true),
+    icon: Symbols.image_rounded,
+    tooltip: l(context).markdownEditor_image,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyK,
+      control: true,
+      alt: true,
+    ),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('~'),
+    icon: Symbols.subscript_rounded,
+    tooltip: l(context).markdownEditor_subscript,
+    shortcut: const SingleActivator(LogicalKeyboardKey.comma, control: true),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInline('^'),
+    icon: Symbols.superscript_rounded,
+    tooltip: l(context).markdownEditor_superscript,
+    shortcut: const SingleActivator(LogicalKeyboardKey.period, control: true),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionBlock('> '),
+    icon: Symbols.format_quote_rounded,
+    tooltip: l(context).markdownEditor_quote,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyQ,
+      control: true,
+      alt: true,
+    ),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionInsertSection('---'),
+    icon: Symbols.horizontal_rule_rounded,
+    tooltip: l(context).markdownEditor_horizontalRule,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyH,
+      control: true,
+      alt: true,
+    ),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionBlock('- '),
+    icon: Symbols.format_list_bulleted_rounded,
+    tooltip: l(context).markdownEditor_bulletedList,
+    shortcut: const SingleActivator(LogicalKeyboardKey.keyL, control: true),
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionBlock('1. '),
+    icon: Symbols.format_list_numbered_rounded,
+    tooltip: l(context).markdownEditor_numberedList,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyL,
+      control: true,
+      alt: true,
+    ),
+    showDivider: true,
+  ),
+  _MarkdownEditorActionInfo(
+    action: const _MarkdownEditorActionBlock(
+      '\n::: spoiler PREVIEW_HERE\n',
+      '\n:::\n',
+    ),
+    icon: Symbols.warning_rounded,
+    tooltip: l(context).markdownEditor_spoiler,
+    shortcut: const SingleActivator(
+      LogicalKeyboardKey.keyS,
+      control: true,
+      alt: true,
+    ),
+    showDivider: true,
+  ),
+];
 
 class _MarkdownEditorActionInfo {
   final _MarkdownEditorActionBase action;
@@ -511,7 +554,7 @@ class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
   final String endChars;
 
   const _MarkdownEditorActionInline(this.startChars, [String? endChars])
-      : endChars = endChars ?? startChars;
+    : endChars = endChars ?? startChars;
 
   @override
   _MarkdownEditorData run(_MarkdownEditorData input) {
@@ -531,10 +574,16 @@ class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
         selectionEnd: input.selectionEnd - startChars.length,
       );
     } else {
-      text =
-          text.replaceRange(input.selectionEnd, input.selectionEnd, endChars);
       text = text.replaceRange(
-          input.selectionStart, input.selectionStart, startChars);
+        input.selectionEnd,
+        input.selectionEnd,
+        endChars,
+      );
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        startChars,
+      );
       return _MarkdownEditorData(
         text: text,
         selectionStart: input.selectionStart + startChars.length,
@@ -559,9 +608,15 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
     if (line.selectionText.startsWith(startChars) &&
         line.selectionText.endsWith(endChars)) {
       text = text.replaceRange(
-          line.selectionEnd - endChars.length, line.selectionEnd, '');
+        line.selectionEnd - endChars.length,
+        line.selectionEnd,
+        '',
+      );
       text = text.replaceRange(
-          line.selectionStart, line.selectionStart + startChars.length, '');
+        line.selectionStart,
+        line.selectionStart + startChars.length,
+        '',
+      );
       return _MarkdownEditorData(
         text: text,
         selectionStart: input.selectionStart - startChars.length,
@@ -570,7 +625,10 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
     } else {
       text = text.replaceRange(line.selectionEnd, line.selectionEnd, endChars);
       text = text.replaceRange(
-          line.selectionStart, line.selectionStart, startChars);
+        line.selectionStart,
+        line.selectionStart,
+        startChars,
+      );
       return _MarkdownEditorData(
         text: text,
         selectionStart: input.selectionStart + startChars.length,
@@ -594,8 +652,11 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
     var text = input.text;
 
     if (input.selectionText.isEmpty) {
-      text = text.replaceRange(input.selectionStart, input.selectionStart,
-          '$imageStartChar[$helpMessage](url)');
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        '$imageStartChar[$helpMessage](url)',
+      );
 
       return _MarkdownEditorData(
         text: text,
@@ -606,8 +667,11 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
 
     if (isValidUrl(input.selectionText)) {
       text = text.replaceRange(input.selectionEnd, input.selectionEnd, ')');
-      text = text.replaceRange(input.selectionStart, input.selectionStart,
-          '$imageStartChar[$helpMessage](');
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        '$imageStartChar[$helpMessage](',
+      );
 
       return _MarkdownEditorData(
         text: text,
@@ -615,10 +679,16 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
         selectionEnd: input.selectionStart + 5 + imageStartChar.length,
       );
     } else {
-      text =
-          text.replaceRange(input.selectionEnd, input.selectionEnd, '](url)');
       text = text.replaceRange(
-          input.selectionStart, input.selectionStart, '$imageStartChar[');
+        input.selectionEnd,
+        input.selectionEnd,
+        '](url)',
+      );
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        '$imageStartChar[',
+      );
 
       return _MarkdownEditorData(
         text: text,
@@ -663,8 +733,11 @@ class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
     final newText =
         '${'\n' * prefixNewlines}$sectionText${'\n' * suffixNewlines}';
 
-    text =
-        text.replaceRange(input.selectionStart, input.selectionStart, newText);
+    text = text.replaceRange(
+      input.selectionStart,
+      input.selectionStart,
+      newText,
+    );
 
     return _MarkdownEditorData(
       text: text,
@@ -693,7 +766,10 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
       if (line.selectionText.length == 2) {
         return _MarkdownEditorData(
           text: text.replaceRange(
-              line.selectionStart, line.selectionStart + 2, ''),
+            line.selectionStart,
+            line.selectionStart + 2,
+            '',
+          ),
           selectionStart: input.selectionStart - 2,
           selectionEnd: input.selectionEnd - 2,
         );
@@ -701,15 +777,19 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
 
       return _MarkdownEditorData(
         text: text.replaceRange(
-            input.selectionStart, input.selectionStart, '\n$style '),
+          input.selectionStart,
+          input.selectionStart,
+          '\n$style ',
+        ),
         selectionStart: input.selectionStart + 3,
         selectionEnd: input.selectionEnd + 3,
       );
     }
 
     // Numbered List
-    final numberedListMatch =
-        RegExp(r'(\d)+([.)]) ').matchAsPrefix(line.selectionText);
+    final numberedListMatch = RegExp(
+      r'(\d)+([.)]) ',
+    ).matchAsPrefix(line.selectionText);
     if (numberedListMatch != null) {
       final currentNumber = numberedListMatch[1]!;
       final nextNumber = (int.parse(currentNumber) + 1).toString();
@@ -719,8 +799,11 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
       final currentPrefixLength = currentNumber.length + 2;
       if (line.selectionText.length == currentPrefixLength) {
         return _MarkdownEditorData(
-          text: text.replaceRange(line.selectionStart,
-              line.selectionStart + currentPrefixLength, ''),
+          text: text.replaceRange(
+            line.selectionStart,
+            line.selectionStart + currentPrefixLength,
+            '',
+          ),
           selectionStart: input.selectionStart - currentPrefixLength,
           selectionEnd: input.selectionEnd - currentPrefixLength,
         );
@@ -729,7 +812,10 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
       final nextPrefixLength = nextNumber.length + 2;
       return _MarkdownEditorData(
         text: text.replaceRange(
-            input.selectionStart, input.selectionStart, '\n$nextNumber$style '),
+          input.selectionStart,
+          input.selectionStart,
+          '\n$nextNumber$style ',
+        ),
         selectionStart: input.selectionStart + 1 + nextPrefixLength,
         selectionEnd: input.selectionEnd + 1 + nextPrefixLength,
       );
@@ -760,8 +846,9 @@ class _MarkdownEditorDraftItem extends StatefulWidget {
 }
 
 class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
-  final ExpandableController _expandableController =
-      ExpandableController(initialExpanded: false);
+  final ExpandableController _expandableController = ExpandableController(
+    initialExpanded: false,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -783,9 +870,11 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
           subtitle: Text(
             '${dateTimeFormat(widget.draft.at)}\n${widget.draft.resourceId != null ? l(context).markdownEditor_drafts_savedAutomatically : l(context).markdownEditor_drafts_savedManually}${widget.draft.resourceId != null ? ': ${widget.draft.resourceId}' : ''}',
           ),
-          leading: Icon(_expandableController.expanded
-              ? Symbols.expand_less_rounded
-              : Symbols.expand_more_rounded),
+          leading: Icon(
+            _expandableController.expanded
+                ? Symbols.expand_less_rounded
+                : Symbols.expand_more_rounded,
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -810,7 +899,8 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                               widget.onApply();
                             },
                             child: Text(
-                                l(context).markdownEditor_drafts_applyAndKeep),
+                              l(context).markdownEditor_drafts_applyAndKeep,
+                            ),
                           ),
                           FilledButton(
                             onPressed: () {
@@ -820,8 +910,9 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
 
                               discardDraft();
                             },
-                            child: Text(l(context)
-                                .markdownEditor_drafts_applyAndDiscard),
+                            child: Text(
+                              l(context).markdownEditor_drafts_applyAndDiscard,
+                            ),
                           ),
                         ],
                         actionsOverflowAlignment: OverflowBarAlignment.center,
@@ -894,18 +985,14 @@ class _MarkdownEditorConfigShareDialogState
       title: Text(l(context).configShare),
       children: [
         if (_profiles != null && _profiles!.isNotEmpty) ...[
-          Padding(
-            padding: headerEdgeInserts,
-            child: Text(l(context).profiles),
-          ),
+          Padding(padding: headerEdgeInserts, child: Text(l(context).profiles)),
           ..._profiles!.map(
             (profileName) => SimpleDialogOption(
               child: Text(profileName),
               onPressed: () async {
-                final profile = (await context
-                        .read<AppController>()
-                        .getProfile(profileName))
-                    .exportReady();
+                final profile = (await context.read<AppController>().getProfile(
+                  profileName,
+                )).exportReady();
 
                 final config = await ConfigShare.create(
                   type: ConfigShareType.profile,
@@ -926,8 +1013,9 @@ class _MarkdownEditorConfigShareDialogState
             (filterListName) => SimpleDialogOption(
               child: Text(filterListName),
               onPressed: () async {
-                final filterList =
-                    context.read<AppController>().filterLists[filterListName]!;
+                final filterList = context
+                    .read<AppController>()
+                    .filterLists[filterListName]!;
 
                 final config = await ConfigShare.create(
                   type: ConfigShareType.filterList,

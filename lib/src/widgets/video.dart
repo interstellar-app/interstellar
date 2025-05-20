@@ -12,8 +12,12 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart'
 import 'package:interstellar/src/controller/controller.dart';
 
 bool isSupportedYouTubeVideo(Uri link) {
-  return ['www.youtube.com', 'youtube.com', 'youtu.be', 'm.youtube.com']
-      .contains(link.host);
+  return [
+    'www.youtube.com',
+    'youtube.com',
+    'youtu.be',
+    'm.youtube.com',
+  ].contains(link.host);
 }
 
 class VideoPlayer extends StatefulWidget {
@@ -43,26 +47,17 @@ class _VideoPlayerState extends State<VideoPlayer> {
       // TODO: calculate best quality for device based on screen size and data saver mode, also add manual stream selection
       if (manifest.muxed.isNotEmpty) {
         final muxedStream = manifest.muxed.bestQuality;
-        player.open(
-          Media(muxedStream.url.toString()),
-          play: autoPlay,
-        );
+        player.open(Media(muxedStream.url.toString()), play: autoPlay);
       } else {
         final videoStream = manifest.video.bestQuality;
         final audioStream = manifest.audio.withHighestBitrate();
         final media = Media(videoStream.url.toString());
 
-        player.open(
-          media,
-          play: autoPlay,
-        );
+        player.open(media, play: autoPlay);
         player.setAudioTrack(AudioTrack.uri(audioStream.url.toString()));
       }
     } else {
-      player.open(
-        Media(widget.uri.toString()),
-        play: autoPlay,
-      );
+      player.open(Media(widget.uri.toString()), play: autoPlay);
     }
   }
 

@@ -29,8 +29,9 @@ class MbinAPIMicroblogs {
       FeedSource.favorited => '/posts/favourited',
       FeedSource.magazine => '/magazine/${sourceId!}/posts',
       FeedSource.user => '/users/${sourceId!}/posts',
-      FeedSource.domain =>
-        throw Exception('Domain source not allowed for microblog'),
+      FeedSource.domain => throw Exception(
+        'Domain source not allowed for microblog',
+      ),
     };
 
     final query = {
@@ -81,19 +82,13 @@ class MbinAPIMicroblogs {
 
     final response = await client.put(
       path,
-      body: {
-        'body': body,
-        'lang': lang,
-        'isAdult': isAdult,
-      },
+      body: {'body': body, 'lang': lang, 'isAdult': isAdult},
     );
 
     return PostModel.fromMbinPost(response.bodyJson);
   }
 
-  Future<void> delete(
-    int postID,
-  ) async {
+  Future<void> delete(int postID) async {
     final path = '/post/$postID';
 
     final response = await client.delete(path);
@@ -126,7 +121,9 @@ class MbinAPIMicroblogs {
     final path = '/magazine/$magazineID/posts/image';
 
     var request = http.MultipartRequest(
-        'POST', Uri.https(client.domain, client.software.apiPathPrefix + path));
+      'POST',
+      Uri.https(client.domain, client.software.apiPathPrefix + path),
+    );
 
     var multipartFile = http.MultipartFile.fromBytes(
       'uploadImage',
@@ -147,9 +144,6 @@ class MbinAPIMicroblogs {
   Future<void> report(int postId, String reason) async {
     final path = '/post/$postId/report';
 
-    final response = await client.post(
-      path,
-      body: {'reason': reason},
-    );
+    final response = await client.post(path, body: {'reason': reason});
   }
 }

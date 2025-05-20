@@ -32,18 +32,18 @@ class API {
   final APIBookmark bookmark;
 
   API(this.client)
-      : comments = APIComments(client),
-        domains = MbinAPIDomains(client),
-        threads = APIThreads(client),
-        magazines = APIMagazines(client),
-        magazineModeration = APIMagazineModeration(client),
-        messages = APIMessages(client),
-        moderation = APIModeration(client),
-        notifications = APINotifications(client),
-        microblogs = MbinAPIMicroblogs(client),
-        search = APISearch(client),
-        users = APIUsers(client),
-        bookmark = APIBookmark(client);
+    : comments = APIComments(client),
+      domains = MbinAPIDomains(client),
+      threads = APIThreads(client),
+      magazines = APIMagazines(client),
+      magazineModeration = APIMagazineModeration(client),
+      messages = APIMessages(client),
+      moderation = APIModeration(client),
+      notifications = APINotifications(client),
+      microblogs = MbinAPIMicroblogs(client),
+      search = APISearch(client),
+      users = APIUsers(client),
+      bookmark = APIBookmark(client);
 }
 
 Future<ServerSoftware?> getServerSoftware(String server) async {
@@ -51,8 +51,9 @@ Future<ServerSoftware?> getServerSoftware(String server) async {
 
   try {
     return ServerSoftware.values.byName(
-        ((response.bodyJson['software'] as JsonMap)['name'] as String)
-            .toLowerCase());
+      ((response.bodyJson['software'] as JsonMap)['name'] as String)
+          .toLowerCase(),
+    );
   } catch (_) {
     return null;
   }

@@ -35,7 +35,6 @@ class LoadingListTile extends StatefulWidget {
 
   @override
   State<LoadingListTile> createState() => _LoadingListTileState();
-
 }
 
 class _LoadingListTileState extends State<LoadingListTile> {
@@ -49,17 +48,18 @@ class _LoadingListTileState extends State<LoadingListTile> {
       leading: widget.leading,
       title: widget.title,
       subtitle: widget.subtitle,
-      onTap: widget.onTap == null ? null : () async {
-        setState(() => _isLoading = true);
-        try {
-          await widget.onTap!();
-        } catch (e) {
-          rethrow;
-        } finally {
-          if (mounted) setState(() => _isLoading = false);
-        }
-
-      },
+      onTap: widget.onTap == null
+          ? null
+          : () async {
+              setState(() => _isLoading = true);
+              try {
+                await widget.onTap!();
+              } catch (e) {
+                rethrow;
+              } finally {
+                if (mounted) setState(() => _isLoading = false);
+              }
+            },
       trailing: _isLoading ? _LoadingTileIndicator() : widget.trailing,
       textColor: color,
       iconColor: color,

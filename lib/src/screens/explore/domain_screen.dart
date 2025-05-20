@@ -35,9 +35,11 @@ class _DomainScreenState extends State<DomainScreen> {
           .api
           .domains
           .get(widget.domainId)
-          .then((value) => setState(() {
-                _data = value;
-              }));
+          .then(
+            (value) => setState(() {
+              _data = value;
+            }),
+          );
     }
   }
 
@@ -88,10 +90,7 @@ class _DomainScreenState extends State<DomainScreen> {
                                 .read<AppController>()
                                 .api
                                 .domains
-                                .putBlock(
-                                  _data!.id,
-                                  !_data!.isBlockedByUser!,
-                                );
+                                .putBlock(_data!.id, !_data!.isBlockedByUser!);
 
                             setState(() {
                               _data = newValue;
@@ -103,9 +102,10 @@ class _DomainScreenState extends State<DomainScreen> {
                           icon: const Icon(Symbols.block_rounded),
                           style: ButtonStyle(
                             foregroundColor: WidgetStatePropertyAll(
-                                _data!.isBlockedByUser == true
-                                    ? Theme.of(context).colorScheme.error
-                                    : Theme.of(context).disabledColor),
+                              _data!.isBlockedByUser == true
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).disabledColor,
+                            ),
                           ),
                         ),
                     ],

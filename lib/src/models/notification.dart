@@ -13,40 +13,43 @@ class NotificationListModel with _$NotificationListModel {
   }) = _NotificationListModel;
 
   factory NotificationListModel.fromMbin(JsonMap json) => NotificationListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((post) => NotificationModel.fromMbin(post as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    items: (json['items'] as List<dynamic>)
+        .map((post) => NotificationModel.fromMbin(post as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 
   factory NotificationListModel.fromLemmy(
     JsonMap messagesJson,
     JsonMap mentionsJson,
     JsonMap repliesJson,
-  ) =>
-      NotificationListModel(
-        items: [
-          ...(messagesJson['private_messages'] as List<dynamic>).map(
-              (item) => NotificationModel.fromLemmyMessage(item as JsonMap)),
-          ...(mentionsJson['mentions'] as List<dynamic>).map(
-              (item) => NotificationModel.fromLemmyMention(item as JsonMap)),
-          ...(repliesJson['replies'] as List<dynamic>)
-              .map((item) => NotificationModel.fromLemmyReply(item as JsonMap)),
-        ],
-        nextPage: null,
-      );
+  ) => NotificationListModel(
+    items: [
+      ...(messagesJson['private_messages'] as List<dynamic>).map(
+        (item) => NotificationModel.fromLemmyMessage(item as JsonMap),
+      ),
+      ...(mentionsJson['mentions'] as List<dynamic>).map(
+        (item) => NotificationModel.fromLemmyMention(item as JsonMap),
+      ),
+      ...(repliesJson['replies'] as List<dynamic>).map(
+        (item) => NotificationModel.fromLemmyReply(item as JsonMap),
+      ),
+    ],
+    nextPage: null,
+  );
 
   factory NotificationListModel.fromPiefed(JsonMap json) =>
       NotificationListModel(
-          items: (json['items'] as List<dynamic>)
-              .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
-              .toList(),
-          // if next_page is None we have reached the end of the notifications
-          // so set nextPage to null. Otherwise set it to the next page number
-          // to request
-          nextPage: (json['next_page'] as String?) != 'None'
-              ? json['next_page'] as String?
-              : null);
+        items: (json['items'] as List<dynamic>)
+            .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
+            .toList(),
+        // if next_page is None we have reached the end of the notifications
+        // so set nextPage to null. Otherwise set it to the next page number
+        // to request
+        nextPage: (json['next_page'] as String?) != 'None'
+            ? json['next_page'] as String?
+            : null,
+      );
 }
 
 @freezed
@@ -63,15 +66,17 @@ class NotificationModel with _$NotificationModel {
     final subject = json['subject'] as JsonMap?;
 
     return NotificationModel(
-        id: json['notificationId'] as int,
-        type: notificationTypeMap[json['type']],
-        isRead: json['status'] == 'read',
-        subject: subject,
-        creator: subject == null
-            ? null
-            : UserModel.fromMbin((subject['user'] ??
-                subject['sender'] ??
-                subject['bannedBy']) as JsonMap));
+      id: json['notificationId'] as int,
+      type: notificationTypeMap[json['type']],
+      isRead: json['status'] == 'read',
+      subject: subject,
+      creator: subject == null
+          ? null
+          : UserModel.fromMbin(
+              (subject['user'] ?? subject['sender'] ?? subject['bannedBy'])
+                  as JsonMap,
+            ),
+    );
   }
 
   factory NotificationModel.fromLemmyMessage(JsonMap json) {
@@ -114,11 +119,12 @@ class NotificationModel with _$NotificationModel {
     final subject = json;
 
     return NotificationModel(
-        id: json['notif_id'] as int,
-        type: notificationTypeMap[json['notif_subtype']],
-        isRead: json['status'] == 'Read',
-        subject: subject,
-        creator: UserModel.fromPiefed(json['author'] as JsonMap));
+      id: json['notif_id'] as int,
+      type: notificationTypeMap[json['notif_subtype']],
+      isRead: json['status'] == 'Read',
+      subject: subject,
+      creator: UserModel.fromPiefed(json['author'] as JsonMap),
+    );
   }
 }
 
@@ -192,14 +198,14 @@ enum NotificationControlStatus {
   loud;
 
   factory NotificationControlStatus.fromJson(String json) => {
-        'Default': NotificationControlStatus.default_,
-        'Muted': NotificationControlStatus.muted,
-        'Loud': NotificationControlStatus.loud,
-      }[json]!;
+    'Default': NotificationControlStatus.default_,
+    'Muted': NotificationControlStatus.muted,
+    'Loud': NotificationControlStatus.loud,
+  }[json]!;
 
   String toJson() => {
-        NotificationControlStatus.default_: 'Default',
-        NotificationControlStatus.muted: 'Muted',
-        NotificationControlStatus.loud: 'Loud',
-      }[this]!;
+    NotificationControlStatus.default_: 'Default',
+    NotificationControlStatus.muted: 'Muted',
+    NotificationControlStatus.loud: 'Loud',
+  }[this]!;
 }

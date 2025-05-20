@@ -21,13 +21,7 @@ import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
 
-enum HapticsType {
-  light,
-  medium,
-  heavy,
-  selection,
-  vibrate,
-}
+enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
@@ -100,8 +94,9 @@ class AppController with ChangeNotifier {
       _mainProfile = mainProfileTemp;
     } else {
       _mainProfile = 'Default';
-      await _profileRecord(_mainProfile)
-          .put(db, ProfileOptional.nullProfile.toJson());
+      await _profileRecord(
+        _mainProfile,
+      ).put(db, ProfileOptional.nullProfile.toJson());
       await _mainProfileRecord.put(db, _mainProfile);
     }
     _autoSelectProfile = await _autoSelectProfileRecord.get(db) as String?;
@@ -126,8 +121,11 @@ class AppController with ChangeNotifier {
       await _webPushKeysRecord.put(db, _webPushKeys.serialize);
     }
 
-    _servers = Map.fromEntries((await _serverStore.find(db))
-        .map((record) => MapEntry(record.key, Server.fromJson(record.value))));
+    _servers = Map.fromEntries(
+      (await _serverStore.find(
+        db,
+      )).map((record) => MapEntry(record.key, Server.fromJson(record.value))),
+    );
 
     if (_autoSelectProfile != null && _builtProfile.autoSwitchAccount != null) {
       _selectedAccount = _builtProfile.autoSwitchAccount!;
@@ -135,16 +133,22 @@ class AppController with ChangeNotifier {
       _selectedAccount = await _selectedAccountRecord.get(db) as String? ?? '';
     }
 
-    _accounts = Map.fromEntries((await _accountStore.find(db))
-        .map((record) => MapEntry(record.key, Account.fromJson(record.value))));
+    _accounts = Map.fromEntries(
+      (await _accountStore.find(
+        db,
+      )).map((record) => MapEntry(record.key, Account.fromJson(record.value))),
+    );
 
     if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount('@kbin.earth', const Account(), switchNow: true);
     }
 
-    _filterLists = Map.fromEntries((await _filterListStore.find(db)).map(
-        (record) => MapEntry(record.key, FilterList.fromJson(record.value))));
+    _filterLists = Map.fromEntries(
+      (await _filterListStore.find(db)).map(
+        (record) => MapEntry(record.key, FilterList.fromJson(record.value)),
+      ),
+    );
 
     _translator = SimplyTranslator(EngineType.libre);
 
@@ -229,15 +233,13 @@ class AppController with ChangeNotifier {
 
   Future<List<String>> getProfileNames() async {
     final list = await _profileStore.findKeys(db);
-    list.sort(
-      (a, b) {
-        // Main profile should be in the front
-        if (a == _mainProfile) return -1;
-        if (b == _mainProfile) return 1;
+    list.sort((a, b) {
+      // Main profile should be in the front
+      if (a == _mainProfile) return -1;
+      if (b == _mainProfile) return 1;
 
-        return a.compareTo(b);
-      },
-    );
+      return a.compareTo(b);
+    });
     return list;
   }
 
@@ -277,7 +279,9 @@ class AppController with ChangeNotifier {
   }
 
   Future<String> getMbinOAuthIdentifier(
-      ServerSoftware software, String server) async {
+    ServerSoftware software,
+    String server,
+  ) async {
     if (_servers.containsKey(server) &&
         _servers[server]!.oauthIdentifier != null) {
       return _servers[server]!.oauthIdentifier!;
@@ -288,8 +292,10 @@ class AppController with ChangeNotifier {
     }
 
     String oauthIdentifier = await registerOauthApp(server);
-    _servers[server] =
-        Server(software: software, oauthIdentifier: oauthIdentifier);
+    _servers[server] = Server(
+      software: software,
+      oauthIdentifier: oauthIdentifier,
+    );
 
     await _serverStore.record(server).put(db, _servers[server]!.toJson());
 
@@ -325,19 +331,24 @@ class AppController with ChangeNotifier {
     }
 
     // Remove a profile's autoSwitchAccount value if it is for this account
-    final autoSwitchAccountProfiles = await _profileStore.find(db,
-        finder: Finder(filter: Filter.equals('autoSwitchAccount', key)));
+    final autoSwitchAccountProfiles = await _profileStore.find(
+      db,
+      finder: Finder(filter: Filter.equals('autoSwitchAccount', key)),
+    );
     for (var record in autoSwitchAccountProfiles) {
       await _profileRecord(record.key).put(
-          db,
-          ProfileOptional.fromJson(record.value)
-              .copyWith(autoSwitchAccount: null)
-              .toJson());
+        db,
+        ProfileOptional.fromJson(
+          record.value,
+        ).copyWith(autoSwitchAccount: null).toJson(),
+      );
     }
 
     // Remove read posts associated with account
-    _readStore.delete(db,
-        finder: Finder(filter: Filter.equals('account', key)));
+    _readStore.delete(
+      db,
+      finder: Finder(filter: Filter.equals('account', key)),
+    );
 
     _rebuildProfile();
 
@@ -347,8 +358,10 @@ class AppController with ChangeNotifier {
     // If there are no accounts left from a server, then remove the server's data
     final keyAccountServer = key.split('@').last;
     if (_accounts.keys
-        .firstWhere((account) => account.split('@').last == keyAccountServer,
-            orElse: () => '')
+        .firstWhere(
+          (account) => account.split('@').last == keyAccountServer,
+          orElse: () => '',
+        )
         .isEmpty) {
       _servers.remove(keyAccountServer);
 
@@ -398,8 +411,9 @@ class AppController with ChangeNotifier {
             credentials,
             identifier: identifier,
             onCredentialsRefreshed: (newCredentials) async {
-              _accounts[account] =
-                  _accounts[account]!.copyWith(oauth: newCredentials);
+              _accounts[account] = _accounts[account]!.copyWith(
+                oauth: newCredentials,
+              );
 
               await _accountStore
                   .record(account)
@@ -417,11 +431,13 @@ class AppController with ChangeNotifier {
         break;
     }
 
-    return API(ServerClient(
-      httpClient: httpClient,
-      software: software,
-      domain: instance,
-    ));
+    return API(
+      ServerClient(
+        httpClient: httpClient,
+        software: software,
+        domain: instance,
+      ),
+    );
   }
 
   Future<void> addStar(String newStar) async {
@@ -451,18 +467,17 @@ class AppController with ChangeNotifier {
 
     final permissionsResult = await FlutterLocalNotificationsPlugin()
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
 
     if (permissionsResult == false) {
       throw Exception('Notification permissions denied');
     }
 
-    await UnifiedPush.registerAppWithDialog(
-      context,
-      _selectedAccount,
-      [featureAndroidBytesMessage],
-    );
+    await UnifiedPush.registerAppWithDialog(context, _selectedAccount, [
+      featureAndroidBytesMessage,
+    ]);
 
     await addPushRegistrationStatus(_selectedAccount);
   }
@@ -521,7 +536,9 @@ class AppController with ChangeNotifier {
         final newProfileFilterLists = {...profile.filterLists!};
         newProfileFilterLists.remove(name);
         await _profileRecord(record.key).put(
-            db, profile.copyWith(filterLists: newProfileFilterLists).toJson());
+          db,
+          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
+        );
       }
     }
 
@@ -546,7 +563,9 @@ class AppController with ChangeNotifier {
         };
         newProfileFilterLists.remove(oldName);
         await _profileRecord(record.key).put(
-            db, profile.copyWith(filterLists: newProfileFilterLists).toJson());
+          db,
+          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
+        );
       }
     }
 
@@ -583,12 +602,12 @@ class AppController with ChangeNotifier {
   }
 
   Finder _readStoreFinder(PostModel post) => Finder(
-        filter: Filter.and([
-          Filter.equals('account', _selectedAccount),
-          Filter.equals('postType', post.type.name),
-          Filter.equals('postId', post.id),
-        ]),
-      );
+    filter: Filter.and([
+      Filter.equals('account', _selectedAccount),
+      Filter.equals('postType', post.type.name),
+      Filter.equals('postId', post.id),
+    ]),
+  );
 
   Future<List<PostModel>> markAsRead(List<PostModel> posts, bool read) async {
     // Use Lemmy's read API when available
@@ -623,8 +642,10 @@ class AppController with ChangeNotifier {
   }
 
   Future<bool> isRead(PostModel post) async {
-    return (await _readStore.find(db, finder: _readStoreFinder(post)))
-            .firstOrNull !=
+    return (await _readStore.find(
+          db,
+          finder: _readStoreFinder(post),
+        )).firstOrNull !=
         null;
   }
 }

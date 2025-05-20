@@ -24,9 +24,10 @@ class NotificationControlSegment extends StatelessWidget {
             tooltip: l(context).notificationControlStatus_muted,
           ),
         ButtonSegment(
-            value: NotificationControlStatus.default_,
-            icon: const Icon(Symbols.notifications_rounded),
-            tooltip: l(context).notificationControlStatus_default),
+          value: NotificationControlStatus.default_,
+          icon: const Icon(Symbols.notifications_rounded),
+          tooltip: l(context).notificationControlStatus_default,
+        ),
         ButtonSegment(
           value: NotificationControlStatus.loud,
           icon: const Icon(Symbols.campaign_rounded),

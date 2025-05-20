@@ -61,27 +61,27 @@ class _CreateScreenState extends State<CreateScreen> {
     final ac = context.watch<AppController>();
 
     final bodyDraftController = context.watch<DraftsController>().auto(
-        'create:${widget.initMagazine == null ? '' : ':${ac.instanceHost}:${widget.initMagazine!.name}'}');
+      'create:${widget.initMagazine == null ? '' : ':${ac.instanceHost}:${widget.initMagazine!.name}'}',
+    );
 
-    Widget listViewWidget(List<Widget> children) => ListView(
-          padding: const EdgeInsets.all(12),
-          children: children,
-        );
+    Widget listViewWidget(List<Widget> children) =>
+        ListView(padding: const EdgeInsets.all(12), children: children);
 
     Widget magazinePickerWidget({bool microblogMode = false}) => Padding(
-          padding: const EdgeInsets.all(8),
-          child: MagazinePicker(
-            value: _magazine,
-            onChange: (newMagazine) {
-              setState(() {
-                _magazine = newMagazine;
-              });
-            },
-            microblogMode: microblogMode,
-          ),
-        );
+      padding: const EdgeInsets.all(8),
+      child: MagazinePicker(
+        value: _magazine,
+        onChange: (newMagazine) {
+          setState(() {
+            _magazine = newMagazine;
+          });
+        },
+        microblogMode: microblogMode,
+      ),
+    );
 
-    final linkIsValid = _urlTextController.text.isNotEmpty &&
+    final linkIsValid =
+        _urlTextController.text.isNotEmpty &&
         (Uri.tryParse(_urlTextController.text)?.isAbsolute ?? false);
 
     linkEditorFetchDataCB(bool override) async {
@@ -92,8 +92,9 @@ class _CreateScreenState extends State<CreateScreen> {
         return;
       }
 
-      final metadata =
-          await AnyLinkPreview.getMetadata(link: _urlTextController.text);
+      final metadata = await AnyLinkPreview.getMetadata(
+        link: _urlTextController.text,
+      );
 
       if (metadata == null) return;
 
@@ -102,110 +103,106 @@ class _CreateScreenState extends State<CreateScreen> {
     }
 
     Widget linkEditorWidget() => Padding(
-        padding: const EdgeInsets.all(8),
-        child: TextField(
-          controller: _urlTextController,
-          keyboardType: TextInputType.url,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            label: Text(l(context).link),
-            suffixIcon: LoadingIconButton(
-              onPressed:
-                  !linkIsValid ? null : () => linkEditorFetchDataCB(true),
-              icon: Icon(Symbols.globe_rounded),
-            ),
-            errorText: _urlTextController.text.isEmpty || linkIsValid
-                ? null
-                : l(context).create_link_invalid,
+      padding: const EdgeInsets.all(8),
+      child: TextField(
+        controller: _urlTextController,
+        keyboardType: TextInputType.url,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          label: Text(l(context).link),
+          suffixIcon: LoadingIconButton(
+            onPressed: !linkIsValid ? null : () => linkEditorFetchDataCB(true),
+            icon: Icon(Symbols.globe_rounded),
           ),
-          onChanged: (_) => setState(() {}),
-          onSubmitted: (_) => linkEditorFetchDataCB(false),
-        ));
+          errorText: _urlTextController.text.isEmpty || linkIsValid
+              ? null
+              : l(context).create_link_invalid,
+        ),
+        onChanged: (_) => setState(() {}),
+        onSubmitted: (_) => linkEditorFetchDataCB(false),
+      ),
+    );
 
     Widget titleEditorWidget() => Padding(
-          padding: const EdgeInsets.all(8),
-          child: TextEditor(
-            _titleTextController,
-            label: l(context).title,
-          ),
-        );
+      padding: const EdgeInsets.all(8),
+      child: TextEditor(_titleTextController, label: l(context).title),
+    );
 
     Widget bodyEditorWidget() => Padding(
-          padding: const EdgeInsets.all(8),
-          child: MarkdownEditor(
-            _bodyTextController,
-            originInstance: null,
-            draftController: bodyDraftController,
-            draftDisableAutoLoad: widget.initBody != null,
-            onChanged: (_) => setState(() {}),
-            label: l(context).body,
-          ),
-        );
+      padding: const EdgeInsets.all(8),
+      child: MarkdownEditor(
+        _bodyTextController,
+        originInstance: null,
+        draftController: bodyDraftController,
+        draftDisableAutoLoad: widget.initBody != null,
+        onChanged: (_) => setState(() {}),
+        label: l(context).body,
+      ),
+    );
 
     Widget imagePickerWidget() => ImageSelector(
-          _imageFile,
-          (file, altText) => setState(() {
-            _imageFile = file;
-            _altText = altText;
-          }),
-        );
+      _imageFile,
+      (file, altText) => setState(() {
+        _imageFile = file;
+        _altText = altText;
+      }),
+    );
 
     Widget tagsEditorWidget() => Padding(
-          padding: const EdgeInsets.all(8),
-          child: TextEditor(
-            _tagsTextController,
-            label: l(context).tags,
-            hint: l(context).tags_hint,
-          ),
-        );
+      padding: const EdgeInsets.all(8),
+      child: TextEditor(
+        _tagsTextController,
+        label: l(context).tags,
+        hint: l(context).tags_hint,
+      ),
+    );
 
     Widget ocToggleWidget() => CheckboxListTile(
-          title: Text(l(context).originalContent_long),
-          value: _isOc,
-          onChanged: (newValue) => setState(() {
-            _isOc = newValue!;
-          }),
-          controlAffinity: ListTileControlAffinity.leading,
-        );
+      title: Text(l(context).originalContent_long),
+      value: _isOc,
+      onChanged: (newValue) => setState(() {
+        _isOc = newValue!;
+      }),
+      controlAffinity: ListTileControlAffinity.leading,
+    );
 
     Widget nsfwToggleWidget() => CheckboxListTile(
-          title: Text(l(context).notSafeForWork_long),
-          value: _isAdult,
-          onChanged: (newValue) => setState(() {
-            _isAdult = newValue!;
-          }),
-          controlAffinity: ListTileControlAffinity.leading,
-        );
+      title: Text(l(context).notSafeForWork_long),
+      value: _isAdult,
+      onChanged: (newValue) => setState(() {
+        _isAdult = newValue!;
+      }),
+      controlAffinity: ListTileControlAffinity.leading,
+    );
 
     Widget languagePickerWidget() => ListTile(
-          title: Text(l(context).language),
-          onTap: () async {
-            final newLang = await languageSelectionMenu(context).askSelection(
-              context,
-              _lang,
-            );
+      title: Text(l(context).language),
+      onTap: () async {
+        final newLang = await languageSelectionMenu(
+          context,
+        ).askSelection(context, _lang);
 
-            if (newLang != null) {
-              setState(() {
-                _lang = newLang;
-              });
-            }
-          },
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [Text(getLanguageName(context, _lang))],
-          ),
-        );
+        if (newLang != null) {
+          setState(() {
+            _lang = newLang;
+          });
+        }
+      },
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [Text(getLanguageName(context, _lang))],
+      ),
+    );
 
     Widget submitButtonWidget(Future<void> Function()? onPressed) => Padding(
-          padding: const EdgeInsets.all(8),
-          child: LoadingFilledButton(
-            onPressed: onPressed,
-            icon: const Icon(Symbols.send_rounded),
-            label: Text(l(context).submit),
-            uesHaptics: true,
-          ),
-        );
+      padding: const EdgeInsets.all(8),
+      child: LoadingFilledButton(
+        onPressed: onPressed,
+        icon: const Icon(Symbols.send_rounded),
+        label: Text(l(context).submit),
+        uesHaptics: true,
+      ),
+    );
 
     return DefaultTabController(
       length: switch (ac.serverSoftware) {
@@ -245,17 +242,16 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
         body: TabBarView(
           children: [
-            listViewWidget(
-              [
-                magazinePickerWidget(),
-                titleEditorWidget(),
-                bodyEditorWidget(),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  tagsEditorWidget(),
-                if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
-                nsfwToggleWidget(),
-                languagePickerWidget(),
-                submitButtonWidget(_magazine == null
+            listViewWidget([
+              magazinePickerWidget(),
+              titleEditorWidget(),
+              bodyEditorWidget(),
+              if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
+              if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
+              nsfwToggleWidget(),
+              languagePickerWidget(),
+              submitButtonWidget(
+                _magazine == null
                     ? null
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
@@ -276,20 +272,19 @@ class _CreateScreenState extends State<CreateScreen> {
                         if (!mounted) return;
 
                         Navigator.pop(context);
-                      })
-              ],
-            ),
-            listViewWidget(
-              [
-                magazinePickerWidget(),
-                titleEditorWidget(),
-                imagePickerWidget(),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  tagsEditorWidget(),
-                if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
-                nsfwToggleWidget(),
-                languagePickerWidget(),
-                submitButtonWidget(_magazine == null
+                      },
+              ),
+            ]),
+            listViewWidget([
+              magazinePickerWidget(),
+              titleEditorWidget(),
+              imagePickerWidget(),
+              if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
+              if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
+              nsfwToggleWidget(),
+              languagePickerWidget(),
+              submitButtonWidget(
+                _magazine == null
                     ? null
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
@@ -310,21 +305,20 @@ class _CreateScreenState extends State<CreateScreen> {
                         if (!mounted) return;
 
                         Navigator.pop(context);
-                      })
-              ],
-            ),
-            listViewWidget(
-              [
-                magazinePickerWidget(),
-                linkEditorWidget(),
-                titleEditorWidget(),
-                bodyEditorWidget(),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  tagsEditorWidget(),
-                if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
-                nsfwToggleWidget(),
-                languagePickerWidget(),
-                submitButtonWidget(_magazine == null || !linkIsValid
+                      },
+              ),
+            ]),
+            listViewWidget([
+              magazinePickerWidget(),
+              linkEditorWidget(),
+              titleEditorWidget(),
+              bodyEditorWidget(),
+              if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
+              if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
+              nsfwToggleWidget(),
+              languagePickerWidget(),
+              submitButtonWidget(
+                _magazine == null || !linkIsValid
                     ? null
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
@@ -346,52 +340,51 @@ class _CreateScreenState extends State<CreateScreen> {
                         if (!mounted) return;
 
                         Navigator.pop(context);
-                      })
-              ],
-            ),
-            if (ac.serverSoftware == ServerSoftware.mbin)
-              listViewWidget(
-                [
-                  magazinePickerWidget(microblogMode: true),
-                  bodyEditorWidget(),
-                  imagePickerWidget(),
-                  nsfwToggleWidget(),
-                  languagePickerWidget(),
-                  submitButtonWidget(() async {
-                    final magazine = _magazine ??
-                        await context
-                            .read<AppController>()
-                            .api
-                            .magazines
-                            .getByName('random');
-
-                    if (_imageFile == null) {
-                      await ac.api.microblogs.create(
-                        magazine.id,
-                        body: _bodyTextController.text,
-                        lang: _lang,
-                        isAdult: _isAdult,
-                      );
-                    } else {
-                      await ac.api.microblogs.createImage(
-                        magazine.id,
-                        image: _imageFile!,
-                        alt: '',
-                        body: _bodyTextController.text,
-                        lang: _lang,
-                        isAdult: _isAdult,
-                      );
-                    }
-
-                    await bodyDraftController.discard();
-
-                    // Check BuildContext
-                    if (!mounted) return;
-
-                    Navigator.pop(context);
-                  })
-                ],
+                      },
               ),
+            ]),
+            if (ac.serverSoftware == ServerSoftware.mbin)
+              listViewWidget([
+                magazinePickerWidget(microblogMode: true),
+                bodyEditorWidget(),
+                imagePickerWidget(),
+                nsfwToggleWidget(),
+                languagePickerWidget(),
+                submitButtonWidget(() async {
+                  final magazine =
+                      _magazine ??
+                      await context
+                          .read<AppController>()
+                          .api
+                          .magazines
+                          .getByName('random');
+
+                  if (_imageFile == null) {
+                    await ac.api.microblogs.create(
+                      magazine.id,
+                      body: _bodyTextController.text,
+                      lang: _lang,
+                      isAdult: _isAdult,
+                    );
+                  } else {
+                    await ac.api.microblogs.createImage(
+                      magazine.id,
+                      image: _imageFile!,
+                      alt: '',
+                      body: _bodyTextController.text,
+                      lang: _lang,
+                      isAdult: _isAdult,
+                    );
+                  }
+
+                  await bodyDraftController.discard();
+
+                  // Check BuildContext
+                  if (!mounted) return;
+
+                  Navigator.pop(context);
+                }),
+              ]),
             MagazineOwnerPanelGeneral(
               data: null,
               onUpdate: (newMagazine) {
@@ -399,10 +392,8 @@ class _CreateScreenState extends State<CreateScreen> {
 
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => MagazineScreen(
-                      newMagazine.id,
-                      initData: newMagazine,
-                    ),
+                    builder: (context) =>
+                        MagazineScreen(newMagazine.id, initData: newMagazine),
                   ),
                 );
               },
