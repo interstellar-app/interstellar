@@ -28,7 +28,7 @@ dependencies:
   url_launcher: ^6.3.1
   webview_flutter: ^4.12.0
   youtube_explode_dart: ^2.4.0
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.0.0
   image_picker: ^1.1.2
   dynamic_color: ^1.7.0
   markdown: ^7.3.0
@@ -36,8 +36,8 @@ dependencies:
   blurhash_ffi: ^1.2.7
   unifiedpush: ^5.0.2
   webpush_encryption: 1.0.0-rc1
-  flutter_local_notifications: ^18.0.1
-  flex_color_scheme: ^8.1.1
+  flutter_local_notifications: ^19.2.1
+  flex_color_scheme: ^8.2.0
   share_plus: ^10.1.4
   path_provider: ^2.1.5
   window_manager: ^0.4.3
@@ -47,7 +47,7 @@ dependencies:
   package_info_plus: ^8.3.0
   flutter_localized_locales: ^2.0.5
   crypto: ^3.0.6
-  file_picker: ^9.2.3
+  file_picker: ^10.1.9
   any_link_preview: ^3.0.3
   simplytranslate: ^2.2.2
   visibility_detector: ^0.4.0+2
@@ -56,7 +56,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
   build_runner: ^2.4.15
-  freezed: ^2.5.8
+  freezed: ^3.0.6
   json_serializable: ^6.9.5
 
 flutter:
