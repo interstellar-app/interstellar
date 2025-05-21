@@ -15,9 +15,7 @@ class FeedActionsSettingsScreen extends StatelessWidget {
     final ac = context.watch<AppController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_feedActions),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_feedActions)),
       body: ListView(
         children: [
           ListTileSelect(
@@ -122,7 +120,8 @@ class FeedActionsSettingsScreen extends StatelessWidget {
             title: Text(l(context).settings_enableSwipeActions),
             value: ac.profile.enableSwipeActions,
             onChanged: (newValue) => ac.updateProfile(
-                ac.selectedProfileValue.copyWith(enableSwipeActions: newValue)),
+              ac.selectedProfileValue.copyWith(enableSwipeActions: newValue),
+            ),
           ),
           ListTileSelect(
             title: l(context).settings_swipeActionLeftShort,
@@ -131,8 +130,7 @@ class FeedActionsSettingsScreen extends StatelessWidget {
             value: ac.profile.swipeActionLeftShort,
             oldValue: ac.selectedProfileValue.swipeActionLeftShort,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(swipeActionLeftShort: newValue)
+              ac.selectedProfileValue.copyWith(swipeActionLeftShort: newValue),
             ),
           ),
           ListTileSelect(
@@ -142,8 +140,7 @@ class FeedActionsSettingsScreen extends StatelessWidget {
             value: ac.profile.swipeActionLeftLong,
             oldValue: ac.selectedProfileValue.swipeActionLeftLong,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(swipeActionLeftLong: newValue)
+              ac.selectedProfileValue.copyWith(swipeActionLeftLong: newValue),
             ),
           ),
           ListTileSelect(
@@ -153,8 +150,7 @@ class FeedActionsSettingsScreen extends StatelessWidget {
             value: ac.profile.swipeActionRightShort,
             oldValue: ac.selectedProfileValue.swipeActionRightShort,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(swipeActionRightShort: newValue)
+              ac.selectedProfileValue.copyWith(swipeActionRightShort: newValue),
             ),
           ),
           ListTileSelect(
@@ -164,25 +160,27 @@ class FeedActionsSettingsScreen extends StatelessWidget {
             value: ac.profile.swipeActionRightLong,
             oldValue: ac.selectedProfileValue.swipeActionRightLong,
             onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(swipeActionRightLong: newValue)
+              ac.selectedProfileValue.copyWith(swipeActionRightLong: newValue),
             ),
           ),
           ListTile(
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${l(context).settings_swipeThreshold} : '
-                    '${ac.profile.swipeActionThreshold.toStringAsFixed(2)}'),
+                Text(
+                  '${l(context).settings_swipeThreshold} : '
+                  '${ac.profile.swipeActionThreshold.toStringAsFixed(2)}',
+                ),
                 Slider(
-                    value: ac.profile.swipeActionThreshold,
-                    max: 1,
-                    min: 0,
-                    onChanged: (newValue) => ac.updateProfile(
-                      ac.selectedProfileValue
-                          .copyWith(swipeActionThreshold: newValue)
-                    )
-                )
+                  value: ac.profile.swipeActionThreshold,
+                  max: 1,
+                  min: 0,
+                  onChanged: (newValue) => ac.updateProfile(
+                    ac.selectedProfileValue.copyWith(
+                      swipeActionThreshold: newValue,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

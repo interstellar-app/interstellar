@@ -24,17 +24,19 @@ class Avatar extends StatelessWidget {
       radius: radius != null && borderRadius != null
           ? radius! + borderRadius!
           : radius,
-      backgroundColor: backgroundColor ??
+      backgroundColor:
+          backgroundColor ??
           (radius == null || borderRadius == null ? Colors.transparent : null),
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
-        foregroundImage: overrideImageProvider ??
+        foregroundImage:
+            overrideImageProvider ??
             (image == null ? null : NetworkImage(image!.src)),
         backgroundImage: image == null
             ? const AssetImage('assets/icons/logo.png')
             : (image!.blurHash != null
-                ? BlurhashFfiImage(image!.blurHash!) as ImageProvider<Object>
-                : null),
+                  ? BlurhashFfiImage(image!.blurHash!) as ImageProvider<Object>
+                  : null),
         radius: radius,
       ),
     );

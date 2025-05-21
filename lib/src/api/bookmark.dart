@@ -10,24 +10,25 @@ enum BookmarkListSubject {
   microblog,
   microblogComment;
 
-  factory BookmarkListSubject.fromPostType(
-          {required PostType postType, required bool isComment}) =>
-      isComment
-          ? switch (postType) {
-              PostType.thread => BookmarkListSubject.threadComment,
-              PostType.microblog => BookmarkListSubject.microblogComment,
-            }
-          : switch (postType) {
-              PostType.thread => BookmarkListSubject.thread,
-              PostType.microblog => BookmarkListSubject.microblog,
-            };
+  factory BookmarkListSubject.fromPostType({
+    required PostType postType,
+    required bool isComment,
+  }) => isComment
+      ? switch (postType) {
+          PostType.thread => BookmarkListSubject.threadComment,
+          PostType.microblog => BookmarkListSubject.microblogComment,
+        }
+      : switch (postType) {
+          PostType.thread => BookmarkListSubject.thread,
+          PostType.microblog => BookmarkListSubject.microblog,
+        };
 
   String toJson() => {
-        BookmarkListSubject.thread: 'entry',
-        BookmarkListSubject.threadComment: 'entry_comment',
-        BookmarkListSubject.microblog: 'post',
-        BookmarkListSubject.microblogComment: 'post_comment',
-      }[this]!;
+    BookmarkListSubject.thread: 'entry',
+    BookmarkListSubject.threadComment: 'entry_comment',
+    BookmarkListSubject.microblog: 'post',
+    BookmarkListSubject.microblogComment: 'post_comment',
+  }[this]!;
 }
 
 class APIBookmark {
@@ -68,7 +69,7 @@ class APIBookmark {
         final path = switch (subjectType) {
           BookmarkListSubject.thread => '/post/save',
           BookmarkListSubject.threadComment => '/comment/save',
-          _ => throw Exception('Tried to bookmark microblog on Lemmy')
+          _ => throw Exception('Tried to bookmark microblog on Lemmy'),
         };
 
         final response = await client.put(
@@ -77,7 +78,7 @@ class APIBookmark {
             switch (subjectType) {
               BookmarkListSubject.thread => 'post_id',
               BookmarkListSubject.threadComment => 'comment_id',
-              _ => throw Exception('Tried to bookmark microblog on Lemmy')
+              _ => throw Exception('Tried to bookmark microblog on Lemmy'),
             }: subjectId,
             'save': true,
           },
@@ -89,7 +90,7 @@ class APIBookmark {
         final path = switch (subjectType) {
           BookmarkListSubject.thread => '/post/save',
           BookmarkListSubject.threadComment => '/comment/save',
-          _ => throw Exception('Tried to bookmark microblog on piefed')
+          _ => throw Exception('Tried to bookmark microblog on piefed'),
         };
 
         final response = await client.put(
@@ -98,7 +99,7 @@ class APIBookmark {
             switch (subjectType) {
               BookmarkListSubject.thread => 'post_id',
               BookmarkListSubject.threadComment => 'comment_id',
-              _ => throw Exception('Tried to bookmark microblog on piefed')
+              _ => throw Exception('Tried to bookmark microblog on piefed'),
             }: subjectId,
             'save': true,
           },
@@ -145,7 +146,7 @@ class APIBookmark {
         final path = switch (subjectType) {
           BookmarkListSubject.thread => '/post/save',
           BookmarkListSubject.threadComment => '/comment/save',
-          _ => throw Exception('Tried to bookmark microblog on Lemmy')
+          _ => throw Exception('Tried to bookmark microblog on Lemmy'),
         };
 
         final response = await client.put(
@@ -154,7 +155,7 @@ class APIBookmark {
             switch (subjectType) {
               BookmarkListSubject.thread => 'post_id',
               BookmarkListSubject.threadComment => 'comment_id',
-              _ => throw Exception('Tried to bookmark microblog on Lemmy')
+              _ => throw Exception('Tried to bookmark microblog on Lemmy'),
             }: subjectId,
             'save': false,
           },
@@ -166,7 +167,7 @@ class APIBookmark {
         final path = switch (subjectType) {
           BookmarkListSubject.thread => '/post/save',
           BookmarkListSubject.threadComment => '/comment/save',
-          _ => throw Exception('Tried to bookmark microblog on piefed')
+          _ => throw Exception('Tried to bookmark microblog on piefed'),
         };
 
         final response = await client.put(
@@ -175,7 +176,7 @@ class APIBookmark {
             switch (subjectType) {
               BookmarkListSubject.thread => 'post_id',
               BookmarkListSubject.threadComment => 'comment_id',
-              _ => throw Exception('Tried to bookmark microblog on piefed')
+              _ => throw Exception('Tried to bookmark microblog on piefed'),
             }: subjectId,
             'save': false,
           },

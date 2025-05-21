@@ -31,6 +31,8 @@ class ProfileRequired with _$ProfileRequired {
     required bool autoPlayVideos,
     required bool hapticFeedback,
     required bool autoTranslate,
+    required bool markThreadsReadOnScroll,
+    required bool markMicroblogsReadOnScroll,
     // Display settings
     required String appLanguage,
     required ThemeMode themeMode,
@@ -73,86 +75,99 @@ class ProfileRequired with _$ProfileRequired {
   factory ProfileRequired.fromJson(JsonMap json) =>
       _$ProfileRequiredFromJson(json);
 
-  factory ProfileRequired.fromOptional(ProfileOptional? profile) =>
-      ProfileRequired(
-        autoSwitchAccount: profile?.autoSwitchAccount,
-        defaultPostLanguage:
-            profile?.defaultPostLanguage ?? defaultProfile.defaultPostLanguage,
-        useAccountLanguageFilter: profile?.useAccountLanguageFilter ??
-            defaultProfile.useAccountLanguageFilter,
-        customLanguageFilter: profile?.customLanguageFilter ??
-            defaultProfile.customLanguageFilter,
-        disableTabSwiping:
-            profile?.disableTabSwiping ?? defaultProfile.disableTabSwiping,
-        askBeforeUnsubscribing: profile?.askBeforeUnsubscribing ??
-            defaultProfile.askBeforeUnsubscribing,
-        askBeforeDeleting:
-            profile?.askBeforeDeleting ?? defaultProfile.askBeforeDeleting,
-        autoPlayVideos:
-            profile?.autoPlayVideos ?? defaultProfile.autoPlayVideos,
-        hapticFeedback:
-            profile?.hapticFeedback ?? defaultProfile.hapticFeedback,
-        autoTranslate: profile?.autoTranslate ?? defaultProfile.autoTranslate,
-        appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
-        themeMode: profile?.themeMode ?? defaultProfile.themeMode,
-        colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
-        enableTrueBlack:
-            profile?.enableTrueBlack ?? defaultProfile.enableTrueBlack,
-        compactMode: profile?.compactMode ?? defaultProfile.compactMode,
-        hideActionButtons:
-            profile?.hideActionButtons ?? defaultProfile.hideActionButtons,
-        alwaysShowInstance:
-            profile?.alwaysShowInstance ?? defaultProfile.alwaysShowInstance,
-        coverMediaMarkedSensitive: profile?.coverMediaMarkedSensitive ??
-            defaultProfile.coverMediaMarkedSensitive,
-        fullImageSizeThreads: profile?.fullImageSizeThreads ??
-            defaultProfile.fullImageSizeThreads,
-        fullImageSizeMicroblogs: profile?.fullImageSizeMicroblogs ??
-            defaultProfile.fullImageSizeMicroblogs,
-        feedDefaultView:
-            profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
-        feedDefaultFilter:
-            profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
-        feedDefaultThreadsSort: profile?.feedDefaultThreadsSort ??
-            defaultProfile.feedDefaultThreadsSort,
-        feedDefaultMicroblogSort: profile?.feedDefaultMicroblogSort ??
-            defaultProfile.feedDefaultMicroblogSort,
-        feedDefaultExploreSort: profile?.feedDefaultExploreSort ??
-            defaultProfile.feedDefaultExploreSort,
-        feedDefaultCommentSort: profile?.feedDefaultCommentSort ??
-            defaultProfile.feedDefaultCommentSort,
-        feedDefaultHideReadPosts: profile?.feedDefaultHideReadPosts ??
-            defaultProfile.feedDefaultHideReadPosts,
-        feedActionBackToTop:
-            profile?.feedActionBackToTop ?? defaultProfile.feedActionBackToTop,
-        feedActionCreateNew:
-            profile?.feedActionCreateNew ?? defaultProfile.feedActionCreateNew,
-        feedActionExpandFab:
-            profile?.feedActionExpandFab ?? defaultProfile.feedActionExpandFab,
-        feedActionRefresh:
-            profile?.feedActionRefresh ?? defaultProfile.feedActionRefresh,
-        feedActionSetFilter:
-            profile?.feedActionSetFilter ?? defaultProfile.feedActionSetFilter,
-        feedActionSetSort:
-            profile?.feedActionSetSort ?? defaultProfile.feedActionSetSort,
-        feedActionSetView:
-            profile?.feedActionSetView ?? defaultProfile.feedActionSetView,
-        feedActionHideReadPosts:
-            profile?.feedActionHideReadPosts ?? defaultProfile.feedActionHideReadPosts,
-        enableSwipeActions:
-            profile?.enableSwipeActions ?? defaultProfile.enableSwipeActions,
-        swipeActionLeftShort: profile?.swipeActionLeftShort ??
-            defaultProfile.swipeActionLeftShort,
-        swipeActionLeftLong:
-            profile?.swipeActionLeftLong ?? defaultProfile.swipeActionLeftLong,
-        swipeActionRightShort: profile?.swipeActionRightShort ??
-            defaultProfile.swipeActionRightShort,
-        swipeActionRightLong: profile?.swipeActionRightLong ??
-            defaultProfile.swipeActionRightLong,
-        swipeActionThreshold: profile?.swipeActionThreshold ??
-            defaultProfile.swipeActionThreshold,
-        filterLists: profile?.filterLists ?? defaultProfile.filterLists,
-      );
+  factory ProfileRequired.fromOptional(
+    ProfileOptional? profile,
+  ) => ProfileRequired(
+    autoSwitchAccount: profile?.autoSwitchAccount,
+    defaultPostLanguage:
+        profile?.defaultPostLanguage ?? defaultProfile.defaultPostLanguage,
+    useAccountLanguageFilter:
+        profile?.useAccountLanguageFilter ??
+        defaultProfile.useAccountLanguageFilter,
+    customLanguageFilter:
+        profile?.customLanguageFilter ?? defaultProfile.customLanguageFilter,
+    disableTabSwiping:
+        profile?.disableTabSwiping ?? defaultProfile.disableTabSwiping,
+    askBeforeUnsubscribing:
+        profile?.askBeforeUnsubscribing ??
+        defaultProfile.askBeforeUnsubscribing,
+    askBeforeDeleting:
+        profile?.askBeforeDeleting ?? defaultProfile.askBeforeDeleting,
+    autoPlayVideos: profile?.autoPlayVideos ?? defaultProfile.autoPlayVideos,
+    hapticFeedback: profile?.hapticFeedback ?? defaultProfile.hapticFeedback,
+    autoTranslate: profile?.autoTranslate ?? defaultProfile.autoTranslate,
+    markThreadsReadOnScroll:
+        profile?.markThreadsReadOnScroll ??
+        defaultProfile.markThreadsReadOnScroll,
+    markMicroblogsReadOnScroll:
+        profile?.markMicroblogsReadOnScroll ??
+        defaultProfile.markMicroblogsReadOnScroll,
+    appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
+    themeMode: profile?.themeMode ?? defaultProfile.themeMode,
+    colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
+    enableTrueBlack: profile?.enableTrueBlack ?? defaultProfile.enableTrueBlack,
+    compactMode: profile?.compactMode ?? defaultProfile.compactMode,
+    hideActionButtons:
+        profile?.hideActionButtons ?? defaultProfile.hideActionButtons,
+    alwaysShowInstance:
+        profile?.alwaysShowInstance ?? defaultProfile.alwaysShowInstance,
+    coverMediaMarkedSensitive:
+        profile?.coverMediaMarkedSensitive ??
+        defaultProfile.coverMediaMarkedSensitive,
+    fullImageSizeThreads:
+        profile?.fullImageSizeThreads ?? defaultProfile.fullImageSizeThreads,
+    fullImageSizeMicroblogs:
+        profile?.fullImageSizeMicroblogs ??
+        defaultProfile.fullImageSizeMicroblogs,
+    feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
+    feedDefaultFilter:
+        profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
+    feedDefaultThreadsSort:
+        profile?.feedDefaultThreadsSort ??
+        defaultProfile.feedDefaultThreadsSort,
+    feedDefaultMicroblogSort:
+        profile?.feedDefaultMicroblogSort ??
+        defaultProfile.feedDefaultMicroblogSort,
+    feedDefaultExploreSort:
+        profile?.feedDefaultExploreSort ??
+        defaultProfile.feedDefaultExploreSort,
+    feedDefaultCommentSort:
+        profile?.feedDefaultCommentSort ??
+        defaultProfile.feedDefaultCommentSort,
+    feedDefaultHideReadPosts:
+        profile?.feedDefaultHideReadPosts ??
+        defaultProfile.feedDefaultHideReadPosts,
+    feedActionBackToTop:
+        profile?.feedActionBackToTop ?? defaultProfile.feedActionBackToTop,
+    feedActionCreateNew:
+        profile?.feedActionCreateNew ?? defaultProfile.feedActionCreateNew,
+    feedActionExpandFab:
+        profile?.feedActionExpandFab ?? defaultProfile.feedActionExpandFab,
+    feedActionRefresh:
+        profile?.feedActionRefresh ?? defaultProfile.feedActionRefresh,
+    feedActionSetFilter:
+        profile?.feedActionSetFilter ?? defaultProfile.feedActionSetFilter,
+    feedActionSetSort:
+        profile?.feedActionSetSort ?? defaultProfile.feedActionSetSort,
+    feedActionSetView:
+        profile?.feedActionSetView ?? defaultProfile.feedActionSetView,
+    feedActionHideReadPosts:
+        profile?.feedActionHideReadPosts ??
+        defaultProfile.feedActionHideReadPosts,
+    enableSwipeActions:
+        profile?.enableSwipeActions ?? defaultProfile.enableSwipeActions,
+    swipeActionLeftShort:
+        profile?.swipeActionLeftShort ?? defaultProfile.swipeActionLeftShort,
+    swipeActionLeftLong:
+        profile?.swipeActionLeftLong ?? defaultProfile.swipeActionLeftLong,
+    swipeActionRightShort:
+        profile?.swipeActionRightShort ?? defaultProfile.swipeActionRightShort,
+    swipeActionRightLong:
+        profile?.swipeActionRightLong ?? defaultProfile.swipeActionRightLong,
+    swipeActionThreshold:
+        profile?.swipeActionThreshold ?? defaultProfile.swipeActionThreshold,
+    filterLists: profile?.filterLists ?? defaultProfile.filterLists,
+  );
 
   static const defaultProfile = ProfileRequired(
     autoSwitchAccount: null,
@@ -165,6 +180,8 @@ class ProfileRequired with _$ProfileRequired {
     autoPlayVideos: false,
     hapticFeedback: true,
     autoTranslate: false,
+    markThreadsReadOnScroll: false,
+    markMicroblogsReadOnScroll: false,
     appLanguage: '',
     themeMode: ThemeMode.system,
     colorScheme: FlexScheme.custom,
@@ -218,6 +235,8 @@ class ProfileOptional with _$ProfileOptional {
     required bool? autoPlayVideos,
     required bool? hapticFeedback,
     required bool? autoTranslate,
+    required bool? markThreadsReadOnScroll,
+    required bool? markMicroblogsReadOnScroll,
     // Display settings
     required String? appLanguage,
     required ThemeMode? themeMode,
@@ -270,6 +289,8 @@ class ProfileOptional with _$ProfileOptional {
     autoPlayVideos: null,
     hapticFeedback: null,
     autoTranslate: null,
+    markThreadsReadOnScroll: null,
+    markMicroblogsReadOnScroll: null,
     appLanguage: null,
     themeMode: null,
     colorScheme: null,
@@ -320,6 +341,10 @@ class ProfileOptional with _$ProfileOptional {
       autoPlayVideos: other.autoPlayVideos ?? autoPlayVideos,
       hapticFeedback: other.hapticFeedback ?? hapticFeedback,
       autoTranslate: other.autoTranslate ?? autoTranslate,
+      markThreadsReadOnScroll:
+          other.markThreadsReadOnScroll ?? markThreadsReadOnScroll,
+      markMicroblogsReadOnScroll:
+          other.markMicroblogsReadOnScroll ?? markMicroblogsReadOnScroll,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
       colorScheme: other.colorScheme ?? colorScheme,
@@ -369,21 +394,20 @@ class ProfileOptional with _$ProfileOptional {
       swipeActionThreshold:
           other.swipeActionThreshold ?? this.swipeActionThreshold,
       filterLists: filterLists != null && other.filterLists != null
-          ? {
-              ...filterLists!,
-              ...other.filterLists!,
-            }
+          ? {...filterLists!, ...other.filterLists!}
           : other.filterLists ?? filterLists,
     );
   }
 
   ProfileOptional cleanupActions(
-      String actionName, ProfileRequired builtProfile) {
+    String actionName,
+    ProfileRequired builtProfile,
+  ) {
     // Only clean up actions with the following locations
     if (![
       ActionLocation.fabTap.name,
       ActionLocation.fabHold.name,
-      ActionLocationWithTabs.tabs.name
+      ActionLocationWithTabs.tabs.name,
     ].contains(actionName)) {
       return this;
     }
@@ -415,9 +439,6 @@ class ProfileOptional with _$ProfileOptional {
 
   // Remove fields that depend on a certain setup
   ProfileOptional exportReady() {
-    return copyWith(
-      autoSwitchAccount: null,
-      filterLists: null,
-    );
+    return copyWith(autoSwitchAccount: null, filterLists: null);
   }
 }

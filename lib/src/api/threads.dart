@@ -78,34 +78,36 @@ class APIThreads {
           final query = {
             'person_id': sourceId.toString(),
             'page': page,
-            'sort': lemmyFeedSortMap[sort]
+            'sort': lemmyFeedSortMap[sort],
           };
 
           final response = await client.get(path, queryParams: query);
 
           final json = response.bodyJson;
 
-          json['next_page'] =
-              lemmyCalcNextIntPage(json['posts'] as List<dynamic>, page);
+          json['next_page'] = lemmyCalcNextIntPage(
+            json['posts'] as List<dynamic>,
+            page,
+          );
 
           return PostListModel.fromLemmy(json);
         }
 
         const path = '/post/list';
-        final query = {
-          'page_cursor': page,
-          'sort': lemmyFeedSortMap[sort],
-        }..addAll(switch (source) {
+        final query = {'page_cursor': page, 'sort': lemmyFeedSortMap[sort]}
+          ..addAll(switch (source) {
             FeedSource.all => {'type_': 'All'},
             FeedSource.local => {'type_': 'Local'},
             FeedSource.subscribed => {'type_': 'Subscribed'},
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.magazine => {'community_id': sourceId!.toString()},
-            FeedSource.user =>
-              throw Exception('User source not allowed for lemmy'),
-            FeedSource.domain =>
-              throw Exception('Domain source not allowed for lemmy'),
+            FeedSource.user => throw Exception(
+              'User source not allowed for lemmy',
+            ),
+            FeedSource.domain => throw Exception(
+              'Domain source not allowed for lemmy',
+            ),
           });
 
         final response = await client.get(path, queryParams: query);
@@ -118,34 +120,36 @@ class APIThreads {
           final query = {
             'person_id': sourceId.toString(),
             'page': page,
-            'sort': lemmyFeedSortMap[sort]
+            'sort': lemmyFeedSortMap[sort],
           };
 
           final response = await client.get(path, queryParams: query);
 
           final json = response.bodyJson;
 
-          json['next_page'] =
-              lemmyCalcNextIntPage(json['posts'] as List<dynamic>, page);
+          json['next_page'] = lemmyCalcNextIntPage(
+            json['posts'] as List<dynamic>,
+            page,
+          );
 
           return PostListModel.fromPiefed(json);
         }
 
         const path = '/post/list';
-        final query = {
-          'page_cursor': page,
-          'sort': lemmyFeedSortMap[sort],
-        }..addAll(switch (source) {
+        final query = {'page_cursor': page, 'sort': lemmyFeedSortMap[sort]}
+          ..addAll(switch (source) {
             FeedSource.all => {'type_': 'All'},
             FeedSource.local => {'type_': 'Local'},
             FeedSource.subscribed => {'type_': 'Subscribed'},
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.magazine => {'community_id': sourceId!.toString()},
-            FeedSource.user =>
-              throw Exception('User source not allowed for fromPiefed'),
-            FeedSource.domain =>
-              throw Exception('Domain source not allowed for fromPiefed'),
+            FeedSource.user => throw Exception(
+              'User source not allowed for fromPiefed',
+            ),
+            FeedSource.domain => throw Exception(
+              'Domain source not allowed for fromPiefed',
+            ),
           });
 
         final response = await client.get(path, queryParams: query);
@@ -195,10 +199,7 @@ class APIThreads {
       case ServerSoftware.lemmy:
         final response = await client.post(
           '/post/like',
-          body: {
-            'post_id': postId,
-            'score': newScore,
-          },
+          body: {'post_id': postId, 'score': newScore},
         );
 
         return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
@@ -206,10 +207,7 @@ class APIThreads {
       case ServerSoftware.piefed:
         final response = await client.post(
           '/post/like',
-          body: {
-            'post_id': postId,
-            'score': newScore,
-          },
+          body: {'post_id': postId, 'score': newScore},
         );
 
         return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
@@ -253,7 +251,7 @@ class APIThreads {
             'isOc': isOc,
             'body': body,
             'lang': lang,
-            'isAdult': isAdult
+            'isAdult': isAdult,
           },
         );
 
@@ -268,7 +266,7 @@ class APIThreads {
             'post_id': entryID,
             'name': title,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -283,7 +281,7 @@ class APIThreads {
             'post_id': entryID,
             'name': title,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -301,10 +299,7 @@ class APIThreads {
       case ServerSoftware.lemmy:
         final response = await client.post(
           '/post/delete',
-          body: {
-            'post_id': postID,
-            'deleted': true,
-          },
+          body: {'post_id': postID, 'deleted': true},
         );
 
         break;
@@ -312,10 +307,7 @@ class APIThreads {
       case ServerSoftware.piefed:
         final response = await client.post(
           '/post/delete',
-          body: {
-            'post_id': postID,
-            'deleted': true,
-          },
+          body: {'post_id': postID, 'deleted': true},
         );
 
         break;
@@ -343,7 +335,7 @@ class APIThreads {
             'isOc': isOc,
             'body': body,
             'lang': lang,
-            'isAdult': isAdult
+            'isAdult': isAdult,
           },
         );
 
@@ -357,7 +349,7 @@ class APIThreads {
             'name': title,
             'community_id': magazineID,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -371,7 +363,7 @@ class APIThreads {
             'title': title,
             'community_id': magazineID,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -402,7 +394,7 @@ class APIThreads {
             'isOc': isOc,
             'body': body,
             'lang': lang,
-            'isAdult': isAdult
+            'isAdult': isAdult,
           },
         );
 
@@ -417,7 +409,7 @@ class APIThreads {
             'community_id': magazineID,
             'url': url,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -432,7 +424,7 @@ class APIThreads {
             'community_id': magazineID,
             'url': url,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -455,8 +447,10 @@ class APIThreads {
       case ServerSoftware.mbin:
         final path = '/magazine/$magazineID/image';
 
-        var request = http.MultipartRequest('POST',
-            Uri.https(client.domain, client.software.apiPathPrefix + path));
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, client.software.apiPathPrefix + path),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
@@ -480,8 +474,10 @@ class APIThreads {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request =
-            http.MultipartRequest('POST', Uri.https(client.domain, pictrsPath));
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, pictrsPath),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
@@ -493,8 +489,9 @@ class APIThreads {
 
         final json = jsonDecode(pictrsResponse.body) as JsonMap;
 
-        final imageName = ((json['files'] as List<Object?>).first
-            as JsonMap)['file'] as String?;
+        final imageName =
+            ((json['files'] as List<Object?>).first as JsonMap)['file']
+                as String?;
 
         const path = '/post';
         final response = await client.post(
@@ -515,9 +512,9 @@ class APIThreads {
         const uploadPath = '/upload/image';
 
         var request = http.MultipartRequest(
-            'POST',
-            Uri.https(
-                client.domain, client.software.apiPathPrefix + uploadPath));
+          'POST',
+          Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'file',
           await image.readAsBytes(),
@@ -539,7 +536,7 @@ class APIThreads {
             'community_id': magazineID,
             'url': imageUrl,
             'body': body,
-            'nsfw': isAdult
+            'nsfw': isAdult,
           },
         );
 
@@ -552,20 +549,14 @@ class APIThreads {
       case ServerSoftware.mbin:
         final path = '/entry/$postId/report';
 
-        final response = await client.post(
-          path,
-          body: {'reason': reason},
-        );
+        final response = await client.post(path, body: {'reason': reason});
 
       case ServerSoftware.lemmy:
         const path = '/post/report';
 
         final response = await client.post(
           path,
-          body: {
-            'post_id': postId,
-            'reason': reason,
-          },
+          body: {'post_id': postId, 'reason': reason},
         );
 
       case ServerSoftware.piefed:
@@ -573,15 +564,12 @@ class APIThreads {
 
         final response = await client.post(
           path,
-          body: {
-            'post_id': postId,
-            'reason': reason,
-          },
+          body: {'post_id': postId, 'reason': reason},
         );
     }
   }
 
-  Future<void> markAsRead(int postId, bool read) async {
+  Future<void> markAsRead(List<int> postIds, bool read) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         throw UnsupportedError('Mbin doesnt support marking posts as read');
@@ -590,10 +578,7 @@ class APIThreads {
 
         final response = await client.post(
           path,
-          body: {
-            'post_ids': [postId],
-            'read': read,
-          }
+          body: {'post_ids': postIds, 'read': read},
         );
       case ServerSoftware.piefed:
         throw UnsupportedError('Piefed doesnt support marking posts as read');

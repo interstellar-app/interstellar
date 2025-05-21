@@ -21,27 +21,20 @@ class ServerClient {
     JsonMap? body,
     Map<String, String?>? queryParams,
   }) =>
-      send(
-        'GET',
-        path,
-        headers: headers,
-        body: body,
-        queryParams: queryParams,
-      );
+      send('GET', path, headers: headers, body: body, queryParams: queryParams);
 
   Future<http.Response> post(
     String path, {
     Map<String, String>? headers,
     JsonMap? body,
     Map<String, String?>? queryParams,
-  }) =>
-      send(
-        'POST',
-        path,
-        headers: headers,
-        body: body,
-        queryParams: queryParams,
-      );
+  }) => send(
+    'POST',
+    path,
+    headers: headers,
+    body: body,
+    queryParams: queryParams,
+  );
 
   Future<http.Response> put(
     String path, {
@@ -49,27 +42,20 @@ class ServerClient {
     JsonMap? body,
     Map<String, String?>? queryParams,
   }) =>
-      send(
-        'PUT',
-        path,
-        headers: headers,
-        body: body,
-        queryParams: queryParams,
-      );
+      send('PUT', path, headers: headers, body: body, queryParams: queryParams);
 
   Future<http.Response> delete(
     String path, {
     Map<String, String>? headers,
     JsonMap? body,
     Map<String, String?>? queryParams,
-  }) =>
-      send(
-        'DELETE',
-        path,
-        headers: headers,
-        body: body,
-        queryParams: queryParams,
-      );
+  }) => send(
+    'DELETE',
+    path,
+    headers: headers,
+    body: body,
+    queryParams: queryParams,
+  );
 
   Future<http.Response> send(
     String method,
@@ -97,8 +83,9 @@ class ServerClient {
   }
 
   Future<http.Response> sendRequest(http.BaseRequest request) async {
-    final response =
-        await http.Response.fromStream(await httpClient.send(request));
+    final response = await http.Response.fromStream(
+      await httpClient.send(request),
+    );
 
     checkResponseSuccess(request.url, response);
 
@@ -109,8 +96,9 @@ class ServerClient {
   Map<String, String> _normalizeQueryParams(Map<String, String?> queryParams) =>
       Map<String, String>.from(
         Map.fromEntries(
-          queryParams.entries
-              .where((e) => (e.value != null && e.value!.isNotEmpty)),
+          queryParams.entries.where(
+            (e) => (e.value != null && e.value!.isNotEmpty),
+          ),
         ),
       );
 

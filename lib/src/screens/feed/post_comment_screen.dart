@@ -36,9 +36,11 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
         .api
         .comments
         .get(widget.postType, widget.commentId)
-        .then((value) => setState(() {
-              _comment = value;
-            }));
+        .then(
+          (value) => setState(() {
+            _comment = value;
+          }),
+        );
   }
 
   @override
@@ -50,16 +52,11 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
     final comment = _comment!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).commentBy(comment.user.name)),
-      ),
+      appBar: AppBar(title: Text(l(context).commentBy(comment.user.name))),
       body: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: OverflowBar(
               alignment: MainAxisAlignment.center,
               overflowAlignment: OverflowBarAlignment.center,
@@ -69,12 +66,14 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   child: OutlinedButton(
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) {
-                          return PostPage(
-                            postType: comment.postType,
-                            postId: comment.postId,
-                          );
-                        }),
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return PostPage(
+                              postType: comment.postType,
+                              postId: comment.postId,
+                            );
+                          },
+                        ),
                       );
                     },
                     child: Text(l(context).comment_openOriginalPost),
@@ -86,12 +85,14 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                     onPressed: comment.rootId != null
                         ? () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return PostCommentScreen(
-                                  comment.postType,
-                                  comment.rootId!,
-                                );
-                              }),
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return PostCommentScreen(
+                                    comment.postType,
+                                    comment.rootId!,
+                                  );
+                                },
+                              ),
                             );
                           }
                         : null,
@@ -104,12 +105,14 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                     onPressed: comment.parentId != null
                         ? () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return PostCommentScreen(
-                                  comment.postType,
-                                  comment.parentId!,
-                                );
-                              }),
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return PostCommentScreen(
+                                    comment.postType,
+                                    comment.parentId!,
+                                  );
+                                },
+                              ),
                             );
                           }
                         : null,
@@ -120,10 +123,7 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: PostComment(
               comment,
               (newComment) => setState(() {
@@ -131,7 +131,7 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
               }),
               opUserId: widget.opUserId,
             ),
-          )
+          ),
         ],
       ),
     );

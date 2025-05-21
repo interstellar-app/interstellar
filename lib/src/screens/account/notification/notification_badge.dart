@@ -21,10 +21,8 @@ class _NotificationBadgeState extends State<NotificationBadge> {
 
     return Wrapper(
       shouldWrap: count != 0,
-      parentBuilder: (child) => Badge(
-        label: Text(intFormat(count)),
-        child: child,
-      ),
+      parentBuilder: (child) =>
+          Badge(label: Text(intFormat(count)), child: child),
       child: widget.child,
     );
   }

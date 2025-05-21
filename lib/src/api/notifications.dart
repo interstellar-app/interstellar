@@ -41,16 +41,22 @@ class APINotifications {
           'limit': '20',
         };
 
-        final messagesFuture =
-            client.get('/private_message/list', queryParams: query);
+        final messagesFuture = client.get(
+          '/private_message/list',
+          queryParams: query,
+        );
         final mentionFuture = client.get('/user/mention', queryParams: query);
         final repliesFuture = client.get('/user/replies', queryParams: query);
 
-        final [messagesResponse, mentionResponse, repliesResponse] =
-            await Future.wait(
-          [messagesFuture, mentionFuture, repliesFuture],
-          eagerError: true,
-        );
+        final [
+          messagesResponse,
+          mentionResponse,
+          repliesResponse,
+        ] = await Future.wait([
+          messagesFuture,
+          mentionFuture,
+          repliesFuture,
+        ], eagerError: true);
 
         final result = NotificationListModel.fromLemmy(
           messagesResponse.bodyJson,
@@ -59,10 +65,22 @@ class APINotifications {
         );
 
         return result.copyWith(
-            nextPage: lemmyCalcNextIntPage(result.items, page));
+          nextPage: lemmyCalcNextIntPage(result.items, page),
+        );
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/user/notifications';
+        final status = switch (filter) {
+          NotificationsFilter.new_ => 'New',
+          NotificationsFilter.read => 'Read',
+          NotificationsFilter.all || null => 'All',
+        };
+
+        final query = {'page': page, 'status_request': status};
+
+        final response = await client.get(path, queryParams: query);
+
+        return NotificationListModel.fromPiefed(response.bodyJson);
     }
   }
 
@@ -85,7 +103,11 @@ class APINotifications {
             (response.bodyJson['private_messages'] as int);
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/notifications_count';
+
+        final response = await client.get(path);
+
+        return response.bodyJson['count'] as int;
     }
   }
 
@@ -106,7 +128,11 @@ class APINotifications {
         return;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/mark_all_notifications_read';
+
+        final response = await client.put(path);
+
+        return;
     }
   }
 
@@ -119,7 +145,6 @@ class APINotifications {
       case ServerSoftware.mbin:
         final path =
             '/notifications/$notificationId/${readState ? 'read' : 'unread'}';
-
         final response = await client.put(path);
 
         return NotificationModel.fromMbin(response.bodyJson);
@@ -128,8 +153,9 @@ class APINotifications {
         final path = switch (notificationType) {
           NotificationType.message => '/private_message/mark_as_read',
           NotificationType.mention => '/user/mention/mark_as_read',
-          NotificationType.reply =>
-            throw Exception("can't mark Lemmy reply as read"),
+          NotificationType.reply => throw Exception(
+            "can't mark Lemmy reply as read",
+          ),
           _ => throw Exception('invalid notification type for lemmy'),
         };
 
@@ -139,8 +165,9 @@ class APINotifications {
             switch (notificationType) {
               NotificationType.message => 'private_message_id',
               NotificationType.mention => 'person_mention_id',
-              NotificationType.reply =>
-                throw Exception("can't mark Lemmy reply as read"),
+              NotificationType.reply => throw Exception(
+                "can't mark Lemmy reply as read",
+              ),
               _ => throw Exception('invalid notification type for lemmy'),
             }: notificationId,
             'read': readState,
@@ -149,16 +176,25 @@ class APINotifications {
 
         return switch (notificationType) {
           NotificationType.message => NotificationModel.fromLemmyMessage(
-              response.bodyJson['private_message_view'] as JsonMap),
+            response.bodyJson['private_message_view'] as JsonMap,
+          ),
           NotificationType.mention => NotificationModel.fromLemmyMention(
-              response.bodyJson['person_mention_view'] as JsonMap),
-          NotificationType.reply =>
-            throw Exception("can't mark Lemmy reply as read"),
+            response.bodyJson['person_mention_view'] as JsonMap,
+          ),
+          NotificationType.reply => throw Exception(
+            "can't mark Lemmy reply as read",
+          ),
           _ => throw Exception('invalid notification type for lemmy'),
         };
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/user/notification_state';
+
+        final body = {'notif_id': notificationId, 'read_state': readState};
+
+        final response = await client.put(path, body: body);
+
+        return NotificationModel.fromPiefed(response.bodyJson);
     }
   }
 
@@ -177,7 +213,7 @@ class APINotifications {
           body: {
             'endpoint': endpoint,
             'serverKey': serverKey,
-            'contentPublicKey': contentPublicKey
+            'contentPublicKey': contentPublicKey,
           },
         );
 
@@ -196,9 +232,7 @@ class APINotifications {
       case ServerSoftware.mbin:
         const path = '/notification/push';
 
-        final response = await client.delete(
-          path,
-        );
+        final response = await client.delete(path);
 
         return;
 
@@ -220,9 +254,7 @@ class APINotifications {
         final path =
             '/notification/update/${targetType.name}/$targetId/${status.toJson()}';
 
-        final response = await client.put(
-          path,
-        );
+        final response = await client.put(path);
 
         return;
 
@@ -232,8 +264,9 @@ class APINotifications {
       case ServerSoftware.piefed:
         final path = switch (targetType) {
           NotificationControlUpdateTargetType.entry => '/post/subscribe',
-          NotificationControlUpdateTargetType.post =>
-            throw UnsupportedError('Microblogs not on PieFed'),
+          NotificationControlUpdateTargetType.post => throw UnsupportedError(
+            'Microblogs not on PieFed',
+          ),
           NotificationControlUpdateTargetType.magazine =>
             '/community/subscribe',
           NotificationControlUpdateTargetType.user => '/user/subscribe',

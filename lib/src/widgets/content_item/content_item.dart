@@ -101,7 +101,7 @@ class ContentItem extends StatefulWidget {
 
   final NotificationControlStatus? notificationControlStatus;
   final Future<void> Function(NotificationControlStatus)?
-      onNotificationControlStatusChange;
+  onNotificationControlStatusChange;
   final bool isCompact;
 
   final void Function()? onClick;
@@ -193,19 +193,19 @@ class _ContentItemState extends State<ContentItem> {
             onTranslate: widget.onTranslate,
             onReply: widget.onReply != null
                 ? () => setState(() {
-                  _replyTextController = TextEditingController();
-                })
-                : () {}
+                    _replyTextController = TextEditingController();
+                  })
+                : () {},
           ),
           onSecondaryTap: () => showContentMenu(
             context,
             widget,
             onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
+            onReply: widget.onReply != null
+                ? () => setState(() {
                     _replyTextController = TextEditingController();
                   })
-                  : () {}
+                : () {},
           ),
           child: child,
         );
@@ -218,59 +218,62 @@ class _ContentItemState extends State<ContentItem> {
     return widget.translation != null
         // A translation is available
         ? widget.isPreview
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.body!,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(getLanguageName(context, widget.lang!)),
-                      Icon(Symbols.arrow_right),
-                      Text(widget.translation!.targetLanguage.name),
-                    ],
-                  ),
-                  Divider(),
-                  Text(
-                    widget.translation!.translations.text,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Markdown(widget.body!, widget.originInstance),
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(getLanguageName(context, widget.lang!)),
-                      Icon(Symbols.arrow_right),
-                      Text(widget.translation!.targetLanguage.name),
-                    ],
-                  ),
-                  Divider(),
-                  Markdown(widget.translation!.translations.text,
-                      widget.originInstance),
-                ],
-              )
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.body!,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(getLanguageName(context, widget.lang!)),
+                        Icon(Symbols.arrow_right),
+                        Text(widget.translation!.targetLanguage.name),
+                      ],
+                    ),
+                    Divider(),
+                    Text(
+                      widget.translation!.translations.text,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Markdown(
+                      widget.body!,
+                      widget.originInstance,
+                      nsfw: widget.isNSFW,
+                    ),
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(getLanguageName(context, widget.lang!)),
+                        Icon(Symbols.arrow_right),
+                        Text(widget.translation!.targetLanguage.name),
+                      ],
+                    ),
+                    Divider(),
+                    Markdown(
+                      widget.translation!.translations.text,
+                      widget.originInstance,
+                      nsfw: widget.isNSFW,
+                    ),
+                  ],
+                )
         // No translation is available
         : widget.isPreview
-            ? Text(
-                widget.body!,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-              )
-            : Markdown(widget.body!, widget.originInstance);
+        ? Text(widget.body!, maxLines: 4, overflow: TextOverflow.ellipsis)
+        : Markdown(widget.body!, widget.originInstance, nsfw: widget.isNSFW);
   }
 
   Widget full() {
@@ -290,12 +293,11 @@ class _ContentItemState extends State<ContentItem> {
                       icon: widget.userIcon,
                       onTap: widget.userIdOnClick != null
                           ? () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => UserScreen(
-                                    widget.userIdOnClick!,
-                                  ),
-                                ),
-                              )
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    UserScreen(widget.userIdOnClick!),
+                              ),
+                            )
                           : null,
                     ),
                   ),
@@ -332,49 +334,53 @@ class _ContentItemState extends State<ContentItem> {
                 icon: widget.magazineIcon,
                 onTap: widget.magazineIdOnClick != null
                     ? () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MagazineScreen(
-                              widget.magazineIdOnClick!,
-                            ),
-                          ),
-                        )
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MagazineScreen(widget.magazineIdOnClick!),
+                        ),
+                      )
                     : null,
               ),
             ),
           )
         : null;
 
-    final editDraftController =
-        context.watch<DraftsController>().auto(widget.editDraftResourceId);
-    final replyDraftController =
-        context.watch<DraftsController>().auto(widget.replyDraftResourceId);
+    final editDraftController = context.watch<DraftsController>().auto(
+      widget.editDraftResourceId,
+    );
+    final replyDraftController = context.watch<DraftsController>().auto(
+      widget.replyDraftResourceId,
+    );
 
-    return LayoutBuilder(builder: (context, constrains) {
-      final hasWideSize = constrains.maxWidth > 800;
-      final isRightImage = hasWideSize;
+    return LayoutBuilder(
+      builder: (context, constrains) {
+        final hasWideSize = constrains.maxWidth > 800;
+        final isRightImage = hasWideSize;
 
-      final double rightImageSize = hasWideSize ? 128 : 64;
+        final double rightImageSize = hasWideSize ? 128 : 64;
 
-      final imageOpenTitle = widget.title ?? widget.body ?? '';
+        final imageOpenTitle = widget.title ?? widget.body ?? '';
 
-      final imageWidget = widget.image == null
-          ? null
-          : isRightImage
-              ? SizedBox(
-                  height: rightImageSize,
-                  width: rightImageSize,
-                  child: AdvancedImage(
-                    widget.image!,
-                    fit: BoxFit.cover,
-                    openTitle: imageOpenTitle,
-                    enableBlur: widget.isNSFW &&
-                        context
-                            .watch<AppController>()
-                            .profile
-                            .coverMediaMarkedSensitive,
-                  ),
-                )
-              : (!widget.fullImageSize
+        final imageWidget = widget.image == null
+            ? null
+            : isRightImage
+            ? SizedBox(
+                height: rightImageSize,
+                width: rightImageSize,
+                child: AdvancedImage(
+                  widget.image!,
+                  fit: BoxFit.cover,
+                  openTitle: imageOpenTitle,
+                  enableBlur:
+                      widget.isNSFW &&
+                      context
+                          .watch<AppController>()
+                          .profile
+                          .coverMediaMarkedSensitive,
+                  hero: '${widget.magazine}${widget.user}${widget.createdAt}',
+                ),
+              )
+            : (!widget.fullImageSize
                   ? SizedBox(
                       height: 160,
                       width: double.infinity,
@@ -383,6 +389,8 @@ class _ContentItemState extends State<ContentItem> {
                         fit: BoxFit.cover,
                         openTitle: imageOpenTitle,
                         enableBlur: widget.isNSFW,
+                        hero:
+                            '${widget.magazine}${widget.user}${widget.createdAt}',
                       ),
                     )
                   : AdvancedImage(
@@ -390,68 +398,69 @@ class _ContentItemState extends State<ContentItem> {
                       openTitle: imageOpenTitle,
                       fit: BoxFit.scaleDown,
                       enableBlur: widget.isNSFW,
+                      hero:
+                          '${widget.magazine}${widget.user}${widget.createdAt}',
                     ));
 
-      final titleStyle = hasWideSize
-          ? Theme.of(context)
-              .textTheme
-              .titleLarge!
-              .copyWith(fontWeight: widget.read ? FontWeight.w100 : null)
-          : Theme.of(context)
-              .textTheme
-              .titleMedium!
-              .copyWith(fontWeight: widget.read ? FontWeight.w100 : null);
-      final titleOverflow =
-          widget.isPreview && context.watch<AppController>().profile.compactMode
-              ? TextOverflow.ellipsis
-              : null;
+        final titleStyle = hasWideSize
+            ? Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontWeight: widget.read ? FontWeight.w100 : null,
+              )
+            : Theme.of(context).textTheme.titleMedium!.copyWith(
+                fontWeight: widget.read ? FontWeight.w100 : null,
+              );
+        final titleOverflow =
+            widget.isPreview &&
+                context.watch<AppController>().profile.compactMode
+            ? TextOverflow.ellipsis
+            : null;
 
-      final menuWidget = IconButton(
-        icon: const Icon(Symbols.more_vert_rounded),
-        onPressed: () {
-          showContentMenu(
-            context,
-            widget,
-            onEdit: () => setState(() {
-              _editTextController = TextEditingController(text: widget.body);
-            }),
-            onTranslate: widget.onTranslate,
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                  _replyTextController = TextEditingController();
-                })
-                : () {}
-          );
-        },
-      );
+        final menuWidget = IconButton(
+          icon: const Icon(Symbols.more_vert_rounded),
+          onPressed: () {
+            showContentMenu(
+              context,
+              widget,
+              onEdit: () => setState(() {
+                _editTextController = TextEditingController(text: widget.body);
+              }),
+              onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                      _replyTextController = TextEditingController();
+                    })
+                  : () {},
+            );
+          },
+        );
 
-      return Wrapper(
+        return Wrapper(
           shouldWrap: context.watch<AppController>().profile.enableSwipeActions,
           parentBuilder: (child) => SwipeItem(
-                onUpVote: widget.onUpVote,
-                onDownVote: widget.onDownVote,
-                onBoost: widget.onBoost,
-                onBookmark: () async {
-                  if (widget.activeBookmarkLists != null &&
-                      widget.onAddBookmark != null &&
-                      widget.onRemoveBookmark != null) {
-                    widget.activeBookmarkLists!.isEmpty
-                        ? widget.onAddBookmark!()
-                        : widget.onRemoveBookmark!();
-                  }
-                },
-                onReply: widget.onReply != null
-                    ? () => setState(() {
-                          _replyTextController = TextEditingController();
-                        })
-                    : () {},
-                onMarkAsRead: widget.onMarkAsRead,
-                onModeratePin: widget.onModeratePin,
-                onModerateMarkNSFW: widget.onModerateMarkNSFW,
-                onModerateDelete: widget.onModerateDelete,
-                onModerateBan: widget.onModerateBan,
-                child: child,
-              ),
+            onUpVote: widget.onUpVote,
+            onDownVote: widget.onDownVote,
+            onBoost: widget.onBoost,
+            onBookmark: () async {
+              if (widget.activeBookmarkLists != null &&
+                  widget.onAddBookmark != null &&
+                  widget.onRemoveBookmark != null) {
+                widget.activeBookmarkLists!.isEmpty
+                    ? widget.onAddBookmark!()
+                    : widget.onRemoveBookmark!();
+              }
+            },
+            onReply: widget.onReply != null
+                ? () => setState(() {
+                    _replyTextController = TextEditingController();
+                  })
+                : () {},
+            onMarkAsRead: widget.onMarkAsRead,
+            onModeratePin: widget.onModeratePin,
+            onModerateMarkNSFW: widget.onModerateMarkNSFW,
+            onModerateDelete: widget.onModerateDelete,
+            onModerateBan: widget.onModerateBan,
+            child: child,
+          ),
           child: Column(
             children: <Widget>[
               if ((!isRightImage && imageWidget != null) ||
@@ -459,10 +468,11 @@ class _ContentItemState extends State<ContentItem> {
                 Wrapper(
                   shouldWrap: widget.fullImageSize,
                   parentBuilder: (child) => Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height / 2,
-                      ),
-                      child: child),
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height / 2,
+                    ),
+                    child: child,
+                  ),
                   child: (!widget.isPreview && isVideo)
                       ? VideoPlayer(widget.link!)
                       : imageWidget!,
@@ -504,13 +514,16 @@ class _ContentItemState extends State<ContentItem> {
                                     if (widget.filterListWarnings?.isNotEmpty ==
                                         true)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
                                         child: Tooltip(
                                           message: l(context)
-                                              .filterListWarningX(widget
-                                                  .filterListWarnings!
-                                                  .join(', ')),
+                                              .filterListWarningX(
+                                                widget.filterListWarnings!.join(
+                                                  ', ',
+                                                ),
+                                              ),
                                           triggerMode: TooltipTriggerMode.tap,
                                           child: const Icon(
                                             Symbols.warning_amber_rounded,
@@ -520,23 +533,27 @@ class _ContentItemState extends State<ContentItem> {
                                       ),
                                     if (widget.isPinned)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
                                         child: Tooltip(
                                           message: l(context).pinnedInMagazine,
                                           triggerMode: TooltipTriggerMode.tap,
                                           child: const Icon(
-                                              Symbols.push_pin_rounded,
-                                              size: 20),
+                                            Symbols.push_pin_rounded,
+                                            size: 20,
+                                          ),
                                         ),
                                       ),
                                     if (widget.isNSFW)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
                                         child: Tooltip(
-                                          message:
-                                              l(context).notSafeForWork_long,
+                                          message: l(
+                                            context,
+                                          ).notSafeForWork_long,
                                           triggerMode: TooltipTriggerMode.tap,
                                           child: Text(
                                             l(context).notSafeForWork_short,
@@ -549,11 +566,13 @@ class _ContentItemState extends State<ContentItem> {
                                       ),
                                     if (widget.isOC)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
                                         child: Tooltip(
-                                          message:
-                                              l(context).originalContent_long,
+                                          message: l(
+                                            context,
+                                          ).originalContent_long,
                                           triggerMode: TooltipTriggerMode.tap,
                                           child: Text(
                                             l(context).originalContent_short,
@@ -564,20 +583,21 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
-                                    if (!widget.showMagazineFirst &&
-                                        userWidget != null)
-                                      userWidget,
-                                    if (widget.showMagazineFirst &&
-                                        magazineWidget != null)
-                                      magazineWidget,
+                                    if (!widget.showMagazineFirst) ?userWidget,
+                                    if (widget.showMagazineFirst)
+                                      ?magazineWidget,
                                     if (widget.createdAt != null)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
                                         child: Tooltip(
-                                          message: l(context).createdAt(
-                                                  dateTimeFormat(
-                                                      widget.createdAt!)) +
+                                          message:
+                                              l(context).createdAt(
+                                                dateTimeFormat(
+                                                  widget.createdAt!,
+                                                ),
+                                              ) +
                                               (widget.editedAt == null
                                                   ? ''
                                                   : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
@@ -585,16 +605,14 @@ class _ContentItemState extends State<ContentItem> {
                                           child: Text(
                                             dateDiffFormat(widget.createdAt!),
                                             style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
+                                              fontWeight: FontWeight.w300,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    if (widget.showMagazineFirst &&
-                                        userWidget != null)
-                                      userWidget,
-                                    if (!widget.showMagazineFirst &&
-                                        magazineWidget != null)
-                                      magazineWidget,
+                                    if (widget.showMagazineFirst) ?userWidget,
+                                    if (!widget.showMagazineFirst)
+                                      ?magazineWidget,
                                   ],
                                 ),
                               ),
@@ -612,121 +630,136 @@ class _ContentItemState extends State<ContentItem> {
                                       .compactMode))
                             contentBody(context),
                           if (!context
-                                  .read<AppController>()
-                                  .profile
-                                  .hideActionButtons)
+                              .read<AppController>()
+                              .profile
+                              .hideActionButtons)
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child:
-                                  LayoutBuilder(builder: (context, constrains) {
-                                final votingWidgets = [
-                                  if (widget.activeBookmarkLists != null)
-                                    widget.activeBookmarkLists!.isEmpty
-                                        ? LoadingIconButton(
-                                            onPressed: widget.onAddBookmark,
-                                            icon: const Icon(
-                                              Symbols.bookmark_rounded,
-                                              fill: 0,
+                              child: LayoutBuilder(
+                                builder: (context, constrains) {
+                                  final votingWidgets = [
+                                    if (widget.activeBookmarkLists != null)
+                                      widget.activeBookmarkLists!.isEmpty
+                                          ? LoadingIconButton(
+                                              onPressed: widget.onAddBookmark,
+                                              icon: const Icon(
+                                                Symbols.bookmark_rounded,
+                                                fill: 0,
+                                              ),
+                                            )
+                                          : LoadingIconButton(
+                                              onPressed:
+                                                  widget.onRemoveBookmark,
+                                              icon: const Icon(
+                                                Symbols.bookmark_rounded,
+                                                fill: 1,
+                                              ),
                                             ),
-                                          )
-                                        : LoadingIconButton(
-                                            onPressed: widget.onRemoveBookmark,
-                                            icon: const Icon(
-                                              Symbols.bookmark_rounded,
-                                              fill: 1,
+                                    if (widget.boosts != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 8,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Symbols.rocket_launch_rounded,
+                                              ),
+                                              color: widget.isBoosted
+                                                  ? Colors.purple.shade400
+                                                  : null,
+                                              onPressed: widget.onBoost,
                                             ),
-                                          ),
-                                  if (widget.boosts != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: Row(
+                                            Text(intFormat(widget.boosts!)),
+                                          ],
+                                        ),
+                                      ),
+                                    if (widget.upVotes != null ||
+                                        widget.downVotes != null)
+                                      Row(
                                         children: [
-                                          IconButton(
-                                            icon: const Icon(
-                                                Symbols.rocket_launch_rounded),
-                                            color: widget.isBoosted
-                                                ? Colors.purple.shade400
-                                                : null,
-                                            onPressed: widget.onBoost,
+                                          if (widget.upVotes != null)
+                                            IconButton(
+                                              icon: const Icon(
+                                                Symbols.arrow_upward_rounded,
+                                              ),
+                                              color: widget.isUpVoted
+                                                  ? Colors.green.shade400
+                                                  : null,
+                                              onPressed: widget.onUpVote,
+                                            ),
+                                          Text(
+                                            intFormat(
+                                              (widget.upVotes ?? 0) -
+                                                  (widget.downVotes ?? 0),
+                                            ),
                                           ),
-                                          Text(intFormat(widget.boosts!))
+                                          if (widget.downVotes != null)
+                                            IconButton(
+                                              icon: const Icon(
+                                                Symbols.arrow_downward_rounded,
+                                              ),
+                                              color: widget.isDownVoted
+                                                  ? Colors.red.shade400
+                                                  : null,
+                                              onPressed: widget.onDownVote,
+                                            ),
                                         ],
                                       ),
-                                    ),
-                                  if (widget.upVotes != null ||
-                                      widget.downVotes != null)
-                                    Row(
-                                      children: [
-                                        if (widget.upVotes != null)
-                                          IconButton(
-                                            icon: const Icon(
-                                                Symbols.arrow_upward_rounded),
-                                            color: widget.isUpVoted
-                                                ? Colors.green.shade400
-                                                : null,
-                                            onPressed: widget.onUpVote,
-                                          ),
-                                        Text(intFormat((widget.upVotes ?? 0) -
-                                            (widget.downVotes ?? 0))),
-                                        if (widget.downVotes != null)
-                                          IconButton(
-                                            icon: const Icon(
-                                                Symbols.arrow_downward_rounded),
-                                            color: widget.isDownVoted
-                                                ? Colors.red.shade400
-                                                : null,
-                                            onPressed: widget.onDownVote,
-                                          ),
-                                      ],
-                                    ),
-                                ];
-                                final commentWidgets = [
-                                  if (widget.numComments != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: Row(
-                                        children: [
-                                          Icon(Symbols.comment_rounded),
-                                          const SizedBox(width: 4),
-                                          Text(intFormat(widget.numComments!))
-                                        ],
+                                  ];
+                                  final commentWidgets = [
+                                    if (widget.numComments != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 8,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Symbols.comment_rounded),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              intFormat(widget.numComments!),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  if (widget.onReply != null)
-                                    IconButton(
-                                      icon: const Icon(Symbols.reply_rounded),
-                                      onPressed: () => setState(() {
-                                        _replyTextController =
-                                            TextEditingController();
-                                      }),
-                                    ),
-                                ];
+                                    if (widget.onReply != null)
+                                      IconButton(
+                                        icon: const Icon(Symbols.reply_rounded),
+                                        onPressed: () => setState(() {
+                                          _replyTextController =
+                                              TextEditingController();
+                                        }),
+                                      ),
+                                  ];
 
-                                return constrains.maxWidth < 300
-                                    ? Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: votingWidgets,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Row(
-                                            children: <Widget>[
-                                              ...commentWidgets,
-                                              const Spacer(),
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
-                                        children: <Widget>[
-                                          ...commentWidgets,
-                                          const Spacer(),
-                                          ...votingWidgets,
-                                        ],
-                                      );
-                              }),
+                                  return constrains.maxWidth < 300
+                                      ? Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: votingWidgets,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: <Widget>[
+                                                ...commentWidgets,
+                                                const Spacer(),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          children: <Widget>[
+                                            ...commentWidgets,
+                                            const Spacer(),
+                                            ...votingWidgets,
+                                          ],
+                                        );
+                                },
+                              ),
                             ),
                           if (!widget.isPreview &&
                               widget.notificationControlStatus != null &&
@@ -734,7 +767,10 @@ class _ContentItemState extends State<ContentItem> {
                                   null &&
                               context.read<AppController>().serverSoftware !=
                                   ServerSoftware.piefed &&
-                              !context.read<AppController>().profile.hideActionButtons)
+                              !context
+                                  .read<AppController>()
+                                  .profile
+                                  .hideActionButtons)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Row(
@@ -743,7 +779,7 @@ class _ContentItemState extends State<ContentItem> {
                                   NotificationControlSegment(
                                     widget.notificationControlStatus!,
                                     widget.onNotificationControlStatusChange!,
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -764,16 +800,18 @@ class _ContentItemState extends State<ContentItem> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       OutlinedButton(
-                                          onPressed: () => setState(() {
-                                                _replyTextController!.dispose();
-                                                _replyTextController = null;
-                                              }),
-                                          child: Text(l(context).cancel)),
+                                        onPressed: () => setState(() {
+                                          _replyTextController!.dispose();
+                                          _replyTextController = null;
+                                        }),
+                                        child: Text(l(context).cancel),
+                                      ),
                                       const SizedBox(width: 8),
                                       LoadingFilledButton(
                                         onPressed: () async {
                                           await widget.onReply!(
-                                              _replyTextController!.text);
+                                            _replyTextController!.text,
+                                          );
 
                                           await replyDraftController.discard();
 
@@ -786,7 +824,7 @@ class _ContentItemState extends State<ContentItem> {
                                         uesHaptics: true,
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -806,16 +844,18 @@ class _ContentItemState extends State<ContentItem> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       OutlinedButton(
-                                          onPressed: () => setState(() {
-                                                _editTextController!.dispose();
-                                                _editTextController = null;
-                                              }),
-                                          child: Text(l(context).cancel)),
+                                        onPressed: () => setState(() {
+                                          _editTextController!.dispose();
+                                          _editTextController = null;
+                                        }),
+                                        child: Text(l(context).cancel),
+                                      ),
                                       const SizedBox(width: 8),
                                       LoadingFilledButton(
                                         onPressed: () async {
                                           await widget.onEdit!(
-                                              _editTextController!.text);
+                                            _editTextController!.text,
+                                          );
 
                                           await editDraftController.discard();
 
@@ -828,7 +868,7 @@ class _ContentItemState extends State<ContentItem> {
                                         uesHaptics: true,
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -847,8 +887,10 @@ class _ContentItemState extends State<ContentItem> {
                 ),
               ),
             ],
-          ));
-    });
+          ),
+        );
+      },
+    );
   }
 
   Widget compact() {
@@ -862,11 +904,13 @@ class _ContentItemState extends State<ContentItem> {
               widget.image!,
               fit: BoxFit.cover,
               openTitle: widget.title,
-              enableBlur: widget.isNSFW &&
+              enableBlur:
+                  widget.isNSFW &&
                   context
                       .watch<AppController>()
                       .profile
                       .coverMediaMarkedSensitive,
+              hero: '${widget.magazine}${widget.user}${widget.createdAt}',
             ),
           );
 
@@ -882,12 +926,11 @@ class _ContentItemState extends State<ContentItem> {
                       widget.user!,
                       onTap: widget.userIdOnClick != null
                           ? () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => UserScreen(
-                                    widget.userIdOnClick!,
-                                  ),
-                                ),
-                              )
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    UserScreen(widget.userIdOnClick!),
+                              ),
+                            )
                           : null,
                     ),
                   ),
@@ -908,20 +951,20 @@ class _ContentItemState extends State<ContentItem> {
                 widget.magazine!,
                 onTap: widget.magazineIdOnClick != null
                     ? () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MagazineScreen(
-                              widget.magazineIdOnClick!,
-                            ),
-                          ),
-                        )
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MagazineScreen(widget.magazineIdOnClick!),
+                        ),
+                      )
                     : null,
               ),
             ),
           )
         : null;
 
-    final replyDraftController =
-        context.watch<DraftsController>().auto(widget.replyDraftResourceId);
+    final replyDraftController = context.watch<DraftsController>().auto(
+      widget.replyDraftResourceId,
+    );
 
     return Wrapper(
       shouldWrap: context.watch<AppController>().profile.enableSwipeActions,
@@ -940,8 +983,8 @@ class _ContentItemState extends State<ContentItem> {
         },
         onReply: widget.onReply != null
             ? () => setState(() {
-                  _replyTextController = TextEditingController();
-                })
+                _replyTextController = TextEditingController();
+              })
             : () {},
         onModeratePin: widget.onModeratePin,
         onModerateMarkNSFW: widget.onModerateMarkNSFW,
@@ -961,7 +1004,8 @@ class _ContentItemState extends State<ContentItem> {
                   Text(
                     widget.title ?? '',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: widget.read ? FontWeight.w100 : null),
+                      fontWeight: widget.read ? FontWeight.w100 : null,
+                    ),
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -973,7 +1017,8 @@ class _ContentItemState extends State<ContentItem> {
                           padding: const EdgeInsets.only(right: 10),
                           child: Tooltip(
                             message: l(context).filterListWarningX(
-                                widget.filterListWarnings!.join(', ')),
+                              widget.filterListWarnings!.join(', '),
+                            ),
                             triggerMode: TooltipTriggerMode.tap,
                             child: const Icon(
                               Symbols.warning_amber_rounded,
@@ -987,8 +1032,10 @@ class _ContentItemState extends State<ContentItem> {
                           child: Tooltip(
                             message: l(context).pinnedInMagazine,
                             triggerMode: TooltipTriggerMode.tap,
-                            child:
-                                const Icon(Symbols.push_pin_rounded, size: 20),
+                            child: const Icon(
+                              Symbols.push_pin_rounded,
+                              size: 20,
+                            ),
                           ),
                         ),
                       if (widget.isNSFW)
@@ -1021,38 +1068,40 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
-                      if (!widget.showMagazineFirst && userWidget != null)
-                        userWidget,
-                      if (widget.showMagazineFirst && magazineWidget != null)
-                        magazineWidget,
+                      if (!widget.showMagazineFirst) ?userWidget,
+                      if (widget.showMagazineFirst) ?magazineWidget,
                       if (widget.createdAt != null)
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: Tooltip(
-                            message: l(context).createdAt(
-                                    dateTimeFormat(widget.createdAt!)) +
+                            message:
+                                l(
+                                  context,
+                                ).createdAt(dateTimeFormat(widget.createdAt!)) +
                                 (widget.editedAt == null
                                     ? ''
                                     : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
                             triggerMode: TooltipTriggerMode.tap,
                             child: Text(
                               dateDiffFormat(widget.createdAt!),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w300),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w300,
+                              ),
                             ),
                           ),
                         ),
-                      if (widget.showMagazineFirst && userWidget != null)
-                        userWidget,
-                      if (!widget.showMagazineFirst && magazineWidget != null)
-                        magazineWidget,
+                      if (widget.showMagazineFirst) ?userWidget,
+                      if (!widget.showMagazineFirst) ?magazineWidget,
                     ],
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Text(l(context).pointsX(
-                          (widget.upVotes ?? 0) - (widget.downVotes ?? 0))),
+                      Text(
+                        l(context).pointsX(
+                          (widget.upVotes ?? 0) - (widget.downVotes ?? 0),
+                        ),
+                      ),
                       const Text(' · '),
                       Text(l(context).commentsX(widget.numComments ?? 0)),
                     ],
@@ -1073,16 +1122,18 @@ class _ContentItemState extends State<ContentItem> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               OutlinedButton(
-                                  onPressed: () => setState(() {
-                                        _replyTextController!.dispose();
-                                        _replyTextController = null;
-                                      }),
-                                  child: Text(l(context).cancel)),
+                                onPressed: () => setState(() {
+                                  _replyTextController!.dispose();
+                                  _replyTextController = null;
+                                }),
+                                child: Text(l(context).cancel),
+                              ),
                               const SizedBox(width: 8),
                               LoadingFilledButton(
                                 onPressed: () async {
-                                  await widget
-                                      .onReply!(_replyTextController!.text);
+                                  await widget.onReply!(
+                                    _replyTextController!.text,
+                                  );
 
                                   await replyDraftController.discard();
 
@@ -1095,7 +1146,7 @@ class _ContentItemState extends State<ContentItem> {
                                 uesHaptics: true,
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -1103,7 +1154,7 @@ class _ContentItemState extends State<ContentItem> {
               ),
             ),
           ),
-          if (imageWidget != null) imageWidget,
+          ?imageWidget,
         ],
       ),
     );

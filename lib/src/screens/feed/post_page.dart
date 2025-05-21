@@ -54,10 +54,12 @@ class _PostPageState extends State<PostPage> {
       _data = widget.initData!;
     } else if (widget.postType != null && widget.postId != null) {
       final newPost = await switch (widget.postType!) {
-        PostType.thread =>
-          context.read<AppController>().api.threads.get(widget.postId!),
-        PostType.microblog =>
-          context.read<AppController>().api.microblogs.get(widget.postId!),
+        PostType.thread => context.read<AppController>().api.threads.get(
+          widget.postId!,
+        ),
+        PostType.microblog => context.read<AppController>().api.microblogs.get(
+          widget.postId!,
+        ),
       };
       setState(() {
         _data = newPost;
@@ -68,7 +70,10 @@ class _PostPageState extends State<PostPage> {
 
     _pagingController.addPageRequestListener(_fetchPage);
 
-    _onUpdate(await context.read<AppController>().markAsRead(_data!, true));
+    if (!mounted) return;
+    _onUpdate(
+      (await context.read<AppController>().markAsRead([_data!], true)).first,
+    );
   }
 
   void _onUpdate(PostModel newValue) {
@@ -81,26 +86,29 @@ class _PostPageState extends State<PostPage> {
   Future<void> _fetchPage(String pageKey) async {
     try {
       final newPage = await context.read<AppController>().api.comments.list(
-            _data!.type,
-            _data!.id,
-            page: nullIfEmpty(pageKey),
-            sort: commentSort,
-            usePreferredLangs: whenLoggedIn(context,
-                context.read<AppController>().profile.useAccountLanguageFilter),
-            langs: context
-                .read<AppController>()
-                .profile
-                .customLanguageFilter
-                .toList(),
-          );
+        _data!.type,
+        _data!.id,
+        page: nullIfEmpty(pageKey),
+        sort: commentSort,
+        usePreferredLangs: whenLoggedIn(
+          context,
+          context.read<AppController>().profile.useAccountLanguageFilter,
+        ),
+        langs: context
+            .read<AppController>()
+            .profile
+            .customLanguageFilter
+            .toList(),
+      );
 
       // Check BuildContext
       if (!mounted) return;
 
       // Prevent duplicates
       final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems =
-          newPage.items.where((e) => !currentItemIds.contains(e.id)).toList();
+      final newItems = newPage.items
+          .where((e) => !currentItemIds.contains(e.id))
+          .toList();
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
@@ -110,8 +118,9 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentCommentSortOption =
-        commentSortSelect(context).getOption(commentSort);
+    final currentCommentSortOption = commentSortSelect(
+      context,
+    ).getOption(commentSort);
 
     if (_data == null) {
       return const LoadingTemplate();
@@ -143,8 +152,9 @@ class _PostPageState extends State<PostPage> {
             padding: const EdgeInsets.only(right: 8),
             child: IconButton(
               onPressed: () async {
-                final newSort = await commentSortSelect(context)
-                    .askSelection(context, commentSort);
+                final newSort = await commentSortSelect(
+                  context,
+                ).askSelection(context, commentSort);
 
                 if (newSort != null && newSort != commentSort) {
                   setState(() {
@@ -159,9 +169,7 @@ class _PostPageState extends State<PostPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(
-          () => _pagingController.refresh(),
-        ),
+        onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
@@ -169,12 +177,11 @@ class _PostPageState extends State<PostPage> {
                 post,
                 _onUpdate,
                 onReply: whenLoggedIn(context, (body) async {
-                  var newComment =
-                      await context.read<AppController>().api.comments.create(
-                            post.type,
-                            post.id,
-                            body,
-                          );
+                  var newComment = await context
+                      .read<AppController>()
+                      .api
+                      .comments
+                      .create(post.type, post.id, body);
                   var newList = _pagingController.itemList;
                   newList?.insert(0, newComment);
                   setState(() {
@@ -182,58 +189,50 @@ class _PostPageState extends State<PostPage> {
                   });
                 }),
                 onEdit: post.visibility != 'soft_deleted'
-                    ? whenLoggedIn(
-                        context,
-                        (body) async {
-                          final newPost = await switch (post.type) {
-                            PostType.thread =>
-                              context.read<AppController>().api.threads.edit(
-                                    post.id,
-                                    post.title!,
-                                    post.isOC,
-                                    body,
-                                    post.lang,
-                                    post.isNSFW,
-                                  ),
-                            PostType.microblog =>
-                              context.read<AppController>().api.microblogs.edit(
-                                    post.id,
-                                    body,
-                                    post.lang!,
-                                    post.isNSFW,
-                                  ),
-                          };
-                          _onUpdate(newPost);
-                        },
-                        matchesUsername: post.user.name,
-                      )
+                    ? whenLoggedIn(context, (body) async {
+                        final newPost = await switch (post.type) {
+                          PostType.thread =>
+                            context.read<AppController>().api.threads.edit(
+                              post.id,
+                              post.title!,
+                              post.isOC,
+                              body,
+                              post.lang,
+                              post.isNSFW,
+                            ),
+                          PostType.microblog =>
+                            context.read<AppController>().api.microblogs.edit(
+                              post.id,
+                              body,
+                              post.lang!,
+                              post.isNSFW,
+                            ),
+                        };
+                        _onUpdate(newPost);
+                      }, matchesUsername: post.user.name)
                     : null,
                 onDelete: post.visibility != 'soft_deleted'
-                    ? whenLoggedIn(
-                        context,
-                        () async {
-                          await switch (post.type) {
-                            PostType.thread => context
-                                .read<AppController>()
-                                .api
-                                .threads
-                                .delete(post.id),
-                            PostType.microblog => context
-                                .read<AppController>()
-                                .api
-                                .microblogs
-                                .delete(post.id),
-                          };
-                          _onUpdate(post.copyWith(
+                    ? whenLoggedIn(context, () async {
+                        await switch (post.type) {
+                          PostType.thread =>
+                            context.read<AppController>().api.threads.delete(
+                              post.id,
+                            ),
+                          PostType.microblog =>
+                            context.read<AppController>().api.microblogs.delete(
+                              post.id,
+                            ),
+                        };
+                        _onUpdate(
+                          post.copyWith(
                             body: '_${l(context).postDeleted}_',
                             upvotes: null,
                             downvotes: null,
                             boosts: null,
                             visibility: 'soft_deleted',
-                          ));
-                        },
-                        matchesUsername: post.user.name,
-                      )
+                          ),
+                        );
+                      }, matchesUsername: post.user.name)
                     : null,
                 userCanModerate: widget.userCanModerate,
               ),
@@ -243,14 +242,14 @@ class _PostPageState extends State<PostPage> {
               builderDelegate: PagedChildBuilderDelegate<CommentModel>(
                 firstPageErrorIndicatorBuilder: (context) =>
                     FirstPageErrorIndicator(
-                  error: _pagingController.error,
-                  onTryAgain: _pagingController.retryLastFailedRequest,
-                ),
+                      error: _pagingController.error,
+                      onTryAgain: _pagingController.retryLastFailedRequest,
+                    ),
                 newPageErrorIndicatorBuilder: (context) =>
                     NewPageErrorIndicator(
-                  error: _pagingController.error,
-                  onTryAgain: _pagingController.retryLastFailedRequest,
-                ),
+                      error: _pagingController.error,
+                      onTryAgain: _pagingController.retryLastFailedRequest,
+                    ),
                 itemBuilder: (context, item, index) => Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -270,7 +269,7 @@ class _PostPageState extends State<PostPage> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

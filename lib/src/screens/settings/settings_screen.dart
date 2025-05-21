@@ -23,9 +23,7 @@ class SettingsScreen extends StatelessWidget {
     final ac = context.watch<AppController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings),
-      ),
+      appBar: AppBar(title: Text(l(context).settings)),
       body: ListView(
         children: [
           ListTile(
@@ -81,7 +79,8 @@ class SettingsScreen extends StatelessWidget {
                 builder: (context) => const NotificationSettingsScreen(),
               ),
             ),
-            enabled: ac.serverSoftware == ServerSoftware.mbin &&
+            enabled:
+                ac.serverSoftware == ServerSoftware.mbin &&
                 context
                     .watch<AppController>()
                     .selectedAccount
@@ -102,9 +101,7 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Symbols.info_rounded),
             title: Text(l(context).settings_about),
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AboutScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => const AboutScreen()),
             ),
           ),
           const Divider(),

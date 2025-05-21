@@ -37,8 +37,9 @@ class _ImageSelectorState extends State<ImageSelector> {
                   child: IconButton(
                     onPressed: widget.enabled
                         ? () async {
-                            XFile? image = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
+                            XFile? image = await ImagePicker().pickImage(
+                              source: ImageSource.gallery,
+                            );
                             if (image != null) {
                               widget.onSelected(image, _altTextController.text);
                             }
@@ -55,8 +56,9 @@ class _ImageSelectorState extends State<ImageSelector> {
                     child: IconButton(
                       onPressed: widget.enabled
                           ? () async {
-                              XFile? image = await ImagePicker()
-                                  .pickImage(source: ImageSource.camera);
+                              XFile? image = await ImagePicker().pickImage(
+                                source: ImageSource.camera,
+                              );
                               widget.onSelected(image, _altTextController.text);
                             }
                           : null,
@@ -64,7 +66,7 @@ class _ImageSelectorState extends State<ImageSelector> {
                       iconSize: 35,
                       icon: const Icon(Symbols.camera_rounded),
                     ),
-                  )
+                  ),
               ],
             ),
           )
@@ -99,7 +101,9 @@ class _ImageSelectorState extends State<ImageSelector> {
                           label: l(context).altText,
                           onChanged: (_) => setState(() {
                             widget.onSelected(
-                                widget.selected, _altTextController.text);
+                              widget.selected,
+                              _altTextController.text,
+                            );
                           }),
                         ),
                       ),
@@ -113,10 +117,10 @@ class _ImageSelectorState extends State<ImageSelector> {
                           },
                           icon: const Icon(Symbols.close_rounded),
                         ),
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           );

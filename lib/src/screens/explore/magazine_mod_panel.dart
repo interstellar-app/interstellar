@@ -44,20 +44,17 @@ class _MagazineModPanelState extends State<MagazineModPanel> {
     return DefaultTabController(
       length: 1,
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('Mod Panel for ${widget.initData.name}'),
-            bottom: const TabBar(
-              tabs: <Widget>[
-                Tab(text: 'Bans'),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            physics: appTabViewPhysics(context),
-            children: <Widget>[
-              MagazineModPanelBans(data: _data, onUpdate: onUpdate),
-            ],
-          )),
+        appBar: AppBar(
+          title: Text('Mod Panel for ${widget.initData.name}'),
+          bottom: const TabBar(tabs: <Widget>[Tab(text: 'Bans')]),
+        ),
+        body: TabBarView(
+          physics: appTabViewPhysics(context),
+          children: <Widget>[
+            MagazineModPanelBans(data: _data, onUpdate: onUpdate),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -89,19 +86,20 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
 
   Future<void> _fetchPage(String pageKey) async {
     try {
-      final newPage =
-          await context.read<AppController>().api.magazineModeration.listBans(
-                widget.data.id,
-                page: nullIfEmpty(pageKey),
-              );
+      final newPage = await context
+          .read<AppController>()
+          .api
+          .magazineModeration
+          .listBans(widget.data.id, page: nullIfEmpty(pageKey));
 
       // Check BuildContext
       if (!mounted) return;
 
       // Prevent duplicates
       final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems =
-          newPage.items.where((e) => !currentItemIds.contains(e.id)).toList();
+      final newItems = newPage.items
+          .where((e) => !currentItemIds.contains(e.id))
+          .toList();
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
@@ -112,9 +110,7 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () => Future.sync(
-        () => _pagingController.refresh(),
-      ),
+      onRefresh: () => Future.sync(() => _pagingController.refresh()),
       child: CustomScrollView(
         slivers: [
           PagedSliverList(
@@ -122,34 +118,36 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
             builderDelegate: PagedChildBuilderDelegate<MagazineBanModel>(
               firstPageErrorIndicatorBuilder: (context) =>
                   FirstPageErrorIndicator(
-                error: _pagingController.error,
-                onTryAgain: _pagingController.retryLastFailedRequest,
-              ),
+                    error: _pagingController.error,
+                    onTryAgain: _pagingController.retryLastFailedRequest,
+                  ),
               newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
                 error: _pagingController.error,
                 onTryAgain: _pagingController.retryLastFailedRequest,
               ),
-              itemBuilder: (context, item, index) =>
-                  UserItemSimple(item.bannedUser, trailingWidgets: [
-                LoadingOutlinedButton(
-                  onPressed: () async {
-                    await context
-                        .read<AppController>()
-                        .api
-                        .magazineModeration
-                        .removeBan(widget.data.id, item.bannedUser.id);
+              itemBuilder: (context, item, index) => UserItemSimple(
+                item.bannedUser,
+                trailingWidgets: [
+                  LoadingOutlinedButton(
+                    onPressed: () async {
+                      await context
+                          .read<AppController>()
+                          .api
+                          .magazineModeration
+                          .removeBan(widget.data.id, item.bannedUser.id);
 
-                    var newList = _pagingController.itemList;
-                    newList!.removeAt(index);
-                    setState(() {
-                      _pagingController.itemList = newList;
-                    });
-                  },
-                  label: const Text('Unban'),
-                )
-              ]),
+                      var newList = _pagingController.itemList;
+                      newList!.removeAt(index);
+                      setState(() {
+                        _pagingController.itemList = newList;
+                      });
+                    },
+                    label: const Text('Unban'),
+                  ),
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

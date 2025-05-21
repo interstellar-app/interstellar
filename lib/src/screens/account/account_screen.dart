@@ -16,8 +16,8 @@ class AccountScreen extends StatefulWidget {
   State<AccountScreen> createState() => _AccountScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> with AutomaticKeepAliveClientMixin<AccountScreen> {
-
+class _AccountScreenState extends State<AccountScreen>
+    with AutomaticKeepAliveClientMixin<AccountScreen> {
   @override
   bool get wantKeepAlive => true;
 
@@ -26,41 +26,41 @@ class _AccountScreenState extends State<AccountScreen> with AutomaticKeepAliveCl
     super.build(context);
     return whenLoggedIn(
           context,
-              DefaultTabController(
-                  length: 3,
-                  child: Scaffold(
-                    appBar: AppBar(
-                      title:
-                          Text(context.watch<AppController>().selectedAccount),
-                      bottom: TabBar(tabs: [
-                        Tab(
-                          text: l(context).notifications,
-                          icon: const NotificationBadge(
-                              child: Icon(Symbols.notifications_rounded)),
-                        ),
-                        Tab(
-                          text: l(context).messages,
-                          icon: const Icon(Symbols.message_rounded),
-                        ),
-                        Tab(
-                          text: l(context).account_overview,
-                          icon: const Icon(Symbols.person_rounded),
-                        ),
-                      ]),
+          DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(context.watch<AppController>().selectedAccount),
+                bottom: TabBar(
+                  tabs: [
+                    Tab(
+                      text: l(context).notifications,
+                      icon: const NotificationBadge(
+                        child: Icon(Symbols.notifications_rounded),
+                      ),
                     ),
-                    body: TabBarView(
-                      physics: appTabViewPhysics(context),
-                      children: const [
-                        NotificationsScreen(),
-                        MessagesScreen(),
-                        SelfFeed(),
-                      ],
+                    Tab(
+                      text: l(context).messages,
+                      icon: const Icon(Symbols.message_rounded),
                     ),
-                  ),
+                    Tab(
+                      text: l(context).account_overview,
+                      icon: const Icon(Symbols.person_rounded),
+                    ),
+                  ],
                 ),
+              ),
+              body: TabBarView(
+                physics: appTabViewPhysics(context),
+                children: const [
+                  NotificationsScreen(),
+                  MessagesScreen(),
+                  SelfFeed(),
+                ],
+              ),
+            ),
+          ),
         ) ??
-        Center(
-          child: Text(l(context).notLoggedIn),
-        );
+        Center(child: Text(l(context).notLoggedIn));
   }
 }

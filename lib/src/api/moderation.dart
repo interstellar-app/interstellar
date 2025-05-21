@@ -4,10 +4,7 @@ import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-const _postTypeMbin = {
-  PostType.thread: 'entry',
-  PostType.microblog: 'post',
-};
+const _postTypeMbin = {PostType.thread: 'entry', PostType.microblog: 'post'};
 const _postTypeMbinComment = {
   PostType.thread: 'comments',
   PostType.microblog: 'post-comment',
@@ -50,7 +47,10 @@ class APIModeration {
   }
 
   Future<PostModel> postMarkNSFW(
-      PostType postType, int postId, bool status) async {
+    PostType postType,
+    int postId,
+    bool status,
+  ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path =
@@ -72,7 +72,10 @@ class APIModeration {
   }
 
   Future<PostModel> postDelete(
-      PostType postType, int postId, bool status) async {
+    PostType postType,
+    int postId,
+    bool status,
+  ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path =
@@ -93,11 +96,7 @@ class APIModeration {
 
         final response = await client.post(
           path,
-          body: {
-            'post_id': postId,
-            'removed': status,
-            'reason': 'Moderated',
-          },
+          body: {'post_id': postId, 'removed': status, 'reason': 'Moderated'},
         );
 
         return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
@@ -105,7 +104,10 @@ class APIModeration {
   }
 
   Future<CommentModel> commentDelete(
-      PostType postType, int commentId, bool status) async {
+    PostType postType,
+    int commentId,
+    bool status,
+  ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path =
@@ -131,7 +133,8 @@ class APIModeration {
         );
 
         return CommentModel.fromPiefed(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
     }
   }
 }

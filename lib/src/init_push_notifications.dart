@@ -22,9 +22,13 @@ Future<void> initPushNotifications(AppController ac) async {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-    android: AndroidInitializationSettings('@drawable/ic_launcher_monochrome'),
-  ));
+  await flutterLocalNotificationsPlugin.initialize(
+    const InitializationSettings(
+      android: AndroidInitializationSettings(
+        '@drawable/ic_launcher_monochrome',
+      ),
+    ),
+  );
 
   final random = Random();
 
@@ -44,7 +48,8 @@ Future<void> initPushNotifications(AppController ac) async {
     },
     onMessage: (Uint8List message, String instance) async {
       final data = jsonDecode(
-          utf8.decode(await WebPush().decrypt(ac.webPushKeys, message)));
+        utf8.decode(await WebPush().decrypt(ac.webPushKeys, message)),
+      );
 
       final hostDomain = instance.split('@').last;
       final avatarUrl = data['avatarUrl'] as String?;
@@ -59,7 +64,8 @@ Future<void> initPushNotifications(AppController ac) async {
             data['category'] as String,
             largeIcon: avatarUrl != null
                 ? await _downloadImageToAndroidBitmap(
-                    'https://$hostDomain$avatarUrl')
+                    'https://$hostDomain$avatarUrl',
+                  )
                 : null,
           ),
         ),

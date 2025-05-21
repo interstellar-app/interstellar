@@ -37,9 +37,7 @@ class ConfigShareMarkdownSyntax extends md.BlockSyntax {
     }
 
     final md.Node spoiler = md.Element('p', [
-      md.Element('config-share', [
-        md.Text(body.join('\n')),
-      ]),
+      md.Element('config-share', [md.Text(body.join('\n'))]),
     ]);
 
     return spoiler;
@@ -51,9 +49,7 @@ class ConfigShareMarkdownBuilder extends mdf.MarkdownElementBuilder {
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    return ConfigShareWidget(
-      text: element.textContent,
-    );
+    return ConfigShareWidget(text: element.textContent);
   }
 }
 
@@ -119,58 +115,65 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   Text(switch (config.type) {
-                    ConfigShareType.profile =>
-                      l(context).configShare_profile_title,
-                    ConfigShareType.filterList =>
-                      l(context).configShare_filterList_title,
+                    ConfigShareType.profile => l(
+                      context,
+                    ).configShare_profile_title,
+                    ConfigShareType.filterList => l(
+                      context,
+                    ).configShare_filterList_title,
                   }),
-                  Text(l(context).configShare_created(
-                      dateOnlyFormat(config.date), config.interstellar)),
                   Text(
-                    switch (config.type) {
-                      ConfigShareType.profile => l(context)
-                          .configShare_profile_info(config.payload.length),
-                      ConfigShareType.filterList => l(context)
-                          .configShare_filterList_info(
-                              configFilterList!.phrases.length),
-                    },
+                    l(context).configShare_created(
+                      dateOnlyFormat(config.date),
+                      config.interstellar,
+                    ),
                   ),
+                  Text(switch (config.type) {
+                    ConfigShareType.profile => l(
+                      context,
+                    ).configShare_profile_info(config.payload.length),
+                    ConfigShareType.filterList =>
+                      l(context).configShare_filterList_info(
+                        configFilterList!.phrases.length,
+                      ),
+                  }),
                   const SizedBox(height: 8),
                   LoadingFilledButton(
                     icon: const Icon(Symbols.download_rounded),
                     onPressed: switch (config.type) {
                       ConfigShareType.profile => () async {
-                          final profileList = await context
-                              .read<AppController>()
-                              .getProfileNames();
+                        final profileList = await context
+                            .read<AppController>()
+                            .getProfileNames();
 
-                          if (!mounted) return;
+                        if (!mounted) return;
 
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => EditProfileScreen(
-                                profile: config.name,
-                                profileList: profileList,
-                                importProfile: configProfile!,
-                              ),
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(
+                              profile: config.name,
+                              profileList: profileList,
+                              importProfile: configProfile!,
                             ),
-                          );
-                        },
+                          ),
+                        );
+                      },
                       ConfigShareType.filterList => () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => EditFilterListScreen(
-                                filterList: config.name,
-                                importFilterList: configFilterList!,
-                              ),
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditFilterListScreen(
+                              filterList: config.name,
+                              importFilterList: configFilterList!,
                             ),
-                          );
-                        },
+                          ),
+                        );
+                      },
                     },
                     label: Text(switch (config.type) {
                       ConfigShareType.profile => l(context).profile_import,
-                      ConfigShareType.filterList =>
-                        l(context).filterList_import,
+                      ConfigShareType.filterList => l(
+                        context,
+                      ).filterList_import,
                     }),
                   ),
                 ],

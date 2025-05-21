@@ -42,8 +42,11 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
   }
 
   void _initSettings() async {
-    final settings =
-        await context.read<AppController>().api.users.getUserSettings();
+    final settings = await context
+        .read<AppController>()
+        .api
+        .users
+        .getUserSettings();
     setState(() {
       _settings = settings;
     });
@@ -52,7 +55,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
   @override
   Widget build(BuildContext context) {
     final aboutDraftController = context.watch<DraftsController>().auto(
-        'profile:about:${context.watch<AppController>().selectedAccount}');
+      'profile:about:${context.watch<AppController>().selectedAccount}',
+    );
 
     onSave() async {
       if (_settingsChanged) {
@@ -64,11 +68,9 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
       }
       if (!context.mounted) return;
 
-      var user = await context
-          .read<AppController>()
-          .api
-          .users
-          .updateProfile(_aboutTextController!.text);
+      var user = await context.read<AppController>().api.users.updateProfile(
+        _aboutTextController!.text,
+      );
 
       await aboutDraftController.discard();
 
@@ -83,19 +85,15 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
 
       if (!context.mounted) return;
       if (_avatarFile != null) {
-        user = await context
-            .read<AppController>()
-            .api
-            .users
-            .updateAvatar(_avatarFile!);
+        user = await context.read<AppController>().api.users.updateAvatar(
+          _avatarFile!,
+        );
       }
       if (!context.mounted) return;
       if (_coverFile != null) {
-        user = await context
-            .read<AppController>()
-            .api
-            .users
-            .updateCover(_coverFile!);
+        user = await context.read<AppController>().api.users.updateCover(
+          _coverFile!,
+        );
       }
 
       if (!context.mounted) return;
@@ -114,9 +112,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
         !_deleteCover && (widget.user.cover != null || _coverFile != null);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).account_edit),
-      ),
+      appBar: AppBar(title: Text(l(context).account_edit)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,14 +133,14 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                       child: !coverPresent
                           ? null
                           : _coverFile != null
-                              ? Image.file(
-                                  File(_coverFile!.path),
-                                  fit: BoxFit.cover,
-                                )
-                              : AdvancedImage(
-                                  widget.user.cover!,
-                                  fit: BoxFit.cover,
-                                ),
+                          ? Image.file(
+                              File(_coverFile!.path),
+                              fit: BoxFit.cover,
+                            )
+                          : AdvancedImage(
+                              widget.user.cover!,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                     Positioned.fill(
                       bottom: 48,
@@ -159,8 +155,9 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                                   });
                                 }
                               : () async {
-                                  final image = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
+                                  final image = await ImagePicker().pickImage(
+                                    source: ImageSource.gallery,
+                                  );
 
                                   setState(() {
                                     _deleteCover = false;
@@ -187,8 +184,9 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                         avatarPresent ? widget.user.avatar : null,
                         radius: 36,
                         borderRadius: 4,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).scaffoldBackgroundColor,
                         overrideImageProvider: _avatarFile == null
                             ? null
                             : FileImage(File(_avatarFile!.path)),
@@ -199,10 +197,12 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                           child: LoadingIconButton(
                             style: ButtonStyle(
                               fixedSize: const WidgetStatePropertyAll(
-                                  Size.fromRadius(36)),
+                                Size.fromRadius(36),
+                              ),
                               iconSize: const WidgetStatePropertyAll(36),
                               backgroundColor: WidgetStatePropertyAll(
-                                  Colors.black.withAlpha(64)),
+                                Colors.black.withAlpha(64),
+                              ),
                             ),
                             onPressed: avatarPresent
                                 ? () async {
@@ -212,17 +212,20 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                                     });
                                   }
                                 : () async {
-                                    final image = await ImagePicker()
-                                        .pickImage(source: ImageSource.gallery);
+                                    final image = await ImagePicker().pickImage(
+                                      source: ImageSource.gallery,
+                                    );
 
                                     setState(() {
                                       _deleteAvatar = false;
                                       _avatarFile = image;
                                     });
                                   },
-                            icon: Icon(avatarPresent
-                                ? Symbols.delete_rounded
-                                : Symbols.add_photo_alternate_rounded),
+                            icon: Icon(
+                              avatarPresent
+                                  ? Symbols.delete_rounded
+                                  : Symbols.add_photo_alternate_rounded,
+                            ),
                           ),
                         ),
                       ),
@@ -245,25 +248,27 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.user.displayName ??
-                                widget.user.name.split('@').first,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          Text(
-                            widget.user.name.contains('@')
-                                ? '@${widget.user.name}'
-                                : '@${widget.user.name}@${context.watch<AppController>().instanceHost}',
-                          ),
-                        ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.user.displayName ??
+                                  widget.user.name.split('@').first,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Text(
+                              widget.user.name.contains('@')
+                                  ? '@${widget.user.name}'
+                                  : '@${widget.user.name}@${context.watch<AppController>().instanceHost}',
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
                     child: MarkdownEditor(
@@ -307,7 +312,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                           if (_settings!.showReadPosts != null)
                             SwitchListTile(
                               title: Text(
-                                  l(context).account_settings_showReadPosts),
+                                l(context).account_settings_showReadPosts,
+                              ),
                               value: _settings!.showReadPosts!,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -318,8 +324,9 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                             ),
                           if (_settings!.showSubscribedUsers != null)
                             SwitchListTile(
-                              title: Text(l(context)
-                                  .account_settings_showSubscribedUsers),
+                              title: Text(
+                                l(context).account_settings_showSubscribedUsers,
+                              ),
                               value: _settings!.showSubscribedUsers!,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -330,8 +337,11 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                             ),
                           if (_settings!.showSubscribedMagazines != null)
                             SwitchListTile(
-                              title: Text(l(context)
-                                  .account_settings_showSubscribedMagazines),
+                              title: Text(
+                                l(
+                                  context,
+                                ).account_settings_showSubscribedMagazines,
+                              ),
                               value: _settings!.showSubscribedMagazines!,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -342,8 +352,11 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                             ),
                           if (_settings!.showSubscribedDomains != null)
                             SwitchListTile(
-                              title: Text(l(context)
-                                  .account_settings_showSubscribedDomains),
+                              title: Text(
+                                l(
+                                  context,
+                                ).account_settings_showSubscribedDomains,
+                              ),
                               value: _settings!.showSubscribedDomains!,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -354,8 +367,11 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                             ),
                           if (_settings!.showProfileSubscriptions != null)
                             SwitchListTile(
-                              title: Text(l(context)
-                                  .account_settings_showProfileSubscriptions),
+                              title: Text(
+                                l(
+                                  context,
+                                ).account_settings_showProfileSubscriptions,
+                              ),
                               value: _settings!.showProfileSubscriptions!,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -366,8 +382,11 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                             ),
                           if (_settings!.showProfileFollowings != null)
                             SwitchListTile(
-                              title: Text(l(context)
-                                  .account_settings_showProfileFollowings),
+                              title: Text(
+                                l(
+                                  context,
+                                ).account_settings_showProfileFollowings,
+                              ),
                               value: _settings!.showProfileFollowings!,
                               onChanged: (bool? value) {
                                 setState(() {

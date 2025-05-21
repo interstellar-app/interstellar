@@ -23,14 +23,11 @@ class _SelfFeedState extends State<SelfFeed>
   void initState() {
     super.initState();
 
-    context
-        .read<AppController>()
-        .api
-        .users
-        .getMe()
-        .then((value) => setState(() {
-              _meUser = value;
-            }));
+    context.read<AppController>().api.users.getMe().then(
+      (value) => setState(() {
+        _meUser = value;
+      }),
+    );
   }
 
   @override

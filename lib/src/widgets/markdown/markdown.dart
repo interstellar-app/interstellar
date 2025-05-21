@@ -15,11 +15,13 @@ class Markdown extends StatelessWidget {
   final String data;
   final String originInstance;
   final ThemeData? themeData;
+  final bool nsfw;
 
   const Markdown(
     this.data,
     this.originInstance, {
     this.themeData,
+    this.nsfw = false,
     super.key,
   });
 
@@ -28,13 +30,16 @@ class Markdown extends StatelessWidget {
     return mdf.MarkdownBody(
       data: data,
       styleSheet:
-          mdf.MarkdownStyleSheet.fromTheme(themeData ?? Theme.of(context))
-              .merge(mdf.MarkdownStyleSheet(
-        blockquoteDecoration: BoxDecoration(
-          color: Colors.blue.shade500.withAlpha(50),
-          borderRadius: BorderRadius.circular(2.0),
-        ),
-      )),
+          mdf.MarkdownStyleSheet.fromTheme(
+            themeData ?? Theme.of(context),
+          ).merge(
+            mdf.MarkdownStyleSheet(
+              blockquoteDecoration: BoxDecoration(
+                color: Colors.blue.shade500.withAlpha(50),
+                borderRadius: BorderRadius.circular(2.0),
+              ),
+            ),
+          ),
       onTapLink: (text, href, title) async {
         if (href != null) {
           openWebpageSecondary(context, Uri.parse(href));
@@ -53,6 +58,7 @@ class Markdown extends StatelessWidget {
             blurHashHeight: null,
           ),
           openTitle: title ?? '',
+          enableBlur: nsfw,
         );
       },
       inlineSyntaxes: [
@@ -60,12 +66,9 @@ class Markdown extends StatelessWidget {
         SuperscriptMarkdownSyntax(),
         MentionMarkdownSyntax(),
         VideoMarkdownSyntax(),
-        YoutubeEmbedSyntax()
+        YoutubeEmbedSyntax(),
       ],
-      blockSyntaxes: [
-        SpoilerMarkdownSyntax(),
-        ConfigShareMarkdownSyntax(),
-      ],
+      blockSyntaxes: [SpoilerMarkdownSyntax(), ConfigShareMarkdownSyntax()],
       builders: {
         'sub': SubscriptMarkdownBuilder(),
         'sup': SuperscriptMarkdownBuilder(),

@@ -46,17 +46,18 @@ class _MessagesScreenState extends State<MessagesScreen>
       if (!mounted) return;
 
       final newPage = await context.read<AppController>().api.messages.list(
-            page: nullIfEmpty(pageKey),
-            myUserId: _userId,
-          );
+        page: nullIfEmpty(pageKey),
+        myUserId: _userId,
+      );
 
       // Check BuildContext
       if (!mounted) return;
 
       // Prevent duplicates
       final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems =
-          newPage.items.where((e) => !currentItemIds.contains(e.id)).toList();
+      final newItems = newPage.items
+          .where((e) => !currentItemIds.contains(e.id))
+          .toList();
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
@@ -69,9 +70,7 @@ class _MessagesScreenState extends State<MessagesScreen>
     super.build(context);
 
     return RefreshIndicator(
-      onRefresh: () => Future.sync(
-        () => _pagingController.refresh(),
-      ),
+      onRefresh: () => Future.sync(() => _pagingController.refresh()),
       child: CustomScrollView(
         slivers: [
           PagedSliverList(
@@ -79,24 +78,26 @@ class _MessagesScreenState extends State<MessagesScreen>
             builderDelegate: PagedChildBuilderDelegate<MessageThreadModel>(
               firstPageErrorIndicatorBuilder: (context) =>
                   FirstPageErrorIndicator(
-                error: _pagingController.error,
-                onTryAgain: _pagingController.retryLastFailedRequest,
-              ),
+                    error: _pagingController.error,
+                    onTryAgain: _pagingController.retryLastFailedRequest,
+                  ),
               newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
                 error: _pagingController.error,
                 onTryAgain: _pagingController.retryLastFailedRequest,
               ),
-              itemBuilder: (context, item, index) =>
-                  MessageItem(item, (newValue) {
-                var newList = _pagingController.itemList;
-                newList![index] = newValue;
-                setState(() {
-                  _pagingController.itemList = newList;
-                });
-              }, onClick: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MessageThreadScreen(
+              itemBuilder: (context, item, index) => MessageItem(
+                item,
+                (newValue) {
+                  var newList = _pagingController.itemList;
+                  newList![index] = newValue;
+                  setState(() {
+                    _pagingController.itemList = newList;
+                  });
+                },
+                onClick: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MessageThreadScreen(
                         threadId: item.id,
                         initData: item,
                         onUpdate: (newValue) {
@@ -105,12 +106,14 @@ class _MessagesScreenState extends State<MessagesScreen>
                           setState(() {
                             _pagingController.itemList = newList;
                           });
-                        }),
-                  ),
-                );
-              }),
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

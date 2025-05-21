@@ -47,9 +47,7 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_aboutInterstellar),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_aboutInterstellar)),
       body: ListView(
         children: [
           ListTile(
@@ -137,7 +135,9 @@ class _AboutScreenState extends State<AboutScreen> {
               } catch (e) {
                 if (!mounted) return;
                 openWebpagePrimary(
-                    context, Uri.parse(_mbinConfigsMagazineLink));
+                  context,
+                  Uri.parse(_mbinConfigsMagazineLink),
+                );
               }
             },
           ),
@@ -155,9 +155,9 @@ class _AboutScreenState extends State<AboutScreen> {
                     ? ''
                     : '${l(context).interstellar} v${packageInfo!.version}',
               ),
-              const SizedBox(height: 36)
+              const SizedBox(height: 36),
             ],
-          )
+          ),
         ],
       ),
     );

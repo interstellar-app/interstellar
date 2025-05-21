@@ -101,67 +101,68 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     );
 
     final messageDraftController = context.watch<DraftsController>().auto(
-        'message:${context.watch<AppController>().instanceHost}:${messageUser?.name}');
+      'message:${context.watch<AppController>().instanceHost}:${messageUser?.name}',
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(messageUser?.name ?? '')),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(
-          () => _pagingController.refresh(),
-        ),
+        onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           reverse: true,
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverToBoxAdapter(
-                child: Column(children: [
-                  const SizedBox(height: 8),
-                  MarkdownEditor(
-                    _controller,
-                    originInstance: null,
-                    draftController: messageDraftController,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      LoadingFilledButton(
-                        onPressed: () async {
-                          final newThread = await context
-                              .read<AppController>()
-                              .api
-                              .messages
-                              .postThreadReply(
-                                widget.threadId,
-                                _controller.text,
-                              );
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    MarkdownEditor(
+                      _controller,
+                      originInstance: null,
+                      draftController: messageDraftController,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        LoadingFilledButton(
+                          onPressed: () async {
+                            final newThread = await context
+                                .read<AppController>()
+                                .api
+                                .messages
+                                .postThreadReply(
+                                  widget.threadId,
+                                  _controller.text,
+                                );
 
-                          await messageDraftController.discard();
+                            await messageDraftController.discard();
 
-                          _controller.text = '';
+                            _controller.text = '';
 
-                          setState(() {
-                            _data = newThread;
-
-                            var newList = _pagingController.itemList;
-                            newList?.insert(0, newThread.messages.first);
                             setState(() {
-                              _pagingController.itemList = newList;
-                            });
-                          });
+                              _data = newThread;
 
-                          if (widget.onUpdate != null) {
-                            widget.onUpdate!(newThread);
-                          }
-                        },
-                        label: Text(l(context).send),
-                        icon: const Icon(Symbols.send_rounded),
-                        uesHaptics: true,
-                      ),
-                    ],
-                  )
-                ]),
+                              var newList = _pagingController.itemList;
+                              newList?.insert(0, newThread.messages.first);
+                              setState(() {
+                                _pagingController.itemList = newList;
+                              });
+                            });
+
+                            if (widget.onUpdate != null) {
+                              widget.onUpdate!(newThread);
+                            }
+                          },
+                          label: Text(l(context).send),
+                          icon: const Icon(Symbols.send_rounded),
+                          uesHaptics: true,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             SliverPadding(
@@ -170,39 +171,42 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                 pagingController: _pagingController,
                 builderDelegate:
                     PagedChildBuilderDelegate<MessageThreadItemModel>(
-                  firstPageErrorIndicatorBuilder: (context) =>
-                      FirstPageErrorIndicator(
-                    error: _pagingController.error,
-                    onTryAgain: _pagingController.retryLastFailedRequest,
-                  ),
-                  newPageErrorIndicatorBuilder: (context) =>
-                      NewPageErrorIndicator(
-                    error: _pagingController.error,
-                    onTryAgain: _pagingController.retryLastFailedRequest,
-                  ),
-                  itemBuilder: (context, item, index) {
-                    final messages = _pagingController.itemList!;
+                      firstPageErrorIndicatorBuilder: (context) =>
+                          FirstPageErrorIndicator(
+                            error: _pagingController.error,
+                            onTryAgain:
+                                _pagingController.retryLastFailedRequest,
+                          ),
+                      newPageErrorIndicatorBuilder: (context) =>
+                          NewPageErrorIndicator(
+                            error: _pagingController.error,
+                            onTryAgain:
+                                _pagingController.retryLastFailedRequest,
+                          ),
+                      itemBuilder: (context, item, index) {
+                        final messages = _pagingController.itemList!;
 
-                    final nextMessage = index - 1 < 0
-                        ? null
-                        : messages.elementAtOrNull(index - 1);
-                    final currMessage = messages[index];
-                    final prevMessage = index + 1 >= messages.length
-                        ? null
-                        : messages.elementAt(index + 1);
+                        final nextMessage = index - 1 < 0
+                            ? null
+                            : messages.elementAtOrNull(index - 1);
+                        final currMessage = messages[index];
+                        final prevMessage = index + 1 >= messages.length
+                            ? null
+                            : messages.elementAt(index + 1);
 
-                    final fromMyUser = currMessage.sender.name == myUsername;
+                        final fromMyUser =
+                            currMessage.sender.name == myUsername;
 
-                    return MessageThreadItem(
-                      fromMyUser: fromMyUser,
-                      prevMessage: prevMessage,
-                      currMessage: currMessage,
-                      nextMessage: nextMessage,
-                    );
-                  },
-                ),
+                        return MessageThreadItem(
+                          fromMyUser: fromMyUser,
+                          prevMessage: prevMessage,
+                          currMessage: currMessage,
+                          nextMessage: nextMessage,
+                        );
+                      },
+                    ),
               ),
-            )
+            ),
           ],
         ),
       ),

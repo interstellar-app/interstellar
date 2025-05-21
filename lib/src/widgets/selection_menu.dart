@@ -17,12 +17,8 @@ class SelectionMenuItem<T> {
     this.subItems,
   });
 
-  SelectionMenu<T>? get subItemsSelectionMenu => subItems == null
-      ? null
-      : SelectionMenu<T>(
-          title,
-          subItems!,
-        );
+  SelectionMenu<T>? get subItemsSelectionMenu =>
+      subItems == null ? null : SelectionMenu<T>(title, subItems!);
 }
 
 class SelectionMenu<T> {
@@ -31,10 +27,7 @@ class SelectionMenu<T> {
 
   const SelectionMenu(this.title, this.options);
 
-  Future<T?> askSelection(
-    BuildContext context,
-    T? oldSelection,
-  ) async =>
+  Future<T?> askSelection(BuildContext context, T? oldSelection) async =>
       showModalBottomSheet<T>(
         context: context,
         builder: (BuildContext context) {
@@ -51,37 +44,40 @@ class SelectionMenu<T> {
                 ),
               ),
               Flexible(
-                child: ListView(shrinkWrap: true, children: [
-                  ...options.map(
-                    (option) => ListTile(
-                      title: Text(option.title),
-                      onTap: () => Navigator.pop(context, option.value),
-                      leading: Icon(option.icon, color: option.iconColor),
-                      selected: oldSelection == option.value,
-                      selectedTileColor: Theme.of(context)
-                          .colorScheme
-                          .primaryContainer
-                          .withOpacity(0.2),
-                      subtitle: option.subtitle != null
-                          ? Text(option.subtitle!)
-                          : null,
-                      trailing:
-                          option.subItems != null && option.subItems!.isNotEmpty
-                              ? IconButton(
-                                  icon: Icon(Icons.arrow_right),
-                                  onPressed: () async {
-                                    final subSelection = await option
-                                        .subItemsSelectionMenu!
-                                        .askSelection(context, oldSelection);
-                                    if (!context.mounted) return;
-                                    Navigator.pop(context, subSelection);
-                                  },
-                                )
-                              : null,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    ...options.map(
+                      (option) => ListTile(
+                        title: Text(option.title),
+                        onTap: () => Navigator.pop(context, option.value),
+                        leading: Icon(option.icon, color: option.iconColor),
+                        selected: oldSelection == option.value,
+                        selectedTileColor: Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer.withOpacity(0.2),
+                        subtitle: option.subtitle != null
+                            ? Text(option.subtitle!)
+                            : null,
+                        trailing:
+                            option.subItems != null &&
+                                option.subItems!.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.arrow_right),
+                                onPressed: () async {
+                                  final subSelection = await option
+                                      .subItemsSelectionMenu!
+                                      .askSelection(context, oldSelection);
+                                  if (!context.mounted) return;
+                                  Navigator.pop(context, subSelection);
+                                },
+                              )
+                            : null,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                ]),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ],
           );
@@ -95,8 +91,6 @@ class SelectionMenu<T> {
         return option.subItemsSelectionMenu!.getOption(value);
       } catch (_) {}
     }
-    return options.firstWhere(
-      (option) => option.value == value,
-    );
+    return options.firstWhere((option) => option.value == value);
   }
 }

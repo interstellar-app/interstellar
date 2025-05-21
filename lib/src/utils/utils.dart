@@ -70,17 +70,13 @@ T? whenLoggedIn<T>(
   T? otherwise,
 }) =>
     context.read<AppController>().isLoggedIn &&
-            (matchesUsername == null ||
-                context
-                        .read<AppController>()
-                        .selectedAccount
-                        .split('@')
-                        .first ==
-                    matchesUsername) &&
-            (matchesSoftware == null ||
-                context.read<AppController>().serverSoftware == matchesSoftware)
-        ? value
-        : otherwise;
+        (matchesUsername == null ||
+            context.read<AppController>().selectedAccount.split('@').first ==
+                matchesUsername) &&
+        (matchesSoftware == null ||
+            context.read<AppController>().serverSoftware == matchesSoftware)
+    ? value
+    : otherwise;
 
 String getNameHost(BuildContext context, String username) {
   final split = username.split('@');
@@ -106,11 +102,7 @@ String denormalizeName(String name, String host) {
 
 String? nullIfEmpty(String value) => value.isEmpty ? null : value;
 
-T parseEnum<T extends Enum>(
-  List<T> enumValues,
-  T defaultValue,
-  String? name,
-) {
+T parseEnum<T extends Enum>(List<T> enumValues, T defaultValue, String? name) {
   if (name == null) return defaultValue;
 
   return enumValues.firstWhere(
@@ -155,12 +147,15 @@ const chipDropdownPadding = EdgeInsets.only(
 
 ScrollPhysics? appTabViewPhysics(BuildContext context) =>
     context.watch<AppController>().profile.disableTabSwiping
-        ? const NeverScrollableScrollPhysics()
-        : null;
+    ? const NeverScrollableScrollPhysics()
+    : null;
 
 class DefaultTabControllerListener extends StatefulWidget {
-  const DefaultTabControllerListener(
-      {super.key, this.onTabSelected, required this.child});
+  const DefaultTabControllerListener({
+    super.key,
+    this.onTabSelected,
+    required this.child,
+  });
 
   final void Function(int index)? onTabSelected;
   final Widget child;

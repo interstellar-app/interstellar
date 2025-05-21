@@ -47,24 +47,25 @@ class _MagazineOwnerPanelState extends State<MagazineOwnerPanel> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('Owner Panel for ${widget.initData.name}'),
-            bottom: const TabBar(
-              tabs: <Widget>[
-                Tab(text: 'General'),
-                Tab(text: 'Moderators'),
-                Tab(text: 'Deletion'),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            physics: appTabViewPhysics(context),
-            children: <Widget>[
-              MagazineOwnerPanelGeneral(data: _data, onUpdate: onUpdate),
-              MagazineOwnerPanelModerators(data: _data, onUpdate: onUpdate),
-              MagazineOwnerPanelDeletion(data: _data, onUpdate: onUpdate),
+        appBar: AppBar(
+          title: Text('Owner Panel for ${widget.initData.name}'),
+          bottom: const TabBar(
+            tabs: <Widget>[
+              Tab(text: 'General'),
+              Tab(text: 'Moderators'),
+              Tab(text: 'Deletion'),
             ],
-          )),
+          ),
+        ),
+        body: TabBarView(
+          physics: appTabViewPhysics(context),
+          children: <Widget>[
+            MagazineOwnerPanelGeneral(data: _data, onUpdate: onUpdate),
+            MagazineOwnerPanelModerators(data: _data, onUpdate: onUpdate),
+            MagazineOwnerPanelDeletion(data: _data, onUpdate: onUpdate),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -109,7 +110,8 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
   @override
   Widget build(BuildContext context) {
     final descriptionDraftController = context.watch<DraftsController>().auto(
-        'magazine:description${widget.data == null ? '' : ':${widget.data}'}');
+      'magazine:description${widget.data == null ? '' : ':${widget.data}'}',
+    );
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -171,7 +173,8 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: LoadingFilledButton(
-            onPressed: _nameController.text.isEmpty ||
+            onPressed:
+                _nameController.text.isEmpty ||
                     _titleController.text.isEmpty ||
                     (_titleController.text == widget.data?.title &&
                         _descriptionController.text ==
@@ -183,29 +186,29 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
                 : () async {
                     final result = widget.data == null
                         ? await context
-                            .read<AppController>()
-                            .api
-                            .magazineModeration
-                            .create(
-                              name: _nameController.text,
-                              title: _titleController.text,
-                              description: _descriptionController.text,
-                              isAdult: _isAdult,
-                              isPostingRestrictedToMods:
-                                  _isPostingRestrictedToMods,
-                            )
+                              .read<AppController>()
+                              .api
+                              .magazineModeration
+                              .create(
+                                name: _nameController.text,
+                                title: _titleController.text,
+                                description: _descriptionController.text,
+                                isAdult: _isAdult,
+                                isPostingRestrictedToMods:
+                                    _isPostingRestrictedToMods,
+                              )
                         : await context
-                            .read<AppController>()
-                            .api
-                            .magazineModeration
-                            .edit(
-                              widget.data!.id,
-                              title: _titleController.text,
-                              description: _descriptionController.text,
-                              isAdult: _isAdult,
-                              isPostingRestrictedToMods:
-                                  _isPostingRestrictedToMods,
-                            );
+                              .read<AppController>()
+                              .api
+                              .magazineModeration
+                              .edit(
+                                widget.data!.id,
+                                title: _titleController.text,
+                                description: _descriptionController.text,
+                                isAdult: _isAdult,
+                                isPostingRestrictedToMods:
+                                    _isPostingRestrictedToMods,
+                              );
 
                     await descriptionDraftController.discard();
 
@@ -287,7 +290,10 @@ class _MagazineOwnerPanelModeratorsState
                                       .api
                                       .magazineModeration
                                       .updateModerator(
-                                          widget.data.id, user.id, true),
+                                        widget.data.id,
+                                        user.id,
+                                        true,
+                                      ),
                                 );
                               },
                               label: const Text('Add'),
@@ -300,7 +306,7 @@ class _MagazineOwnerPanelModeratorsState
                     },
               label: const Text('Add'),
               icon: const Icon(Symbols.add_rounded),
-            )
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -338,7 +344,10 @@ class _MagazineOwnerPanelModeratorsState
                                   .api
                                   .magazineModeration
                                   .updateModerator(
-                                      widget.data.id, mod.id, false),
+                                    widget.data.id,
+                                    mod.id,
+                                    false,
+                                  ),
                             );
                           },
                           label: const Text('Remove'),
@@ -349,10 +358,10 @@ class _MagazineOwnerPanelModeratorsState
 
                   if (result != null) widget.onUpdate(result);
                 },
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -401,7 +410,8 @@ class _MagazineOwnerPanelDeletionState
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: FilledButton(
             style: const ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.red)),
+              backgroundColor: WidgetStatePropertyAll(Colors.red),
+            ),
             onPressed: () async {
               final result = await showDialog<bool>(
                 context: context,
@@ -425,10 +435,7 @@ class _MagazineOwnerPanelDeletionState
 class MagazineOwnerPanelDeletionDialog extends StatefulWidget {
   final DetailedMagazineModel data;
 
-  const MagazineOwnerPanelDeletionDialog({
-    super.key,
-    required this.data,
-  });
+  const MagazineOwnerPanelDeletionDialog({super.key, required this.data});
 
   @override
   State<MagazineOwnerPanelDeletionDialog> createState() =>
@@ -449,12 +456,10 @@ class _MagazineOwnerPanelDeletionDialogState
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-              'WARNING: You are about to delete this magazine and all of its related posts. Type "$magazineName" below to confirm deletion.'),
-          const SizedBox(height: 16),
-          TextEditor(
-            _confirmController,
-            onChanged: (_) => setState(() {}),
+            'WARNING: You are about to delete this magazine and all of its related posts. Type "$magazineName" below to confirm deletion.',
           ),
+          const SizedBox(height: 16),
+          TextEditor(_confirmController, onChanged: (_) => setState(() {})),
         ],
       ),
       actions: <Widget>[

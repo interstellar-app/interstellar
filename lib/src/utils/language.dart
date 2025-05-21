@@ -5,35 +5,44 @@ import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 
-String getLanguageName(BuildContext context, String langCode,
-        [bool useNativeNames = false]) =>
-    langCode.isEmpty
-        ? l(context).systemLanguage
-        : ((useNativeNames
-                ? LocaleNamesLocalizationsDelegate.nativeLocaleNames[langCode]
-                : LocaleNames.of(context)!.nameOf(langCode)) ??
-            langCode);
+String getLanguageName(
+  BuildContext context,
+  String langCode, [
+  bool useNativeNames = false,
+]) => langCode.isEmpty
+    ? l(context).systemLanguage
+    : ((useNativeNames
+              ? LocaleNamesLocalizationsDelegate.nativeLocaleNames[langCode]
+              : LocaleNames.of(context)!.nameOf(langCode)) ??
+          langCode);
 
 SelectionMenu<String> languageSelectionMenu(BuildContext context) =>
     SelectionMenu(
-        l(context).languages,
-        kMaterialSupportedLanguages
-            .map((langTag) => SelectionMenuItem(
-                  value: langTag,
-                  title: getLanguageName(context, langTag),
-                ))
-            .toList());
+      l(context).languages,
+      kMaterialSupportedLanguages
+          .map(
+            (langTag) => SelectionMenuItem(
+              value: langTag,
+              title: getLanguageName(context, langTag),
+            ),
+          )
+          .toList(),
+    );
 
 SelectionMenu<String> languageSelectionMenuAppSupported(BuildContext context) =>
     SelectionMenu(
-        l(context).languages,
-        [
-          '',
-          ...AppLocalizations.supportedLocales
-              .map((locale) => locale.toLanguageTag())
-        ]
-            .map((langTag) => SelectionMenuItem(
-                  value: langTag,
-                  title: getLanguageName(context, langTag, true),
-                ))
-            .toList());
+      l(context).languages,
+      [
+            '',
+            ...AppLocalizations.supportedLocales.map(
+              (locale) => locale.toLanguageTag(),
+            ),
+          ]
+          .map(
+            (langTag) => SelectionMenuItem(
+              value: langTag,
+              title: getLanguageName(context, langTag, true),
+            ),
+          )
+          .toList(),
+    );

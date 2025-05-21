@@ -17,7 +17,7 @@ const oauthScopes = [
   'report',
   'user',
   'moderate',
-  'bookmark_list'
+  'bookmark_list',
 ];
 
 Future<String> registerOauthApp(String instanceHost) async {
@@ -25,16 +25,14 @@ Future<String> registerOauthApp(String instanceHost) async {
 
   final response = await http.post(
     Uri.https(instanceHost, path),
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
+    headers: {'Content-Type': 'application/json; charset=UTF-8'},
     body: jsonEncode({
       'name': oauthName,
       'contactEmail': oauthContact,
       'public': true,
       'redirectUris': [redirectUri],
       'grants': oauthGrants,
-      'scopes': oauthScopes
+      'scopes': oauthScopes,
     }),
   );
 

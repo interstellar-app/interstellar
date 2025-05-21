@@ -63,12 +63,12 @@ class _UserScreenState extends State<UserScreen> {
           .read<AppController>()
           .api
           .users
-          .get(
-            widget.userId,
-          )
-          .then((value) => setState(() {
-                _data = value;
-              }));
+          .get(widget.userId)
+          .then(
+            (value) => setState(() {
+              _data = value;
+            }),
+          );
     }
   }
 
@@ -83,7 +83,8 @@ class _UserScreenState extends State<UserScreen> {
     final user = _data!;
 
     final isLoggedIn = ac.isLoggedIn;
-    final isMyUser = isLoggedIn &&
+    final isMyUser =
+        isLoggedIn &&
         whenLoggedIn(context, true, matchesUsername: user.name) == true;
 
     final currentFeedSortOption = feedSortSelect(context).getOption(_sort);
@@ -92,240 +93,246 @@ class _UserScreenState extends State<UserScreen> {
         ? '@${user.name}'
         : '@${user.name}@${ac.instanceHost}';
 
-    final messageDraftController = context
-        .watch<DraftsController>()
-        .auto('message:${ac.instanceHost}:${user.name}');
+    final messageDraftController = context.watch<DraftsController>().auto(
+      'message:${ac.instanceHost}:${user.name}',
+    );
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(user.name),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: ActionChip(
-                padding: chipDropdownPadding,
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(currentFeedSortOption.icon, size: 20),
-                    const SizedBox(width: 4),
-                    Text(currentFeedSortOption.title),
-                    const Icon(Symbols.arrow_drop_down_rounded),
-                  ],
-                ),
-                onPressed: () async {
-                  final newSort = await feedSortSelect(context)
-                      .askSelection(context, _sort);
-
-                  if (newSort != null && newSort != _sort) {
-                    setState(() {
-                      _sort = newSort;
-                    });
-                  }
-                },
+      appBar: AppBar(
+        title: Text(user.name),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ActionChip(
+              padding: chipDropdownPadding,
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(currentFeedSortOption.icon, size: 20),
+                  const SizedBox(width: 4),
+                  Text(currentFeedSortOption.title),
+                  const Icon(Symbols.arrow_drop_down_rounded),
+                ],
               ),
+              onPressed: () async {
+                final newSort = await feedSortSelect(
+                  context,
+                ).askSelection(context, _sort);
+
+                if (newSort != null && newSort != _sort) {
+                  setState(() {
+                    _sort = newSort;
+                  });
+                }
+              },
             ),
-          ],
-        ),
-        body: DefaultTabController(
-          length: ac.serverSoftware == ServerSoftware.mbin ? 6 : 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      fit: StackFit.passthrough,
-                      children: [
-                        Container(
-                          constraints: BoxConstraints(
-                            maxHeight: MediaQuery.of(context).size.height / 3,
-                          ),
-                          height: user.cover == null ? 48 : null,
-                          margin: const EdgeInsets.only(bottom: 48),
-                          child: user.cover != null
-                              ? AdvancedImage(
-                                  user.cover!,
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
+          ),
+        ],
+      ),
+      body: DefaultTabController(
+        length: ac.serverSoftware == ServerSoftware.mbin ? 6 : 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    fit: StackFit.passthrough,
+                    children: [
+                      Container(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height / 3,
                         ),
-                        Positioned(
-                          bottom: 0,
-                          left: 12,
-                          child: Avatar(
-                            user.avatar,
-                            radius: 36,
-                            borderRadius: 4,
-                            backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                          ),
+                        height: user.cover == null ? 48 : null,
+                        margin: const EdgeInsets.only(bottom: 48),
+                        child: user.cover != null
+                            ? AdvancedImage(user.cover!, fit: BoxFit.cover)
+                            : null,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 12,
+                        child: Avatar(
+                          user.avatar,
+                          radius: 36,
+                          borderRadius: 4,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).scaffoldBackgroundColor,
                         ),
-                        Positioned(
-                            bottom: 0,
-                            right: 16,
-                            child: Column(
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 16,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
                               mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (isMyUser)
-                                      FilledButton(
-                                        onPressed: () => Navigator.of(context)
-                                            .push(MaterialPageRoute(
-                                                builder: (context) {
-                                          return ProfileEditScreen(_data!,
-                                              (DetailedUserModel user) {
+                                if (isMyUser)
+                                  FilledButton(
+                                    onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return ProfileEditScreen(_data!, (
+                                            DetailedUserModel user,
+                                          ) {
                                             setState(() {
                                               _data = user;
                                             });
                                           });
-                                        })),
-                                        child: Text(l(context).account_edit),
-                                      ),
-                                    if (!isMyUser &&
-                                        ac.serverSoftware ==
-                                            ServerSoftware.mbin)
-                                      SubscriptionButton(
-                                        isSubscribed: user.isFollowedByUser,
-                                        subscriptionCount:
-                                            user.followersCount ?? 0,
-                                        onSubscribe: (selected) async {
-                                          var newValue = await ac.api.users
-                                              .follow(user.id, selected);
-                                          setState(() {
-                                            _data = newValue;
-                                          });
-                                          if (widget.onUpdate != null) {
-                                            widget.onUpdate!(newValue);
-                                          }
                                         },
-                                        followMode: true,
                                       ),
-                                    StarButton(globalName),
-                                    if (isLoggedIn && !isMyUser)
-                                      LoadingIconButton(
-                                        onPressed: () async {
-                                          final newValue =
-                                              await ac.api.users.putBlock(
+                                    ),
+                                    child: Text(l(context).account_edit),
+                                  ),
+                                if (!isMyUser &&
+                                    ac.serverSoftware == ServerSoftware.mbin)
+                                  SubscriptionButton(
+                                    isSubscribed: user.isFollowedByUser,
+                                    subscriptionCount: user.followersCount ?? 0,
+                                    onSubscribe: (selected) async {
+                                      var newValue = await ac.api.users.follow(
+                                        user.id,
+                                        selected,
+                                      );
+                                      setState(() {
+                                        _data = newValue;
+                                      });
+                                      if (widget.onUpdate != null) {
+                                        widget.onUpdate!(newValue);
+                                      }
+                                    },
+                                    followMode: true,
+                                  ),
+                                StarButton(globalName),
+                                if (isLoggedIn && !isMyUser)
+                                  LoadingIconButton(
+                                    onPressed: () async {
+                                      final newValue = await ac.api.users
+                                          .putBlock(
                                             user.id,
                                             !user.isBlockedByUser!,
                                           );
 
-                                          setState(() {
-                                            _data = newValue;
-                                          });
-                                          if (widget.onUpdate != null) {
-                                            widget.onUpdate!(newValue);
-                                          }
-                                        },
-                                        icon: const Icon(Symbols.block_rounded),
-                                        style: ButtonStyle(
-                                          foregroundColor:
-                                              WidgetStatePropertyAll(
-                                                  user.isBlockedByUser == true
-                                                      ? Theme.of(context)
-                                                          .colorScheme
-                                                          .error
-                                                      : Theme.of(context)
-                                                          .disabledColor),
-                                        ),
+                                      setState(() {
+                                        _data = newValue;
+                                      });
+                                      if (widget.onUpdate != null) {
+                                        widget.onUpdate!(newValue);
+                                      }
+                                    },
+                                    icon: const Icon(Symbols.block_rounded),
+                                    style: ButtonStyle(
+                                      foregroundColor: WidgetStatePropertyAll(
+                                        user.isBlockedByUser == true
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.error
+                                            : Theme.of(context).disabledColor,
                                       ),
-                                    if (isLoggedIn && !isMyUser)
-                                      IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            _messageController =
-                                                TextEditingController();
-                                          });
-                                        },
-                                        icon: const Icon(Symbols.mail_rounded),
-                                        tooltip: 'Send message',
-                                      ),
-                                  ],
-                                ),
-                                if (!isMyUser &&
-                                    _data!.notificationControlStatus != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: NotificationControlSegment(
-                                      _data!.notificationControlStatus!,
-                                      (newStatus) async {
-                                        await ac.api.notifications.updateControl(
-                                            targetType:
-                                                NotificationControlUpdateTargetType
-                                                    .user,
-                                            targetId: _data!.id,
-                                            status: newStatus);
-
-                                        final newValue = _data!.copyWith(
-                                            notificationControlStatus:
-                                                newStatus);
-                                        setState(() {
-                                          _data = newValue;
-                                        });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
-                                      },
                                     ),
+                                  ),
+                                if (isLoggedIn && !isMyUser)
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _messageController =
+                                            TextEditingController();
+                                      });
+                                    },
+                                    icon: const Icon(Symbols.mail_rounded),
+                                    tooltip: 'Send message',
                                   ),
                               ],
-                            )),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.displayName ?? user.name.split('@').first,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  await Clipboard.setData(
-                                    ClipboardData(
-                                        text: user.name.contains('@')
-                                            ? '@${user.name}'
-                                            : '@${user.name}@${ac.instanceHost}'),
-                                  );
+                            ),
+                            if (!isMyUser &&
+                                _data!.notificationControlStatus != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: NotificationControlSegment(
+                                  _data!.notificationControlStatus!,
+                                  (newStatus) async {
+                                    await ac.api.notifications.updateControl(
+                                      targetType:
+                                          NotificationControlUpdateTargetType
+                                              .user,
+                                      targetId: _data!.id,
+                                      status: newStatus,
+                                    );
 
-                                  if (!mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(l(context).copied),
-                                      duration: const Duration(seconds: 2),
-                                    ),
-                                  );
-                                },
-                                child: Text(globalName),
+                                    final newValue = _data!.copyWith(
+                                      notificationControlStatus: newStatus,
+                                    );
+                                    setState(() {
+                                      _data = newValue;
+                                    });
+                                    if (widget.onUpdate != null) {
+                                      widget.onUpdate!(newValue);
+                                    }
+                                  },
+                                ),
                               ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Text(
-                                      'Joined: ${dateOnlyFormat(user.createdAt)}'),
-                                  UserStatusIcons(
-                                    cakeDay: user.createdAt,
-                                    isBot: user.isBot,
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.displayName ?? user.name.split('@').first,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                await Clipboard.setData(
+                                  ClipboardData(
+                                    text: user.name.contains('@')
+                                        ? '@${user.name}'
+                                        : '@${user.name}@${ac.instanceHost}',
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          if (_messageController != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Column(children: [
+                                );
+
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(l(context).copied),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                              child: Text(globalName),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Text(
+                                  'Joined: ${dateOnlyFormat(user.createdAt)}',
+                                ),
+                                UserStatusIcons(
+                                  cakeDay: user.createdAt,
+                                  isBot: user.isBot,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        if (_messageController != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Column(
+                              children: [
                                 MarkdownEditor(
                                   _messageController!,
                                   originInstance: null,
@@ -346,11 +353,11 @@ class _UserScreenState extends State<UserScreen> {
                                     ),
                                     LoadingFilledButton(
                                       onPressed: () async {
-                                        final newThread =
-                                            await ac.api.messages.create(
-                                          user.id,
-                                          _messageController!.text,
-                                        );
+                                        final newThread = await ac.api.messages
+                                            .create(
+                                              user.id,
+                                              _messageController!.text,
+                                            );
 
                                         await messageDraftController.discard();
 
@@ -361,96 +368,98 @@ class _UserScreenState extends State<UserScreen> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   MessageThreadScreen(
-                                                threadId: newThread.id,
-                                                initData: newThread,
-                                              ),
+                                                    threadId: newThread.id,
+                                                    initData: newThread,
+                                                  ),
                                             ),
                                           );
                                         });
                                       },
                                       label: Text(l(context).send),
                                       uesHaptics: true,
-                                    )
+                                    ),
                                   ],
-                                )
-                              ]),
+                                ),
+                              ],
                             ),
-                          if (user.about != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Markdown(
-                                user.about!,
-                                getNameHost(context, user.name),
-                              ),
+                          ),
+                        if (user.about != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Markdown(
+                              user.about!,
+                              getNameHost(context, user.name),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                title: TabBar(
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.start,
-                  tabs: [
-                    const Tab(text: 'Threads'),
-                    if (ac.serverSoftware == ServerSoftware.mbin)
-                      const Tab(text: 'Microblogs'),
-                    const Tab(text: 'Comments'),
-                    if (ac.serverSoftware == ServerSoftware.mbin)
-                      const Tab(text: 'Replies'),
-                    if (ac.serverSoftware == ServerSoftware.mbin)
-                      const Tab(text: 'Followers'),
-                    if (ac.serverSoftware == ServerSoftware.mbin)
-                      const Tab(text: 'Following')
-                  ],
-                ),
-                pinned: true,
-              )
-            ],
-            body: TabBarView(
-              physics: appTabViewPhysics(context),
-              children: [
-                UserScreenBody(
-                  mode: UserFeedType.thread,
-                  sort: _sort,
-                  data: _data,
-                ),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  UserScreenBody(
-                    mode: UserFeedType.microblog,
-                    sort: _sort,
-                    data: _data,
-                  ),
-                UserScreenBody(
-                  mode: UserFeedType.comment,
-                  sort: _sort,
-                  data: _data,
-                ),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  UserScreenBody(
-                    mode: UserFeedType.reply,
-                    sort: _sort,
-                    data: _data,
-                  ),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  UserScreenBody(
-                    mode: UserFeedType.follower,
-                    sort: _sort,
-                    data: _data,
-                  ),
-                if (ac.serverSoftware == ServerSoftware.mbin)
-                  UserScreenBody(
-                    mode: UserFeedType.following,
-                    sort: _sort,
-                    data: _data,
-                  ),
-              ],
             ),
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              title: TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                tabs: [
+                  const Tab(text: 'Threads'),
+                  if (ac.serverSoftware == ServerSoftware.mbin)
+                    const Tab(text: 'Microblogs'),
+                  const Tab(text: 'Comments'),
+                  if (ac.serverSoftware == ServerSoftware.mbin)
+                    const Tab(text: 'Replies'),
+                  if (ac.serverSoftware == ServerSoftware.mbin)
+                    const Tab(text: 'Followers'),
+                  if (ac.serverSoftware == ServerSoftware.mbin)
+                    const Tab(text: 'Following'),
+                ],
+              ),
+              pinned: true,
+            ),
+          ],
+          body: TabBarView(
+            physics: appTabViewPhysics(context),
+            children: [
+              UserScreenBody(
+                mode: UserFeedType.thread,
+                sort: _sort,
+                data: _data,
+              ),
+              if (ac.serverSoftware == ServerSoftware.mbin)
+                UserScreenBody(
+                  mode: UserFeedType.microblog,
+                  sort: _sort,
+                  data: _data,
+                ),
+              UserScreenBody(
+                mode: UserFeedType.comment,
+                sort: _sort,
+                data: _data,
+              ),
+              if (ac.serverSoftware == ServerSoftware.mbin)
+                UserScreenBody(
+                  mode: UserFeedType.reply,
+                  sort: _sort,
+                  data: _data,
+                ),
+              if (ac.serverSoftware == ServerSoftware.mbin)
+                UserScreenBody(
+                  mode: UserFeedType.follower,
+                  sort: _sort,
+                  data: _data,
+                ),
+              if (ac.serverSoftware == ServerSoftware.mbin)
+                UserScreenBody(
+                  mode: UserFeedType.following,
+                  sort: _sort,
+                  data: _data,
+                ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
@@ -472,8 +481,9 @@ class UserScreenBody extends StatefulWidget {
 
 class _UserScreenBodyState extends State<UserScreenBody>
     with AutomaticKeepAliveClientMixin<UserScreenBody> {
-  final PagingController<String, dynamic> _pagingController =
-      PagingController(firstPageKey: '');
+  final PagingController<String, dynamic> _pagingController = PagingController(
+    firstPageKey: '',
+  );
 
   @override
   bool get wantKeepAlive => true;
@@ -508,49 +518,57 @@ class _UserScreenBodyState extends State<UserScreenBody>
     try {
       final newPage = await (switch (widget.mode) {
         UserFeedType.thread => ac.api.threads.list(
-            FeedSource.user,
-            sourceId: widget.data!.id,
-            page: nullIfEmpty(pageKey),
-            sort: widget.sort,
-            usePreferredLangs:
-                whenLoggedIn(context, ac.profile.useAccountLanguageFilter),
-            langs: ac.profile.customLanguageFilter,
+          FeedSource.user,
+          sourceId: widget.data!.id,
+          page: nullIfEmpty(pageKey),
+          sort: widget.sort,
+          usePreferredLangs: whenLoggedIn(
+            context,
+            ac.profile.useAccountLanguageFilter,
           ),
+          langs: ac.profile.customLanguageFilter,
+        ),
         UserFeedType.microblog => ac.api.microblogs.list(
-            FeedSource.user,
-            sourceId: widget.data!.id,
-            page: nullIfEmpty(pageKey),
-            sort: widget.sort,
-            usePreferredLangs:
-                whenLoggedIn(context, ac.profile.useAccountLanguageFilter),
-            langs: ac.profile.customLanguageFilter,
+          FeedSource.user,
+          sourceId: widget.data!.id,
+          page: nullIfEmpty(pageKey),
+          sort: widget.sort,
+          usePreferredLangs: whenLoggedIn(
+            context,
+            ac.profile.useAccountLanguageFilter,
           ),
+          langs: ac.profile.customLanguageFilter,
+        ),
         UserFeedType.comment => ac.api.comments.listFromUser(
-            PostType.thread,
-            widget.data!.id,
-            page: nullIfEmpty(pageKey),
-            sort: feedToCommentSortMap[widget.sort],
-            usePreferredLangs:
-                whenLoggedIn(context, ac.profile.useAccountLanguageFilter),
-            langs: ac.profile.customLanguageFilter,
+          PostType.thread,
+          widget.data!.id,
+          page: nullIfEmpty(pageKey),
+          sort: feedToCommentSortMap[widget.sort],
+          usePreferredLangs: whenLoggedIn(
+            context,
+            ac.profile.useAccountLanguageFilter,
           ),
+          langs: ac.profile.customLanguageFilter,
+        ),
         UserFeedType.reply => ac.api.comments.listFromUser(
-            PostType.microblog,
-            widget.data!.id,
-            page: nullIfEmpty(pageKey),
-            sort: feedToCommentSortMap[widget.sort],
-            usePreferredLangs:
-                whenLoggedIn(context, ac.profile.useAccountLanguageFilter),
-            langs: ac.profile.customLanguageFilter,
+          PostType.microblog,
+          widget.data!.id,
+          page: nullIfEmpty(pageKey),
+          sort: feedToCommentSortMap[widget.sort],
+          usePreferredLangs: whenLoggedIn(
+            context,
+            ac.profile.useAccountLanguageFilter,
           ),
+          langs: ac.profile.customLanguageFilter,
+        ),
         UserFeedType.follower => ac.api.users.listFollowers(
-            widget.data!.id,
-            page: nullIfEmpty(pageKey),
-          ),
+          widget.data!.id,
+          page: nullIfEmpty(pageKey),
+        ),
         UserFeedType.following => ac.api.users.listFollowing(
-            widget.data!.id,
-            page: nullIfEmpty(pageKey),
-          ),
+          widget.data!.id,
+          page: nullIfEmpty(pageKey),
+        ),
       });
 
       if (!mounted) return;
@@ -558,26 +576,27 @@ class _UserScreenBodyState extends State<UserScreenBody>
       final currentItemIds =
           _pagingController.itemList?.map((post) => post.id) ?? [];
       List<dynamic> newItems = (switch (newPage) {
-        PostListModel newPage => newPage.items
-            .where((element) => !currentItemIds.contains(element.id))
-            .toList(),
-        CommentListModel newPage => newPage.items
-            .where((element) => !currentItemIds.contains(element.id))
-            .toList(),
-        DetailedUserListModel newPage => newPage.items
-            .where((element) => !currentItemIds.contains(element.id))
-            .toList(),
-        Object _ => []
+        PostListModel newPage =>
+          newPage.items
+              .where((element) => !currentItemIds.contains(element.id))
+              .toList(),
+        CommentListModel newPage =>
+          newPage.items
+              .where((element) => !currentItemIds.contains(element.id))
+              .toList(),
+        DetailedUserListModel newPage =>
+          newPage.items
+              .where((element) => !currentItemIds.contains(element.id))
+              .toList(),
+        Object _ => [],
       });
 
-      _pagingController.appendPage(
-          newItems,
-          (switch (newPage) {
-            PostListModel newPage => newPage.nextPage,
-            CommentListModel newPage => newPage.nextPage,
-            DetailedUserListModel newPage => newPage.nextPage,
-            Object _ => null
-          }));
+      _pagingController.appendPage(newItems, (switch (newPage) {
+        PostListModel newPage => newPage.nextPage,
+        CommentListModel newPage => newPage.nextPage,
+        DetailedUserListModel newPage => newPage.nextPage,
+        Object _ => null,
+      }));
     } catch (error) {
       _pagingController.error = error;
     }
@@ -593,84 +612,85 @@ class _UserScreenBodyState extends State<UserScreenBody>
           PagedSliverList(
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                firstPageErrorIndicatorBuilder: (context) =>
-                    FirstPageErrorIndicator(
-                      error: _pagingController.error,
-                      onTryAgain: _pagingController.retryLastFailedRequest,
+              firstPageErrorIndicatorBuilder: (context) =>
+                  FirstPageErrorIndicator(
+                    error: _pagingController.error,
+                    onTryAgain: _pagingController.retryLastFailedRequest,
+                  ),
+              newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
+                error: _pagingController.error,
+                onTryAgain: _pagingController.retryLastFailedRequest,
+              ),
+              itemBuilder: (context, item, index) {
+                return switch (widget.mode) {
+                  UserFeedType.thread || UserFeedType.microblog => Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-                newPageErrorIndicatorBuilder: (context) =>
-                    NewPageErrorIndicator(
-                      error: _pagingController.error,
-                      onTryAgain: _pagingController.retryLastFailedRequest,
-                    ),
-                itemBuilder: (context, item, index) {
-                  return switch (widget.mode) {
-                    UserFeedType.thread || UserFeedType.microblog => Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        clipBehavior: Clip.antiAlias,
-                        child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) {
-                                  return PostPage(
-                                    initData: item,
-                                    onUpdate: (newValue) {
-                                      var newList = _pagingController.itemList;
-                                      newList![index] = newValue;
-                                      setState(() {
-                                        _pagingController.itemList = newList;
-                                      });
-                                    },
-                                  );
-                                }),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return PostPage(
+                                initData: item,
+                                onUpdate: (newValue) {
+                                  var newList = _pagingController.itemList;
+                                  newList![index] = newValue;
+                                  setState(() {
+                                    _pagingController.itemList = newList;
+                                  });
+                                },
                               );
                             },
-                            child: PostItem(
-                              item,
-                              (newValue) {
-                                var newList = _pagingController.itemList;
-                                newList![index] = newValue;
-                                setState(() {
-                                  _pagingController.itemList = newList;
-                                });
-                              },
-                              isPreview: item.type == PostType.thread,
-                            )),
-                      ),
-                    UserFeedType.comment || UserFeedType.reply => Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                        child: PostComment(
-                          item,
-                          (newValue) {
-                            var newList = _pagingController.itemList;
-                            newList![index] = newValue;
-                            setState(() {
-                              _pagingController.itemList = newList;
-                            });
-                          },
-                          onClick: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return PostCommentScreen(
-                                    item.postType, item.id);
-                              }),
-                            );
-                          },
-                        ),
-                      ),
-                    UserFeedType.follower ||
-                    UserFeedType.following =>
-                      ExploreScreenItem(item, (newValue) {
+                          ),
+                        );
+                      },
+                      child: PostItem(item, (newValue) {
                         var newList = _pagingController.itemList;
                         newList![index] = newValue;
                         setState(() {
                           _pagingController.itemList = newList;
                         });
-                      }),
-                  };
-                }),
-          )
+                      }, isPreview: item.type == PostType.thread),
+                    ),
+                  ),
+                  UserFeedType.comment || UserFeedType.reply => Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    child: PostComment(
+                      item,
+                      (newValue) {
+                        var newList = _pagingController.itemList;
+                        newList![index] = newValue;
+                        setState(() {
+                          _pagingController.itemList = newList;
+                        });
+                      },
+                      onClick: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return PostCommentScreen(item.postType, item.id);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  UserFeedType.follower ||
+                  UserFeedType.following => ExploreScreenItem(item, (newValue) {
+                    var newList = _pagingController.itemList;
+                    newList![index] = newValue;
+                    setState(() {
+                      _pagingController.itemList = newList;
+                    });
+                  }),
+                };
+              },
+            ),
+          ),
         ],
       ),
     );

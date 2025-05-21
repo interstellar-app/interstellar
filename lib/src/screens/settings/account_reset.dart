@@ -33,7 +33,8 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
 
     final step1Complete = _selectedAccount != null;
 
-    final isAccountMbin = _selectedAccount != null &&
+    final isAccountMbin =
+        _selectedAccount != null &&
         ac.servers[_selectedAccount!.split('@').last]!.software ==
             ServerSoftware.mbin;
 
@@ -56,8 +57,10 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         if (_resetMagazineSubscriptions.enabled) {
           String? nextPage;
           do {
-            final res = await api.magazines
-                .list(page: nextPage, filter: ExploreFilter.subscribed);
+            final res = await api.magazines.list(
+              page: nextPage,
+              filter: ExploreFilter.subscribed,
+            );
 
             _resetMagazineSubscriptions.found.addAll(
               res.items.map((e) => e.id),
@@ -70,12 +73,12 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         if (_resetMagazineBlocks.enabled && isAccountMbin) {
           String? nextPage;
           do {
-            final res = await api.magazines
-                .list(page: nextPage, filter: ExploreFilter.blocked);
-
-            _resetMagazineBlocks.found.addAll(
-              res.items.map((e) => e.id),
+            final res = await api.magazines.list(
+              page: nextPage,
+              filter: ExploreFilter.blocked,
             );
+
+            _resetMagazineBlocks.found.addAll(res.items.map((e) => e.id));
             nextPage = res.nextPage;
 
             if (progressAndCheckCancel()) return;
@@ -84,12 +87,12 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         if (_resetUserFollows.enabled && isAccountMbin) {
           String? nextPage;
           do {
-            final res = await api.users
-                .list(page: nextPage, filter: ExploreFilter.subscribed);
-
-            _resetUserFollows.found.addAll(
-              res.items.map((e) => e.id),
+            final res = await api.users.list(
+              page: nextPage,
+              filter: ExploreFilter.subscribed,
             );
+
+            _resetUserFollows.found.addAll(res.items.map((e) => e.id));
             nextPage = res.nextPage;
 
             if (progressAndCheckCancel()) return;
@@ -98,12 +101,12 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         if (_resetUserBlocks.enabled && isAccountMbin) {
           String? nextPage;
           do {
-            final res = await api.users
-                .list(page: nextPage, filter: ExploreFilter.blocked);
-
-            _resetUserBlocks.found.addAll(
-              res.items.map((e) => e.id),
+            final res = await api.users.list(
+              page: nextPage,
+              filter: ExploreFilter.blocked,
             );
+
+            _resetUserBlocks.found.addAll(res.items.map((e) => e.id));
             nextPage = res.nextPage;
 
             if (progressAndCheckCancel()) return;
@@ -161,12 +164,10 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_accountReset),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_accountReset)),
       body: ListView(
-          children: switch (_resetProgress) {
-        MigrationOrResetProgress.pending => [
+        children: switch (_resetProgress) {
+          MigrationOrResetProgress.pending => [
             Stepper(
               currentStep: _index,
               onStepCancel: _index > 0
@@ -229,50 +230,62 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                   content: Column(
                     children: [
                       CheckboxListTile(
-                        title: Text(l(context)
-                            .settings_accountReset_step2_resetMagazineSubscriptions),
+                        title: Text(
+                          l(
+                            context,
+                          ).settings_accountReset_step2_resetMagazineSubscriptions,
+                        ),
                         value: _resetMagazineSubscriptions.enabled,
                         onChanged: (value) => {
                           if (value != null)
                             setState(() {
                               _resetMagazineSubscriptions.enabled = value;
-                            })
+                            }),
                         },
                       ),
                       if (isAccountMbin)
                         CheckboxListTile(
-                          title: Text(l(context)
-                              .settings_accountReset_step2_resetMagazineBlocks),
+                          title: Text(
+                            l(
+                              context,
+                            ).settings_accountReset_step2_resetMagazineBlocks,
+                          ),
                           value: _resetMagazineBlocks.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
                                 _resetMagazineBlocks.enabled = value;
-                              })
+                              }),
                           },
                         ),
                       if (isAccountMbin)
                         CheckboxListTile(
-                          title: Text(l(context)
-                              .settings_accountReset_step2_resetUserFollows),
+                          title: Text(
+                            l(
+                              context,
+                            ).settings_accountReset_step2_resetUserFollows,
+                          ),
                           value: _resetUserFollows.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
                                 _resetUserFollows.enabled = value;
-                              })
+                              }),
                           },
                         ),
                       if (isAccountMbin)
                         CheckboxListTile(
-                          title: Text(l(context)
-                              .settings_accountReset_step2_resetUserBlocks),
+                          title: Text(
+                            l(
+                              context,
+                            ).settings_accountReset_step2_resetUserBlocks,
+                          ),
                           value: _resetUserBlocks.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
                                 _resetUserBlocks.enabled = value;
-                              })
+                              }),
                           },
                         ),
                     ],
@@ -281,37 +294,39 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                 Step(
                   state: step1Complete ? StepState.indexed : StepState.disabled,
                   title: Text(l(context).settings_accountReset_step3),
-                  content: const Row(
-                    children: [],
-                  ),
+                  content: const Row(children: []),
                 ),
               ],
             ),
           ],
-        MigrationOrResetProgress.readingSource => [
+          MigrationOrResetProgress.readingSource => [
             const LinearProgressIndicator(),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   Text(l(context).settings_accountReset_readingFromAccount),
-                  Text(l(context).settings_accountReset_foundXItems(
+                  Text(
+                    l(context).settings_accountReset_foundXItems(
                       _resetMagazineSubscriptions.found.length +
                           _resetMagazineBlocks.found.length +
                           _resetUserFollows.found.length +
-                          _resetUserBlocks.found.length)),
+                          _resetUserBlocks.found.length,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
-        MigrationOrResetProgress.writingDestination => [
+          MigrationOrResetProgress.writingDestination => [
             const LinearProgressIndicator(),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   Text(l(context).settings_accountReset_removingItems),
-                  Text(l(context).settings_accountReset_completeXItems(
+                  Text(
+                    l(context).settings_accountReset_completeXItems(
                       _resetMagazineSubscriptions.complete.length +
                           _resetMagazineBlocks.complete.length +
                           _resetUserFollows.complete.length +
@@ -319,8 +334,11 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                       _resetMagazineSubscriptions.found.length +
                           _resetMagazineBlocks.found.length +
                           _resetUserFollows.found.length +
-                          _resetUserBlocks.found.length)),
-                  Text(l(context).settings_accountReset_failedXItems(
+                          _resetUserBlocks.found.length,
+                    ),
+                  ),
+                  Text(
+                    l(context).settings_accountReset_failedXItems(
                       _resetMagazineSubscriptions.failed.length +
                           _resetMagazineBlocks.failed.length +
                           _resetUserFollows.failed.length +
@@ -328,18 +346,21 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                       _resetMagazineSubscriptions.found.length +
                           _resetMagazineBlocks.found.length +
                           _resetUserFollows.found.length +
-                          _resetUserBlocks.found.length)),
+                          _resetUserBlocks.found.length,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
-        MigrationOrResetProgress.complete => [
+          MigrationOrResetProgress.complete => [
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   Text(l(context).settings_accountReset_complete),
-                  Text(l(context).settings_accountReset_completeXItems(
+                  Text(
+                    l(context).settings_accountReset_completeXItems(
                       _resetMagazineSubscriptions.complete.length +
                           _resetMagazineBlocks.complete.length +
                           _resetUserFollows.complete.length +
@@ -347,8 +368,11 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                       _resetMagazineSubscriptions.found.length +
                           _resetMagazineBlocks.found.length +
                           _resetUserFollows.found.length +
-                          _resetUserBlocks.found.length)),
-                  Text(l(context).settings_accountReset_failedXItems(
+                          _resetUserBlocks.found.length,
+                    ),
+                  ),
+                  Text(
+                    l(context).settings_accountReset_failedXItems(
                       _resetMagazineSubscriptions.failed.length +
                           _resetMagazineBlocks.failed.length +
                           _resetUserFollows.failed.length +
@@ -356,22 +380,23 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                       _resetMagazineSubscriptions.found.length +
                           _resetMagazineBlocks.found.length +
                           _resetUserFollows.found.length +
-                          _resetUserBlocks.found.length)),
+                          _resetUserBlocks.found.length,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
-        MigrationOrResetProgress.failed => [
+          MigrationOrResetProgress.failed => [
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
-                children: [
-                  Text(l(context).settings_accountReset_failed),
-                ],
+                children: [Text(l(context).settings_accountReset_failed)],
               ),
-            )
+            ),
           ],
-      }),
+        },
+      ),
     );
   }
 }

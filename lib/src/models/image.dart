@@ -14,18 +14,18 @@ class ImageModel with _$ImageModel {
   }) = _ImageModel;
 
   factory ImageModel.fromMbin(JsonMap json) => ImageModel(
-        src: (json['storageUrl'] ?? json['sourceUrl']) as String,
-        altText: json['altText'] as String?,
-        blurHash: json['blurHash'] as String?,
-        blurHashWidth: json['width'] as int?,
-        blurHashHeight: json['height'] as int?,
-      );
+    src: (json['storageUrl'] ?? json['sourceUrl']) as String,
+    altText: json['altText'] as String?,
+    blurHash: json['blurHash'] as String?,
+    blurHashWidth: json['width'] as int?,
+    blurHashHeight: json['height'] as int?,
+  );
 
   factory ImageModel.fromLemmy(String src, [String? altText]) => ImageModel(
-        src: src,
-        altText: altText,
-        blurHash: null,
-        blurHashWidth: null,
-        blurHashHeight: null,
-      );
+    src: src,
+    altText: altText,
+    blurHash: null,
+    blurHashWidth: null,
+    blurHashHeight: null,
+  );
 }
