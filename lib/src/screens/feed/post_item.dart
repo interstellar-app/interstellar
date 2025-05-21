@@ -97,8 +97,9 @@ class _PostItemState extends State<PostItem> {
           },
           createdAt: widget.item.createdAt,
           editedAt: widget.item.editedAt,
-          isPreview:
-              widget.item.type == PostType.microblog ? false : widget.isPreview,
+          isPreview: widget.item.type == PostType.microblog
+              ? false
+              : widget.isPreview,
           fullImageSize: widget.isPreview
               ? switch (widget.item.type) {
                   PostType.thread => ac.profile.fullImageSizeThreads,
@@ -123,88 +124,113 @@ class _PostItemState extends State<PostItem> {
           boosts: widget.item.boosts,
           isBoosted: widget.item.myBoost == true,
           onBoost: whenLoggedIn(context, () async {
-            widget.onUpdate((await ac.markAsRead(
-              [
+            widget.onUpdate(
+              (await ac.markAsRead([
                 await switch (widget.item.type) {
                   PostType.thread => ac.api.threads.boost(widget.item.id),
-                  PostType.microblog =>
-                    ac.api.microblogs.putVote(widget.item.id, 1),
-                }
-              ],
-              true,
-            ))
-                .first);
+                  PostType.microblog => ac.api.microblogs.putVote(
+                    widget.item.id,
+                    1,
+                  ),
+                },
+              ], true)).first,
+            );
           }),
           upVotes: widget.item.upvotes,
           isUpVoted: widget.item.myVote == 1,
           onUpVote: whenLoggedIn(context, () async {
-            widget.onUpdate((await ac.markAsRead(
-              [
+            widget.onUpdate(
+              (await ac.markAsRead([
                 await switch (widget.item.type) {
-                  PostType.thread => ac.api.threads
-                      .vote(widget.item.id, 1, widget.item.myVote == 1 ? 0 : 1),
-                  PostType.microblog =>
-                    ac.api.microblogs.putFavorite(widget.item.id),
-                }
-              ],
-              true,
-            ))
-                .first);
+                  PostType.thread => ac.api.threads.vote(
+                    widget.item.id,
+                    1,
+                    widget.item.myVote == 1 ? 0 : 1,
+                  ),
+                  PostType.microblog => ac.api.microblogs.putFavorite(
+                    widget.item.id,
+                  ),
+                },
+              ], true)).first,
+            );
           }),
           downVotes: widget.item.downvotes,
           isDownVoted: widget.item.myVote == -1,
           onDownVote: whenLoggedIn(context, () async {
-            widget.onUpdate((await ac.markAsRead(
-              [
+            widget.onUpdate(
+              (await ac.markAsRead([
                 await switch (widget.item.type) {
                   PostType.thread => ac.api.threads.vote(
-                      widget.item.id, -1, widget.item.myVote == -1 ? 0 : -1),
-                  PostType.microblog =>
-                    ac.api.microblogs.putVote(widget.item.id, -1),
-                }
-              ],
-              true,
-            ))
-                .first);
+                    widget.item.id,
+                    -1,
+                    widget.item.myVote == -1 ? 0 : -1,
+                  ),
+                  PostType.microblog => ac.api.microblogs.putVote(
+                    widget.item.id,
+                    -1,
+                  ),
+                },
+              ], true)).first,
+            );
           }),
           contentTypeName: l(context).post,
           onReply: widget.onReply,
           onReport: whenLoggedIn(context, (reason) async {
             await switch (widget.item.type) {
               PostType.thread => ac.api.threads.report(widget.item.id, reason),
-              PostType.microblog =>
-                ac.api.microblogs.report(widget.item.id, reason),
+              PostType.microblog => ac.api.microblogs.report(
+                widget.item.id,
+                reason,
+              ),
             };
           }),
           onEdit: widget.onEdit,
           onDelete: widget.onDelete,
           onMarkAsRead: () async {
             widget.onUpdate(
-                (await ac.markAsRead([widget.item], !widget.item.read)).first);
+              (await ac.markAsRead([widget.item], !widget.item.read)).first,
+            );
           },
           onModeratePin: !canModerate
               ? null
               : () async {
-                  widget.onUpdate(await ac.api.moderation
-                      .postPin(widget.item.type, widget.item.id));
+                  widget.onUpdate(
+                    await ac.api.moderation.postPin(
+                      widget.item.type,
+                      widget.item.id,
+                    ),
+                  );
                 },
           onModerateMarkNSFW: !canModerate
               ? null
               : () async {
-                  widget.onUpdate(await ac.api.moderation.postMarkNSFW(
-                      widget.item.type, widget.item.id, !widget.item.isNSFW));
+                  widget.onUpdate(
+                    await ac.api.moderation.postMarkNSFW(
+                      widget.item.type,
+                      widget.item.id,
+                      !widget.item.isNSFW,
+                    ),
+                  );
                 },
           onModerateDelete: !canModerate
               ? null
               : () async {
-                  widget.onUpdate(await ac.api.moderation
-                      .postDelete(widget.item.type, widget.item.id, true));
+                  widget.onUpdate(
+                    await ac.api.moderation.postDelete(
+                      widget.item.type,
+                      widget.item.id,
+                      true,
+                    ),
+                  );
                 },
           onModerateBan: !canModerate
               ? null
               : () async {
-                  await openBanDialog(context,
-                      user: widget.item.user, magazine: widget.item.magazine);
+                  await openBanDialog(
+                    context,
+                    user: widget.item.user,
+                    magazine: widget.item.magazine,
+                  );
                 },
           numComments: widget.item.numComments,
           openLinkUri: Uri.https(
@@ -232,68 +258,71 @@ class _PostItemState extends State<PostItem> {
           onAddBookmark: whenLoggedIn(context, () async {
             final newBookmarks = await ac.api.bookmark.addBookmarkToDefault(
               subjectType: BookmarkListSubject.fromPostType(
-                  postType: widget.item.type, isComment: false),
+                postType: widget.item.type,
+                isComment: false,
+              ),
               subjectId: widget.item.id,
             );
             widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
           }),
-          onAddBookmarkToList: whenLoggedIn(
-            context,
-            (String listName) async {
-              final newBookmarks = await ac.api.bookmark.addBookmarkToList(
-                subjectType: BookmarkListSubject.fromPostType(
-                    postType: widget.item.type, isComment: false),
-                subjectId: widget.item.id,
-                listName: listName,
-              );
-              widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
-            },
-            matchesSoftware: ServerSoftware.mbin,
-          ),
+          onAddBookmarkToList: whenLoggedIn(context, (String listName) async {
+            final newBookmarks = await ac.api.bookmark.addBookmarkToList(
+              subjectType: BookmarkListSubject.fromPostType(
+                postType: widget.item.type,
+                isComment: false,
+              ),
+              subjectId: widget.item.id,
+              listName: listName,
+            );
+            widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
+          }, matchesSoftware: ServerSoftware.mbin),
           onRemoveBookmark: whenLoggedIn(context, () async {
             final newBookmarks = await ac.api.bookmark.removeBookmarkFromAll(
               subjectType: BookmarkListSubject.fromPostType(
-                  postType: widget.item.type, isComment: false),
+                postType: widget.item.type,
+                isComment: false,
+              ),
               subjectId: widget.item.id,
             );
             widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
           }),
-          onRemoveBookmarkFromList: whenLoggedIn(
-            context,
-            (String listName) async {
-              final newBookmarks = await ac.api.bookmark.removeBookmarkFromList(
-                subjectType: BookmarkListSubject.fromPostType(
-                    postType: widget.item.type, isComment: false),
-                subjectId: widget.item.id,
-                listName: listName,
-              );
-              widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
-            },
-            matchesSoftware: ServerSoftware.mbin,
-          ),
+          onRemoveBookmarkFromList: whenLoggedIn(context, (
+            String listName,
+          ) async {
+            final newBookmarks = await ac.api.bookmark.removeBookmarkFromList(
+              subjectType: BookmarkListSubject.fromPostType(
+                postType: widget.item.type,
+                isComment: false,
+              ),
+              subjectId: widget.item.id,
+              listName: listName,
+            );
+            widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
+          }, matchesSoftware: ServerSoftware.mbin),
           notificationControlStatus: widget.item.notificationControlStatus,
           onNotificationControlStatusChange:
               widget.item.notificationControlStatus == null
-                  ? null
-                  : (newStatus) async {
-                      await ac.api.notifications.updateControl(
-                        targetType: switch (widget.item.type) {
-                          PostType.thread =>
-                            NotificationControlUpdateTargetType.entry,
-                          PostType.microblog =>
-                            NotificationControlUpdateTargetType.post,
-                        },
-                        targetId: widget.item.id,
-                        status: newStatus,
-                      );
-
-                      widget.onUpdate(widget.item
-                          .copyWith(notificationControlStatus: newStatus));
+              ? null
+              : (newStatus) async {
+                  await ac.api.notifications.updateControl(
+                    targetType: switch (widget.item.type) {
+                      PostType.thread =>
+                        NotificationControlUpdateTargetType.entry,
+                      PostType.microblog =>
+                        NotificationControlUpdateTargetType.post,
                     },
+                    targetId: widget.item.id,
+                    status: newStatus,
+                  );
+
+                  widget.onUpdate(
+                    widget.item.copyWith(notificationControlStatus: newStatus),
+                  );
+                },
           isCompact: widget.isCompact,
           onClick: widget.isTopLevel ? widget.onTap : null,
-        )
-      )
+        ),
+      ),
     );
   }
 }

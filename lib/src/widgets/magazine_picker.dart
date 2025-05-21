@@ -34,62 +34,64 @@ class _MagazinePickerState extends State<MagazinePicker> {
       fieldViewBuilder:
           (context, textEditingController, focusNode, onFieldSubmitted) =>
               TextField(
-        controller: textEditingController,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          label: Text(l(context).magazine),
-          hintText: l(context).selectMagazine,
-          prefixIcon: widget.value?.icon == null
-              ? null
-              : Avatar(widget.value!.icon!, radius: 14),
-          suffixIcon: widget.value == null
-              ? null
-              : IconButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MagazineScreen(
-                        widget.value!.id,
-                        initData: widget.value!,
-                        onUpdate: (newValue) => widget.onChange(newValue),
-                      ),
-                    ),
-                  ),
-                  icon: Icon(Symbols.open_in_new_rounded),
+                controller: textEditingController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  label: Text(l(context).magazine),
+                  hintText: l(context).selectMagazine,
+                  prefixIcon: widget.value?.icon == null
+                      ? null
+                      : Avatar(widget.value!.icon!, radius: 14),
+                  suffixIcon: widget.value == null
+                      ? null
+                      : IconButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => MagazineScreen(
+                                widget.value!.id,
+                                initData: widget.value!,
+                                onUpdate: (newValue) =>
+                                    widget.onChange(newValue),
+                              ),
+                            ),
+                          ),
+                          icon: Icon(Symbols.open_in_new_rounded),
+                        ),
+                  helperText: widget.microblogMode
+                      ? l(context).microblog_magazineHelperText
+                      : null,
                 ),
-          helperText: widget.microblogMode
-              ? l(context).microblog_magazineHelperText
-              : null,
-        ),
-        focusNode: focusNode,
-        onSubmitted: (_) => onFieldSubmitted(),
-        onChanged: (_) => widget.onChange(null),
-      ),
+                focusNode: focusNode,
+                onSubmitted: (_) => onFieldSubmitted(),
+                onChanged: (_) => widget.onChange(null),
+              ),
       optionsBuilder: (TextEditingValue textEditingValue) async {
-        final exactFuture = (context
-                    .read<AppController>()
-                    .api
-                    .magazines
-                    .getByName(textEditingValue.text)
-                as Future<DetailedMagazineModel?>)
-            .onError((error, stackTrace) => null);
+        final exactFuture =
+            (context.read<AppController>().api.magazines.getByName(
+                      textEditingValue.text,
+                    )
+                    as Future<DetailedMagazineModel?>)
+                .onError((error, stackTrace) => null);
 
-        final searchFuture = context
-            .read<AppController>()
-            .api
-            .magazines
-            .list(search: textEditingValue.text);
+        final searchFuture = context.read<AppController>().api.magazines.list(
+          search: textEditingValue.text,
+        );
 
         final [
           exactResult as DetailedMagazineModel?,
-          searchResults as DetailedMagazineListModel
-        ] = await Future.wait([exactFuture, searchFuture]);
+          searchResults as DetailedMagazineListModel,
+        ] = await Future.wait([
+          exactFuture,
+          searchFuture,
+        ]);
 
         return exactResult == null
             ? searchResults.items
             : [
                 exactResult,
-                ...searchResults.items
-                    .where((item) => item.id != exactResult.id),
+                ...searchResults.items.where(
+                  (item) => item.id != exactResult.id,
+                ),
               ];
       },
       displayStringForOption: (option) => option.name,
@@ -115,8 +117,9 @@ class _MagazinePickerState extends State<MagazinePicker> {
                       final bool highlight =
                           AutocompleteHighlightedOption.of(context) == index;
                       if (highlight) {
-                        SchedulerBinding.instance.addPostFrameCallback(
-                            (Duration timeStamp) {
+                        SchedulerBinding.instance.addPostFrameCallback((
+                          Duration timeStamp,
+                        ) {
                           Scrollable.ensureVisible(context, alignment: 0.5);
                         }, debugLabel: 'AutocompleteOptions.ensureVisible');
                       }
@@ -132,8 +135,9 @@ class _MagazinePickerState extends State<MagazinePicker> {
                               ),
                             Flexible(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 child: Text(
                                   option.name,
                                   softWrap: false,

@@ -15,11 +15,11 @@ class DetailedUserListModel with _$DetailedUserListModel {
   }) = _DetailedUserListModel;
 
   factory DetailedUserListModel.fromMbin(JsonMap json) => DetailedUserListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((post) => DetailedUserModel.fromMbin(post as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    items: (json['items'] as List<dynamic>)
+        .map((post) => DetailedUserModel.fromMbin(post as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 
   factory DetailedUserListModel.fromLemmy(JsonMap json) =>
       DetailedUserListModel(
@@ -73,7 +73,8 @@ class DetailedUserModel with _$DetailedUserModel {
       notificationControlStatus: json['notificationStatus'] == null
           ? null
           : NotificationControlStatus.fromJson(
-              json['notificationStatus'] as String),
+              json['notificationStatus'] as String,
+            ),
     );
 
     userMentionCache[user.name] = user;
@@ -101,10 +102,7 @@ class DetailedUserModel with _$DetailedUserModel {
     );
   }
 
-  factory DetailedUserModel.fromPiefed(
-    JsonMap json, {
-    bool blocked = false,
-  }) {
+  factory DetailedUserModel.fromPiefed(JsonMap json, {bool blocked = false}) {
     final piefedPerson = json['person'] as JsonMap;
 
     return DetailedUserModel(
@@ -123,8 +121,8 @@ class DetailedUserModel with _$DetailedUserModel {
       notificationControlStatus: json['activity_alert'] == null
           ? null
           : json['activity_alert'] as bool
-              ? NotificationControlStatus.loud
-              : NotificationControlStatus.default_,
+          ? NotificationControlStatus.loud
+          : NotificationControlStatus.default_,
     );
   }
 }
@@ -140,36 +138,36 @@ class UserModel with _$UserModel {
   }) = _UserModel;
 
   factory UserModel.fromMbin(JsonMap json) => UserModel(
-        id: json['userId'] as int,
-        name: mbinNormalizeUsername(json['username'] as String),
-        avatar: mbinGetOptionalImage(json['avatar'] as JsonMap?),
-        createdAt: optionalDateTime(json['createdAt'] as String?),
-        isBot: (json['isBot'] ?? false) as bool,
-      );
+    id: json['userId'] as int,
+    name: mbinNormalizeUsername(json['username'] as String),
+    avatar: mbinGetOptionalImage(json['avatar'] as JsonMap?),
+    createdAt: optionalDateTime(json['createdAt'] as String?),
+    isBot: (json['isBot'] ?? false) as bool,
+  );
 
   factory UserModel.fromLemmy(JsonMap json) => UserModel(
-        id: json['id'] as int,
-        name: getLemmyPiefedActorName(json),
-        avatar: lemmyGetOptionalImage(json['avatar'] as String?),
-        createdAt: DateTime.parse(json['published'] as String),
-        isBot: json['bot_account'] as bool,
-      );
+    id: json['id'] as int,
+    name: getLemmyPiefedActorName(json),
+    avatar: lemmyGetOptionalImage(json['avatar'] as String?),
+    createdAt: DateTime.parse(json['published'] as String),
+    isBot: json['bot_account'] as bool,
+  );
 
   factory UserModel.fromPiefed(JsonMap json) => UserModel(
-        id: json['id'] as int,
-        name: getLemmyPiefedActorName(json),
-        avatar: null,
-        createdAt: DateTime.parse(json['published'] as String),
-        isBot: json['bot'] as bool,
-      );
+    id: json['id'] as int,
+    name: getLemmyPiefedActorName(json),
+    avatar: null,
+    createdAt: DateTime.parse(json['published'] as String),
+    isBot: json['bot'] as bool,
+  );
 
   factory UserModel.fromDetailedUser(DetailedUserModel user) => UserModel(
-        id: user.id,
-        name: user.name,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-        isBot: user.isBot,
-      );
+    id: user.id,
+    name: user.name,
+    avatar: user.avatar,
+    createdAt: user.createdAt,
+    isBot: user.isBot,
+  );
 }
 
 @unfreezed
@@ -192,55 +190,53 @@ class UserSettings with _$UserSettings {
   }) = _UserSettings;
 
   factory UserSettings.fromMbin(JsonMap json) => UserSettings(
-        showNSFW: !(json['hideAdult'] as bool),
-        blurNSFW: null,
-        showReadPosts: null,
-        showSubscribedUsers: json['showSubscribedUsers'] as bool?,
-        showSubscribedMagazines: json['showSubscribedMagazines'] as bool?,
-        showSubscribedDomains: json['showSubscribedDomains'] as bool?,
-        showProfileSubscriptions: json['showProfileSubscriptions'] as bool?,
-        showProfileFollowings: json['showProfileFollowings'] as bool?,
-        notifyOnNewEntry: json['notifyOnNewEntry'] as bool?,
-        notifyOnNewEntryReply: json['notifyOnNewEntryReply'] as bool?,
-        notifyOnNewEntryCommentReply:
-            json['notifyOnNewEntryCommentReply'] as bool?,
-        notifyOnNewPost: json['notifyOnNewPost'] as bool?,
-        notifyOnNewPostReply: json['notifyOnNewPostReply'] as bool?,
-        notifyOnNewPostCommentReply:
-            json['notifyOnNewPostCommentReply'] as bool?,
-      );
+    showNSFW: !(json['hideAdult'] as bool),
+    blurNSFW: null,
+    showReadPosts: null,
+    showSubscribedUsers: json['showSubscribedUsers'] as bool?,
+    showSubscribedMagazines: json['showSubscribedMagazines'] as bool?,
+    showSubscribedDomains: json['showSubscribedDomains'] as bool?,
+    showProfileSubscriptions: json['showProfileSubscriptions'] as bool?,
+    showProfileFollowings: json['showProfileFollowings'] as bool?,
+    notifyOnNewEntry: json['notifyOnNewEntry'] as bool?,
+    notifyOnNewEntryReply: json['notifyOnNewEntryReply'] as bool?,
+    notifyOnNewEntryCommentReply: json['notifyOnNewEntryCommentReply'] as bool?,
+    notifyOnNewPost: json['notifyOnNewPost'] as bool?,
+    notifyOnNewPostReply: json['notifyOnNewPostReply'] as bool?,
+    notifyOnNewPostCommentReply: json['notifyOnNewPostCommentReply'] as bool?,
+  );
 
   factory UserSettings.fromLemmy(JsonMap json) => UserSettings(
-        showNSFW: json['show_nsfw'] as bool,
-        blurNSFW: json['blur_nsfw'] as bool?,
-        showReadPosts: json['show_read_posts'] as bool?,
-        showSubscribedUsers: null,
-        showSubscribedMagazines: null,
-        showSubscribedDomains: null,
-        showProfileSubscriptions: null,
-        showProfileFollowings: null,
-        notifyOnNewEntry: null,
-        notifyOnNewEntryReply: null,
-        notifyOnNewEntryCommentReply: null,
-        notifyOnNewPost: null,
-        notifyOnNewPostReply: null,
-        notifyOnNewPostCommentReply: null,
-      );
+    showNSFW: json['show_nsfw'] as bool,
+    blurNSFW: json['blur_nsfw'] as bool?,
+    showReadPosts: json['show_read_posts'] as bool?,
+    showSubscribedUsers: null,
+    showSubscribedMagazines: null,
+    showSubscribedDomains: null,
+    showProfileSubscriptions: null,
+    showProfileFollowings: null,
+    notifyOnNewEntry: null,
+    notifyOnNewEntryReply: null,
+    notifyOnNewEntryCommentReply: null,
+    notifyOnNewPost: null,
+    notifyOnNewPostReply: null,
+    notifyOnNewPostCommentReply: null,
+  );
 
   factory UserSettings.fromPiefed(JsonMap json) => UserSettings(
-        showNSFW: json['show_nsfw'] as bool,
-        blurNSFW: null,
-        showReadPosts: json['show_read_posts'] as bool?,
-        showSubscribedUsers: null,
-        showSubscribedMagazines: null,
-        showSubscribedDomains: null,
-        showProfileSubscriptions: null,
-        showProfileFollowings: null,
-        notifyOnNewEntry: null,
-        notifyOnNewEntryReply: null,
-        notifyOnNewEntryCommentReply: null,
-        notifyOnNewPost: null,
-        notifyOnNewPostReply: null,
-        notifyOnNewPostCommentReply: null,
-      );
+    showNSFW: json['show_nsfw'] as bool,
+    blurNSFW: null,
+    showReadPosts: json['show_read_posts'] as bool?,
+    showSubscribedUsers: null,
+    showSubscribedMagazines: null,
+    showSubscribedDomains: null,
+    showProfileSubscriptions: null,
+    showProfileFollowings: null,
+    notifyOnNewEntry: null,
+    notifyOnNewEntryReply: null,
+    notifyOnNewEntryCommentReply: null,
+    notifyOnNewPost: null,
+    notifyOnNewPostReply: null,
+    notifyOnNewPostCommentReply: null,
+  );
 }

@@ -30,8 +30,9 @@ class _ExploreScreenState extends State<ExploreScreen>
   APIExploreSort sort = APIExploreSort.hot;
   ExploreFilter filter = ExploreFilter.all;
 
-  final PagingController<String, dynamic> _pagingController =
-      PagingController(firstPageKey: '');
+  final PagingController<String, dynamic> _pagingController = PagingController(
+    firstPageKey: '',
+  );
 
   @override
   bool get wantKeepAlive => true;
@@ -57,13 +58,16 @@ class _ExploreScreenState extends State<ExploreScreen>
     try {
       switch (type) {
         case ExploreType.magazines:
-          final newPage =
-              await context.read<AppController>().api.magazines.list(
-                    page: nullIfEmpty(pageKey),
-                    filter: filter,
-                    sort: sort,
-                    search: nullIfEmpty(search),
-                  );
+          final newPage = await context
+              .read<AppController>()
+              .api
+              .magazines
+              .list(
+                page: nullIfEmpty(pageKey),
+                filter: filter,
+                sort: sort,
+                search: nullIfEmpty(search),
+              );
 
           // Check BuildContext
           if (!mounted) return;
@@ -88,10 +92,10 @@ class _ExploreScreenState extends State<ExploreScreen>
           }
 
           final newPage = await context.read<AppController>().api.users.list(
-                page: nullIfEmpty(pageKey),
-                filter: filter,
-                search: search,
-              );
+            page: nullIfEmpty(pageKey),
+            filter: filter,
+            search: search,
+          );
 
           // Check BuildContext
           if (!mounted) return;
@@ -108,10 +112,10 @@ class _ExploreScreenState extends State<ExploreScreen>
 
         case ExploreType.domains:
           final newPage = await context.read<AppController>().api.domains.list(
-                page: nullIfEmpty(pageKey),
-                filter: filter,
-                search: nullIfEmpty(search),
-              );
+            page: nullIfEmpty(pageKey),
+            filter: filter,
+            search: nullIfEmpty(search),
+          );
 
           // Check BuildContext
           if (!mounted) return;
@@ -128,9 +132,9 @@ class _ExploreScreenState extends State<ExploreScreen>
 
         case ExploreType.all:
           final newPage = await context.read<AppController>().api.search.get(
-                page: nullIfEmpty(pageKey),
-                search: search,
-              );
+            page: nullIfEmpty(pageKey),
+            search: search,
+          );
 
           if (!mounted) return;
 
@@ -148,8 +152,10 @@ class _ExploreScreenState extends State<ExploreScreen>
     const chipPadding = EdgeInsets.symmetric(vertical: 6, horizontal: 4);
 
     final currentExploreSort = exploreSortSelection(context).getOption(sort);
-    final currentExploreFilter =
-        exploreFilterSelection(context, type).getOption(filter);
+    final currentExploreFilter = exploreFilterSelection(
+      context,
+      type,
+    ).getOption(filter);
 
     return Scaffold(
       appBar: AppBar(
@@ -162,9 +168,7 @@ class _ExploreScreenState extends State<ExploreScreen>
         }),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(
-          () => _pagingController.refresh(),
-        ),
+        onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           slivers: [
             if (widget.subOnlyMode == null)
@@ -309,16 +313,16 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 const Icon(Symbols.arrow_drop_down_rounded),
                               ],
                             ),
-                            onPressed: context
-                                            .read<AppController>()
-                                            .serverSoftware ==
+                            onPressed:
+                                context.read<AppController>().serverSoftware ==
                                         ServerSoftware.mbin &&
                                     type == ExploreType.all
                                 ? null
                                 : () async {
                                     final result = await exploreFilterSelection(
-                                            context, type)
-                                        .askSelection(context, filter);
+                                      context,
+                                      type,
+                                    ).askSelection(context, filter);
 
                                     if (result != null) {
                                       setState(() {
@@ -342,18 +346,17 @@ class _ExploreScreenState extends State<ExploreScreen>
                             ),
                             // For Mbin, sorting only works for magazines, and only
                             // when the all or local filters are enabled
-                            onPressed: context
-                                            .watch<AppController>()
-                                            .serverSoftware ==
+                            onPressed:
+                                context.watch<AppController>().serverSoftware ==
                                         ServerSoftware.mbin &&
                                     ((filter != ExploreFilter.all &&
                                             filter != ExploreFilter.local) ||
                                         type != ExploreType.magazines)
                                 ? null
                                 : () async {
-                                    final result =
-                                        await exploreSortSelection(context)
-                                            .askSelection(context, sort);
+                                    final result = await exploreSortSelection(
+                                      context,
+                                    ).askSelection(context, sort);
 
                                     if (result != null) {
                                       setState(() {
@@ -374,28 +377,25 @@ class _ExploreScreenState extends State<ExploreScreen>
               builderDelegate: PagedChildBuilderDelegate<dynamic>(
                 firstPageErrorIndicatorBuilder: (context) =>
                     FirstPageErrorIndicator(
-                  error: _pagingController.error,
-                  onTryAgain: _pagingController.retryLastFailedRequest,
-                ),
+                      error: _pagingController.error,
+                      onTryAgain: _pagingController.retryLastFailedRequest,
+                    ),
                 newPageErrorIndicatorBuilder: (context) =>
                     NewPageErrorIndicator(
-                  error: _pagingController.error,
-                  onTryAgain: _pagingController.retryLastFailedRequest,
-                ),
+                      error: _pagingController.error,
+                      onTryAgain: _pagingController.retryLastFailedRequest,
+                    ),
                 itemBuilder: (context, item, index) {
-                  return ExploreScreenItem(
-                    item,
-                    (newValue) {
-                      var newList = _pagingController.itemList;
-                      newList![index] = newValue;
-                      setState(() {
-                        _pagingController.itemList = newList;
-                      });
-                    },
-                  );
+                  return ExploreScreenItem(item, (newValue) {
+                    var newList = _pagingController.itemList;
+                    newList![index] = newValue;
+                    setState(() {
+                      _pagingController.itemList = newList;
+                    });
+                  });
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -403,12 +403,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 }
 
-enum ExploreType {
-  magazines,
-  people,
-  domains,
-  all,
-}
+enum ExploreType { magazines, people, domains, all }
 
 enum ExploreFilter {
   all,
@@ -421,53 +416,47 @@ enum ExploreFilter {
 SelectionMenu<ExploreFilter> exploreFilterSelection(
   BuildContext context,
   ExploreType type,
-) =>
-    SelectionMenu(
-      l(context).sort,
-      [
-        SelectionMenuItem(
-          value: ExploreFilter.all,
-          title: l(context).filter_allResults,
-          icon: Symbols.newspaper_rounded,
-        ),
-        if (context.read<AppController>().serverSoftware !=
+) => SelectionMenu(l(context).sort, [
+  SelectionMenuItem(
+    value: ExploreFilter.all,
+    title: l(context).filter_allResults,
+    icon: Symbols.newspaper_rounded,
+  ),
+  if (context.read<AppController>().serverSoftware != ServerSoftware.mbin ||
+      type == ExploreType.magazines)
+    SelectionMenuItem(
+      value: ExploreFilter.local,
+      title: l(context).filter_local,
+      icon: Symbols.home_rounded,
+    ),
+  ...(whenLoggedIn(context, [
+        if (context.read<AppController>().serverSoftware ==
                 ServerSoftware.mbin ||
             type == ExploreType.magazines)
           SelectionMenuItem(
-            value: ExploreFilter.local,
-            title: l(context).filter_local,
-            icon: Symbols.home_rounded,
+            value: ExploreFilter.subscribed,
+            title: type == ExploreType.people
+                ? l(context).filter_followed
+                : l(context).filter_subscribed,
+            icon: Symbols.people_rounded,
           ),
-        ...(whenLoggedIn(context, [
-              if (context.read<AppController>().serverSoftware ==
-                      ServerSoftware.mbin ||
-                  type == ExploreType.magazines)
-                SelectionMenuItem(
-                  value: ExploreFilter.subscribed,
-                  title: type == ExploreType.people
-                      ? l(context).filter_followed
-                      : l(context).filter_subscribed,
-                  icon: Symbols.people_rounded,
-                ),
-              if (type != ExploreType.domains)
-                SelectionMenuItem(
-                  value: ExploreFilter.moderated,
-                  title: type == ExploreType.people
-                      ? l(context).filter_followers
-                      : l(context).filter_moderated,
-                  icon: Symbols.lock_rounded,
-                ),
-              if (context.read<AppController>().serverSoftware ==
-                  ServerSoftware.mbin)
-                SelectionMenuItem(
-                  value: ExploreFilter.blocked,
-                  title: l(context).filter_blocked,
-                  icon: Symbols.block_rounded,
-                ),
-            ]) ??
-            [])
-      ],
-    );
+        if (type != ExploreType.domains)
+          SelectionMenuItem(
+            value: ExploreFilter.moderated,
+            title: type == ExploreType.people
+                ? l(context).filter_followers
+                : l(context).filter_moderated,
+            icon: Symbols.lock_rounded,
+          ),
+        if (context.read<AppController>().serverSoftware == ServerSoftware.mbin)
+          SelectionMenuItem(
+            value: ExploreFilter.blocked,
+            title: l(context).filter_blocked,
+            icon: Symbols.block_rounded,
+          ),
+      ]) ??
+      []),
+]);
 
 SelectionMenu<APIExploreSort> exploreSortSelection(BuildContext context) {
   final options = [
@@ -571,7 +560,8 @@ SelectionMenu<APIExploreSort> exploreSortSelection(BuildContext context) {
   return SelectionMenu(
     l(context).sort,
     APIExploreSort.valuesBySoftware(
-            context.read<AppController>().serverSoftware)
+          context.read<AppController>().serverSoftware,
+        )
         .map((value) => options.firstWhere((option) => option.value == value))
         .toList(),
   );

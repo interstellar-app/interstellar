@@ -42,9 +42,9 @@ class DraftsController with ChangeNotifier {
   }
 
   Future<void> _init() async {
-    _drafts = (await _draftsStore.find(db))
-        .map((record) => Draft.fromJson(record.value))
-        .toList();
+    _drafts = (await _draftsStore.find(
+      db,
+    )).map((record) => Draft.fromJson(record.value)).toList();
 
     notifyListeners();
   }
@@ -102,9 +102,7 @@ class DraftsController with ChangeNotifier {
 
     await _draftsStore.delete(
       db,
-      finder: Finder(
-        filter: Filter.equals('resourceId', resourceId),
-      ),
+      finder: Finder(filter: Filter.equals('resourceId', resourceId)),
     );
   }
 
@@ -113,9 +111,7 @@ class DraftsController with ChangeNotifier {
 
     await _draftsStore.delete(
       db,
-      finder: Finder(
-        filter: Filter.equals('at', at.toIso8601String()),
-      ),
+      finder: Finder(filter: Filter.equals('at', at.toIso8601String())),
     );
   }
 

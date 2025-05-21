@@ -42,8 +42,9 @@ class _RedirectListenerState extends State<RedirectListener> {
   @override
   void initState() {
     if (!isWebViewSupported) {
-      _listenForAuth()
-          .then((value) => Navigator.pop(context, value.queryParameters));
+      _listenForAuth().then(
+        (value) => Navigator.pop(context, value.queryParameters),
+      );
     }
 
     super.initState();

@@ -22,8 +22,9 @@ class DisplayName extends StatelessWidget {
       children: [
         if (icon != null)
           Padding(
-              padding: const EdgeInsets.only(right: 3),
-              child: Avatar(icon!, radius: 14)),
+            padding: const EdgeInsets.only(right: 3),
+            child: Avatar(icon!, radius: 14),
+          ),
         Flexible(
           child: InkWell(
             onTap: onTap,

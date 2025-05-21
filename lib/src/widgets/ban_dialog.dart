@@ -23,11 +23,7 @@ class BanDialog extends StatefulWidget {
   final UserModel user;
   final MagazineModel magazine;
 
-  const BanDialog({
-    required this.user,
-    required this.magazine,
-    super.key,
-  });
+  const BanDialog({required this.user, required this.magazine, super.key});
 
   @override
   State<BanDialog> createState() => _BanDialogState();
@@ -49,7 +45,7 @@ class _BanDialogState extends State<BanDialog> {
             _reasonTextEditingController,
             label: l(context).reason,
             onChanged: (_) => setState(() {}),
-          )
+          ),
         ],
       ),
       actions: [

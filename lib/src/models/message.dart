@@ -13,11 +13,11 @@ class MessageListModel with _$MessageListModel {
   }) = _MessageListModel;
 
   factory MessageListModel.fromMbin(JsonMap json) => MessageListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((post) => MessageThreadModel.fromMbin(post as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    items: (json['items'] as List<dynamic>)
+        .map((post) => MessageThreadModel.fromMbin(post as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 
   factory MessageListModel.fromLemmy(
     JsonMap json,
@@ -42,7 +42,7 @@ class MessageListModel with _$MessageListModel {
           'threadId': threadId,
           'messages': <JsonMap>[],
           'participants': [creator, recipient],
-          'next_page': json['next_page'] as String?
+          'next_page': json['next_page'] as String?,
         };
       }
 
@@ -80,7 +80,7 @@ class MessageListModel with _$MessageListModel {
           'threadId': threadId,
           'messages': <JsonMap>[],
           'participants': [creator, recipient],
-          'next_page': json['next_page'] as String?
+          'next_page': json['next_page'] as String?,
         };
       }
 
@@ -106,44 +106,47 @@ class MessageThreadModel with _$MessageThreadModel {
   }) = _MessageThreadModel;
 
   factory MessageThreadModel.fromMbin(JsonMap json) => MessageThreadModel(
-        id: json['threadId'] as int,
-        participants: (json['participants'] as List<dynamic>)
-            .map((participant) =>
-                DetailedUserModel.fromMbin(participant as JsonMap))
-            .toList(),
-        messages: ((json['messages'] ?? json['items']) as List<dynamic>)
-            .map((message) =>
-                MessageThreadItemModel.fromMbin(message as JsonMap))
-            .toList(),
-        nextPage: json['pagination'] == null
-            ? null
-            : mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    id: json['threadId'] as int,
+    participants: (json['participants'] as List<dynamic>)
+        .map(
+          (participant) => DetailedUserModel.fromMbin(participant as JsonMap),
+        )
+        .toList(),
+    messages: ((json['messages'] ?? json['items']) as List<dynamic>)
+        .map((message) => MessageThreadItemModel.fromMbin(message as JsonMap))
+        .toList(),
+    nextPage: json['pagination'] == null
+        ? null
+        : mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 
   factory MessageThreadModel.fromLemmy(JsonMap json) => MessageThreadModel(
-        id: json['threadId'] as int,
-        participants: (json['participants'] as List<dynamic>)
-            .map((participant) =>
-                DetailedUserModel.fromLemmy({'person': participant as JsonMap}))
-            .toList(),
-        messages: (json['messages'] as List<JsonMap>)
-            .map((message) => MessageThreadItemModel.fromLemmy(message))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+    id: json['threadId'] as int,
+    participants: (json['participants'] as List<dynamic>)
+        .map(
+          (participant) =>
+              DetailedUserModel.fromLemmy({'person': participant as JsonMap}),
+        )
+        .toList(),
+    messages: (json['messages'] as List<JsonMap>)
+        .map((message) => MessageThreadItemModel.fromLemmy(message))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 
   factory MessageThreadModel.fromPiefed(JsonMap json) => MessageThreadModel(
-        id: json['threadId'] as int,
-        participants: (json['participants'] as List<dynamic>)
-            .map((participant) => DetailedUserModel.fromPiefed(
-                {'person': participant as JsonMap}))
-            .toList(),
-        messages: (json['messages'] as List<JsonMap>)
-            .reversed
-            .map((message) => MessageThreadItemModel.fromPiefed(message))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+    id: json['threadId'] as int,
+    participants: (json['participants'] as List<dynamic>)
+        .map(
+          (participant) =>
+              DetailedUserModel.fromPiefed({'person': participant as JsonMap}),
+        )
+        .toList(),
+    messages: (json['messages'] as List<JsonMap>).reversed
+        .map((message) => MessageThreadItemModel.fromPiefed(message))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed

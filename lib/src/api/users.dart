@@ -26,18 +26,16 @@ class APIUsers {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/users${switch (filter) {
-          null || ExploreFilter.all => '',
-          ExploreFilter.subscribed => '/followed',
-          ExploreFilter.moderated => '/followers',
-          ExploreFilter.blocked => '/blocked',
-          _ => throw Exception('Not allowed filter in users request')
-        }}';
+        final path =
+            '/users${switch (filter) {
+              null || ExploreFilter.all => '',
+              ExploreFilter.subscribed => '/followed',
+              ExploreFilter.moderated => '/followers',
+              ExploreFilter.blocked => '/blocked',
+              _ => throw Exception('Not allowed filter in users request'),
+            }}';
 
-        final query = {
-          'p': page,
-          'q': search,
-        };
+        final query = {'p': page, 'q': search};
 
         final response = await client.get(path, queryParams: query);
 
@@ -62,8 +60,10 @@ class APIUsers {
 
         final json = response.bodyJson;
 
-        json['next_page'] =
-            lemmyCalcNextIntPage(json['users'] as List<dynamic>, page);
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['users'] as List<dynamic>,
+          page,
+        );
 
         return DetailedUserListModel.fromLemmy(json);
 
@@ -86,8 +86,10 @@ class APIUsers {
 
         final json = response.bodyJson;
 
-        json['next_page'] =
-            lemmyCalcNextIntPage(json['users'] as List<dynamic>, page);
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['users'] as List<dynamic>,
+          page,
+        );
 
         return DetailedUserListModel.fromPiefed(json);
     }
@@ -109,7 +111,8 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromLemmy(
-            response.bodyJson['person_view'] as JsonMap);
+          response.bodyJson['person_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/user';
@@ -118,7 +121,8 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromPiefed(
-            response.bodyJson['person_view'] as JsonMap);
+          response.bodyJson['person_view'] as JsonMap,
+        );
     }
   }
 
@@ -139,7 +143,8 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromLemmy(
-            response.bodyJson['person_view'] as JsonMap);
+          response.bodyJson['person_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/user';
@@ -148,7 +153,8 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromPiefed(
-            response.bodyJson['person_view'] as JsonMap);
+          response.bodyJson['person_view'] as JsonMap,
+        );
     }
   }
 
@@ -166,23 +172,24 @@ class APIUsers {
 
         final response = await client.get(path);
 
-        return DetailedUserModel.fromLemmy(((response.bodyJson
-            as dynamic)['my_user']['local_user_view']) as JsonMap);
+        return DetailedUserModel.fromLemmy(
+          ((response.bodyJson as dynamic)['my_user']['local_user_view'])
+              as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/site';
 
         final response = await client.get(path);
 
-        return DetailedUserModel.fromPiefed(((response.bodyJson
-            as dynamic)['my_user']['local_user_view']) as JsonMap);
+        return DetailedUserModel.fromPiefed(
+          ((response.bodyJson as dynamic)['my_user']['local_user_view'])
+              as JsonMap,
+        );
     }
   }
 
-  Future<DetailedUserModel> follow(
-    int userId,
-    bool state,
-  ) async {
+  Future<DetailedUserModel> follow(int userId, bool state) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/users/$userId/${state ? 'follow' : 'unfollow'}';
@@ -204,39 +211,27 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/profile';
 
-        final response = await client.put(
-          path,
-          body: {'about': about},
-        );
+        final response = await client.put(path, body: {'about': about});
 
         return DetailedUserModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(
-          path,
-          body: {'bio': about},
-        );
+        final response = await client.put(path, body: {'bio': about});
 
         return null;
 
       case ServerSoftware.piefed:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(
-          path,
-          body: {'bio': about},
-        );
+        final response = await client.put(path, body: {'bio': about});
 
         return null;
     }
   }
 
-  Future<DetailedUserModel> putBlock(
-    int userId,
-    bool state,
-  ) async {
+  Future<DetailedUserModel> putBlock(int userId, bool state) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/users/$userId/${state ? 'block' : 'unblock'}';
@@ -250,24 +245,19 @@ class APIUsers {
 
         final response = await client.post(
           path,
-          body: {
-            'person_id': userId,
-            'block': state,
-          },
+          body: {'person_id': userId, 'block': state},
         );
 
         return DetailedUserModel.fromLemmy(
-            response.bodyJson['person_view'] as JsonMap);
+          response.bodyJson['person_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/user/block';
 
         final response = await client.post(
           path,
-          body: {
-            'person_id': userId,
-            'block': state,
-          },
+          body: {'person_id': userId, 'block': state},
         );
 
         return DetailedUserModel.fromPiefed(
@@ -282,8 +272,10 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/avatar';
 
-        var request = http.MultipartRequest('POST',
-            Uri.https(client.domain, client.software.apiPathPrefix + path));
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, client.software.apiPathPrefix + path),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
@@ -298,8 +290,10 @@ class APIUsers {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request =
-            http.MultipartRequest('POST', Uri.https(client.domain, pictrsPath));
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, pictrsPath),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
@@ -311,16 +305,15 @@ class APIUsers {
 
         final json = jsonDecode(pictrsResponse.body) as JsonMap;
 
-        final imageName = ((json['files'] as List<Object?>).first
-            as JsonMap)['file'] as String?;
+        final imageName =
+            ((json['files'] as List<Object?>).first as JsonMap)['file']
+                as String?;
 
         const path = '/user/save_user_settings';
 
         final response = await client.put(
           path,
-          body: {
-            'avatar': 'https://${client.domain}/pictrs/image/$imageName',
-          },
+          body: {'avatar': 'https://${client.domain}/pictrs/image/$imageName'},
         );
 
         return null;
@@ -341,10 +334,7 @@ class APIUsers {
       case ServerSoftware.lemmy:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(
-          path,
-          body: {'avatar': ''},
-        );
+        final response = await client.put(path, body: {'avatar': ''});
 
         return null;
 
@@ -358,8 +348,10 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/cover';
 
-        var request = http.MultipartRequest('POST',
-            Uri.https(client.domain, client.software.apiPathPrefix + path));
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, client.software.apiPathPrefix + path),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
@@ -374,8 +366,10 @@ class APIUsers {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request =
-            http.MultipartRequest('POST', Uri.https(client.domain, pictrsPath));
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, pictrsPath),
+        );
         var multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
@@ -387,16 +381,15 @@ class APIUsers {
 
         final json = jsonDecode(pictrsResponse.body) as JsonMap;
 
-        final imageName = ((json['files'] as List<Object?>).first
-            as JsonMap)['file'] as String?;
+        final imageName =
+            ((json['files'] as List<Object?>).first as JsonMap)['file']
+                as String?;
 
         const path = '/user/save_user_settings';
 
         final response = await client.put(
           path,
-          body: {
-            'banner': 'https://${client.domain}/pictrs/image/$imageName',
-          },
+          body: {'banner': 'https://${client.domain}/pictrs/image/$imageName'},
         );
 
         return null;
@@ -417,10 +410,7 @@ class APIUsers {
       case ServerSoftware.lemmy:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(
-          path,
-          body: {'banner': ''},
-        );
+        final response = await client.put(path, body: {'banner': ''});
 
         return null;
 
@@ -484,8 +474,11 @@ class APIUsers {
 
         final response = await client.get(path);
 
-        return UserSettings.fromLemmy(((response.bodyJson as dynamic)['my_user']
-            ['local_user_view']['local_user']) as JsonMap);
+        return UserSettings.fromLemmy(
+          ((response.bodyJson
+                  as dynamic)['my_user']['local_user_view']['local_user'])
+              as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/site';
@@ -493,8 +486,10 @@ class APIUsers {
         final response = await client.get(path);
 
         return UserSettings.fromPiefed(
-            ((response.bodyJson as dynamic)['my_user']['local_user_view']
-                ['local_user']) as JsonMap);
+          ((response.bodyJson
+                  as dynamic)['my_user']['local_user_view']['local_user'])
+              as JsonMap,
+        );
     }
   }
 
@@ -502,46 +497,61 @@ class APIUsers {
     switch (client.software) {
       case ServerSoftware.mbin:
         const path = '/users/settings';
-        final response = await client.put(path, body: {
-          'hideAdult': !settings.showNSFW,
-          'showSubscribedUsers': settings.showSubscribedUsers,
-          'showSubscribedMagazines': settings.showSubscribedMagazines,
-          'showSubscribedDomains': settings.showSubscribedDomains,
-          'showProfileSubscriptions': settings.showProfileSubscriptions,
-          'showProfileFollowings': settings.showProfileFollowings,
-          'notifyOnNewEntry': settings.notifyOnNewEntry,
-          'notifyOnNewEntryReply': settings.notifyOnNewEntryReply,
-          'notifyOnNewEntryCommentReply': settings.notifyOnNewEntryCommentReply,
-          'notifyOnNewPost': settings.notifyOnNewPost,
-          'notifyOnNewPostReply': settings.notifyOnNewPostReply,
-          'notifyOnNewPostCommentReply': settings.notifyOnNewPostCommentReply,
-        });
+        final response = await client.put(
+          path,
+          body: {
+            'hideAdult': !settings.showNSFW,
+            'showSubscribedUsers': settings.showSubscribedUsers,
+            'showSubscribedMagazines': settings.showSubscribedMagazines,
+            'showSubscribedDomains': settings.showSubscribedDomains,
+            'showProfileSubscriptions': settings.showProfileSubscriptions,
+            'showProfileFollowings': settings.showProfileFollowings,
+            'notifyOnNewEntry': settings.notifyOnNewEntry,
+            'notifyOnNewEntryReply': settings.notifyOnNewEntryReply,
+            'notifyOnNewEntryCommentReply':
+                settings.notifyOnNewEntryCommentReply,
+            'notifyOnNewPost': settings.notifyOnNewPost,
+            'notifyOnNewPostReply': settings.notifyOnNewPostReply,
+            'notifyOnNewPostCommentReply': settings.notifyOnNewPostCommentReply,
+          },
+        );
 
         return UserSettings.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(path, body: {
-          'show_nsfw': settings.showNSFW,
-          'blur_nsfw': settings.blurNSFW,
-          'show_read_posts': settings.showReadPosts
-        });
+        final response = await client.put(
+          path,
+          body: {
+            'show_nsfw': settings.showNSFW,
+            'blur_nsfw': settings.blurNSFW,
+            'show_read_posts': settings.showReadPosts,
+          },
+        );
 
-        return UserSettings.fromLemmy(((response.bodyJson as dynamic)['my_user']
-            ['local_user_view']['local_user']) as JsonMap);
+        return UserSettings.fromLemmy(
+          ((response.bodyJson
+                  as dynamic)['my_user']['local_user_view']['local_user'])
+              as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(path, body: {
-          'show_nsfw': settings.showNSFW,
-          'show_read_posts': settings.showReadPosts
-        });
+        final response = await client.put(
+          path,
+          body: {
+            'show_nsfw': settings.showNSFW,
+            'show_read_posts': settings.showReadPosts,
+          },
+        );
 
         return UserSettings.fromPiefed(
-            ((response.bodyJson as dynamic)['my_user']['local_user_view']
-                ['local_user']) as JsonMap);
+          ((response.bodyJson
+                  as dynamic)['my_user']['local_user_view']['local_user'])
+              as JsonMap,
+        );
     }
   }
 }

@@ -88,7 +88,8 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
       notificationControlStatus: json['notificationStatus'] == null
           ? null
           : NotificationControlStatus.fromJson(
-              json['notificationStatus'] as String),
+              json['notificationStatus'] as String,
+            ),
     );
 
     magazineMentionCache[magazine.name] = magazine;
@@ -138,13 +139,17 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
       icon: lemmyGetOptionalImage(piefedCommunity['icon'] as String?),
       description: piefedCommunity['description'] as String?,
       owner: ((json['moderators'] ?? []) as List<dynamic>)
-          .map((user) =>
-              UserModel.fromPiefed((user as JsonMap)['moderator'] as JsonMap))
+          .map(
+            (user) =>
+                UserModel.fromPiefed((user as JsonMap)['moderator'] as JsonMap),
+          )
           .toList()
           .firstOrNull,
       moderators: ((json['moderators'] ?? []) as List<dynamic>)
-          .map((user) =>
-              UserModel.fromPiefed((user as JsonMap)['moderator'] as JsonMap))
+          .map(
+            (user) =>
+                UserModel.fromPiefed((user as JsonMap)['moderator'] as JsonMap),
+          )
           .toList(),
       subscriptionsCount: piefedCounts['subscriptions_count'] as int,
       threadCount: piefedCounts['post_count'] as int,
@@ -160,8 +165,8 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
       notificationControlStatus: communityView['activity_alert'] == null
           ? null
           : communityView['activity_alert'] as bool
-              ? NotificationControlStatus.loud
-              : NotificationControlStatus.default_,
+          ? NotificationControlStatus.loud
+          : NotificationControlStatus.default_,
     );
 
     magazineMentionCache[magazine.name] = magazine;
@@ -179,22 +184,22 @@ class MagazineModel with _$MagazineModel {
   }) = _MagazineModel;
 
   factory MagazineModel.fromMbin(JsonMap json) => MagazineModel(
-        id: json['magazineId'] as int,
-        name: json['name'] as String,
-        icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
-      );
+    id: json['magazineId'] as int,
+    name: json['name'] as String,
+    icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
+  );
 
   factory MagazineModel.fromLemmy(JsonMap json) => MagazineModel(
-        id: json['id'] as int,
-        name: getLemmyPiefedActorName(json),
-        icon: lemmyGetOptionalImage(json['icon'] as String?),
-      );
+    id: json['id'] as int,
+    name: getLemmyPiefedActorName(json),
+    icon: lemmyGetOptionalImage(json['icon'] as String?),
+  );
 
   factory MagazineModel.fromPiefed(JsonMap json) => MagazineModel(
-        id: json['id'] as int,
-        name: getLemmyPiefedActorName(json),
-        icon: lemmyGetOptionalImage(json['icon'] as String?),
-      );
+    id: json['id'] as int,
+    name: getLemmyPiefedActorName(json),
+    icon: lemmyGetOptionalImage(json['icon'] as String?),
+  );
 }
 
 @freezed
@@ -205,11 +210,11 @@ class MagazineBanListModel with _$MagazineBanListModel {
   }) = _MagazineBanListModel;
 
   factory MagazineBanListModel.fromMbin(JsonMap json) => MagazineBanListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((item) => MagazineBanModel.fromMbin(item as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    items: (json['items'] as List<dynamic>)
+        .map((item) => MagazineBanModel.fromMbin(item as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 }
 
 @freezed
@@ -225,12 +230,12 @@ class MagazineBanModel with _$MagazineBanModel {
   }) = _MagazineBanModel;
 
   factory MagazineBanModel.fromMbin(JsonMap json) => MagazineBanModel(
-        id: json['banId'] as int,
-        reason: json['reason'] as String?,
-        expiresAt: optionalDateTime(json['expiresAt'] as String?),
-        magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
-        bannedUser: UserModel.fromMbin(json['bannedUser'] as JsonMap),
-        bannedBy: UserModel.fromMbin(json['bannedBy'] as JsonMap),
-        expired: json['expired'] as bool,
-      );
+    id: json['banId'] as int,
+    reason: json['reason'] as String?,
+    expiresAt: optionalDateTime(json['expiresAt'] as String?),
+    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    bannedUser: UserModel.fromMbin(json['bannedUser'] as JsonMap),
+    bannedBy: UserModel.fromMbin(json['bannedBy'] as JsonMap),
+    expired: json['expired'] as bool,
+  );
 }

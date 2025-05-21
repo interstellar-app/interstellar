@@ -22,37 +22,34 @@ class UserItemSimple extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => UserScreen(user.id),
-          ),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => UserScreen(user.id)));
       },
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Row(children: [
-          if (user.avatar != null)
-            Avatar(
-              user.avatar,
-              radius: 16,
+        child: Row(
+          children: [
+            if (user.avatar != null) Avatar(user.avatar, radius: 16),
+            Container(width: 8 + (user.avatar != null ? 0 : 32)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: isOwner ? FontWeight.bold : null,
+                    ),
+                  ),
+                  if (isOwner) Text(l(context).owner),
+                ],
+              ),
             ),
-          Container(width: 8 + (user.avatar != null ? 0 : 32)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  user.name,
-                  overflow: TextOverflow.ellipsis,
-                  style:
-                      TextStyle(fontWeight: isOwner ? FontWeight.bold : null),
-                ),
-                if (isOwner) Text(l(context).owner),
-              ],
-            ),
-          ),
-          ...trailingWidgets ?? []
-        ]),
+            ...trailingWidgets ?? [],
+          ],
+        ),
       ),
     );
   }

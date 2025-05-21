@@ -8,10 +8,7 @@ class APIMessages {
 
   APIMessages(this.client);
 
-  Future<MessageListModel> list({
-    int? myUserId,
-    String? page,
-  }) async {
+  Future<MessageListModel> list({int? myUserId, String? page}) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         const path = '/messages';
@@ -23,35 +20,31 @@ class APIMessages {
 
       case ServerSoftware.lemmy:
         const path = '/private_message/list';
-        final query = {
-          'unread_only': 'false',
-          'page': page,
-          'limit': '20',
-        };
+        final query = {'unread_only': 'false', 'page': page, 'limit': '20'};
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-            json['private_messages'] as List<dynamic>, page);
+          json['private_messages'] as List<dynamic>,
+          page,
+        );
 
         return MessageListModel.fromLemmy(json, myUserId!);
 
       case ServerSoftware.piefed:
         const path = '/private_message/list';
-        final query = {
-          'unread_only': 'false',
-          'page': page,
-          'limit': '20',
-        };
+        final query = {'unread_only': 'false', 'page': page, 'limit': '20'};
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-            json['private_messages'] as List<dynamic>, page);
+          json['private_messages'] as List<dynamic>,
+          page,
+        );
 
         return MessageListModel.fromPiefed(json, myUserId!);
     }
@@ -76,17 +69,15 @@ class APIMessages {
 
       case ServerSoftware.lemmy:
         const path = '/private_message/list';
-        final query = {
-          'unread_only': 'false',
-          'page': page,
-          'limit': '20',
-        };
+        final query = {'unread_only': 'false', 'page': page, 'limit': '20'};
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
         final nextPage = lemmyCalcNextIntPage(
-            json['private_messages'] as List<dynamic>, page);
+          json['private_messages'] as List<dynamic>,
+          page,
+        );
         json['next_page'] = nextPage;
 
         return MessageListModel.fromLemmy(
@@ -99,23 +90,19 @@ class APIMessages {
               participants: [],
               messages: [],
               nextPage: null,
-            ).copyWith(
-              nextPage: nextPage,
-            );
+            ).copyWith(nextPage: nextPage);
 
       case ServerSoftware.piefed:
         const path = '/private_message/list';
-        final query = {
-          'unread_only': 'false',
-          'page': page,
-          'limit': '20',
-        };
+        final query = {'unread_only': 'false', 'page': page, 'limit': '20'};
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
         final nextPage = lemmyCalcNextIntPage(
-            json['private_messages'] as List<dynamic>, page);
+          json['private_messages'] as List<dynamic>,
+          page,
+        );
         json['next_page'] = nextPage;
 
         return (MessageListModel.fromPiefed(
@@ -129,24 +116,16 @@ class APIMessages {
                   messages: [],
                   nextPage: null,
                 ))
-            .copyWith(
-          nextPage: nextPage,
-        );
+            .copyWith(nextPage: nextPage);
     }
   }
 
-  Future<MessageThreadModel> create(
-    int userId,
-    String body,
-  ) async {
+  Future<MessageThreadModel> create(int userId, String body) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/users/$userId/message';
 
-        final response = await client.post(
-          path,
-          body: {'body': body},
-        );
+        final response = await client.post(path, body: {'body': body});
 
         return MessageThreadModel.fromMbin(response.bodyJson);
 
@@ -155,17 +134,14 @@ class APIMessages {
 
         final response = await client.post(
           path,
-          body: {
-            'recipient_id': userId,
-            'content': body,
-          },
+          body: {'recipient_id': userId, 'content': body},
         );
 
         final json = response.bodyJson;
 
         return MessageListModel.fromLemmy(
           {
-            'private_messages': [json['private_message_view']]
+            'private_messages': [json['private_message_view']],
           },
           (json as dynamic)['private_message_view']['creator']['id'] as int,
         ).items.first;
@@ -183,10 +159,7 @@ class APIMessages {
       case ServerSoftware.mbin:
         final path = '/messages/thread/$threadId/reply';
 
-        final response = await client.post(
-          path,
-          body: {'body': body},
-        );
+        final response = await client.post(path, body: {'body': body});
 
         return MessageThreadModel.fromMbin(response.bodyJson);
 

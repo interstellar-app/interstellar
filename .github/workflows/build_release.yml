@@ -93,7 +93,7 @@ jobs:
         with:
           # Use master until Flutter action is fixed for arm (https://github.com/subosito/flutter-action/issues/345)
           channel: ${{ matrix.target == 'linux-aarch64' && 'master' || 'stable' }}
-          flutter-version: 3.29.3
+          flutter-version: 3.32.0
 
       - name: Checkout code
         uses: actions/checkout@v4

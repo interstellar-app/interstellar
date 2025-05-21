@@ -33,9 +33,7 @@ class SpoilerMarkdownSyntax extends md.BlockSyntax {
     }
 
     final md.Node spoiler = md.Element('p', [
-      md.Element('spoiler', [
-        md.Text('$title\n${body.join('\n')}'),
-      ]),
+      md.Element('spoiler', [md.Text('$title\n${body.join('\n')}')]),
     ]);
 
     return spoiler;
@@ -80,8 +78,9 @@ class SpoilerWidget extends StatefulWidget {
 }
 
 class _SpoilerWidgetState extends State<SpoilerWidget> {
-  final ExpandableController controller =
-      ExpandableController(initialExpanded: false);
+  final ExpandableController controller = ExpandableController(
+    initialExpanded: false,
+  );
 
   @override
   Widget build(BuildContext context) {

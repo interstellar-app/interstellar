@@ -16,23 +16,24 @@ class BehaviorSettingsScreen extends StatelessWidget {
 
     final customLanguageFilterEnabled =
         ac.serverSoftware == ServerSoftware.mbin &&
-            !ac.profile.useAccountLanguageFilter;
+        !ac.profile.useAccountLanguageFilter;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_behavior),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_behavior)),
       body: ListView(
         children: [
           ListTile(
             leading: const Icon(Symbols.translate_rounded),
             title: Text(l(context).settings_defaultPostLanguage),
-            subtitle:
-                Text(getLanguageName(context, ac.profile.defaultPostLanguage)),
+            subtitle: Text(
+              getLanguageName(context, ac.profile.defaultPostLanguage),
+            ),
             onTap: () async {
               final langCode = await languageSelectionMenu(context)
                   .askSelection(
-                      context, ac.selectedProfileValue.defaultPostLanguage);
+                    context,
+                    ac.selectedProfileValue.defaultPostLanguage,
+                  );
 
               if (langCode == null) return;
 
@@ -49,9 +50,10 @@ class BehaviorSettingsScreen extends StatelessWidget {
             onChanged: ac.serverSoftware != ServerSoftware.mbin
                 ? null
                 : (newValue) => ac.updateProfile(
-                      ac.selectedProfileValue
-                          .copyWith(useAccountLanguageFilter: newValue),
+                    ac.selectedProfileValue.copyWith(
+                      useAccountLanguageFilter: newValue,
                     ),
+                  ),
           ),
           Row(
             children: [
@@ -60,9 +62,10 @@ class BehaviorSettingsScreen extends StatelessWidget {
                 child: Text(
                   l(context).settings_customLanguageFilter,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: customLanguageFilterEnabled
-                          ? null
-                          : Theme.of(context).disabledColor),
+                    color: customLanguageFilterEnabled
+                        ? null
+                        : Theme.of(context).disabledColor,
+                  ),
                 ),
               ),
               Flexible(
@@ -75,15 +78,18 @@ class BehaviorSettingsScreen extends StatelessWidget {
                           isEnabled: customLanguageFilterEnabled,
                           label: Text(getLanguageName(context, langCode)),
                           onDeleted: () async {
-                            final newLanguageFilter =
-                                ac.profile.customLanguageFilter.toSet();
+                            final newLanguageFilter = ac
+                                .profile
+                                .customLanguageFilter
+                                .toSet();
 
                             newLanguageFilter.remove(langCode);
 
                             ac.updateProfile(
                               ac.selectedProfileValue.copyWith(
-                                  customLanguageFilter:
-                                      newLanguageFilter.toList()),
+                                customLanguageFilter: newLanguageFilter
+                                    .toList(),
+                              ),
                             );
                           },
                         ),
@@ -95,29 +101,32 @@ class BehaviorSettingsScreen extends StatelessWidget {
                         onPressed: !customLanguageFilterEnabled
                             ? null
                             : () async {
-                                final langCode =
-                                    await languageSelectionMenu(context)
-                                        .askSelection(context, null);
+                                final langCode = await languageSelectionMenu(
+                                  context,
+                                ).askSelection(context, null);
 
                                 if (langCode == null) return;
 
-                                final newLanguageFilter =
-                                    ac.profile.customLanguageFilter.toSet();
+                                final newLanguageFilter = ac
+                                    .profile
+                                    .customLanguageFilter
+                                    .toSet();
 
                                 newLanguageFilter.add(langCode);
 
                                 ac.updateProfile(
                                   ac.selectedProfileValue.copyWith(
-                                      customLanguageFilter:
-                                          newLanguageFilter.toList()),
+                                    customLanguageFilter: newLanguageFilter
+                                        .toList(),
+                                  ),
                                 );
                               },
                         icon: const Icon(Icons.add),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           ListTileSwitch(
@@ -133,8 +142,9 @@ class BehaviorSettingsScreen extends StatelessWidget {
             title: Text(l(context).settings_askBeforeUnsubscribing),
             value: ac.profile.askBeforeUnsubscribing,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue
-                  .copyWith(askBeforeUnsubscribing: newValue),
+              ac.selectedProfileValue.copyWith(
+                askBeforeUnsubscribing: newValue,
+              ),
             ),
           ),
           ListTileSwitch(
@@ -150,35 +160,44 @@ class BehaviorSettingsScreen extends StatelessWidget {
             title: Text(l(context).settings_autoPlayVideos),
             value: ac.profile.autoPlayVideos,
             onChanged: (newValue) => ac.updateProfile(
-                ac.selectedProfileValue.copyWith(autoPlayVideos: newValue)),
+              ac.selectedProfileValue.copyWith(autoPlayVideos: newValue),
+            ),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.vibration_rounded),
             title: Text(l(context).settings_hapticFeedback),
             value: ac.profile.hapticFeedback,
             onChanged: (newValue) => ac.updateProfile(
-                ac.selectedProfileValue.copyWith(hapticFeedback: newValue)),
+              ac.selectedProfileValue.copyWith(hapticFeedback: newValue),
+            ),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.translate_rounded),
             title: Text(l(context).settings_autoTranslate),
             value: ac.profile.autoTranslate,
             onChanged: (newValue) => ac.updateProfile(
-                ac.selectedProfileValue.copyWith(autoTranslate: newValue)),
+              ac.selectedProfileValue.copyWith(autoTranslate: newValue),
+            ),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.playlist_add_check_rounded),
             title: Text(l(context).settings_markThreadsReadOnScroll),
             value: ac.profile.markThreadsReadOnScroll,
-            onChanged: (newValue) => ac.updateProfile(ac.selectedProfileValue
-                .copyWith(markThreadsReadOnScroll: newValue)),
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                markThreadsReadOnScroll: newValue,
+              ),
+            ),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.playlist_add_check_rounded),
             title: Text(l(context).settings_markMicroblogsReadOnScroll),
             value: ac.profile.markMicroblogsReadOnScroll,
-            onChanged: (newValue) => ac.updateProfile(ac.selectedProfileValue
-                .copyWith(markMicroblogsReadOnScroll: newValue)),
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                markMicroblogsReadOnScroll: newValue,
+              ),
+            ),
           ),
         ],
       ),

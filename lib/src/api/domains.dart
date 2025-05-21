@@ -12,16 +12,17 @@ class MbinAPIDomains {
     ExploreFilter? filter,
     String? search,
   }) async {
-    final path = '/domains${switch (filter) {
-      null || ExploreFilter.all => '',
-      ExploreFilter.subscribed => '/subscribed',
-      ExploreFilter.blocked => '/blocked',
-      _ => throw Exception('Not allowed filter in domains request')
-    }}';
+    final path =
+        '/domains${switch (filter) {
+          null || ExploreFilter.all => '',
+          ExploreFilter.subscribed => '/subscribed',
+          ExploreFilter.blocked => '/blocked',
+          _ => throw Exception('Not allowed filter in domains request'),
+        }}';
 
     final query = {
       'p': page,
-      if (filter == null || filter == ExploreFilter.all) 'q': search
+      if (filter == null || filter == ExploreFilter.all) 'q': search,
     };
 
     final response = await client.get(path, queryParams: query);

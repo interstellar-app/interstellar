@@ -37,10 +37,10 @@ class _NavDrawerState extends State<NavDrawer> {
           .magazines
           .list(filter: ExploreFilter.subscribed)
           .then((value) {
-        if (mounted && value.items.isNotEmpty) {
-          setState(() => subbedMagazines = value.items);
-        }
-      });
+            if (mounted && value.items.isNotEmpty) {
+              setState(() => subbedMagazines = value.items);
+            }
+          });
       if (context.read<AppController>().serverSoftware == ServerSoftware.mbin) {
         context
             .read<AppController>()
@@ -48,20 +48,20 @@ class _NavDrawerState extends State<NavDrawer> {
             .users
             .list(filter: ExploreFilter.subscribed)
             .then((value) {
-          if (mounted && value.items.isNotEmpty) {
-            setState(() => subbedUsers = value.items);
-          }
-        });
+              if (mounted && value.items.isNotEmpty) {
+                setState(() => subbedUsers = value.items);
+              }
+            });
         context
             .read<AppController>()
             .api
             .domains
             .list(filter: ExploreFilter.subscribed)
             .then((value) {
-          if (mounted && value.items.isNotEmpty) {
-            setState(() => subbedDomains = value.items);
-          }
-        });
+              if (mounted && value.items.isNotEmpty) {
+                setState(() => subbedDomains = value.items);
+              }
+            });
       }
     }
   }
@@ -90,8 +90,9 @@ class _NavDrawerState extends State<NavDrawer> {
                 title: Text(star),
                 onTap: () async {
                   String name = star.substring(1);
-                  if (name
-                      .endsWith(context.read<AppController>().instanceHost)) {
+                  if (name.endsWith(
+                    context.read<AppController>().instanceHost,
+                  )) {
                     name = name.split('@').first;
                   }
 
@@ -140,9 +141,7 @@ class _NavDrawerState extends State<NavDrawer> {
                 subbedDomains == null)
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                ],
+                children: [CircularProgressIndicator()],
               ),
             if (context.watch<AppController>().isLoggedIn &&
                 (subbedMagazines != null ||
@@ -163,9 +162,11 @@ class _NavDrawerState extends State<NavDrawer> {
                           leading: magazine.icon == null
                               ? null
                               : Avatar(magazine.icon, radius: 16),
-                          trailing: StarButton(magazine.name.contains('@')
-                              ? '!${magazine.name}'
-                              : '!${magazine.name}@${context.watch<AppController>().instanceHost}'),
+                          trailing: StarButton(
+                            magazine.name.contains('@')
+                                ? '!${magazine.name}'
+                                : '!${magazine.name}@${context.watch<AppController>().instanceHost}',
+                          ),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
@@ -213,9 +214,11 @@ class _NavDrawerState extends State<NavDrawer> {
                         leading: user.avatar == null
                             ? null
                             : Avatar(user.avatar, radius: 16),
-                        trailing: StarButton(user.name.contains('@')
-                            ? '@${user.name}'
-                            : '@${user.name}@${context.watch<AppController>().instanceHost}'),
+                        trailing: StarButton(
+                          user.name.contains('@')
+                              ? '@${user.name}'
+                              : '@${user.name}@${context.watch<AppController>().instanceHost}',
+                        ),
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -240,9 +243,8 @@ class _NavDrawerState extends State<NavDrawer> {
                 child: TextButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const ExploreScreen(
-                        subOnlyMode: ExploreType.people,
-                      ),
+                      builder: (context) =>
+                          const ExploreScreen(subOnlyMode: ExploreType.people),
                     ),
                   ),
                   child: Text(l(context).subscriptions_user_all),
@@ -283,9 +285,8 @@ class _NavDrawerState extends State<NavDrawer> {
                 child: TextButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const ExploreScreen(
-                        subOnlyMode: ExploreType.domains,
-                      ),
+                      builder: (context) =>
+                          const ExploreScreen(subOnlyMode: ExploreType.domains),
                     ),
                   ),
                   child: Text(l(context).subscriptions_domain_all),

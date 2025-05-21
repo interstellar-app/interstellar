@@ -31,14 +31,17 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
-    final step1Complete = _sourceAccount != null &&
+    final step1Complete =
+        _sourceAccount != null &&
         _destinationAccount != null &&
         _sourceAccount != _destinationAccount;
 
-    final sourceIsMbin = _sourceAccount != null &&
+    final sourceIsMbin =
+        _sourceAccount != null &&
         ac.servers[_sourceAccount!.split('@').last]!.software ==
             ServerSoftware.mbin;
-    final bothAccountsMbin = sourceIsMbin &&
+    final bothAccountsMbin =
+        sourceIsMbin &&
         _destinationAccount != null &&
         ac.servers[_destinationAccount!.split('@').last]!.software ==
             ServerSoftware.mbin;
@@ -63,8 +66,10 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         if (_migrateMagazineSubscriptions.enabled) {
           String? nextPage;
           do {
-            final res = await sourceAPI.magazines
-                .list(page: nextPage, filter: ExploreFilter.subscribed);
+            final res = await sourceAPI.magazines.list(
+              page: nextPage,
+              filter: ExploreFilter.subscribed,
+            );
 
             _migrateMagazineSubscriptions.found.addAll(
               res.items.map((e) => normalizeName(e.name, sourceAccountHost)),
@@ -77,8 +82,10 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         if (_migrateMagazineBlocks.enabled && sourceIsMbin) {
           String? nextPage;
           do {
-            final res = await sourceAPI.magazines
-                .list(page: nextPage, filter: ExploreFilter.blocked);
+            final res = await sourceAPI.magazines.list(
+              page: nextPage,
+              filter: ExploreFilter.blocked,
+            );
 
             _migrateMagazineBlocks.found.addAll(
               res.items.map((e) => normalizeName(e.name, sourceAccountHost)),
@@ -91,8 +98,10 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         if (_migrateUserFollows.enabled && bothAccountsMbin) {
           String? nextPage;
           do {
-            final res = await sourceAPI.users
-                .list(page: nextPage, filter: ExploreFilter.subscribed);
+            final res = await sourceAPI.users.list(
+              page: nextPage,
+              filter: ExploreFilter.subscribed,
+            );
 
             _migrateUserFollows.found.addAll(
               res.items.map((e) => normalizeName(e.name, sourceAccountHost)),
@@ -105,8 +114,10 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         if (_migrateUserBlocks.enabled && sourceIsMbin) {
           String? nextPage;
           do {
-            final res = await sourceAPI.users
-                .list(page: nextPage, filter: ExploreFilter.blocked);
+            final res = await sourceAPI.users.list(
+              page: nextPage,
+              filter: ExploreFilter.blocked,
+            );
 
             _migrateUserBlocks.found.addAll(
               res.items.map((e) => normalizeName(e.name, sourceAccountHost)),
@@ -124,8 +135,9 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         final destAccountHost = _destinationAccount!.split('@').last;
         for (var item in _migrateMagazineSubscriptions.found) {
           try {
-            final res = await destAPI.magazines
-                .getByName(denormalizeName(item, destAccountHost));
+            final res = await destAPI.magazines.getByName(
+              denormalizeName(item, destAccountHost),
+            );
             if (res.isUserSubscribed == false) {
               await destAPI.magazines.subscribe(res.id, true);
             }
@@ -137,8 +149,9 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         }
         for (var item in _migrateMagazineBlocks.found) {
           try {
-            final res = await destAPI.magazines
-                .getByName(denormalizeName(item, destAccountHost));
+            final res = await destAPI.magazines.getByName(
+              denormalizeName(item, destAccountHost),
+            );
             if (res.isBlockedByUser == false) {
               await destAPI.magazines.block(res.id, true);
             }
@@ -150,8 +163,9 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         }
         for (var item in _migrateUserFollows.found) {
           try {
-            final res = await destAPI.users
-                .getByName(denormalizeName(item, destAccountHost));
+            final res = await destAPI.users.getByName(
+              denormalizeName(item, destAccountHost),
+            );
             if (res.isFollowedByUser == false) {
               await destAPI.users.follow(res.id, true);
             }
@@ -163,8 +177,9 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         }
         for (var item in _migrateUserBlocks.found) {
           try {
-            final res = await destAPI.users
-                .getByName(denormalizeName(item, destAccountHost));
+            final res = await destAPI.users.getByName(
+              denormalizeName(item, destAccountHost),
+            );
             if (res.isBlockedByUser == false) {
               await destAPI.users.putBlock(res.id, true);
             }
@@ -186,12 +201,10 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_accountMigration),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_accountMigration)),
       body: ListView(
-          children: switch (_migrationProgress) {
-        MigrationOrResetProgress.pending => [
+        children: switch (_migrationProgress) {
+          MigrationOrResetProgress.pending => [
             Stepper(
               currentStep: _index,
               onStepCancel: _index > 0
@@ -222,14 +235,15 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                   state: _sourceAccount == null || _destinationAccount == null
                       ? StepState.editing
                       : _sourceAccount == _destinationAccount
-                          ? StepState.error
-                          : StepState.complete,
+                      ? StepState.error
+                      : StepState.complete,
                   title: Text(l(context).settings_accountMigration_step1),
                   content: Column(
                     children: [
                       ListTile(
                         title: Text(
-                            l(context).settings_accountMigration_step1_source),
+                          l(context).settings_accountMigration_step1_source,
+                        ),
                         subtitle: _sourceAccount == null
                             ? null
                             : Text(_sourceAccount!),
@@ -252,22 +266,25 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                         },
                       ),
                       ListTile(
-                        title: Text(l(context)
-                            .settings_accountMigration_step1_destination),
+                        title: Text(
+                          l(
+                            context,
+                          ).settings_accountMigration_step1_destination,
+                        ),
                         subtitle: _destinationAccount == null
                             ? null
                             : Text(_destinationAccount!),
                         onTap: () async {
                           final newDestinationAccount =
                               await showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AccountSelectWidget(
-                                oldAccount: _destinationAccount ?? '',
-                                onlyNonGuestAccounts: true,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AccountSelectWidget(
+                                    oldAccount: _destinationAccount ?? '',
+                                    onlyNonGuestAccounts: true,
+                                  );
+                                },
                               );
-                            },
-                          );
 
                           if (newDestinationAccount == null) return;
 
@@ -285,50 +302,62 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                   content: Column(
                     children: [
                       CheckboxListTile(
-                        title: Text(l(context)
-                            .settings_accountMigration_step2_migrateMagazineSubscriptions),
+                        title: Text(
+                          l(
+                            context,
+                          ).settings_accountMigration_step2_migrateMagazineSubscriptions,
+                        ),
                         value: _migrateMagazineSubscriptions.enabled,
                         onChanged: (value) => {
                           if (value != null)
                             setState(() {
                               _migrateMagazineSubscriptions.enabled = value;
-                            })
+                            }),
                         },
                       ),
                       if (sourceIsMbin)
                         CheckboxListTile(
-                          title: Text(l(context)
-                              .settings_accountMigration_step2_migrateMagazineBlocks),
+                          title: Text(
+                            l(
+                              context,
+                            ).settings_accountMigration_step2_migrateMagazineBlocks,
+                          ),
                           value: _migrateMagazineBlocks.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
                                 _migrateMagazineBlocks.enabled = value;
-                              })
+                              }),
                           },
                         ),
                       if (bothAccountsMbin)
                         CheckboxListTile(
-                          title: Text(l(context)
-                              .settings_accountMigration_step2_migrateUserFollows),
+                          title: Text(
+                            l(
+                              context,
+                            ).settings_accountMigration_step2_migrateUserFollows,
+                          ),
                           value: _migrateUserFollows.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
                                 _migrateUserFollows.enabled = value;
-                              })
+                              }),
                           },
                         ),
                       if (sourceIsMbin)
                         CheckboxListTile(
-                          title: Text(l(context)
-                              .settings_accountMigration_step2_migrateUserBlocks),
+                          title: Text(
+                            l(
+                              context,
+                            ).settings_accountMigration_step2_migrateUserBlocks,
+                          ),
                           value: _migrateUserBlocks.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
                                 _migrateUserBlocks.enabled = value;
-                              })
+                              }),
                           },
                         ),
                     ],
@@ -337,37 +366,39 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                 Step(
                   state: step1Complete ? StepState.indexed : StepState.disabled,
                   title: Text(l(context).settings_accountMigration_step3),
-                  content: const Row(
-                    children: [],
-                  ),
+                  content: const Row(children: []),
                 ),
               ],
             ),
           ],
-        MigrationOrResetProgress.readingSource => [
+          MigrationOrResetProgress.readingSource => [
             const LinearProgressIndicator(),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   Text(l(context).settings_accountMigration_readingFromSource),
-                  Text(l(context).settings_accountMigration_foundXItems(
+                  Text(
+                    l(context).settings_accountMigration_foundXItems(
                       _migrateMagazineSubscriptions.found.length +
                           _migrateMagazineBlocks.found.length +
                           _migrateUserFollows.found.length +
-                          _migrateUserBlocks.found.length)),
+                          _migrateUserBlocks.found.length,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
-        MigrationOrResetProgress.writingDestination => [
+          MigrationOrResetProgress.writingDestination => [
             const LinearProgressIndicator(),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   Text(l(context).settings_accountMigration_readingFromSource),
-                  Text(l(context).settings_accountMigration_completeXItems(
+                  Text(
+                    l(context).settings_accountMigration_completeXItems(
                       _migrateMagazineSubscriptions.complete.length +
                           _migrateMagazineBlocks.complete.length +
                           _migrateUserFollows.complete.length +
@@ -375,8 +406,11 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                       _migrateMagazineSubscriptions.found.length +
                           _migrateMagazineBlocks.found.length +
                           _migrateUserFollows.found.length +
-                          _migrateUserBlocks.found.length)),
-                  Text(l(context).settings_accountMigration_failedXItems(
+                          _migrateUserBlocks.found.length,
+                    ),
+                  ),
+                  Text(
+                    l(context).settings_accountMigration_failedXItems(
                       _migrateMagazineSubscriptions.failed.length +
                           _migrateMagazineBlocks.failed.length +
                           _migrateUserFollows.failed.length +
@@ -384,18 +418,21 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                       _migrateMagazineSubscriptions.found.length +
                           _migrateMagazineBlocks.found.length +
                           _migrateUserFollows.found.length +
-                          _migrateUserBlocks.found.length)),
+                          _migrateUserBlocks.found.length,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
-        MigrationOrResetProgress.complete => [
+          MigrationOrResetProgress.complete => [
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   Text(l(context).settings_accountMigration_complete),
-                  Text(l(context).settings_accountMigration_completeXItems(
+                  Text(
+                    l(context).settings_accountMigration_completeXItems(
                       _migrateMagazineSubscriptions.complete.length +
                           _migrateMagazineBlocks.complete.length +
                           _migrateUserFollows.complete.length +
@@ -403,8 +440,11 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                       _migrateMagazineSubscriptions.found.length +
                           _migrateMagazineBlocks.found.length +
                           _migrateUserFollows.found.length +
-                          _migrateUserBlocks.found.length)),
-                  Text(l(context).settings_accountMigration_failedXItems(
+                          _migrateUserBlocks.found.length,
+                    ),
+                  ),
+                  Text(
+                    l(context).settings_accountMigration_failedXItems(
                       _migrateMagazineSubscriptions.failed.length +
                           _migrateMagazineBlocks.failed.length +
                           _migrateUserFollows.failed.length +
@@ -412,22 +452,23 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                       _migrateMagazineSubscriptions.found.length +
                           _migrateMagazineBlocks.found.length +
                           _migrateUserFollows.found.length +
-                          _migrateUserBlocks.found.length)),
+                          _migrateUserBlocks.found.length,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
-        MigrationOrResetProgress.failed => [
+          MigrationOrResetProgress.failed => [
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
-                children: [
-                  Text(l(context).settings_accountMigration_failed),
-                ],
+                children: [Text(l(context).settings_accountMigration_failed)],
               ),
-            )
+            ),
           ],
-      }),
+        },
+      ),
     );
   }
 }

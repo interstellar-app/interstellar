@@ -4,11 +4,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'filter_list.freezed.dart';
 part 'filter_list.g.dart';
 
-enum FilterListMatchMode {
-  simple,
-  wholeWords,
-  regex,
-}
+enum FilterListMatchMode { simple, wholeWords, regex }
 
 @freezed
 class FilterList with _$FilterList {
@@ -56,10 +52,7 @@ class FilterList with _$FilterList {
         return false;
       case FilterListMatchMode.regex:
         for (var phrase in phrases) {
-          if (RegExp(
-            phrase,
-            caseSensitive: caseSensitive,
-          ).hasMatch(input)) {
+          if (RegExp(phrase, caseSensitive: caseSensitive).hasMatch(input)) {
             return true;
           }
         }

@@ -10,13 +10,7 @@ import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-enum CommentSort {
-  hot,
-  top,
-  newest,
-  active,
-  oldest,
-}
+enum CommentSort { hot, top, newest, active, oldest }
 
 const Map<CommentSort, String> lemmyCommentSortMap = {
   CommentSort.active: 'Controversial',
@@ -27,45 +21,37 @@ const Map<CommentSort, String> lemmyCommentSortMap = {
 };
 
 SelectionMenu<CommentSort> commentSortSelect(BuildContext context) =>
-    SelectionMenu(
-      l(context).sortComments,
-      [
+    SelectionMenu(l(context).sortComments, [
+      SelectionMenuItem(
+        value: CommentSort.hot,
+        title: l(context).sort_hot,
+        icon: Symbols.local_fire_department_rounded,
+      ),
+      SelectionMenuItem(
+        value: CommentSort.top,
+        title: l(context).sort_top,
+        icon: Symbols.trending_up_rounded,
+      ),
+      SelectionMenuItem(
+        value: CommentSort.newest,
+        title: l(context).sort_newest,
+        icon: Symbols.nest_eco_leaf_rounded,
+      ),
+      if (context.read<AppController>().serverSoftware != ServerSoftware.piefed)
         SelectionMenuItem(
-          value: CommentSort.hot,
-          title: l(context).sort_hot,
-          icon: Symbols.local_fire_department_rounded,
+          value: CommentSort.active,
+          title: l(context).sort_active,
+          icon: Symbols.rocket_launch_rounded,
         ),
+      if (context.read<AppController>().serverSoftware != ServerSoftware.piefed)
         SelectionMenuItem(
-          value: CommentSort.top,
-          title: l(context).sort_top,
-          icon: Symbols.trending_up_rounded,
+          value: CommentSort.oldest,
+          title: l(context).sort_oldest,
+          icon: Symbols.access_time_rounded,
         ),
-        SelectionMenuItem(
-          value: CommentSort.newest,
-          title: l(context).sort_newest,
-          icon: Symbols.nest_eco_leaf_rounded,
-        ),
-        if (context.read<AppController>().serverSoftware !=
-            ServerSoftware.piefed)
-          SelectionMenuItem(
-            value: CommentSort.active,
-            title: l(context).sort_active,
-            icon: Symbols.rocket_launch_rounded,
-          ),
-        if (context.read<AppController>().serverSoftware !=
-            ServerSoftware.piefed)
-          SelectionMenuItem(
-            value: CommentSort.oldest,
-            title: l(context).sort_oldest,
-            icon: Symbols.access_time_rounded,
-          ),
-      ],
-    );
+    ]);
 
-const _postTypeMbin = {
-  PostType.thread: 'entry',
-  PostType.microblog: 'posts',
-};
+const _postTypeMbin = {PostType.thread: 'entry', PostType.microblog: 'posts'};
 const _postTypeMbinComment = {
   PostType.thread: 'comments',
   PostType.microblog: 'post-comments',
@@ -105,7 +91,7 @@ class APIComments {
           'page': page,
           'sort': lemmyCommentSortMap[sort],
           'max_depth': '8',
-          'type_': 'All'
+          'type_': 'All',
         };
 
         final response = await client.get(path, queryParams: query);
@@ -154,15 +140,17 @@ class APIComments {
         final query = {
           'person_id': userId.toString(),
           'page': page,
-          'sort': lemmyCommentSortMap[sort]
+          'sort': lemmyCommentSortMap[sort],
         };
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
 
-        json['next_page'] =
-            lemmyCalcNextIntPage(json['comments'] as List<dynamic>, page);
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['comments'] as List<dynamic>,
+          page,
+        );
 
         return CommentListModel.fromLemmyToFlat(json);
 
@@ -171,15 +159,17 @@ class APIComments {
         final query = {
           'person_id': userId.toString(),
           'page': page,
-          'sort': lemmyCommentSortMap[sort]
+          'sort': lemmyCommentSortMap[sort],
         };
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
 
-        json['next_page'] =
-            lemmyCalcNextIntPage(json['comments'] as List<dynamic>, page);
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['comments'] as List<dynamic>,
+          page,
+        );
 
         return CommentListModel.fromPiefedToFlat(json);
     }
@@ -201,23 +191,22 @@ class APIComments {
         final response = await client.get(path, queryParams: query);
 
         return CommentModel.fromLemmy(
-          (response.bodyJson['comments'] as List<dynamic>)
-              .firstWhere((item) => item['comment']['id'] == commentId),
+          (response.bodyJson['comments'] as List<dynamic>).firstWhere(
+            (item) => item['comment']['id'] == commentId,
+          ),
           possibleChildrenJson: response.bodyJson['comments'] as List<dynamic>,
         );
 
       case ServerSoftware.piefed:
         const path = '/comment/list';
-        final query = {
-          'parent_id': commentId.toString(),
-          'max_depth': '100',
-        };
+        final query = {'parent_id': commentId.toString(), 'max_depth': '100'};
 
         final response = await client.get(path, queryParams: query);
 
         return CommentModel.fromPiefed(
-          (response.bodyJson['comments'] as List<dynamic>)
-              .firstWhere((item) => item['comment']['id'] == commentId),
+          (response.bodyJson['comments'] as List<dynamic>).firstWhere(
+            (item) => item['comment']['id'] == commentId,
+          ),
           possibleChildrenJson: response.bodyJson['comments'] as List<dynamic>,
         );
     }
@@ -244,28 +233,24 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'score': newScore,
-          },
+          body: {'comment_id': commentId, 'score': newScore},
         );
 
         return CommentModel.fromLemmy(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/comment/like';
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'score': newScore,
-          },
+          body: {'comment_id': commentId, 'score': newScore},
         );
 
         return CommentModel.fromPiefed(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
     }
   }
 
@@ -297,10 +282,7 @@ class APIComments {
         final path =
             '/${_postTypeMbin[postType]}/$postId/comments${parentCommentId != null ? '/$parentCommentId/reply' : ''}';
 
-        final response = await client.post(
-          path,
-          body: {'body': body},
-        );
+        final response = await client.post(path, body: {'body': body});
 
         return CommentModel.fromMbin(response.bodyJson);
 
@@ -312,12 +294,13 @@ class APIComments {
           body: {
             'content': body,
             'post_id': postId,
-            'parent_id': parentCommentId
+            'parent_id': parentCommentId,
           },
         );
 
         return CommentModel.fromLemmy(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/comment';
@@ -328,7 +311,8 @@ class APIComments {
         );
 
         return CommentModel.fromPiefed(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
     }
   }
 
@@ -341,12 +325,7 @@ class APIComments {
       case ServerSoftware.mbin:
         final path = '/${_postTypeMbinComment[postType]}/$commentId';
 
-        final response = await client.put(
-          path,
-          body: {
-            'body': body,
-          },
-        );
+        final response = await client.put(path, body: {'body': body});
 
         return CommentModel.fromMbin(response.bodyJson);
 
@@ -355,28 +334,24 @@ class APIComments {
 
         final response = await client.put(
           path,
-          body: {
-            'comment_id': commentId,
-            'content': body,
-          },
+          body: {'comment_id': commentId, 'content': body},
         );
 
         return CommentModel.fromLemmy(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
 
       case ServerSoftware.piefed:
         const path = '/comment';
 
         final response = await client.put(
           path,
-          body: {
-            'comment_id': commentId,
-            'body': body,
-          },
+          body: {'comment_id': commentId, 'body': body},
         );
 
         return CommentModel.fromPiefed(
-            response.bodyJson['comment_view'] as JsonMap);
+          response.bodyJson['comment_view'] as JsonMap,
+        );
     }
   }
 
@@ -392,10 +367,7 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'deleted': true,
-          },
+          body: {'comment_id': commentId, 'deleted': true},
         );
 
       case ServerSoftware.piefed:
@@ -403,10 +375,7 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'deleted': true,
-          },
+          body: {'comment_id': commentId, 'deleted': true},
         );
     }
   }
@@ -416,20 +385,14 @@ class APIComments {
       case ServerSoftware.mbin:
         final path = '/${_postTypeMbinComment[postType]}/$commentId/report';
 
-        final response = await client.post(
-          path,
-          body: {'reason': reason},
-        );
+        final response = await client.post(path, body: {'reason': reason});
 
       case ServerSoftware.lemmy:
         const path = '/comment/report';
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'reason': reason,
-          },
+          body: {'comment_id': commentId, 'reason': reason},
         );
 
       case ServerSoftware.piefed:
@@ -437,10 +400,7 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'reason': reason,
-          },
+          body: {'comment_id': commentId, 'reason': reason},
         );
     }
   }

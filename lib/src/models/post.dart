@@ -19,32 +19,32 @@ class PostListModel with _$PostListModel {
   }) = _PostListModel;
 
   factory PostListModel.fromMbinEntries(JsonMap json) => PostListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((post) => PostModel.fromMbinEntry(post as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    items: (json['items'] as List<dynamic>)
+        .map((post) => PostModel.fromMbinEntry(post as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 
   factory PostListModel.fromMbinPosts(JsonMap json) => PostListModel(
-        items: (json['items'] as List<dynamic>)
-            .map((post) => PostModel.fromMbinPost(post as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
-      );
+    items: (json['items'] as List<dynamic>)
+        .map((post) => PostModel.fromMbinPost(post as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+  );
 
   factory PostListModel.fromLemmy(JsonMap json) => PostListModel(
-        items: (json['posts'] as List<dynamic>)
-            .map((post) => PostModel.fromLemmy(post as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+    items: (json['posts'] as List<dynamic>)
+        .map((post) => PostModel.fromLemmy(post as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 
   factory PostListModel.fromPiefed(JsonMap json) => PostListModel(
-        items: (json['posts'] as List<dynamic>)
-            .map((post) => PostModel.fromPiefed(post as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+    items: (json['posts'] as List<dynamic>)
+        .map((post) => PostModel.fromPiefed(post as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed
@@ -80,79 +80,81 @@ class PostModel with _$PostModel {
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
-        type: PostType.thread,
-        id: json['entryId'] as int,
-        user: UserModel.fromMbin(json['user'] as JsonMap),
-        magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
-        domain: json['domain'] == null
-            ? null
-            : DomainModel.fromMbin(json['domain'] as JsonMap),
-        title: json['title'] as String?,
-        // Only include link if it's not an Image post
-        url: (json['type'] == 'image' && json['image'] != null)
-            ? null
-            : json['url'] as String?,
-        image: mbinGetOptionalImage(json['image'] as JsonMap?),
-        body: json['body'] as String?,
-        lang: json['lang'] as String,
-        numComments: json['numComments'] as int,
-        upvotes: json['favourites'] as int?,
-        downvotes: json['dv'] as int?,
-        boosts: json['uv'] as int?,
-        myVote: (json['isFavourited'] as bool?) == true
-            ? 1
-            : ((json['userVote'] as int?) == -1 ? -1 : 0),
-        myBoost: (json['userVote'] as int?) == 1,
-        isOC: json['isOc'] as bool,
-        isNSFW: json['isAdult'] as bool,
-        isPinned: json['isPinned'] as bool,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        editedAt: optionalDateTime(json['editedAt'] as String?),
-        lastActive: DateTime.parse(json['lastActive'] as String),
-        visibility: json['visibility'] as String,
-        canAuthUserModerate: json['canAuthUserModerate'] as bool?,
-        notificationControlStatus: json['notificationStatus'] == null
-            ? null
-            : NotificationControlStatus.fromJson(
-                json['notificationStatus'] as String),
-        bookmarks: optionalStringList(json['bookmarks']),
-        read: false,
-      );
+    type: PostType.thread,
+    id: json['entryId'] as int,
+    user: UserModel.fromMbin(json['user'] as JsonMap),
+    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    domain: json['domain'] == null
+        ? null
+        : DomainModel.fromMbin(json['domain'] as JsonMap),
+    title: json['title'] as String?,
+    // Only include link if it's not an Image post
+    url: (json['type'] == 'image' && json['image'] != null)
+        ? null
+        : json['url'] as String?,
+    image: mbinGetOptionalImage(json['image'] as JsonMap?),
+    body: json['body'] as String?,
+    lang: json['lang'] as String,
+    numComments: json['numComments'] as int,
+    upvotes: json['favourites'] as int?,
+    downvotes: json['dv'] as int?,
+    boosts: json['uv'] as int?,
+    myVote: (json['isFavourited'] as bool?) == true
+        ? 1
+        : ((json['userVote'] as int?) == -1 ? -1 : 0),
+    myBoost: (json['userVote'] as int?) == 1,
+    isOC: json['isOc'] as bool,
+    isNSFW: json['isAdult'] as bool,
+    isPinned: json['isPinned'] as bool,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    editedAt: optionalDateTime(json['editedAt'] as String?),
+    lastActive: DateTime.parse(json['lastActive'] as String),
+    visibility: json['visibility'] as String,
+    canAuthUserModerate: json['canAuthUserModerate'] as bool?,
+    notificationControlStatus: json['notificationStatus'] == null
+        ? null
+        : NotificationControlStatus.fromJson(
+            json['notificationStatus'] as String,
+          ),
+    bookmarks: optionalStringList(json['bookmarks']),
+    read: false,
+  );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
-        type: PostType.microblog,
-        id: json['postId'] as int,
-        user: UserModel.fromMbin(json['user'] as JsonMap),
-        magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
-        domain: null,
-        title: null,
-        url: null,
-        image: mbinGetOptionalImage(json['image'] as JsonMap?),
-        body: json['body'] as String,
-        lang: json['lang'] as String,
-        numComments: json['comments'] as int,
-        upvotes: json['favourites'] as int?,
-        downvotes: json['dv'] as int?,
-        boosts: json['uv'] as int?,
-        myVote: (json['isFavourited'] as bool?) == true
-            ? 1
-            : ((json['userVote'] as int?) == -1 ? -1 : 0),
-        myBoost: (json['userVote'] as int?) == 1,
-        isOC: null,
-        isNSFW: json['isAdult'] as bool,
-        isPinned: json['isPinned'] as bool,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        editedAt: optionalDateTime(json['editedAt'] as String?),
-        lastActive: DateTime.parse(json['lastActive'] as String),
-        visibility: json['visibility'] as String,
-        canAuthUserModerate: json['canAuthUserModerate'] as bool?,
-        notificationControlStatus: json['notificationStatus'] == null
-            ? null
-            : NotificationControlStatus.fromJson(
-                json['notificationStatus'] as String),
-        bookmarks: optionalStringList(json['bookmarks']),
-        read: false,
-      );
+    type: PostType.microblog,
+    id: json['postId'] as int,
+    user: UserModel.fromMbin(json['user'] as JsonMap),
+    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    domain: null,
+    title: null,
+    url: null,
+    image: mbinGetOptionalImage(json['image'] as JsonMap?),
+    body: json['body'] as String,
+    lang: json['lang'] as String,
+    numComments: json['comments'] as int,
+    upvotes: json['favourites'] as int?,
+    downvotes: json['dv'] as int?,
+    boosts: json['uv'] as int?,
+    myVote: (json['isFavourited'] as bool?) == true
+        ? 1
+        : ((json['userVote'] as int?) == -1 ? -1 : 0),
+    myBoost: (json['userVote'] as int?) == 1,
+    isOC: null,
+    isNSFW: json['isAdult'] as bool,
+    isPinned: json['isPinned'] as bool,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    editedAt: optionalDateTime(json['editedAt'] as String?),
+    lastActive: DateTime.parse(json['lastActive'] as String),
+    visibility: json['visibility'] as String,
+    canAuthUserModerate: json['canAuthUserModerate'] as bool?,
+    notificationControlStatus: json['notificationStatus'] == null
+        ? null
+        : NotificationControlStatus.fromJson(
+            json['notificationStatus'] as String,
+          ),
+    bookmarks: optionalStringList(json['bookmarks']),
+    read: false,
+  );
 
   factory PostModel.fromLemmy(JsonMap json) {
     final lemmyPost = json['post'] as JsonMap;
@@ -166,7 +168,8 @@ class PostModel with _$PostModel {
       domain: null,
       title: lemmyPost['name'] as String,
       // Only include link if it's not an Image post
-      url: (lemmyPost['url_content_type'] != null &&
+      url:
+          (lemmyPost['url_content_type'] != null &&
               (lemmyPost['url_content_type'] as String).startsWith('image/'))
           ? null
           : lemmyPost['url'] as String?,
@@ -184,7 +187,8 @@ class PostModel with _$PostModel {
       myBoost: null,
       isOC: null,
       isNSFW: lemmyPost['nsfw'] as bool,
-      isPinned: lemmyPost['featured_community'] as bool ||
+      isPinned:
+          lemmyPost['featured_community'] as bool ||
           lemmyPost['featured_local'] as bool,
       createdAt: DateTime.parse(lemmyPost['published'] as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
@@ -196,7 +200,7 @@ class PostModel with _$PostModel {
         // Empty string indicates post is saved. No string indicates post is not saved.
         if (json['saved'] as bool) '',
       ],
-      read: json['read'] as bool? ?? false
+      read: json['read'] as bool? ?? false,
     );
   }
 
@@ -212,7 +216,8 @@ class PostModel with _$PostModel {
       domain: null,
       title: piefedPost['title'] as String,
       // Only include link if it's not an Image post
-      url: (piefedPost['url_content_type'] != null &&
+      url:
+          (piefedPost['url_content_type'] != null &&
               (piefedPost['url_content_type'] as String).startsWith('image/'))
           ? null
           : piefedPost['url'] as String?,
@@ -239,13 +244,13 @@ class PostModel with _$PostModel {
       notificationControlStatus: json['activity_alert'] == null
           ? null
           : json['activity_alert'] as bool
-              ? NotificationControlStatus.loud
-              : NotificationControlStatus.default_,
+          ? NotificationControlStatus.loud
+          : NotificationControlStatus.default_,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
         if (json['saved'] as bool) '',
       ],
-      read: false
+      read: false,
     );
   }
 }

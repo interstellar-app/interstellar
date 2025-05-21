@@ -37,10 +37,7 @@ class UserStatusIcons extends StatelessWidget {
           shaderCallback: (Rect bounds) => const LinearGradient(
             transform: GradientRotation(pi / 2),
             stops: [0, 1],
-            colors: [
-              Colors.green,
-              Colors.lightGreen,
-            ],
+            colors: [Colors.green, Colors.lightGreen],
           ).createShader(bounds),
           child: const Icon(Symbols.psychiatry_rounded),
         ),
@@ -53,11 +50,7 @@ class UserStatusIcons extends StatelessWidget {
           shaderCallback: (Rect bounds) => const LinearGradient(
             transform: GradientRotation(pi / 2),
             stops: [0, 0.5, 1],
-            colors: [
-              Colors.yellow,
-              Colors.pink,
-              Colors.blue,
-            ],
+            colors: [Colors.yellow, Colors.pink, Colors.blue],
           ).createShader(bounds),
           child: const Icon(Symbols.cake_rounded),
         ),
@@ -65,14 +58,11 @@ class UserStatusIcons extends StatelessWidget {
     }
 
     return Row(
-      children: [
-        if (botWidget != null) botWidget,
-        if (cakeDayWidget != null) cakeDayWidget,
-      ]
-          .map((widget) => Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: widget,
-              ))
+      children: [?botWidget, ?cakeDayWidget]
+          .map(
+            (widget) =>
+                Padding(padding: const EdgeInsets.only(left: 5), child: widget),
+          )
           .toList(),
     );
   }

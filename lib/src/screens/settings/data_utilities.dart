@@ -9,9 +9,7 @@ class DataUtilitiesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l(context).settings_dataUtilities),
-      ),
+      appBar: AppBar(title: Text(l(context).settings_dataUtilities)),
       body: ListView(
         children: [
           ListTile(
