@@ -419,7 +419,7 @@ class _FeedScreenState extends State<FeedScreen>
               },
               body: Builder(
                 builder: (context) {
-                  final controller = DefaultTabController.of(context);
+                  final controller = tabsAction == null ? null : DefaultTabController.of(context);
                   return tabsAction == null
                       ? FeedScreenBody(
                           key: _getFeedKey(0),
@@ -446,7 +446,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 0,
+                                  isActive: controller?.index == 0,
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
@@ -456,7 +456,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 1,
+                                  isActive: controller?.index == 1,
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
@@ -466,7 +466,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 2,
+                                  isActive: controller?.index == 2,
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(3),
@@ -476,7 +476,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 3,
+                                  isActive: controller?.index == 3,
                                 ),
                                 // TODO: Remove once federation filter is added to mbin api.
                                 if (context
@@ -491,7 +491,7 @@ class _FeedScreenState extends State<FeedScreen>
                                     details: widget.details,
                                     userCanModerate: userCanModerate,
                                     hideReadPosts: _hideReadPosts,
-                                    isActive: controller.index == 4,
+                                    isActive: controller?.index == 4,
                                   ),
                               ],
                             String name
@@ -508,7 +508,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 0,
+                                  isActive: controller?.index == 0,
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
@@ -521,7 +521,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 1,
+                                  isActive: controller?.index == 1,
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
@@ -532,7 +532,7 @@ class _FeedScreenState extends State<FeedScreen>
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
-                                  isActive: controller.index == 2,
+                                  isActive: controller?.index == 2,
                                 ),
                               ],
                             _ => [],

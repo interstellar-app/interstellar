@@ -148,7 +148,7 @@ class DisplaySettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTileSwitch(
-            leading: const Icon(Symbols.image_rounded),
+            leading: const Icon(Symbols.system_security_update_rounded),
             title: Text(l(context).settings_hideAppbarScroll),
             value: ac.profile.hideAppBarOnScroll,
             onChanged: (newValue) => ac.updateProfile(
@@ -159,7 +159,7 @@ class DisplaySettingsScreen extends StatelessWidget {
             ),
           ),
           ListTileSwitch(
-            leading: const Icon(Symbols.image_rounded),
+            leading: const Icon(Symbols.smartphone_rounded),
             title: Text(l(context).settings_hideTabsScroll),
             value: ac.profile.hideTabsOnScroll,
             onChanged: (newValue) => ac.updateProfile(
@@ -170,7 +170,7 @@ class DisplaySettingsScreen extends StatelessWidget {
             ),
           ),
           ListTileSwitch(
-            leading: const Icon(Symbols.image_rounded),
+            leading: const Icon(Symbols.app_blocking_rounded),
             title: Text(l(context).settings_hideFABScroll),
             value: ac.profile.hideFabOnScroll,
             onChanged: (newValue) => ac.updateProfile(
