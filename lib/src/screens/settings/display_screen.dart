@@ -146,6 +146,39 @@ class DisplaySettingsScreen extends StatelessWidget {
                     ),
                   ),
           ),
+          const Divider(),
+          ListTileSwitch(
+            leading: const Icon(Symbols.image_rounded),
+            title: Text(l(context).settings_hideAppbarScroll),
+            value: ac.profile.hideAppBarOnScroll,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                hideAppBarOnScroll: newValue,
+                // hideTabsOnScroll: false,
+              ),
+            ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.image_rounded),
+            title: Text(l(context).settings_hideTabsScroll),
+            value: ac.profile.hideTabsOnScroll,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                // hideAppBarOnScroll: newValue,
+                hideTabsOnScroll: newValue,
+              ),
+            ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.image_rounded),
+            title: Text(l(context).settings_hideFABScroll),
+            value: ac.profile.hideFabOnScroll,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                hideFabOnScroll: newValue,
+              ),
+            ),
+          ),
         ],
       ),
     );

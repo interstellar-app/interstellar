@@ -44,6 +44,9 @@ class ProfileRequired with _$ProfileRequired {
     required bool coverMediaMarkedSensitive,
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
+    required bool hideAppBarOnScroll,
+    required bool hideTabsOnScroll,
+    required bool hideFabOnScroll,
     // Feed defaults
     required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
@@ -119,6 +122,9 @@ class ProfileRequired with _$ProfileRequired {
     fullImageSizeMicroblogs:
         profile?.fullImageSizeMicroblogs ??
         defaultProfile.fullImageSizeMicroblogs,
+    hideAppBarOnScroll: profile?.hideAppBarOnScroll ?? defaultProfile.hideAppBarOnScroll,
+    hideTabsOnScroll: profile?.hideTabsOnScroll ?? defaultProfile.hideTabsOnScroll,
+    hideFabOnScroll: profile?.hideFabOnScroll ?? defaultProfile.hideFabOnScroll,
     feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
     feedDefaultFilter:
         profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
@@ -192,6 +198,9 @@ class ProfileRequired with _$ProfileRequired {
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
     fullImageSizeMicroblogs: true,
+    hideAppBarOnScroll: false,
+    hideTabsOnScroll: false,
+    hideFabOnScroll: false,
     feedDefaultView: FeedView.threads,
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
@@ -248,6 +257,9 @@ class ProfileOptional with _$ProfileOptional {
     required bool? coverMediaMarkedSensitive,
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
+    required bool? hideAppBarOnScroll,
+    required bool? hideTabsOnScroll,
+    required bool? hideFabOnScroll,
     // Feed defaults
     required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
@@ -301,6 +313,9 @@ class ProfileOptional with _$ProfileOptional {
     coverMediaMarkedSensitive: null,
     fullImageSizeThreads: null,
     fullImageSizeMicroblogs: null,
+    hideAppBarOnScroll: null,
+    hideTabsOnScroll: null,
+    hideFabOnScroll: null,
     feedDefaultView: null,
     feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
@@ -357,6 +372,9 @@ class ProfileOptional with _$ProfileOptional {
       fullImageSizeThreads: other.fullImageSizeThreads ?? fullImageSizeThreads,
       fullImageSizeMicroblogs:
           other.fullImageSizeMicroblogs ?? fullImageSizeMicroblogs,
+      hideAppBarOnScroll: other.hideAppBarOnScroll ?? hideAppBarOnScroll,
+      hideTabsOnScroll: other.hideTabsOnScroll ?? hideTabsOnScroll,
+      hideFabOnScroll: other.hideFabOnScroll ?? hideFabOnScroll,
       feedDefaultView: other.feedDefaultView ?? feedDefaultView,
       feedDefaultFilter: other.feedDefaultFilter ?? feedDefaultFilter,
       feedDefaultThreadsSort:
