@@ -40,11 +40,11 @@ class ProfileRequired with _$ProfileRequired {
     required bool enableTrueBlack,
     required bool compactMode,
     required bool hideActionButtons,
+    required bool hideFeedUIOnScroll,
     required bool alwaysShowInstance,
     required bool coverMediaMarkedSensitive,
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
-    required bool hideUIOnScroll,
     // Feed defaults
     required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
@@ -110,6 +110,8 @@ class ProfileRequired with _$ProfileRequired {
     compactMode: profile?.compactMode ?? defaultProfile.compactMode,
     hideActionButtons:
         profile?.hideActionButtons ?? defaultProfile.hideActionButtons,
+    hideFeedUIOnScroll:
+        profile?.hideFeedUIOnScroll ?? defaultProfile.hideFeedUIOnScroll,
     alwaysShowInstance:
         profile?.alwaysShowInstance ?? defaultProfile.alwaysShowInstance,
     coverMediaMarkedSensitive:
@@ -120,7 +122,6 @@ class ProfileRequired with _$ProfileRequired {
     fullImageSizeMicroblogs:
         profile?.fullImageSizeMicroblogs ??
         defaultProfile.fullImageSizeMicroblogs,
-    hideUIOnScroll: profile?.hideUIOnScroll ?? defaultProfile.hideUIOnScroll,
     feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
     feedDefaultFilter:
         profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
@@ -190,11 +191,11 @@ class ProfileRequired with _$ProfileRequired {
     enableTrueBlack: false,
     compactMode: false,
     hideActionButtons: false,
+    hideFeedUIOnScroll: false,
     alwaysShowInstance: false,
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
     fullImageSizeMicroblogs: true,
-    hideUIOnScroll: false,
     feedDefaultView: FeedView.threads,
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
@@ -247,11 +248,11 @@ class ProfileOptional with _$ProfileOptional {
     required bool? enableTrueBlack,
     required bool? compactMode,
     required bool? hideActionButtons,
+    required bool? hideFeedUIOnScroll,
     required bool? alwaysShowInstance,
     required bool? coverMediaMarkedSensitive,
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
-    required bool? hideUIOnScroll,
     // Feed defaults
     required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
@@ -301,11 +302,11 @@ class ProfileOptional with _$ProfileOptional {
     enableTrueBlack: null,
     compactMode: null,
     hideActionButtons: null,
+    hideFeedUIOnScroll: null,
     alwaysShowInstance: null,
     coverMediaMarkedSensitive: null,
     fullImageSizeThreads: null,
     fullImageSizeMicroblogs: null,
-    hideUIOnScroll: null,
     feedDefaultView: null,
     feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
@@ -356,13 +357,13 @@ class ProfileOptional with _$ProfileOptional {
       enableTrueBlack: other.enableTrueBlack ?? enableTrueBlack,
       compactMode: other.compactMode ?? compactMode,
       hideActionButtons: other.hideActionButtons ?? hideActionButtons,
+      hideFeedUIOnScroll: other.hideFeedUIOnScroll ?? hideFeedUIOnScroll,
       alwaysShowInstance: other.alwaysShowInstance ?? alwaysShowInstance,
       coverMediaMarkedSensitive:
           other.coverMediaMarkedSensitive ?? coverMediaMarkedSensitive,
       fullImageSizeThreads: other.fullImageSizeThreads ?? fullImageSizeThreads,
       fullImageSizeMicroblogs:
           other.fullImageSizeMicroblogs ?? fullImageSizeMicroblogs,
-      hideUIOnScroll: other.hideUIOnScroll ?? hideUIOnScroll,
       feedDefaultView: other.feedDefaultView ?? feedDefaultView,
       feedDefaultFilter: other.feedDefaultFilter ?? feedDefaultFilter,
       feedDefaultThreadsSort:

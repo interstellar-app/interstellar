@@ -326,9 +326,9 @@ class _FeedScreenState extends State<FeedScreen>
 
                 return [
                   SliverAppBar(
-                    floating: ac.profile.hideUIOnScroll,
-                    pinned: !ac.profile.hideUIOnScroll,
-                    snap: ac.profile.hideUIOnScroll,
+                    floating: ac.profile.hideFeedUIOnScroll,
+                    pinned: !ac.profile.hideFeedUIOnScroll,
+                    snap: ac.profile.hideFeedUIOnScroll,
                     title: ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
@@ -528,7 +528,8 @@ class _FeedScreenState extends State<FeedScreen>
         ),
         floatingActionButton: AnimatedSlide(
           offset:
-              _isHidden && context.read<AppController>().profile.hideUIOnScroll
+              _isHidden &&
+                  context.read<AppController>().profile.hideFeedUIOnScroll
               ? Offset(0, 0.2)
               : Offset.zero,
           duration: Duration(milliseconds: 300),

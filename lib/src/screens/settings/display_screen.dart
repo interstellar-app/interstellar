@@ -101,6 +101,14 @@ class DisplaySettingsScreen extends StatelessWidget {
               ac.selectedProfileValue.copyWith(hideActionButtons: newValue),
             ),
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.system_security_update_rounded),
+            title: Text(l(context).settings_hideFeedUIOnScroll),
+            value: ac.profile.hideFeedUIOnScroll,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(hideFeedUIOnScroll: newValue),
+            ),
+          ),
           const Divider(),
           ListTileSwitch(
             leading: const Icon(Symbols.globe_rounded),
@@ -145,15 +153,6 @@ class DisplaySettingsScreen extends StatelessWidget {
                       fullImageSizeMicroblogs: newValue,
                     ),
                   ),
-          ),
-          const Divider(),
-          ListTileSwitch(
-            leading: const Icon(Symbols.system_security_update_rounded),
-            title: Text(l(context).settings_hideUIScroll),
-            value: ac.profile.hideUIOnScroll,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(hideUIOnScroll: newValue),
-            ),
           ),
         ],
       ),
