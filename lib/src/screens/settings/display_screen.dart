@@ -149,34 +149,10 @@ class DisplaySettingsScreen extends StatelessWidget {
           const Divider(),
           ListTileSwitch(
             leading: const Icon(Symbols.system_security_update_rounded),
-            title: Text(l(context).settings_hideAppbarScroll),
-            value: ac.profile.hideAppBarOnScroll,
+            title: Text(l(context).settings_hideUIScroll),
+            value: ac.profile.hideUIOnScroll,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(
-                hideAppBarOnScroll: newValue,
-                // hideTabsOnScroll: false,
-              ),
-            ),
-          ),
-          ListTileSwitch(
-            leading: const Icon(Symbols.smartphone_rounded),
-            title: Text(l(context).settings_hideTabsScroll),
-            value: ac.profile.hideTabsOnScroll,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(
-                // hideAppBarOnScroll: newValue,
-                hideTabsOnScroll: newValue,
-              ),
-            ),
-          ),
-          ListTileSwitch(
-            leading: const Icon(Symbols.app_blocking_rounded),
-            title: Text(l(context).settings_hideFABScroll),
-            value: ac.profile.hideFabOnScroll,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(
-                hideFabOnScroll: newValue,
-              ),
+              ac.selectedProfileValue.copyWith(hideUIOnScroll: newValue),
             ),
           ),
         ],

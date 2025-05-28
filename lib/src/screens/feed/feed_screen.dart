@@ -283,24 +283,24 @@ class _FeedScreenState extends State<FeedScreen>
           _ => 0,
         },
         child: DefaultTabControllerListener(
-          onTabSelected: tabsAction?.name == feedActionSetView(context).name
-              ? (newIndex) {
-                  setState(() {
-                    switch (newIndex) {
-                      case 0:
-                        _view = FeedView.threads;
-                        break;
-                      case 1:
-                        _view = FeedView.microblog;
-                        break;
-                      case 2:
-                        _view = FeedView.timeline;
-                        break;
-                      default:
-                    }
-                  });
+          onTabSelected: (newIndex) {
+            setState(() {
+              if (tabsAction?.name == feedActionSetView(context).name) {
+                switch (newIndex) {
+                  case 0:
+                    _view = FeedView.threads;
+                    break;
+                  case 1:
+                    _view = FeedView.microblog;
+                    break;
+                  case 2:
+                    _view = FeedView.timeline;
+                    break;
+                  default:
                 }
-              : null,
+              }
+            });
+          },
           child: child,
         ),
       ),
@@ -324,42 +324,11 @@ class _FeedScreenState extends State<FeedScreen>
               headerSliverBuilder: (context, isScrolled) {
                 final ac = context.read<AppController>();
 
-                final tabBar = tabsAction == null
-                    ? null
-                    : Material(
-                        child: TabBar(
-                          tabs: switch (tabsAction.name) {
-                            String name
-                                when name ==
-                                    feedActionSetFilter(context).name =>
-                              feedFilterSelect(context).options
-                                  .map(
-                                    (option) => Tab(
-                                      text: option.title.substring(0, 3),
-                                      icon: Icon(option.icon),
-                                    ),
-                                  )
-                                  .toList(),
-                            String name
-                                when name == feedActionSetView(context).name =>
-                              feedViewSelect(context).options
-                                  .map(
-                                    (option) => Tab(
-                                      text: option.title,
-                                      icon: Icon(option.icon),
-                                    ),
-                                  )
-                                  .toList(),
-                            _ => [],
-                          },
-                        ),
-                      );
-
                 return [
                   SliverAppBar(
-                    floating: ac.profile.hideAppBarOnScroll,
-                    pinned: !ac.profile.hideAppBarOnScroll,
-                    snap: ac.profile.hideAppBarOnScroll,
+                    floating: ac.profile.hideUIOnScroll,
+                    pinned: !ac.profile.hideUIOnScroll,
+                    snap: ac.profile.hideUIOnScroll,
                     title: ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
@@ -402,19 +371,36 @@ class _FeedScreenState extends State<FeedScreen>
                           ),
                         )
                         .toList(),
+                    bottom: tabsAction == null
+                        ? null
+                        : TabBar(
+                            tabs: switch (tabsAction.name) {
+                              String name
+                                  when name ==
+                                      feedActionSetFilter(context).name =>
+                                feedFilterSelect(context).options
+                                    .map(
+                                      (option) => Tab(
+                                        text: option.title.substring(0, 3),
+                                        icon: Icon(option.icon),
+                                      ),
+                                    )
+                                    .toList(),
+                              String name
+                                  when name ==
+                                      feedActionSetView(context).name =>
+                                feedViewSelect(context).options
+                                    .map(
+                                      (option) => Tab(
+                                        text: option.title,
+                                        icon: Icon(option.icon),
+                                      ),
+                                    )
+                                    .toList(),
+                              _ => [],
+                            },
+                          ),
                   ),
-
-                  ?tabBar == null
-                      ? null
-                      : SliverOverlapAbsorber(
-                          handle:
-                              NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                context,
-                              ),
-                          sliver: ac.profile.hideTabsOnScroll
-                              ? SliverFloatingHeader(child: tabBar)
-                              : PinnedHeaderSliver(child: tabBar),
-                        ),
                 ];
               },
               body: Builder(
@@ -542,7 +528,7 @@ class _FeedScreenState extends State<FeedScreen>
         ),
         floatingActionButton: AnimatedSlide(
           offset:
-              _isHidden && context.read<AppController>().profile.hideFabOnScroll
+              _isHidden && context.read<AppController>().profile.hideUIOnScroll
               ? Offset(0, 0.2)
               : Offset.zero,
           duration: Duration(milliseconds: 300),
