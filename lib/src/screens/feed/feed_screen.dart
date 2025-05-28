@@ -383,46 +383,44 @@ class _FeedScreenState extends State<FeedScreen>
             : TabBarView(
                 physics: appTabViewPhysics(context),
                 children: switch (tabsAction.name) {
-                  String name when name == feedActionSetFilter(context).name => [
-                    FeedScreenBody(
-                      key: _getFeedKey(0),
-                      source: FeedSource.subscribed,
-                      sort: sort,
-                      view: _view,
-                      details: widget.details,
-                      userCanModerate: userCanModerate,
-                      hideReadPosts: _hideReadPosts,
-                    ),
-                    FeedScreenBody(
-                      key: _getFeedKey(1),
-                      source: FeedSource.moderated,
-                      sort: sort,
-                      view: _view,
-                      details: widget.details,
-                      userCanModerate: userCanModerate,
-                      hideReadPosts: _hideReadPosts,
-                    ),
-                    FeedScreenBody(
-                      key: _getFeedKey(2),
-                      source: FeedSource.favorited,
-                      sort: sort,
-                      view: _view,
-                      details: widget.details,
-                      userCanModerate: userCanModerate,
-                      hideReadPosts: _hideReadPosts,
-                    ),
-                    FeedScreenBody(
-                      key: _getFeedKey(3),
-                      source: FeedSource.all,
-                      sort: sort,
-                      view: _view,
-                      details: widget.details,
-                      userCanModerate: userCanModerate,
-                      hideReadPosts: _hideReadPosts,
-                    ),
-                    // TODO: Remove once federation filter is added to mbin api.
-                    if (context.read<AppController>().serverSoftware !=
-                        ServerSoftware.mbin)
+                  String name when name == feedActionSetFilter(context).name =>
+                    [
+                      FeedScreenBody(
+                        key: _getFeedKey(0),
+                        source: FeedSource.subscribed,
+                        sort: sort,
+                        view: _view,
+                        details: widget.details,
+                        userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
+                      ),
+                      FeedScreenBody(
+                        key: _getFeedKey(1),
+                        source: FeedSource.moderated,
+                        sort: sort,
+                        view: _view,
+                        details: widget.details,
+                        userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
+                      ),
+                      FeedScreenBody(
+                        key: _getFeedKey(2),
+                        source: FeedSource.favorited,
+                        sort: sort,
+                        view: _view,
+                        details: widget.details,
+                        userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
+                      ),
+                      FeedScreenBody(
+                        key: _getFeedKey(3),
+                        source: FeedSource.all,
+                        sort: sort,
+                        view: _view,
+                        details: widget.details,
+                        userCanModerate: userCanModerate,
+                        hideReadPosts: _hideReadPosts,
+                      ),
                       FeedScreenBody(
                         key: _getFeedKey(4),
                         source: FeedSource.local,
@@ -432,7 +430,7 @@ class _FeedScreenState extends State<FeedScreen>
                         userCanModerate: userCanModerate,
                         hideReadPosts: _hideReadPosts,
                       ),
-                  ],
+                    ],
                   String name when name == feedActionSetView(context).name => [
                     FeedScreenBody(
                       key: _getFeedKey(0),
@@ -686,13 +684,11 @@ SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
         title: l(context).filter_all,
         icon: Symbols.newspaper_rounded,
       ),
-      // TODO: Remove once federation filter is added to mbin api.
-      if (context.read<AppController>().serverSoftware != ServerSoftware.mbin)
-        SelectionMenuItem(
-          value: FeedSource.local,
-          title: l(context).filter_local,
-          icon: Symbols.home_pin_rounded,
-        ),
+      SelectionMenuItem(
+        value: FeedSource.local,
+        title: l(context).filter_local,
+        icon: Symbols.home_pin_rounded,
+      ),
     ]);
 
 class FeedScreenBody extends StatefulWidget {
