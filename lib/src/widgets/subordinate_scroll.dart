@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+// Helper to prevent multiple scroll positions being attached to
+// a single parent scroll controller.
+// Attaches/detaches its position from the parent whenever isActive is changed.
+// Useful for when having multiple CustomScrollViews under a single
+// NestedScrollView.
+
 class SubordinateScrollController extends ScrollController {
   SubordinateScrollController({
     required ScrollController parent,
