@@ -84,6 +84,7 @@ class DisplaySettingsScreen extends StatelessWidget {
                     ac.selectedProfileValue.copyWith(enableTrueBlack: newValue),
                   ),
           ),
+          const Divider(),
           ListTileSwitch(
             leading: const Icon(Symbols.view_agenda_rounded),
             title: Text(l(context).settings_compactMode),
@@ -99,6 +100,14 @@ class DisplaySettingsScreen extends StatelessWidget {
             value: ac.profile.hideActionButtons,
             onChanged: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(hideActionButtons: newValue),
+            ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.system_security_update_rounded),
+            title: Text(l(context).settings_hideFeedUIOnScroll),
+            value: ac.profile.hideFeedUIOnScroll,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(hideFeedUIOnScroll: newValue),
             ),
           ),
           const Divider(),
