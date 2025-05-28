@@ -84,6 +84,7 @@ class DisplaySettingsScreen extends StatelessWidget {
                     ac.selectedProfileValue.copyWith(enableTrueBlack: newValue),
                   ),
           ),
+          const Divider(),
           ListTileSwitch(
             leading: const Icon(Symbols.view_agenda_rounded),
             title: Text(l(context).settings_compactMode),
