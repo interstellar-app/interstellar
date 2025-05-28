@@ -208,7 +208,11 @@ class APIMagazineModeration {
         throw Exception('Remove icon not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/community';
+
+        final response = await client.put(path, body: {'icon_url': ''});
+
+        return;
     }
   }
 

@@ -294,7 +294,7 @@ class APIThreads {
       case ServerSoftware.mbin:
         final response = await client.delete('/entry/$postID');
 
-        break;
+        return;
 
       case ServerSoftware.lemmy:
         final response = await client.post(
@@ -302,7 +302,7 @@ class APIThreads {
           body: {'post_id': postID, 'deleted': true},
         );
 
-        break;
+        return;
 
       case ServerSoftware.piefed:
         final response = await client.post(
@@ -310,7 +310,7 @@ class APIThreads {
           body: {'post_id': postID, 'deleted': true},
         );
 
-        break;
+        return;
     }
   }
 

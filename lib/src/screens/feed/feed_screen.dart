@@ -419,7 +419,9 @@ class _FeedScreenState extends State<FeedScreen>
               },
               body: Builder(
                 builder: (context) {
-                  final controller = tabsAction == null ? null : DefaultTabController.of(context);
+                  final controller = tabsAction == null
+                      ? null
+                      : DefaultTabController.of(context);
                   return tabsAction == null
                       ? FeedScreenBody(
                           key: _getFeedKey(0),
@@ -478,21 +480,16 @@ class _FeedScreenState extends State<FeedScreen>
                                   hideReadPosts: _hideReadPosts,
                                   isActive: controller?.index == 3,
                                 ),
-                                // TODO: Remove once federation filter is added to mbin api.
-                                if (context
-                                        .read<AppController>()
-                                        .serverSoftware !=
-                                    ServerSoftware.mbin)
-                                  FeedScreenBody(
-                                    key: _getFeedKey(4),
-                                    source: FeedSource.local,
-                                    sort: sort,
-                                    view: _view,
-                                    details: widget.details,
-                                    userCanModerate: userCanModerate,
-                                    hideReadPosts: _hideReadPosts,
-                                    isActive: controller?.index == 4,
-                                  ),
+                                FeedScreenBody(
+                                  key: _getFeedKey(4),
+                                  source: FeedSource.local,
+                                  sort: sort,
+                                  view: _view,
+                                  details: widget.details,
+                                  userCanModerate: userCanModerate,
+                                  hideReadPosts: _hideReadPosts,
+                                  isActive: controller?.index == 4,
+                                ),
                               ],
                             String name
                                 when name == feedActionSetView(context).name =>
@@ -768,13 +765,11 @@ SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
         title: l(context).filter_all,
         icon: Symbols.newspaper_rounded,
       ),
-      // TODO: Remove once federation filter is added to mbin api.
-      if (context.read<AppController>().serverSoftware != ServerSoftware.mbin)
-        SelectionMenuItem(
-          value: FeedSource.local,
-          title: l(context).filter_local,
-          icon: Symbols.home_pin_rounded,
-        ),
+      SelectionMenuItem(
+        value: FeedSource.local,
+        title: l(context).filter_local,
+        icon: Symbols.home_pin_rounded,
+      ),
     ]);
 
 class FeedScreenBody extends StatefulWidget {

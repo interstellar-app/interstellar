@@ -223,7 +223,7 @@ class APINotifications {
         throw Exception('No push notifications on Lemmy');
 
       case ServerSoftware.piefed:
-        throw Exception('Notifications not yet implemented on PieFed');
+        throw Exception('No push notifications on PieFed');
     }
   }
 
@@ -240,7 +240,7 @@ class APINotifications {
         throw Exception('No push notifications on Lemmy');
 
       case ServerSoftware.piefed:
-        throw Exception('Notifications not yet implemented on PieFed');
+        throw Exception('No push notifications on PieFed');
     }
   }
 
