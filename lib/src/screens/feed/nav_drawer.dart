@@ -21,7 +21,11 @@ class NavDrawer extends StatefulWidget {
   State<NavDrawer> createState() => _NavDrawerState();
 }
 
-class _NavDrawerState extends State<NavDrawer> {
+class _NavDrawerState extends State<NavDrawer>
+    with AutomaticKeepAliveClientMixin<NavDrawer> {
+  @override
+  bool get wantKeepAlive => true;
+
   List<DetailedMagazineModel>? subbedMagazines;
   List<DetailedUserModel>? subbedUsers;
   List<DomainModel>? subbedDomains;
@@ -29,6 +33,16 @@ class _NavDrawerState extends State<NavDrawer> {
   @override
   void initState() {
     super.initState();
+
+    fetchSubscriptions();
+  }
+
+  Future<void> fetchSubscriptions() async {
+    setState(() {
+      subbedMagazines = null;
+      subbedUsers = null;
+      subbedDomains = null;
+    });
 
     if (context.read<AppController>().isLoggedIn) {
       context
@@ -68,114 +82,170 @@ class _NavDrawerState extends State<NavDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Drawer(
       child: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: SettingsHeader(l(context).stars),
-            ),
-            if (context.watch<AppController>().stars.isEmpty)
+        child: RefreshIndicator(
+          onRefresh: fetchSubscriptions,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  l(context).stars_empty,
-                  style: const TextStyle(fontWeight: FontWeight.w300),
+                child: SettingsHeader(l(context).stars),
+              ),
+              if (context.watch<AppController>().stars.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    l(context).stars_empty,
+                    style: const TextStyle(fontWeight: FontWeight.w300),
+                  ),
+                ),
+              ...(context.watch<AppController>().stars.toList()..sort()).map(
+                (star) => ListTile(
+                  title: Text(star),
+                  onTap: () async {
+                    String name = star.substring(1);
+                    if (name.endsWith(
+                      context.read<AppController>().instanceHost,
+                    )) {
+                      name = name.split('@').first;
+                    }
+
+                    switch (star[0]) {
+                      case '@':
+                        final user = await context
+                            .read<AppController>()
+                            .api
+                            .users
+                            .getByName(name);
+
+                        if (!mounted) return;
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                UserScreen(user.id, initData: user),
+                          ),
+                        );
+                        break;
+
+                      case '!':
+                        final magazine = await context
+                            .read<AppController>()
+                            .api
+                            .magazines
+                            .getByName(name);
+
+                        if (!mounted) return;
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MagazineScreen(magazine.id, initData: magazine),
+                          ),
+                        );
+                        break;
+                    }
+                  },
+                  trailing: StarButton(star),
                 ),
               ),
-            ...(context.watch<AppController>().stars.toList()..sort()).map(
-              (star) => ListTile(
-                title: Text(star),
-                onTap: () async {
-                  String name = star.substring(1);
-                  if (name.endsWith(
-                    context.read<AppController>().instanceHost,
-                  )) {
-                    name = name.split('@').first;
-                  }
-
-                  switch (star[0]) {
-                    case '@':
-                      final user = await context
-                          .read<AppController>()
-                          .api
-                          .users
-                          .getByName(name);
-
-                      if (!mounted) return;
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UserScreen(user.id, initData: user),
+              if (context.read<AppController>().isLoggedIn &&
+                  subbedMagazines == null &&
+                  subbedUsers == null &&
+                  subbedDomains == null)
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [CircularProgressIndicator()],
+                ),
+              if (context.watch<AppController>().isLoggedIn &&
+                  (subbedMagazines != null ||
+                      subbedUsers != null ||
+                      subbedDomains != null)) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: SettingsHeader(l(context).subscriptions),
+                ),
+                if (subbedMagazines != null) ...[
+                  ...subbedMagazines!
+                      .asMap()
+                      .map(
+                        (index, magazine) => MapEntry(
+                          index,
+                          ListTile(
+                            title: Text(magazine.name),
+                            leading: magazine.icon == null
+                                ? null
+                                : Avatar(magazine.icon, radius: 16),
+                            trailing: StarButton(
+                              magazine.name.contains('@')
+                                  ? '!${magazine.name}'
+                                  : '!${magazine.name}@${context.watch<AppController>().instanceHost}',
+                            ),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => MagazineScreen(
+                                    magazine.id,
+                                    initData: magazine,
+                                    onUpdate: (newValue) {
+                                      setState(() {
+                                        subbedMagazines![index] = newValue;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      );
-                      break;
-
-                    case '!':
-                      final magazine = await context
-                          .read<AppController>()
-                          .api
-                          .magazines
-                          .getByName(name);
-
-                      if (!mounted) return;
-
-                      Navigator.of(context).push(
+                      )
+                      .values,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>
-                              MagazineScreen(magazine.id, initData: magazine),
+                          builder: (context) => const ExploreScreen(
+                            subOnlyMode: ExploreType.magazines,
+                          ),
                         ),
-                      );
-                      break;
-                  }
-                },
-                trailing: StarButton(star),
-              ),
-            ),
-            if (context.read<AppController>().isLoggedIn &&
-                subbedMagazines == null &&
-                subbedUsers == null &&
-                subbedDomains == null)
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [CircularProgressIndicator()],
-              ),
-            if (context.watch<AppController>().isLoggedIn &&
-                (subbedMagazines != null ||
-                    subbedUsers != null ||
-                    subbedDomains != null)) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: SettingsHeader(l(context).subscriptions),
-              ),
-              if (subbedMagazines != null) ...[
-                ...subbedMagazines!
+                      ),
+                      child: Text(l(context).subscriptions_magazine_all),
+                    ),
+                  ),
+                ],
+              ],
+              if (context.read<AppController>().serverSoftware ==
+                      ServerSoftware.mbin &&
+                  subbedUsers != null) ...[
+                ...subbedUsers!
                     .asMap()
                     .map(
-                      (index, magazine) => MapEntry(
+                      (index, user) => MapEntry(
                         index,
                         ListTile(
-                          title: Text(magazine.name),
-                          leading: magazine.icon == null
+                          title: Text(user.name),
+                          leading: user.avatar == null
                               ? null
-                              : Avatar(magazine.icon, radius: 16),
+                              : Avatar(user.avatar, radius: 16),
                           trailing: StarButton(
-                            magazine.name.contains('@')
-                                ? '!${magazine.name}'
-                                : '!${magazine.name}@${context.watch<AppController>().instanceHost}',
+                            user.name.contains('@')
+                                ? '@${user.name}'
+                                : '@${user.name}@${context.watch<AppController>().instanceHost}',
                           ),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => MagazineScreen(
-                                  magazine.id,
-                                  initData: magazine,
+                                builder: (context) => UserScreen(
+                                  user.id,
+                                  initData: user,
                                   onUpdate: (newValue) {
                                     setState(() {
-                                      subbedMagazines![index] = newValue;
+                                      subbedUsers![index] = newValue;
                                     });
                                   },
                                 ),
@@ -192,108 +262,59 @@ class _NavDrawerState extends State<NavDrawer> {
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const ExploreScreen(
-                          subOnlyMode: ExploreType.magazines,
+                          subOnlyMode: ExploreType.people,
                         ),
                       ),
                     ),
-                    child: Text(l(context).subscriptions_magazine_all),
+                    child: Text(l(context).subscriptions_user_all),
+                  ),
+                ),
+              ],
+              if (context.read<AppController>().serverSoftware ==
+                      ServerSoftware.mbin &&
+                  subbedDomains != null) ...[
+                ...subbedDomains!
+                    .asMap()
+                    .map(
+                      (index, domain) => MapEntry(
+                        index,
+                        ListTile(
+                          title: Text(domain.name),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DomainScreen(
+                                  domain.id,
+                                  initData: domain,
+                                  onUpdate: (newValue) {
+                                    setState(() {
+                                      subbedDomains![index] = domain;
+                                    });
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                    .values,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ExploreScreen(
+                          subOnlyMode: ExploreType.domains,
+                        ),
+                      ),
+                    ),
+                    child: Text(l(context).subscriptions_domain_all),
                   ),
                 ),
               ],
             ],
-            if (context.read<AppController>().serverSoftware ==
-                    ServerSoftware.mbin &&
-                subbedUsers != null) ...[
-              ...subbedUsers!
-                  .asMap()
-                  .map(
-                    (index, user) => MapEntry(
-                      index,
-                      ListTile(
-                        title: Text(user.name),
-                        leading: user.avatar == null
-                            ? null
-                            : Avatar(user.avatar, radius: 16),
-                        trailing: StarButton(
-                          user.name.contains('@')
-                              ? '@${user.name}'
-                              : '@${user.name}@${context.watch<AppController>().instanceHost}',
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => UserScreen(
-                                user.id,
-                                initData: user,
-                                onUpdate: (newValue) {
-                                  setState(() {
-                                    subbedUsers![index] = newValue;
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  )
-                  .values,
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const ExploreScreen(subOnlyMode: ExploreType.people),
-                    ),
-                  ),
-                  child: Text(l(context).subscriptions_user_all),
-                ),
-              ),
-            ],
-            if (context.read<AppController>().serverSoftware ==
-                    ServerSoftware.mbin &&
-                subbedDomains != null) ...[
-              ...subbedDomains!
-                  .asMap()
-                  .map(
-                    (index, domain) => MapEntry(
-                      index,
-                      ListTile(
-                        title: Text(domain.name),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => DomainScreen(
-                                domain.id,
-                                initData: domain,
-                                onUpdate: (newValue) {
-                                  setState(() {
-                                    subbedDomains![index] = domain;
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  )
-                  .values,
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const ExploreScreen(subOnlyMode: ExploreType.domains),
-                    ),
-                  ),
-                  child: Text(l(context).subscriptions_domain_all),
-                ),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

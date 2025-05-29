@@ -23,6 +23,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+var navDrawerKey = UniqueKey();
+
 class FeedScreen extends StatefulWidget {
   final FeedSource? source;
   final int? sourceId;
@@ -550,7 +552,7 @@ class _FeedScreenState extends State<FeedScreen>
                 .toList(),
           ),
         ),
-        drawer: widget.sourceId != null ? null : const NavDrawer(),
+        drawer: widget.sourceId != null ? null : NavDrawer(key: navDrawerKey),
       ),
     );
   }
