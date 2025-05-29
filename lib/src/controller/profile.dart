@@ -41,6 +41,7 @@ class ProfileRequired with _$ProfileRequired {
     required bool compactMode,
     required bool hideActionButtons,
     required bool hideFeedUIOnScroll,
+    required double globalTextScale,
     required bool alwaysShowInstance,
     required bool coverMediaMarkedSensitive,
     required bool fullImageSizeThreads,
@@ -112,6 +113,7 @@ class ProfileRequired with _$ProfileRequired {
         profile?.hideActionButtons ?? defaultProfile.hideActionButtons,
     hideFeedUIOnScroll:
         profile?.hideFeedUIOnScroll ?? defaultProfile.hideFeedUIOnScroll,
+    globalTextScale: profile?.globalTextScale ?? defaultProfile.globalTextScale,
     alwaysShowInstance:
         profile?.alwaysShowInstance ?? defaultProfile.alwaysShowInstance,
     coverMediaMarkedSensitive:
@@ -192,6 +194,7 @@ class ProfileRequired with _$ProfileRequired {
     compactMode: false,
     hideActionButtons: false,
     hideFeedUIOnScroll: false,
+    globalTextScale: 1,
     alwaysShowInstance: false,
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
@@ -249,6 +252,7 @@ class ProfileOptional with _$ProfileOptional {
     required bool? compactMode,
     required bool? hideActionButtons,
     required bool? hideFeedUIOnScroll,
+    required double? globalTextScale,
     required bool? alwaysShowInstance,
     required bool? coverMediaMarkedSensitive,
     required bool? fullImageSizeThreads,
@@ -303,6 +307,7 @@ class ProfileOptional with _$ProfileOptional {
     compactMode: null,
     hideActionButtons: null,
     hideFeedUIOnScroll: null,
+    globalTextScale: null,
     alwaysShowInstance: null,
     coverMediaMarkedSensitive: null,
     fullImageSizeThreads: null,
@@ -358,6 +363,7 @@ class ProfileOptional with _$ProfileOptional {
       compactMode: other.compactMode ?? compactMode,
       hideActionButtons: other.hideActionButtons ?? hideActionButtons,
       hideFeedUIOnScroll: other.hideFeedUIOnScroll ?? hideFeedUIOnScroll,
+      globalTextScale: other.globalTextScale ?? globalTextScale,
       alwaysShowInstance: other.alwaysShowInstance ?? alwaysShowInstance,
       coverMediaMarkedSensitive:
           other.coverMediaMarkedSensitive ?? coverMediaMarkedSensitive,
