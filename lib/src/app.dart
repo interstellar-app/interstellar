@@ -69,174 +69,180 @@ class _AppState extends State<App> {
           create: (_) => NotificationCountController(),
           update: (_, ac, notificationCountController) =>
               notificationCountController!..updateAppController(ac),
-          child: MaterialApp(
-            restorationScopeId: 'app',
-            localizationsDelegates: const [
-              ...AppLocalizations.localizationsDelegates,
-              LocaleNamesLocalizationsDelegate(),
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            onGenerateTitle: (BuildContext context) => l(context).interstellar,
-            locale: intlLocale == null
-                ? null
-                : Locale.fromSubtags(
-                    languageCode: intlLocale.languageCode,
-                    countryCode: intlLocale.countryCode,
-                    scriptCode: intlLocale.scriptCode,
-                  ),
-            theme: FlexThemeData.light(
-              colorScheme: dynamicLightColorScheme,
-              scheme: dynamicLightColorScheme != null
-                  ? null
-                  : ac.profile.colorScheme,
-              surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
-              blendLevel: 13,
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(ac.profile.globalTextScale),
             ),
-            darkTheme: FlexThemeData.dark(
-              colorScheme: dynamicDarkColorScheme,
-              scheme: dynamicDarkColorScheme != null
+            child: MaterialApp(
+              restorationScopeId: 'app',
+              localizationsDelegates: const [
+                ...AppLocalizations.localizationsDelegates,
+                LocaleNamesLocalizationsDelegate(),
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              onGenerateTitle: (BuildContext context) =>
+                  l(context).interstellar,
+              locale: intlLocale == null
                   ? null
-                  : ac.profile.colorScheme,
-              surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
-              blendLevel: 13,
-              darkIsTrueBlack: ac.profile.enableTrueBlack,
-            ),
-            themeMode: ac.profile.themeMode,
-            scaffoldMessengerKey: scaffoldMessengerKey,
-            home: OrientationBuilder(
-              builder: (context, orientation) {
-                return Scaffold(
-                  bottomNavigationBar: orientation == Orientation.portrait
-                      ? NavigationBar(
-                          height: 56,
-                          labelBehavior:
-                              NavigationDestinationLabelBehavior.alwaysHide,
-                          destinations: [
-                            NavigationDestination(
-                              label: l(context).feed,
-                              icon: const Icon(Symbols.home_rounded),
-                              selectedIcon: const Icon(
-                                Symbols.home_rounded,
-                                fill: 1,
-                              ),
-                            ),
-                            NavigationDestination(
-                              label: l(context).explore,
-                              icon: const Icon(Symbols.explore_rounded),
-                              selectedIcon: const Icon(
-                                Symbols.explore_rounded,
-                                fill: 1,
-                              ),
-                            ),
-                            NavigationDestination(
-                              label: l(context).account,
-                              icon: Wrapper(
-                                shouldWrap: context
-                                    .watch<AppController>()
-                                    .isLoggedIn,
-                                parentBuilder: (child) =>
-                                    NotificationBadge(child: child),
-                                child: const Icon(Symbols.person_rounded),
-                              ),
-                              selectedIcon: Wrapper(
-                                shouldWrap: context
-                                    .watch<AppController>()
-                                    .isLoggedIn,
-                                parentBuilder: (child) =>
-                                    NotificationBadge(child: child),
-                                child: const Icon(
-                                  Symbols.person_rounded,
+                  : Locale.fromSubtags(
+                      languageCode: intlLocale.languageCode,
+                      countryCode: intlLocale.countryCode,
+                      scriptCode: intlLocale.scriptCode,
+                    ),
+              theme: FlexThemeData.light(
+                colorScheme: dynamicLightColorScheme,
+                scheme: dynamicLightColorScheme != null
+                    ? null
+                    : ac.profile.colorScheme,
+                surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
+                blendLevel: 13,
+              ),
+              darkTheme: FlexThemeData.dark(
+                colorScheme: dynamicDarkColorScheme,
+                scheme: dynamicDarkColorScheme != null
+                    ? null
+                    : ac.profile.colorScheme,
+                surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
+                blendLevel: 13,
+                darkIsTrueBlack: ac.profile.enableTrueBlack,
+              ),
+              themeMode: ac.profile.themeMode,
+              scaffoldMessengerKey: scaffoldMessengerKey,
+              home: OrientationBuilder(
+                builder: (context, orientation) {
+                  return Scaffold(
+                    bottomNavigationBar: orientation == Orientation.portrait
+                        ? NavigationBar(
+                            height: 56,
+                            labelBehavior:
+                                NavigationDestinationLabelBehavior.alwaysHide,
+                            destinations: [
+                              NavigationDestination(
+                                label: l(context).feed,
+                                icon: const Icon(Symbols.home_rounded),
+                                selectedIcon: const Icon(
+                                  Symbols.home_rounded,
                                   fill: 1,
                                 ),
                               ),
-                            ),
-                            NavigationDestination(
-                              label: l(context).settings,
-                              icon: const Icon(Symbols.settings_rounded),
-                              selectedIcon: const Icon(
-                                Symbols.settings_rounded,
-                                fill: 1,
-                              ),
-                            ),
-                          ],
-                          selectedIndex: _navIndex,
-                          onDestinationSelected: _changeNav,
-                        )
-                      : null,
-                  body: Row(
-                    children: [
-                      if (orientation == Orientation.landscape)
-                        NavigationRail(
-                          selectedIndex: _navIndex,
-                          onDestinationSelected: _changeNav,
-                          labelType: NavigationRailLabelType.all,
-                          destinations: [
-                            NavigationRailDestination(
-                              label: Text(l(context).feed),
-                              icon: const Icon(Symbols.feed_rounded),
-                              selectedIcon: const Icon(
-                                Symbols.feed_rounded,
-                                fill: 1,
-                              ),
-                            ),
-                            NavigationRailDestination(
-                              label: Text(l(context).explore),
-                              icon: const Icon(Symbols.explore_rounded),
-                              selectedIcon: const Icon(
-                                Symbols.explore_rounded,
-                                fill: 1,
-                              ),
-                            ),
-                            NavigationRailDestination(
-                              label: Text(l(context).account),
-                              icon: Wrapper(
-                                shouldWrap: context
-                                    .watch<AppController>()
-                                    .isLoggedIn,
-                                parentBuilder: (child) =>
-                                    NotificationBadge(child: child),
-                                child: const Icon(Symbols.person_rounded),
-                              ),
-                              selectedIcon: Wrapper(
-                                shouldWrap: context
-                                    .watch<AppController>()
-                                    .isLoggedIn,
-                                parentBuilder: (child) =>
-                                    NotificationBadge(child: child),
-                                child: const Icon(
-                                  Symbols.person_rounded,
+                              NavigationDestination(
+                                label: l(context).explore,
+                                icon: const Icon(Symbols.explore_rounded),
+                                selectedIcon: const Icon(
+                                  Symbols.explore_rounded,
                                   fill: 1,
                                 ),
                               ),
-                            ),
-                            NavigationRailDestination(
-                              label: Text(l(context).settings),
-                              icon: const Icon(Symbols.settings_rounded),
-                              selectedIcon: const Icon(
-                                Symbols.settings_rounded,
-                                fill: 1,
+                              NavigationDestination(
+                                label: l(context).account,
+                                icon: Wrapper(
+                                  shouldWrap: context
+                                      .watch<AppController>()
+                                      .isLoggedIn,
+                                  parentBuilder: (child) =>
+                                      NotificationBadge(child: child),
+                                  child: const Icon(Symbols.person_rounded),
+                                ),
+                                selectedIcon: Wrapper(
+                                  shouldWrap: context
+                                      .watch<AppController>()
+                                      .isLoggedIn,
+                                  parentBuilder: (child) =>
+                                      NotificationBadge(child: child),
+                                  child: const Icon(
+                                    Symbols.person_rounded,
+                                    fill: 1,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                              NavigationDestination(
+                                label: l(context).settings,
+                                icon: const Icon(Symbols.settings_rounded),
+                                selectedIcon: const Icon(
+                                  Symbols.settings_rounded,
+                                  fill: 1,
+                                ),
+                              ),
+                            ],
+                            selectedIndex: _navIndex,
+                            onDestinationSelected: _changeNav,
+                          )
+                        : null,
+                    body: Row(
+                      children: [
+                        if (orientation == Orientation.landscape)
+                          NavigationRail(
+                            selectedIndex: _navIndex,
+                            onDestinationSelected: _changeNav,
+                            labelType: NavigationRailLabelType.all,
+                            destinations: [
+                              NavigationRailDestination(
+                                label: Text(l(context).feed),
+                                icon: const Icon(Symbols.feed_rounded),
+                                selectedIcon: const Icon(
+                                  Symbols.feed_rounded,
+                                  fill: 1,
+                                ),
+                              ),
+                              NavigationRailDestination(
+                                label: Text(l(context).explore),
+                                icon: const Icon(Symbols.explore_rounded),
+                                selectedIcon: const Icon(
+                                  Symbols.explore_rounded,
+                                  fill: 1,
+                                ),
+                              ),
+                              NavigationRailDestination(
+                                label: Text(l(context).account),
+                                icon: Wrapper(
+                                  shouldWrap: context
+                                      .watch<AppController>()
+                                      .isLoggedIn,
+                                  parentBuilder: (child) =>
+                                      NotificationBadge(child: child),
+                                  child: const Icon(Symbols.person_rounded),
+                                ),
+                                selectedIcon: Wrapper(
+                                  shouldWrap: context
+                                      .watch<AppController>()
+                                      .isLoggedIn,
+                                  parentBuilder: (child) =>
+                                      NotificationBadge(child: child),
+                                  child: const Icon(
+                                    Symbols.person_rounded,
+                                    fill: 1,
+                                  ),
+                                ),
+                              ),
+                              NavigationRailDestination(
+                                label: Text(l(context).settings),
+                                icon: const Icon(Symbols.settings_rounded),
+                                selectedIcon: const Icon(
+                                  Symbols.settings_rounded,
+                                  fill: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (orientation == Orientation.landscape)
+                          const VerticalDivider(thickness: 1, width: 1),
+                        Expanded(
+                          child: PageView(
+                            controller: _pageController,
+                            physics: const NeverScrollableScrollPhysics(),
+                            children: [
+                              FeedScreen(key: _feedKey),
+                              ExploreScreen(key: _exploreKey),
+                              AccountScreen(key: _accountKey),
+                              SettingsScreen(),
+                            ],
+                          ),
                         ),
-                      if (orientation == Orientation.landscape)
-                        const VerticalDivider(thickness: 1, width: 1),
-                      Expanded(
-                        child: PageView(
-                          controller: _pageController,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            FeedScreen(key: _feedKey),
-                            ExploreScreen(key: _exploreKey),
-                            AccountScreen(key: _accountKey),
-                            SettingsScreen(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );

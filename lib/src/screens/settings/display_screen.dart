@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -108,6 +110,29 @@ class DisplaySettingsScreen extends StatelessWidget {
             value: ac.profile.hideFeedUIOnScroll,
             onChanged: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(hideFeedUIOnScroll: newValue),
+            ),
+          ),
+          // This logarithmically maps the range 0.5 to 2 with -10 to 10
+          ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${l(context).settings_globalTextScale} : '
+                  '${(ac.profile.globalTextScale * 100).round()}%',
+                ),
+                Slider(
+                  value: log(ac.profile.globalTextScale) / log(2) * 10,
+                  max: 10,
+                  min: -10,
+                  onChanged: (newValue) => ac.updateProfile(
+                    ac.selectedProfileValue.copyWith(
+                      globalTextScale: pow(2, newValue / 10).toDouble(),
+                    ),
+                  ),
+                  divisions: 20,
+                ),
+              ],
             ),
           ),
           const Divider(),
