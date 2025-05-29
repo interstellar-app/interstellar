@@ -382,7 +382,9 @@ class _FeedScreenState extends State<FeedScreen>
                                     .map(
                                       (option) => Tab(
                                         text: option.title.substring(0, 3),
-                                        icon: Icon(option.icon),
+                                        icon: ac.profile.compactMode
+                                            ? null
+                                            : Icon(option.icon),
                                       ),
                                     )
                                     .toList(),
@@ -393,7 +395,9 @@ class _FeedScreenState extends State<FeedScreen>
                                     .map(
                                       (option) => Tab(
                                         text: option.title,
-                                        icon: Icon(option.icon),
+                                        icon: ac.profile.compactMode
+                                            ? null
+                                            : Icon(option.icon),
                                       ),
                                     )
                                     .toList(),
