@@ -96,9 +96,15 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
       if (!mounted) return;
 
       // Prevent duplicates
-      final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
+      final currentItemIds =
+          _pagingController.itemList?.map(
+            (e) => (e.magazine.id, e.bannedUser.id),
+          ) ??
+          [];
       final newItems = newPage.items
-          .where((e) => !currentItemIds.contains(e.id))
+          .where(
+            (e) => !currentItemIds.contains((e.magazine.id, e.bannedUser.id)),
+          )
           .toList();
 
       _pagingController.appendPage(newItems, newPage.nextPage);

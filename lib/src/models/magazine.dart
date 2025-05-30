@@ -220,7 +220,6 @@ class MagazineBanListModel with _$MagazineBanListModel {
 @freezed
 class MagazineBanModel with _$MagazineBanModel {
   const factory MagazineBanModel({
-    required int id,
     required String? reason,
     required DateTime? expiresAt,
     required MagazineModel magazine,
@@ -230,7 +229,6 @@ class MagazineBanModel with _$MagazineBanModel {
   }) = _MagazineBanModel;
 
   factory MagazineBanModel.fromMbin(JsonMap json) => MagazineBanModel(
-    id: json['banId'] as int,
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expiresAt'] as String?),
     magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
