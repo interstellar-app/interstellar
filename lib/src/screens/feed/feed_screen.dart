@@ -16,6 +16,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/floating_menu.dart';
+import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/subordinate_scroll.dart';
@@ -304,7 +305,7 @@ class _FeedScreenState extends State<FeedScreen>
           child: child,
         ),
       ),
-      child: Scaffold(
+      child: AdvancedScaffold(
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scroll) {
             if (scroll.direction == ScrollDirection.forward) {
