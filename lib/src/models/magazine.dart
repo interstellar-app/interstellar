@@ -215,6 +215,18 @@ class MagazineBanListModel with _$MagazineBanListModel {
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
   );
+
+  factory MagazineBanListModel.fromPiefed(JsonMap json) => MagazineBanListModel(
+    items: (json['items'] as List<dynamic>)
+        .map((item) => MagazineBanModel.fromPiefed(item as JsonMap))
+        .toList(),
+    // if next_page is None we have reached the end of the bans
+    // so set nextPage to null. Otherwise set it to the next page number
+    // to request
+    nextPage: (json['next_page'] as String?) != 'None'
+        ? json['next_page'] as String?
+        : null,
+  );
 }
 
 @freezed
@@ -234,6 +246,15 @@ class MagazineBanModel with _$MagazineBanModel {
     magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
     bannedUser: UserModel.fromMbin(json['bannedUser'] as JsonMap),
     bannedBy: UserModel.fromMbin(json['bannedBy'] as JsonMap),
+    expired: json['expired'] as bool,
+  );
+
+  factory MagazineBanModel.fromPiefed(JsonMap json) => MagazineBanModel(
+    reason: json['reason'] as String?,
+    expiresAt: optionalDateTime(json['expiresAt'] as String?),
+    magazine: MagazineModel.fromPiefed(json['community'] as JsonMap),
+    bannedUser: UserModel.fromPiefed(json['bannedUser'] as JsonMap),
+    bannedBy: UserModel.fromPiefed(json['bannedBy'] as JsonMap),
     expired: json['expired'] as bool,
   );
 }
