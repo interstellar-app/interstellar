@@ -23,6 +23,8 @@ class RedirectListener extends StatefulWidget {
 }
 
 class _RedirectListenerState extends State<RedirectListener> {
+  WebViewController? _controller;
+
   Future<Uri> _listenForAuth() async {
     HttpServer server = await HttpServer.bind(_redirectHost, _redirectPort);
     await launchUrl(widget.initUri);
@@ -41,19 +43,13 @@ class _RedirectListenerState extends State<RedirectListener> {
 
   @override
   void initState() {
+    super.initState();
     if (!isWebViewSupported) {
       _listenForAuth().then(
         (value) => Navigator.pop(context, value.queryParameters),
       );
-    }
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (isWebViewSupported) {
-      var controller = WebViewController()
+    } else {
+      _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setNavigationDelegate(
           NavigationDelegate(
@@ -69,10 +65,15 @@ class _RedirectListenerState extends State<RedirectListener> {
           ),
         )
         ..loadRequest(widget.initUri);
+    }
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    if (isWebViewSupported) {
       return Scaffold(
         appBar: AppBar(title: Text(widget.title)),
-        body: WebViewWidget(controller: controller),
+        body: WebViewWidget(controller: _controller!),
       );
     }
 
