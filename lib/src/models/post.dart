@@ -43,7 +43,12 @@ class PostListModel with _$PostListModel {
     items: (json['posts'] as List<dynamic>)
         .map((post) => PostModel.fromPiefed(post as JsonMap))
         .toList(),
-    nextPage: json['next_page'] as String?,
+    // if next_page is None we have reached the end of the notifications
+    // so set nextPage to null. Otherwise set it to the next page number
+    // to request
+    nextPage: (json['next_page'] as String?) != 'None'
+        ? json['next_page'] as String?
+        : null,
   );
 }
 
@@ -240,7 +245,7 @@ class PostModel with _$PostModel {
       editedAt: optionalDateTime(piefedPost['updated'] as String?),
       lastActive: DateTime.parse(piefedCounts['newest_comment_time'] as String),
       visibility: 'visible',
-      canAuthUserModerate: null,
+      canAuthUserModerate: json['canAuthUserModerate'] as bool?,
       notificationControlStatus: json['activity_alert'] == null
           ? null
           : json['activity_alert'] as bool

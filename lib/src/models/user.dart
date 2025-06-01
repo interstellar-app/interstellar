@@ -34,7 +34,12 @@ class DetailedUserListModel with _$DetailedUserListModel {
         items: (json['users'] as List<dynamic>)
             .map((item) => DetailedUserModel.fromPiefed(item as JsonMap))
             .toList(),
-        nextPage: json['next_page'] as String?,
+        // if next_page is None we have reached the end of the notifications
+        // so set nextPage to null. Otherwise set it to the next page number
+        // to request
+        nextPage: (json['next_page'] as String?) != 'None'
+            ? json['next_page'] as String?
+            : null,
       );
 }
 
