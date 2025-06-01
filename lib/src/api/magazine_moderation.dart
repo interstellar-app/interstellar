@@ -56,7 +56,17 @@ class APIMagazineModeration {
         throw Exception('Ban update not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/community/moderate/ban';
+        final body = {
+          'community_id': magazineId,
+          'user_id': userId,
+          'reason': reason,
+          'expiredAt': expiredAt?.toIso8601String(),
+        };
+
+        final response = await client.post(path, body: body);
+
+        return MagazineBanModel.fromPiefed(response.bodyJson);
     }
   }
 
