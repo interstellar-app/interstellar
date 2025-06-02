@@ -67,7 +67,12 @@ class APIModeration {
         throw Exception('Moderation not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/community/moderate/post/nsfw';
+        final body = {'post_id': postId, 'nsfw_status': status};
+
+        final response = await client.post(path, body: body);
+
+        return PostModel.fromPiefed(response.bodyJson);
     }
   }
 
