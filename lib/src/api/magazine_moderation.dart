@@ -26,7 +26,7 @@ class APIMagazineModeration {
 
         final body = {
           'community_id': magazineId,
-          'page': (page == null) ? 1 : page,
+          'page': page ?? 1,
         };
 
         final response = await client.get(path, body: body);
