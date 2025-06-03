@@ -24,12 +24,14 @@ class APIMagazineModeration {
       case ServerSoftware.piefed:
         final path = '/community/moderate/bans';
 
-        final body = {
-          'community_id': magazineId,
-          'page': page ?? 1,
+        final page_ = page ?? 1;
+
+        final query = {
+          'community_id': magazineId.toString(),
+          'page': page_.toString(),
         };
 
-        final response = await client.get(path, body: body);
+        final response = await client.get(path, queryParams: query);
 
         return MagazineBanListModel.fromPiefed(response.bodyJson);
     }
