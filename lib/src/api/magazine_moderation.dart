@@ -22,7 +22,18 @@ class APIMagazineModeration {
         throw Exception('List banned users not allowed on lemmy');
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/community/moderate/bans';
+
+        final page_ = page ?? 1;
+
+        final query = {
+          'community_id': magazineId.toString(),
+          'page': page_.toString(),
+        };
+
+        final response = await client.get(path, queryParams: query);
+
+        return MagazineBanListModel.fromPiefed(response.bodyJson);
     }
   }
 
@@ -47,7 +58,17 @@ class APIMagazineModeration {
         throw Exception('Ban update not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/community/moderate/ban';
+        final body = {
+          'community_id': magazineId,
+          'user_id': userId,
+          'reason': reason,
+          'expiredAt': expiredAt?.toIso8601String(),
+        };
+
+        final response = await client.post(path, body: body);
+
+        return MagazineBanModel.fromPiefed(response.bodyJson);
     }
   }
 
@@ -64,7 +85,13 @@ class APIMagazineModeration {
         throw Exception('Ban update not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/community/moderate/unban';
+
+        final body = {'community_id': magazineId, 'user_id': userId};
+
+        final response = await client.put(path, body: body);
+
+        return MagazineBanModel.fromPiefed(response.bodyJson);
     }
   }
 

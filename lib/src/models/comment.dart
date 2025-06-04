@@ -244,7 +244,7 @@ class CommentModel with _$CommentModel {
       children: children,
       childCount: piefedCounts['child_count'] as int,
       visibility: 'visible',
-      canAuthUserModerate: null,
+      canAuthUserModerate: json['canAuthUserModerate'] as bool?,
       notificationControlStatus: json['activity_alert'] == null
           ? null
           : json['activity_alert'] as bool
