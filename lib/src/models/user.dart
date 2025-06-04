@@ -114,8 +114,8 @@ class DetailedUserModel with _$DetailedUserModel {
       id: piefedPerson['id'] as int,
       name: getLemmyPiefedActorName(piefedPerson),
       displayName: piefedPerson['title'] as String?,
-      avatar: null,
-      cover: null,
+      avatar: lemmyGetOptionalImage(piefedPerson['avatar'] as String?),
+      cover: lemmyGetOptionalImage(piefedPerson['banner'] as String?),
       createdAt: DateTime.parse(piefedPerson['published'] as String),
       isBot: piefedPerson['bot'] as bool,
       about: piefedPerson['about'] as String?,
@@ -161,7 +161,7 @@ class UserModel with _$UserModel {
   factory UserModel.fromPiefed(JsonMap json) => UserModel(
     id: json['id'] as int,
     name: getLemmyPiefedActorName(json),
-    avatar: null,
+    avatar: lemmyGetOptionalImage(json['avatar'] as String?),
     createdAt: DateTime.parse(json['published'] as String),
     isBot: json['bot'] as bool,
   );
