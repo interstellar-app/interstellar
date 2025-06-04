@@ -8,6 +8,7 @@ class ServerClient {
   http.Client httpClient;
   ServerSoftware software;
   String domain;
+  List<(String, int)>? _langCodeIdPairs;
 
   ServerClient({
     required this.httpClient,
@@ -117,6 +118,45 @@ class ServerClient {
     }
 
     throw http.ClientException(message, url);
+  }
+
+  Future<List<(String, int)>> languageCodeIdPairs() async {
+    if (_langCodeIdPairs == null) {
+      List<dynamic> allLanguages;
+
+      switch (software) {
+        case ServerSoftware.mbin:
+          throw Exception('Tried to get lang id with Mbin');
+
+        case ServerSoftware.lemmy:
+          final response = await get('/site');
+
+          final json = response.bodyJson;
+
+          allLanguages = json['all_languages'] as List<dynamic>;
+
+        case ServerSoftware.piefed:
+          final response = await get('/site');
+
+          final json = response.bodyJson;
+
+          allLanguages =
+              (json['site'] as JsonMap)['all_languages'] as List<dynamic>;
+      }
+
+      _langCodeIdPairs = allLanguages
+          .map((e) => (e['code'] as String, e['id'] as int))
+          .toList();
+    }
+
+    return _langCodeIdPairs!;
+  }
+
+  Future<int?> languageIdFromCode(String lang) async {
+    for (final pair in await languageCodeIdPairs()) {
+      if (pair.$1 == lang) return pair.$2;
+    }
+    return null;
   }
 }
 

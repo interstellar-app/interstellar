@@ -76,7 +76,7 @@ class ContentItem extends StatefulWidget {
   final String contentTypeName;
   final Uri? openLinkUri;
   final int? numComments;
-  final Future<void> Function(String)? onReply;
+  final Future<void> Function(String body, String lang)? onReply;
   final Future<void> Function(String)? onReport;
   final Future<void> Function(String)? onEdit;
   final Future<void> Function()? onDelete;
@@ -178,7 +178,18 @@ class ContentItem extends StatefulWidget {
 
 class _ContentItemState extends State<ContentItem> {
   TextEditingController? _replyTextController;
+  late String _replyLanguage;
   TextEditingController? _editTextController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _replyLanguage = context
+        .read<AppController>()
+        .profile
+        .defaultCreateLanguage;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -583,6 +594,31 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
+                                    if (widget.lang != null &&
+                                        widget.lang !=
+                                            context
+                                                .read<AppController>()
+                                                .profile
+                                                .defaultCreateLanguage)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
+                                        child: Tooltip(
+                                          message: getLanguageName(
+                                            context,
+                                            widget.lang!,
+                                          ),
+                                          triggerMode: TooltipTriggerMode.tap,
+                                          child: Text(
+                                            widget.lang!,
+                                            style: const TextStyle(
+                                              color: Colors.purple,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     if (!widget.showCommunityFirst) ?userWidget,
                                     if (widget.showCommunityFirst)
                                       ?communityWidget,
@@ -777,6 +813,29 @@ class _ContentItemState extends State<ContentItem> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
+                                      IconButton(
+                                        onPressed: () async {
+                                          final newLang =
+                                              await languageSelectionMenu(
+                                                context,
+                                              ).askSelection(
+                                                context,
+                                                _replyLanguage,
+                                              );
+
+                                          if (newLang != null) {
+                                            setState(() {
+                                              _replyLanguage = newLang;
+                                            });
+                                          }
+                                        },
+                                        icon: Icon(Symbols.globe_rounded),
+                                        tooltip: getLanguageName(
+                                          context,
+                                          _replyLanguage,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
                                       OutlinedButton(
                                         onPressed: () => setState(() {
                                           _replyTextController!.dispose();
@@ -789,6 +848,7 @@ class _ContentItemState extends State<ContentItem> {
                                         onPressed: () async {
                                           await widget.onReply!(
                                             _replyTextController!.text,
+                                            _replyLanguage,
                                           );
 
                                           await replyDraftController.discard();
@@ -1046,6 +1106,26 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
+                      if (widget.lang != null &&
+                          widget.lang !=
+                              context
+                                  .read<AppController>()
+                                  .profile
+                                  .defaultCreateLanguage)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Tooltip(
+                            message: getLanguageName(context, widget.lang!),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Text(
+                              widget.lang!,
+                              style: const TextStyle(
+                                color: Colors.purple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
                       if (!widget.showCommunityFirst) ?userWidget,
                       if (widget.showCommunityFirst) ?communityWidget,
                       if (widget.createdAt != null)
@@ -1099,6 +1179,25 @@ class _ContentItemState extends State<ContentItem> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              IconButton(
+                                onPressed: () async {
+                                  final newLang = await languageSelectionMenu(
+                                    context,
+                                  ).askSelection(context, _replyLanguage);
+
+                                  if (newLang != null) {
+                                    setState(() {
+                                      _replyLanguage = newLang;
+                                    });
+                                  }
+                                },
+                                icon: Icon(Symbols.globe_rounded),
+                                tooltip: getLanguageName(
+                                  context,
+                                  _replyLanguage,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
                               OutlinedButton(
                                 onPressed: () => setState(() {
                                   _replyTextController!.dispose();
@@ -1111,6 +1210,7 @@ class _ContentItemState extends State<ContentItem> {
                                 onPressed: () async {
                                   await widget.onReply!(
                                     _replyTextController!.text,
+                                    _replyLanguage,
                                   );
 
                                   await replyDraftController.discard();

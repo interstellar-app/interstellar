@@ -43,7 +43,10 @@ class SearchListModel with _$SearchListModel {
     );
   }
 
-  factory SearchListModel.fromLemmy(Map<String, dynamic> json) {
+  factory SearchListModel.fromLemmy(
+    Map<String, dynamic> json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) {
     List<Object> items = [];
 
     for (var user in json['users']) {
@@ -55,11 +58,18 @@ class SearchListModel with _$SearchListModel {
     }
 
     for (var post in json['posts']) {
-      items.add(PostModel.fromLemmy(post as JsonMap));
+      items.add(
+        PostModel.fromLemmy(post as JsonMap, langCodeIdPairs: langCodeIdPairs),
+      );
     }
 
     for (var comment in json['comments']) {
-      items.add(CommentModel.fromLemmy(comment as JsonMap));
+      items.add(
+        CommentModel.fromLemmy(
+          comment as JsonMap,
+          langCodeIdPairs: langCodeIdPairs,
+        ),
+      );
     }
 
     return SearchListModel(
@@ -68,7 +78,10 @@ class SearchListModel with _$SearchListModel {
     );
   }
 
-  factory SearchListModel.fromPiefed(Map<String, dynamic> json) {
+  factory SearchListModel.fromPiefed(
+    Map<String, dynamic> json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) {
     List<Object> items = [];
 
     for (var user in json['users']) {
@@ -80,11 +93,18 @@ class SearchListModel with _$SearchListModel {
     }
 
     for (var post in json['posts']) {
-      items.add(PostModel.fromPiefed(post as JsonMap));
+      items.add(
+        PostModel.fromPiefed(post as JsonMap, langCodeIdPairs: langCodeIdPairs),
+      );
     }
 
     for (var comment in json['comments']) {
-      items.add(CommentModel.fromPiefed(comment as JsonMap));
+      items.add(
+        CommentModel.fromPiefed(
+          comment as JsonMap,
+          langCodeIdPairs: langCodeIdPairs,
+        ),
+      );
     }
 
     return SearchListModel(

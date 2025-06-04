@@ -24,13 +24,17 @@ class CommentListModel with _$CommentListModel {
   );
 
   // Lemmy comment list that needs to be converted to tree format. Used for post comments and comment replies.
-  factory CommentListModel.fromLemmyToTree(JsonMap json) => CommentListModel(
+  factory CommentListModel.fromLemmyToTree(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => CommentListModel(
     items: (json['comments'] as List<dynamic>)
         .where((c) => (c['comment']['path'] as String).split('.').length == 2)
         .map(
           (c) => CommentModel.fromLemmy(
             c as JsonMap,
             possibleChildrenJson: json['comments'] as List<dynamic>,
+            langCodeIdPairs: langCodeIdPairs,
           ),
         )
         .toList(),
@@ -38,21 +42,33 @@ class CommentListModel with _$CommentListModel {
   );
 
   // Lemmy comment list that needs to be converted to flat format. Used for a list of user comments.
-  factory CommentListModel.fromLemmyToFlat(JsonMap json) => CommentListModel(
+  factory CommentListModel.fromLemmyToFlat(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => CommentListModel(
     items: (json['comments'] as List<dynamic>)
-        .map((c) => CommentModel.fromLemmy(c as JsonMap))
+        .map(
+          (c) => CommentModel.fromLemmy(
+            c as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
         .toList(),
     nextPage: json['next_page'] as String?,
   );
 
   // Piefed comment list that needs to be converted to tree format. Used for post comments and comment replies.
-  factory CommentListModel.fromPiefedToTree(JsonMap json) => CommentListModel(
+  factory CommentListModel.fromPiefedToTree(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => CommentListModel(
     items: (json['comments'] as List<dynamic>)
         .where((c) => (c['comment']['path'] as String).split('.').length == 2)
         .map(
           (c) => CommentModel.fromPiefed(
             c as JsonMap,
             possibleChildrenJson: json['comments'] as List<dynamic>,
+            langCodeIdPairs: langCodeIdPairs,
           ),
         )
         .toList(),
@@ -60,9 +76,17 @@ class CommentListModel with _$CommentListModel {
   );
 
   // Piefed comment list that needs to be converted to flat format. Used for a list of user comments.
-  factory CommentListModel.fromPiefedToFlat(JsonMap json) => CommentListModel(
+  factory CommentListModel.fromPiefedToFlat(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => CommentListModel(
     items: (json['comments'] as List<dynamic>)
-        .map((c) => CommentModel.fromPiefed(c as JsonMap))
+        .map(
+          (c) => CommentModel.fromPiefed(
+            c as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
         .toList(),
     nextPage: json['next_page'] as String?,
   );
@@ -129,6 +153,7 @@ class CommentModel with _$CommentModel {
   factory CommentModel.fromLemmy(
     JsonMap json, {
     List<dynamic> possibleChildrenJson = const [],
+    required List<(String, int)> langCodeIdPairs,
   }) {
     final lemmyComment = json['comment'] as JsonMap;
     final lemmyCounts = json['counts'] as JsonMap;
@@ -150,6 +175,7 @@ class CommentModel with _$CommentModel {
           (c) => CommentModel.fromLemmy(
             c,
             possibleChildrenJson: possibleChildrenJson,
+            langCodeIdPairs: langCodeIdPairs,
           ),
         )
         .toList();
@@ -169,7 +195,10 @@ class CommentModel with _$CommentModel {
           (lemmyComment['deleted'] as bool) || (lemmyComment['removed'] as bool)
           ? null
           : lemmyComment['content'] as String,
-      lang: null,
+      lang: langCodeIdPairs
+          .where((pair) => pair.$2 == lemmyComment['language_id'] as int)
+          .firstOrNull
+          ?.$1,
       upvotes: lemmyCounts['upvotes'] as int,
       downvotes: lemmyCounts['downvotes'] as int,
       boosts: null,
@@ -192,6 +221,7 @@ class CommentModel with _$CommentModel {
   factory CommentModel.fromPiefed(
     JsonMap json, {
     List<dynamic> possibleChildrenJson = const [],
+    required List<(String, int)> langCodeIdPairs,
   }) {
     final piefedComment = json['comment'] as JsonMap;
     final piefedCounts = json['counts'] as JsonMap;
@@ -213,6 +243,7 @@ class CommentModel with _$CommentModel {
           (c) => CommentModel.fromPiefed(
             c,
             possibleChildrenJson: possibleChildrenJson,
+            langCodeIdPairs: langCodeIdPairs,
           ),
         )
         .toList();
@@ -233,7 +264,10 @@ class CommentModel with _$CommentModel {
               (piefedComment['removed'] as bool)
           ? null
           : piefedComment['body'] as String,
-      lang: null,
+      lang: langCodeIdPairs
+          .where((pair) => pair.$2 == piefedComment['language_id'] as int)
+          .firstOrNull
+          ?.$1,
       upvotes: piefedCounts['upvotes'] as int,
       downvotes: piefedCounts['downvotes'] as int,
       boosts: null,

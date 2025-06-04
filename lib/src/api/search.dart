@@ -50,7 +50,10 @@ class APISearch {
 
         json['next_page'] = nextPage;
 
-        return SearchListModel.fromLemmy(json);
+        return SearchListModel.fromLemmy(
+          json,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/search';
@@ -79,7 +82,10 @@ class APISearch {
 
         json['next_page'] = nextPage;
 
-        return SearchListModel.fromPiefed(json);
+        return SearchListModel.fromPiefed(
+          json,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 }

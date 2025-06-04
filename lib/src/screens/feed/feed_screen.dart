@@ -1225,12 +1225,20 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                     _pagingController.itemList = newList;
                                   });
                                 },
-                                onReply: whenLoggedIn(context, (body) async {
+                                onReply: whenLoggedIn(context, (
+                                  body,
+                                  lang,
+                                ) async {
                                   await context
                                       .read<AppController>()
                                       .api
                                       .comments
-                                      .create(item.type, item.id, body);
+                                      .create(
+                                        item.type,
+                                        item.id,
+                                        body,
+                                        lang: lang,
+                                      );
                                 }),
                                 onTap: onPostTap,
                                 filterListWarnings:
@@ -1263,12 +1271,12 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                             },
                             onTap: onPostTap,
                             isPreview: true,
-                            onReply: whenLoggedIn(context, (body) async {
+                            onReply: whenLoggedIn(context, (body, lang) async {
                               await context
                                   .read<AppController>()
                                   .api
                                   .comments
-                                  .create(item.type, item.id, body);
+                                  .create(item.type, item.id, body, lang: lang);
                             }),
                             filterListWarnings:
                                 _filterListWarnings[(item.type, item.id)],

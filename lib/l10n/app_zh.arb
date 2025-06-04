@@ -328,8 +328,6 @@
   },
   "settings_about": "关于",
   "@settings_about": {},
-  "settings_defaultPostLanguage": "默认发帖语言",
-  "@settings_defaultPostLanguage": {},
   "settings_useAccountLanguageFilter": "使用账号语言过滤",
   "@settings_useAccountLanguageFilter": {},
   "settings_useAccountLanguageFilter_help": "请注意：语言过滤仅适用于“所有”和探索信息流",

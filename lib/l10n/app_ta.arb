@@ -303,8 +303,6 @@
   },
   "settings_about": "பற்றி",
   "@settings_about": {},
-  "settings_defaultPostLanguage": "இயல்புநிலை இடுகை மொழி",
-  "@settings_defaultPostLanguage": {},
   "settings_useAccountLanguageFilter": "கணக்கு மொழி வடிகட்டியைப் பயன்படுத்தவும்",
   "@settings_useAccountLanguageFilter": {},
   "settings_useAccountLanguageFilter_help": "தயவுசெய்து கவனிக்கவும்: மொழி வடிப்பான்கள் \"அனைத்திற்கும்\" மட்டுமே பொருந்தும் மற்றும் ஊட்டங்களை ஆராயுங்கள்",

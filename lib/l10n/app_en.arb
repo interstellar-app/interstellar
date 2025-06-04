@@ -172,7 +172,7 @@
     }
   },
   "settings_about": "About",
-  "settings_defaultPostLanguage": "Default post language",
+  "settings_defaultCreateLanguage": "Default post/comment creation language",
   "settings_useAccountLanguageFilter": "Use account language filter",
   "settings_useAccountLanguageFilter_help": "Please note: language filters only apply to \"All\" and explore feeds",
   "settings_customLanguageFilter": "Custom language filter",

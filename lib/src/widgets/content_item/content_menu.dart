@@ -324,7 +324,7 @@ void showContentMenu(
                     LoadingListTile(
                       title: Text('Translate'),
                       onTap: () async {
-                        await onTranslate(ac.profile.defaultPostLanguage);
+                        await onTranslate(ac.profile.defaultCreateLanguage);
                         if (!context.mounted) return;
                         Navigator.pop(context);
                       },
@@ -333,7 +333,7 @@ void showContentMenu(
                           final langCode = await languageSelectionMenu(context)
                               .askSelection(
                                 context,
-                                ac.selectedProfileValue.defaultPostLanguage,
+                                ac.selectedProfileValue.defaultCreateLanguage,
                               );
 
                           if (langCode == null) return;
