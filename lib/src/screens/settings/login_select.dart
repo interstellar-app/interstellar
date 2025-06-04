@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/settings/login_confirm.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
 
-final List<String> _recommendedInstances = [
-  'kbin.earth',
-  'fedia.io',
-  'thebrainbin.org',
-  'kbin.melroy.org',
-  'lemm.ee',
-  'lemmy.ml',
-  'lemmy.world',
+final List<(String, ServerSoftware)> _recommendedInstances = [
+  ('kbin.earth', ServerSoftware.mbin),
+  ('fedia.io', ServerSoftware.mbin),
+  ('thebrainbin.org', ServerSoftware.mbin),
+  ('kbin.melroy.org', ServerSoftware.mbin),
+  ('lemmy.world', ServerSoftware.lemmy),
+  ('lemmy.ml', ServerSoftware.lemmy),
+  ('sh.itjust.works', ServerSoftware.lemmy),
+  ('lemmy.dbzer0.com', ServerSoftware.lemmy),
+  ('piefed.social', ServerSoftware.piefed),
+  ('feddit.online', ServerSoftware.piefed),
 ];
 
 class LoginSelectScreen extends StatefulWidget {
@@ -61,42 +65,45 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l(context).addAccount)),
       body: ListView(
+        padding: const EdgeInsets.all(16.0),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextEditor(
-                  _instanceHostController,
-                  label: l(context).instanceHost,
-                  onChanged: (_) => setState(() {}),
-                ),
-                const SizedBox(height: 12),
-                FilledButton(
-                  onPressed: _instanceHostController.text.isEmpty
-                      ? null
-                      : () => _initiateLogin(_instanceHostController.text),
-                  child: Text(l(context).continue_),
-                ),
-              ],
-            ),
+          TextEditor(
+            _instanceHostController,
+            label: l(context).instanceHost,
+            onChanged: (_) => setState(() {}),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Text(
-                  l(context).recommendedInstances,
-                  style: Theme.of(context).textTheme.headlineSmall,
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: _instanceHostController.text.isEmpty
+                ? null
+                : () => _initiateLogin(_instanceHostController.text),
+            child: Text(l(context).continue_),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            l(context).recommendedInstances,
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          ...ServerSoftware.values.expand(
+            (software) => [
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  software.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 4),
-                ..._recommendedInstances.map(
-                  (v) =>
-                      ListTile(title: Text(v), onTap: () => _initiateLogin(v)),
-                ),
-              ],
-            ),
+              ),
+              ..._recommendedInstances
+                  .where((instance) => instance.$2 == software)
+                  .map(
+                    (v) => ListTile(
+                      title: Text(v.$1),
+                      onTap: () => _initiateLogin(v.$1),
+                    ),
+                  ),
+            ],
           ),
         ],
       ),
