@@ -4,6 +4,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/settings/login_confirm.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
 
@@ -85,25 +86,15 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
-          ...ServerSoftware.values.expand(
-            (software) => [
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  software.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
+          ..._recommendedInstances.map(
+            (v) => ListTile(
+              title: Row(
+                children: [
+                  ServerSoftwareIndicator(label: v.$1, software: v.$2),
+                ],
               ),
-              ..._recommendedInstances
-                  .where((instance) => instance.$2 == software)
-                  .map(
-                    (v) => ListTile(
-                      title: Text(v.$1),
-                      onTap: () => _initiateLogin(v.$1),
-                    ),
-                  ),
-            ],
+              onTap: () => _initiateLogin(v.$1),
+            ),
           ),
         ],
       ),
