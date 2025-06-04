@@ -4,21 +4,35 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/settings/login_confirm.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
 
-final List<(String, ServerSoftware)> _recommendedInstances = [
-  ('kbin.earth', ServerSoftware.mbin),
-  ('fedia.io', ServerSoftware.mbin),
-  ('thebrainbin.org', ServerSoftware.mbin),
-  ('kbin.melroy.org', ServerSoftware.mbin),
-  ('lemmy.world', ServerSoftware.lemmy),
-  ('lemmy.ml', ServerSoftware.lemmy),
-  ('sh.itjust.works', ServerSoftware.lemmy),
-  ('lemmy.dbzer0.com', ServerSoftware.lemmy),
-  ('piefed.social', ServerSoftware.piefed),
-  ('feddit.online', ServerSoftware.piefed),
-];
+final Map<String, List<(String, ServerSoftware)>> _recommendedInstances = {
+  '': [
+    ('kbin.earth', ServerSoftware.mbin),
+    ('fedia.io', ServerSoftware.mbin),
+    ('thebrainbin.org', ServerSoftware.mbin),
+    ('kbin.melroy.org', ServerSoftware.mbin),
+    ('lemmy.world', ServerSoftware.lemmy),
+    ('lemmy.ml', ServerSoftware.lemmy),
+    ('sh.itjust.works', ServerSoftware.lemmy),
+    ('lemmy.dbzer0.com', ServerSoftware.lemmy),
+    ('piefed.social', ServerSoftware.piefed),
+    ('feddit.online', ServerSoftware.piefed),
+  ],
+  'de': [
+    ('gehirneimer.de', ServerSoftware.mbin),
+    ('feddit.org', ServerSoftware.lemmy),
+    ('discuss.tchncs.de', ServerSoftware.lemmy),
+  ],
+  'fr': [
+    ('jlai.lu', ServerSoftware.lemmy),
+    ('lemmy.ca', ServerSoftware.lemmy),
+    ('feddit.fr', ServerSoftware.piefed),
+  ],
+  'it': [('feddit.it', ServerSoftware.lemmy)],
+};
 
 class LoginSelectScreen extends StatefulWidget {
   const LoginSelectScreen({super.key});
@@ -62,6 +76,19 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final language = Localizations.localeOf(context).languageCode;
+
+    genServerList(List<(String, ServerSoftware)> servers) => servers
+        .map(
+          (v) => ListTile(
+            title: Row(
+              children: [ServerSoftwareIndicator(label: v.$1, software: v.$2)],
+            ),
+            onTap: () => _initiateLogin(v.$1),
+          ),
+        )
+        .toList();
+
     return Scaffold(
       appBar: AppBar(title: Text(l(context).addAccount)),
       body: ListView(
@@ -85,26 +112,11 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
-          ...ServerSoftware.values.expand(
-            (software) => [
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  software.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              ..._recommendedInstances
-                  .where((instance) => instance.$2 == software)
-                  .map(
-                    (v) => ListTile(
-                      title: Text(v.$1),
-                      onTap: () => _initiateLogin(v.$1),
-                    ),
-                  ),
-            ],
-          ),
+          if (_recommendedInstances.containsKey(language)) ...[
+            ...genServerList(_recommendedInstances[language]!),
+            Divider(),
+          ],
+          ...genServerList(_recommendedInstances['']!),
         ],
       ),
     );

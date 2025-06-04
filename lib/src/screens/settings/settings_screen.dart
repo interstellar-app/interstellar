@@ -12,6 +12,7 @@ import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
 import 'package:interstellar/src/screens/settings/notification_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -114,7 +115,14 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.person_rounded),
             title: Text(l(context).account_switch),
-            subtitle: Text(ac.selectedAccount),
+            subtitle: Row(
+              children: [
+                ServerSoftwareIndicator(
+                  label: ac.selectedAccount,
+                  software: ac.serverSoftware,
+                ),
+              ],
+            ),
             onTap: () async {
               final newAccount = await switchAccount(context);
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/settings/login_select.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -93,9 +94,14 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                   )
                   .map(
                     (account) => ListTile(
-                      title: Text(account),
-                      subtitle: Text(
-                        ac.servers[account.split('@').last]!.software.title,
+                      title: Row(
+                        children: [
+                          ServerSoftwareIndicator(
+                            label: account,
+                            software:
+                                ac.servers[account.split('@').last]!.software,
+                          ),
+                        ],
                       ),
                       onTap: () async {
                         Navigator.of(context).pop(account);
