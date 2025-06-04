@@ -41,18 +41,16 @@
   },
   "search": "Recherche",
   "@search": {},
-  "magazines": "Magazines",
-  "@magazines": {},
   "people": "Gens",
   "@people": {},
   "domains": "Domaines",
   "@domains": {},
   "openInBrowser": "Ouvrir dans le navigateur",
   "@openInBrowser": {},
-  "modsOf": "Mods de {magazine}",
+  "modsOf": "Mods de {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -149,8 +147,6 @@
   "@stars_empty": {},
   "postDeleted": "Publication supprimée",
   "@postDeleted": {},
-  "subscriptions_magazine": "Abonnements aux magazines",
-  "@subscriptions_magazine": {},
   "comment": "Commentaire",
   "@comment": {},
   "comments": "Commentaires",
@@ -207,8 +203,6 @@
   "@originalContent_long": {},
   "pin": "Épingler",
   "@pin": {},
-  "pinnedInMagazine": "Épinglé dans le magazine",
-  "@pinnedInMagazine": {},
   "createdAt": "Créé à {datetime}",
   "@createdAt": {
     "placeholders": {

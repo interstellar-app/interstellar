@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/domain.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/domain_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
@@ -22,7 +22,7 @@ class NavDrawer extends StatefulWidget {
 }
 
 class _NavDrawerState extends State<NavDrawer> {
-  List<DetailedMagazineModel>? subbedMagazines;
+  List<DetailedCommunityModel>? subbedCommunities;
   List<DetailedUserModel>? subbedUsers;
   List<DomainModel>? subbedDomains;
 
@@ -34,11 +34,11 @@ class _NavDrawerState extends State<NavDrawer> {
       context
           .read<AppController>()
           .api
-          .magazines
+          .community
           .list(filter: ExploreFilter.subscribed)
           .then((value) {
             if (mounted && value.items.isNotEmpty) {
-              setState(() => subbedMagazines = value.items);
+              setState(() => subbedCommunities = value.items);
             }
           });
       if (context.read<AppController>().serverSoftware == ServerSoftware.mbin) {
@@ -110,10 +110,10 @@ class _NavDrawerState extends State<NavDrawer> {
                   break;
 
                 case '!':
-                  final magazine = await context
+                  final community = await context
                       .read<AppController>()
                       .api
-                      .magazines
+                      .community
                       .getByName(name);
 
                   if (!mounted) return;
@@ -121,7 +121,7 @@ class _NavDrawerState extends State<NavDrawer> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) =>
-                          MagazineScreen(magazine.id, initData: magazine),
+                          CommunityScreen(community.id, initData: community),
                     ),
                   );
                   break;
@@ -131,7 +131,7 @@ class _NavDrawerState extends State<NavDrawer> {
           ),
         ),
         if (context.read<AppController>().isLoggedIn &&
-            subbedMagazines == null &&
+            subbedCommunities == null &&
             subbedUsers == null &&
             subbedDomains == null)
           const Row(
@@ -139,42 +139,42 @@ class _NavDrawerState extends State<NavDrawer> {
             children: [CircularProgressIndicator()],
           ),
         if (context.watch<AppController>().isLoggedIn &&
-            (subbedMagazines != null ||
+            (subbedCommunities != null ||
                 subbedUsers != null ||
                 subbedDomains != null)) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SettingsHeader(l(context).subscriptions),
           ),
-          if (subbedMagazines != null) ...[
-            ...subbedMagazines!
+          if (subbedCommunities != null) ...[
+            ...subbedCommunities!
                 .asMap()
                 .map(
-                  (index, magazine) => MapEntry(
+                  (index, community) => MapEntry(
                     index,
                     ListTile(
-                      title: Text(magazine.name),
-                      leading: magazine.icon == null
+                      title: Text(community.name),
+                      leading: community.icon == null
                           ? null
-                          : Avatar(magazine.icon, radius: 16),
+                          : Avatar(community.icon, radius: 16),
                       trailing: StarButton(
-                        magazine.name.contains('@')
-                            ? '!${magazine.name}'
-                            : '!${magazine.name}@${context.watch<AppController>().instanceHost}',
+                        community.name.contains('@')
+                            ? '!${community.name}'
+                            : '!${community.name}@${context.watch<AppController>().instanceHost}',
                       ),
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => MagazineScreen(
-                              magazine.id,
-                              initData: magazine,
+                            builder: (context) => CommunityScreen(
+                              community.id,
+                              initData: community,
                               onUpdate: (newValue) {
                                 setState(() {
-                                  final newSubbedMagazines = [
-                                    ...subbedMagazines!,
+                                  final newSubbedCommunities = [
+                                    ...subbedCommunities!,
                                   ];
-                                  newSubbedMagazines[index] = newValue;
-                                  subbedMagazines = newSubbedMagazines;
+                                  newSubbedCommunities[index] = newValue;
+                                  subbedCommunities = newSubbedCommunities;
                                 });
                               },
                             ),
@@ -190,11 +190,12 @@ class _NavDrawerState extends State<NavDrawer> {
               child: TextButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const ExploreScreen(subOnlyMode: ExploreType.magazines),
+                    builder: (context) => const ExploreScreen(
+                      subOnlyMode: ExploreType.communities,
+                    ),
                   ),
                 ),
-                child: Text(l(context).subscriptions_magazine_all),
+                child: Text(l(context).subscriptions_community_all),
               ),
             ),
           ],

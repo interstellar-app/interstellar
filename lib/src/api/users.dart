@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
-import 'package:interstellar/src/api/magazines.dart';
+import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
@@ -502,7 +502,7 @@ class APIUsers {
           body: {
             'hideAdult': !settings.showNSFW,
             'showSubscribedUsers': settings.showSubscribedUsers,
-            'showSubscribedMagazines': settings.showSubscribedMagazines,
+            'showSubscribedMagazines': settings.showSubscribedCommunities,
             'showSubscribedDomains': settings.showSubscribedDomains,
             'showProfileSubscriptions': settings.showProfileSubscriptions,
             'showProfileFollowings': settings.showProfileFollowings,

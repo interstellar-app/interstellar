@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -11,22 +11,22 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class MagazineOwnerPanel extends StatefulWidget {
-  final DetailedMagazineModel initData;
-  final void Function(DetailedMagazineModel) onUpdate;
+class CommunityOwnerPanel extends StatefulWidget {
+  final DetailedCommunityModel initData;
+  final void Function(DetailedCommunityModel) onUpdate;
 
-  const MagazineOwnerPanel({
+  const CommunityOwnerPanel({
     super.key,
     required this.initData,
     required this.onUpdate,
   });
 
   @override
-  State<MagazineOwnerPanel> createState() => _MagazineOwnerPanelState();
+  State<CommunityOwnerPanel> createState() => _CommunityOwnerPanelState();
 }
 
-class _MagazineOwnerPanelState extends State<MagazineOwnerPanel> {
-  late DetailedMagazineModel _data;
+class _CommunityOwnerPanelState extends State<CommunityOwnerPanel> {
+  late DetailedCommunityModel _data;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _MagazineOwnerPanelState extends State<MagazineOwnerPanel> {
 
   @override
   Widget build(BuildContext context) {
-    onUpdate(DetailedMagazineModel newValue) {
+    onUpdate(DetailedCommunityModel newValue) {
       setState(() {
         _data = newValue;
         widget.onUpdate(newValue);
@@ -60,9 +60,9 @@ class _MagazineOwnerPanelState extends State<MagazineOwnerPanel> {
         body: TabBarView(
           physics: appTabViewPhysics(context),
           children: <Widget>[
-            MagazineOwnerPanelGeneral(data: _data, onUpdate: onUpdate),
-            MagazineOwnerPanelModerators(data: _data, onUpdate: onUpdate),
-            MagazineOwnerPanelDeletion(data: _data, onUpdate: onUpdate),
+            CommunityOwnerPanelGeneral(data: _data, onUpdate: onUpdate),
+            CommunityOwnerPanelModerators(data: _data, onUpdate: onUpdate),
+            CommunityOwnerPanelDeletion(data: _data, onUpdate: onUpdate),
           ],
         ),
       ),
@@ -70,23 +70,24 @@ class _MagazineOwnerPanelState extends State<MagazineOwnerPanel> {
   }
 }
 
-class MagazineOwnerPanelGeneral extends StatefulWidget {
-  // Data is null for magazine creation screen
-  final DetailedMagazineModel? data;
-  final void Function(DetailedMagazineModel) onUpdate;
+class CommunityOwnerPanelGeneral extends StatefulWidget {
+  // Data is null for community creation screen
+  final DetailedCommunityModel? data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
-  const MagazineOwnerPanelGeneral({
+  const CommunityOwnerPanelGeneral({
     super.key,
     required this.data,
     required this.onUpdate,
   });
 
   @override
-  State<MagazineOwnerPanelGeneral> createState() =>
-      _MagazineOwnerPanelGeneralState();
+  State<CommunityOwnerPanelGeneral> createState() =>
+      _CommunityOwnerPanelGeneralState();
 }
 
-class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
+class _CommunityOwnerPanelGeneralState
+    extends State<CommunityOwnerPanelGeneral> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -110,7 +111,7 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
   @override
   Widget build(BuildContext context) {
     final descriptionDraftController = context.watch<DraftsController>().auto(
-      'magazine:description${widget.data == null ? '' : ':${widget.data}'}',
+      'community:description${widget.data == null ? '' : ':${widget.data}'}',
     );
 
     return ListView(
@@ -188,7 +189,7 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
                         ? await context
                               .read<AppController>()
                               .api
-                              .magazineModeration
+                              .communityModeration
                               .create(
                                 name: _nameController.text,
                                 title: _titleController.text,
@@ -200,7 +201,7 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
                         : await context
                               .read<AppController>()
                               .api
-                              .magazineModeration
+                              .communityModeration
                               .edit(
                                 widget.data!.id,
                                 title: _titleController.text,
@@ -222,23 +223,23 @@ class _MagazineOwnerPanelGeneralState extends State<MagazineOwnerPanelGeneral> {
   }
 }
 
-class MagazineOwnerPanelModerators extends StatefulWidget {
-  final DetailedMagazineModel data;
-  final void Function(DetailedMagazineModel) onUpdate;
+class CommunityOwnerPanelModerators extends StatefulWidget {
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
-  const MagazineOwnerPanelModerators({
+  const CommunityOwnerPanelModerators({
     super.key,
     required this.data,
     required this.onUpdate,
   });
 
   @override
-  State<MagazineOwnerPanelModerators> createState() =>
-      _MagazineOwnerPanelModeratorsState();
+  State<CommunityOwnerPanelModerators> createState() =>
+      _CommunityOwnerPanelModeratorsState();
 }
 
-class _MagazineOwnerPanelModeratorsState
-    extends State<MagazineOwnerPanelModerators> {
+class _CommunityOwnerPanelModeratorsState
+    extends State<CommunityOwnerPanelModerators> {
   final TextEditingController _addModController = TextEditingController();
 
   @override
@@ -267,7 +268,7 @@ class _MagazineOwnerPanelModeratorsState
                           .getByName(_addModController.text);
 
                       if (!mounted) return;
-                      final result = await showDialog<DetailedMagazineModel>(
+                      final result = await showDialog<DetailedCommunityModel>(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
                           title: const Text('Add Moderator'),
@@ -288,7 +289,7 @@ class _MagazineOwnerPanelModeratorsState
                                   await context
                                       .read<AppController>()
                                       .api
-                                      .magazineModeration
+                                      .communityModeration
                                       .updateModerator(
                                         widget.data.id,
                                         user.id,
@@ -318,7 +319,7 @@ class _MagazineOwnerPanelModeratorsState
               IconButton(
                 icon: const Icon(Symbols.delete_outline_rounded),
                 onPressed: () async {
-                  final result = await showDialog<DetailedMagazineModel>(
+                  final result = await showDialog<DetailedCommunityModel>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
                       title: const Text('Remove moderator'),
@@ -342,7 +343,7 @@ class _MagazineOwnerPanelModeratorsState
                               await context
                                   .read<AppController>()
                                   .api
-                                  .magazineModeration
+                                  .communityModeration
                                   .updateModerator(
                                     widget.data.id,
                                     mod.id,
@@ -367,23 +368,23 @@ class _MagazineOwnerPanelModeratorsState
   }
 }
 
-class MagazineOwnerPanelDeletion extends StatefulWidget {
-  final DetailedMagazineModel data;
-  final void Function(DetailedMagazineModel) onUpdate;
+class CommunityOwnerPanelDeletion extends StatefulWidget {
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
-  const MagazineOwnerPanelDeletion({
+  const CommunityOwnerPanelDeletion({
     super.key,
     required this.data,
     required this.onUpdate,
   });
 
   @override
-  State<MagazineOwnerPanelDeletion> createState() =>
-      _MagazineOwnerPanelDeletionState();
+  State<CommunityOwnerPanelDeletion> createState() =>
+      _CommunityOwnerPanelDeletionState();
 }
 
-class _MagazineOwnerPanelDeletionState
-    extends State<MagazineOwnerPanelDeletion> {
+class _CommunityOwnerPanelDeletionState
+    extends State<CommunityOwnerPanelDeletion> {
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -398,7 +399,7 @@ class _MagazineOwnerPanelDeletionState
                     await context
                         .read<AppController>()
                         .api
-                        .magazineModeration
+                        .communityModeration
                         .removeIcon(widget.data.id);
 
                     widget.onUpdate(widget.data.copyWith(icon: null));
@@ -416,7 +417,7 @@ class _MagazineOwnerPanelDeletionState
               final result = await showDialog<bool>(
                 context: context,
                 builder: (BuildContext context) =>
-                    MagazineOwnerPanelDeletionDialog(data: widget.data),
+                    CommunityOwnerPanelDeletionDialog(data: widget.data),
               );
 
               if (result == true) {
@@ -424,7 +425,7 @@ class _MagazineOwnerPanelDeletionState
                 Navigator.of(context).pop();
               }
             },
-            child: const Text('Delete Magazine'),
+            child: const Text('Delete Community'),
           ),
         ),
       ],
@@ -432,31 +433,31 @@ class _MagazineOwnerPanelDeletionState
   }
 }
 
-class MagazineOwnerPanelDeletionDialog extends StatefulWidget {
-  final DetailedMagazineModel data;
+class CommunityOwnerPanelDeletionDialog extends StatefulWidget {
+  final DetailedCommunityModel data;
 
-  const MagazineOwnerPanelDeletionDialog({super.key, required this.data});
+  const CommunityOwnerPanelDeletionDialog({super.key, required this.data});
 
   @override
-  State<MagazineOwnerPanelDeletionDialog> createState() =>
-      _MagazineOwnerPanelDeletionDialogState();
+  State<CommunityOwnerPanelDeletionDialog> createState() =>
+      _CommunityOwnerPanelDeletionDialogState();
 }
 
-class _MagazineOwnerPanelDeletionDialogState
-    extends State<MagazineOwnerPanelDeletionDialog> {
+class _CommunityOwnerPanelDeletionDialogState
+    extends State<CommunityOwnerPanelDeletionDialog> {
   final TextEditingController _confirmController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final magazineName = widget.data.name;
+    final communityName = widget.data.name;
 
     return AlertDialog(
-      title: const Text('Delete magazine'),
+      title: const Text('Delete community'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'WARNING: You are about to delete this magazine and all of its related posts. Type "$magazineName" below to confirm deletion.',
+            'WARNING: You are about to delete this community and all of its related posts. Type "$communityName" below to confirm deletion.',
           ),
           const SizedBox(height: 16),
           TextEditor(_confirmController, onChanged: (_) => setState(() {})),
@@ -468,19 +469,19 @@ class _MagazineOwnerPanelDeletionDialogState
           child: const Text('Cancel'),
         ),
         LoadingFilledButton(
-          onPressed: _confirmController.text != magazineName
+          onPressed: _confirmController.text != communityName
               ? null
               : () async {
                   await context
                       .read<AppController>()
                       .api
-                      .magazineModeration
+                      .communityModeration
                       .delete(widget.data.id);
 
                   if (!mounted) return;
                   Navigator.pop(context, true);
                 },
-          label: const Text('DELETE MAGAZINE'),
+          label: const Text('DELETE COMMUNITY'),
         ),
       ],
     );

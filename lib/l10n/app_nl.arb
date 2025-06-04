@@ -73,8 +73,6 @@
   "@comment_openParent": {},
   "search": "Zoeken",
   "@search": {},
-  "magazines": "Tijdschriften",
-  "@magazines": {},
   "people": "Mensen",
   "@people": {},
   "openInBrowser": "Open in Browser",
@@ -113,10 +111,6 @@
   "@account_settings_notifyOnThreadReply": {},
   "account_settings_notifyOnThreadCommentReply": "Melden bij reactie op artikel",
   "@account_settings_notifyOnThreadCommentReply": {},
-  "subscriptions_magazine": "Tijdschriftabonnementen",
-  "@subscriptions_magazine": {},
-  "subscriptions_magazine_all": "Alle tijdschriftabonnementen",
-  "@subscriptions_magazine_all": {},
   "subscriptions_user": "Gebruiker Volgers",
   "@subscriptions_user": {},
   "openReplies": "Open {count} {count, plural, =1{reactie} other{reacties}}",
@@ -127,8 +121,6 @@
       }
     }
   },
-  "account_settings_showSubscribedMagazines": "Geabonneerde tijdschriften weergeven",
-  "@account_settings_showSubscribedMagazines": {},
   "account_settings_showSubscribedUsers": "Geabonneerde gebruikers weergeven",
   "@account_settings_showSubscribedUsers": {},
   "account_settings_notifyOnThread": "Meld nieuwe artikelen in geabonneerde tijdschriften",
@@ -157,10 +149,10 @@
   "@account_settings_showNSFW": {},
   "commentDeleted": "Commentaar Verwijderd",
   "@commentDeleted": {},
-  "modsOf": "Moderatoren van {magazine}",
+  "modsOf": "Moderatoren van {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -377,8 +369,6 @@
   "@profile_new": {},
   "profile_autoSelect": "Automatisch selecteren bij het starten van de app",
   "@profile_autoSelect": {},
-  "settings_mbinMagazine": "Mbin Tijdschrift",
-  "@settings_mbinMagazine": {},
   "settings_colorScheme": "Kleurenschema",
   "@settings_colorScheme": {},
   "settings_colorScheme_indigo": "Indigo",
@@ -425,8 +415,6 @@
   "@settings_colorScheme_espresso": {},
   "settings_colorScheme_aquaBlue": "Aquablauw",
   "@settings_colorScheme_aquaBlue": {},
-  "settings_mbinConfigsMagazine": "Configuraties Deel Magazine",
-  "@settings_mbinConfigsMagazine": {},
   "settings_colorScheme_hippieBlue": "Hippieblauw",
   "@settings_colorScheme_hippieBlue": {},
   "settings_colorScheme_brandBlue": "Merk blauw",
@@ -557,12 +545,8 @@
   "@continueInBrowser_manual": {},
   "redirectReceivedMessage": "Omleiding ontvangen. U kunt dit tabblad nu sluiten en terugkeren naar de app.",
   "@redirectReceivedMessage": {},
-  "selectMagazine": "Selecteer een tijdschrift ...",
-  "@selectMagazine": {},
   "title": "Titel",
   "@title": {},
-  "magazine": "Tijdschrift",
-  "@magazine": {},
   "action_setLocation": "Zet Actielocatie",
   "@action_setLocation": {},
   "action_hide": "Verbergen",
@@ -591,8 +575,6 @@
   "@markdownEditor_codeBlock": {},
   "originalPoster_long": "Originele poster",
   "@originalPoster_long": {},
-  "pinnedInMagazine": "Vastgezet in tijdschrift",
-  "@pinnedInMagazine": {},
   "markdownEditor_preview": "Voorbeeld",
   "@markdownEditor_preview": {},
   "markdownEditor_drafts_apply": "Concept toepassen",
@@ -611,8 +593,6 @@
   "@action_fabTap": {},
   "markdownEditor_drafts_discardAll": "Alles weggooien",
   "@markdownEditor_drafts_discardAll": {},
-  "microblog_magazineHelperText": "Standaard wordt het 'willekeurige' tijdschrift gebruikt voor microblogs, aangezien Mbin daar niet-gecategoriseerde microblogs opslaat.",
-  "@microblog_magazineHelperText": {},
   "markdownEditor_inlineCode": "Inline-code",
   "@markdownEditor_inlineCode": {},
   "markdownEditor_quote": "Citaat",
@@ -633,13 +613,13 @@
       }
     }
   },
-  "banUser_help": "Je staat op het punt om de gebruiker {user} te bannen van {magazine}.",
+  "banUser_help": "Je staat op het punt om de gebruiker {user} te bannen van {community}.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -658,8 +638,6 @@
   "@create_link_invalid": {},
   "create_microblog": "Microblog",
   "@create_microblog": {},
-  "create_magazine": "Tijdschrift",
-  "@create_magazine": {},
   "action_fabMenu": "FAB menu",
   "@action_fabMenu": {},
   "filterList_new": "Nieuwe filterlijst",
@@ -685,8 +663,6 @@
   },
   "settings_accountReset_help": "Verwijder abonnementen, volgers en blocks van een account",
   "@settings_accountReset_help": {},
-  "settings_accountReset_step2_resetMagazineBlocks": "Tijdschrift blocks resetten",
-  "@settings_accountReset_step2_resetMagazineBlocks": {},
   "settings_accountReset": "Account resetten",
   "@settings_accountReset": {},
   "settings_accountReset_failedXItems": "{current}/{total} items mislukt",
@@ -904,8 +880,6 @@
   },
   "errorPage_firstPage": "Er is iets misgegaan",
   "@errorPage_firstPage": {},
-  "settings_accountReset_step2_resetMagazineSubscriptions": "Tijdschriftabonnementen resetten",
-  "@settings_accountReset_step2_resetMagazineSubscriptions": {},
   "settings_accountReset_readingFromAccount": "Lezen van account",
   "@settings_accountReset_readingFromAccount": {},
   "configShare_profile_title": "Interstellair profiel",
@@ -932,10 +906,6 @@
   "@settings_accountMigration_step1_destination": {},
   "settings_accountMigration_step2": "Migratiecategorieën in-/uitschakelen",
   "@settings_accountMigration_step2": {},
-  "settings_accountMigration_step2_migrateMagazineSubscriptions": "Tijdschriftabonnementen migreren",
-  "@settings_accountMigration_step2_migrateMagazineSubscriptions": {},
-  "settings_accountMigration_step2_migrateMagazineBlocks": "Magazijn blocks migreren",
-  "@settings_accountMigration_step2_migrateMagazineBlocks": {},
   "settings_accountMigration_step2_migrateUserFollows": "Migreer gebruiker volgers",
   "@settings_accountMigration_step2_migrateUserFollows": {},
   "settings_accountMigration_step3": "Bevestig datamigratie",

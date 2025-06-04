@@ -59,18 +59,18 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                         );
 
                         if (!mounted) return;
-                        String magazineName = mbinConfigsMagazineName;
-                        if (magazineName.endsWith(
+                        String communityName = mbinConfigsCommunityName;
+                        if (communityName.endsWith(
                           context.read<AppController>().instanceHost,
                         )) {
-                          magazineName = magazineName.split('@').first;
+                          communityName = communityName.split('@').first;
                         }
 
-                        final magazine = await context
+                        final community = await context
                             .read<AppController>()
                             .api
-                            .magazines
-                            .getByName(magazineName);
+                            .community
+                            .getByName(communityName);
 
                         if (!mounted) return;
 
@@ -80,7 +80,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                               initTitle: '[Filter List] $name',
                               initBody:
                                   'Short description here...\n\n${config.toMarkdown()}',
-                              initMagazine: magazine,
+                              initCommunity: community,
                             ),
                           ),
                         );

@@ -10,7 +10,7 @@ enum NotificationsFilter { all, new_, read }
 enum NotificationControlUpdateTargetType {
   entry,
   post,
-  magazine,
+  community,
   user,
   comment,
 }
@@ -267,7 +267,7 @@ class APINotifications {
           NotificationControlUpdateTargetType.post => throw UnsupportedError(
             'Microblogs not on PieFed',
           ),
-          NotificationControlUpdateTargetType.magazine =>
+          NotificationControlUpdateTargetType.community =>
             '/community/subscribe',
           NotificationControlUpdateTargetType.user => '/user/subscribe',
           NotificationControlUpdateTargetType.comment => '/comment/subscribe',
@@ -280,7 +280,7 @@ class APINotifications {
               NotificationControlUpdateTargetType.entry => 'post_id',
               NotificationControlUpdateTargetType.post =>
                 throw UnsupportedError('Microblogs not on PieFed'),
-              NotificationControlUpdateTargetType.magazine => 'community_id',
+              NotificationControlUpdateTargetType.community => 'community_id',
               NotificationControlUpdateTargetType.user => 'person_id',
               NotificationControlUpdateTargetType.comment => 'comment_id',
             }: targetId,

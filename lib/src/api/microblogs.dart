@@ -27,7 +27,7 @@ class MbinAPIMicroblogs {
       FeedSource.subscribed => '/posts/subscribed',
       FeedSource.moderated => '/posts/moderated',
       FeedSource.favorited => '/posts/favourited',
-      FeedSource.magazine => '/magazine/${sourceId!}/posts',
+      FeedSource.community => '/magazine/${sourceId!}/posts',
       FeedSource.user => '/users/${sourceId!}/posts',
       FeedSource.domain => throw Exception(
         'Domain source not allowed for microblog',
@@ -95,12 +95,12 @@ class MbinAPIMicroblogs {
   }
 
   Future<PostModel> create(
-    int magazineID, {
+    int communityId, {
     required String body,
     required String lang,
     required bool isAdult,
   }) async {
-    final path = '/magazine/$magazineID/posts';
+    final path = '/magazine/$communityId/posts';
 
     final response = await client.post(
       path,
@@ -111,14 +111,14 @@ class MbinAPIMicroblogs {
   }
 
   Future<PostModel> createImage(
-    int magazineID, {
+    int communityId, {
     required XFile image,
     required String alt,
     required String body,
     required String lang,
     required bool isAdult,
   }) async {
-    final path = '/magazine/$magazineID/posts/image';
+    final path = '/magazine/$communityId/posts/image';
 
     var request = http.MultipartRequest(
       'POST',

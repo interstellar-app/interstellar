@@ -9,14 +9,10 @@
   "@markdownEditor_edit": {},
   "markdownEditor_drafts_apply": "Применить Черновик",
   "@markdownEditor_drafts_apply": {},
-  "magazine": "Журнал",
-  "@magazine": {},
   "action_setLocation": "Установить поведение местонахождения",
   "@action_setLocation": {},
   "action_hide": "Спрятать",
   "@action_hide": {},
-  "selectMagazine": "Выбери журнал...",
-  "@selectMagazine": {},
   "language": "Язык",
   "@language": {},
   "tags_hint": "Разделить пробелами",
@@ -41,8 +37,6 @@
   "@settings_disableTabSwiping": {},
   "settings_enableTrueBlack_help": "Может сохранить энергию на AMOLED экранах",
   "@settings_enableTrueBlack_help": {},
-  "settings_mbinMagazine": "Мбин журнал",
-  "@settings_mbinMagazine": {},
   "settings_colorScheme_dynamic": "Динамика (Система)",
   "@settings_colorScheme_dynamic": {},
   "settings_colorScheme_blue": "Голубой",
@@ -91,8 +85,6 @@
   "@markdownEditor_drafts_applyAndDiscard": {},
   "browser": "Браузер",
   "@browser": {},
-  "microblog_magazineHelperText": "По умолчанию в 'случайный' журнал для микроблогов потому что там Мбин держит микроблони без категорий.",
-  "@microblog_magazineHelperText": {},
   "action_createNew": "Создать новый...",
   "@action_createNew": {},
   "action_setFilter": "Установить Фильтр",
@@ -225,12 +217,8 @@
   "@sort_topNineMonths": {},
   "subscriptions": "Подписки",
   "@subscriptions": {},
-  "subscriptions_magazine_all": "Все журнальные подписки",
-  "@subscriptions_magazine_all": {},
   "stars_empty": "Тут пусто; поставь звезду на журнал или пользоавтеля чтобы тут что-то появилось.",
   "@stars_empty": {},
-  "subscriptions_magazine": "Журнальные подписки",
-  "@subscriptions_magazine": {},
   "postDeleted": "Обнаруженно сообщение",
   "@postDeleted": {},
   "comment": "Коментарий",
@@ -249,8 +237,6 @@
   "@openInBrowser": {},
   "viewMods": "Посмотреть модераторов",
   "@viewMods": {},
-  "magazines": "Журналы",
-  "@magazines": {},
   "people": "Люди",
   "@people": {},
   "domains": "Домены",
@@ -421,13 +407,13 @@
       }
     }
   },
-  "banUser_help": "Вы собираетесь запретить {user} из {magazine}.",
+  "banUser_help": "Вы собираетесь запретить {user} из {community}.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -572,10 +558,10 @@
   "@postingRestricted": {},
   "owner": "Хозяин",
   "@owner": {},
-  "modsOf": "Моды {magazine}",
+  "modsOf": "Моды {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -590,8 +576,6 @@
   "@share": {},
   "account": "Аккаунт",
   "@account": {},
-  "account_settings_showSubscribedMagazines": "Показать подписанные журналы",
-  "@account_settings_showSubscribedMagazines": {},
   "account_settings_notifyOnThreadCommentReply": "Уведомление на ленту коментиниев и ответов",
   "@account_settings_notifyOnThreadCommentReply": {},
   "account_settings_notifyOnMicroblogReply": "Уведомления на коментириях в авторских микроблогах",
@@ -680,8 +664,6 @@
   "@originalPoster_long": {},
   "pin": "Пин",
   "@pin": {},
-  "pinnedInMagazine": "Прикреплённый к журналу",
-  "@pinnedInMagazine": {},
   "originalContent_short": "ОС",
   "@originalContent_short": {},
   "originalContent_long": "Оригинальное содержимое",
@@ -761,7 +743,5 @@
   "create_link_invalid": "Недоступный Url",
   "@create_link_invalid": {},
   "create_microblog": "Микроблог",
-  "@create_microblog": {},
-  "create_magazine": "Журнал",
-  "@create_magazine": {}
+  "@create_microblog": {}
 }

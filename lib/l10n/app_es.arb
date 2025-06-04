@@ -31,8 +31,6 @@
   "@microblog": {},
   "people": "Gente",
   "@people": {},
-  "magazines": "Revistas",
-  "@magazines": {},
   "search": "Búsqueda",
   "@search": {},
   "owner": "Propietario",
@@ -95,8 +93,6 @@
   "@stars": {},
   "subscriptions": "Suscripciones",
   "@subscriptions": {},
-  "subscriptions_magazine_all": "Todas las suscripciones a revistas",
-  "@subscriptions_magazine_all": {},
   "subscriptions_user": "Seguidores del usuario",
   "@subscriptions_user": {},
   "subscriptions_domain_all": "Todos las suscripciones del dominio",
@@ -113,8 +109,6 @@
   "@commentDeleted": {},
   "stars_empty": "Esto se siente vacío; marque una revista o un usuario para que aparezca aquí.",
   "@stars_empty": {},
-  "subscriptions_magazine": "Suscripciones a revistas",
-  "@subscriptions_magazine": {},
   "subscriptions_user_all": "Todos los seguidores",
   "@subscriptions_user_all": {},
   "subscriptions_domain": "Suscripción a dominios",
@@ -151,10 +145,10 @@
   "@domains": {},
   "openInBrowser": "Abrir en el navegador",
   "@openInBrowser": {},
-  "modsOf": "Moderadores de {magazine}",
+  "modsOf": "Moderadores de {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }

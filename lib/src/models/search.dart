@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
@@ -23,7 +23,7 @@ class SearchListModel with _$SearchListModel {
       if (type == 'user') {
         items.add(DetailedUserModel.fromMbin(actor['object'] as JsonMap));
       } else if (type == 'magazine') {
-        items.add(DetailedMagazineModel.fromMbin(actor['object'] as JsonMap));
+        items.add(DetailedCommunityModel.fromMbin(actor['object'] as JsonMap));
       }
     }
     for (var item in json['items']) {
@@ -51,7 +51,7 @@ class SearchListModel with _$SearchListModel {
     }
 
     for (var community in json['communities']) {
-      items.add(DetailedMagazineModel.fromLemmy(community as JsonMap));
+      items.add(DetailedCommunityModel.fromLemmy(community as JsonMap));
     }
 
     for (var post in json['posts']) {
@@ -76,7 +76,7 @@ class SearchListModel with _$SearchListModel {
     }
 
     for (var community in json['communities']) {
-      items.add(DetailedMagazineModel.fromPiefed(community as JsonMap));
+      items.add(DetailedCommunityModel.fromPiefed(community as JsonMap));
     }
 
     for (var post in json['posts']) {

@@ -4,7 +4,7 @@ enum FeedSource {
   subscribed,
   moderated,
   favorited,
-  magazine,
+  community,
   user,
   domain,
 }

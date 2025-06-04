@@ -101,10 +101,6 @@
   "@sort_topSixMonths": {},
   "subscriptions": "Підписка",
   "@subscriptions": {},
-  "subscriptions_magazine": "Підписка на журнали",
-  "@subscriptions_magazine": {},
-  "subscriptions_magazine_all": "Підписка на всі журнали",
-  "@subscriptions_magazine_all": {},
   "subscriptions_domain": "Підписки на домен",
   "@subscriptions_domain": {},
   "stars_empty": "Це здається порожнім; позначте журнал або користувача, щоб вони з'являлися тут.",
@@ -131,10 +127,10 @@
   "@owner": {},
   "domains": "Домен",
   "@domains": {},
-  "modsOf": "Моди з {magazine}",
+  "modsOf": "Моди з {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -203,13 +199,13 @@
   "@collapse": {},
   "markdownEditor_bold": "Жирний",
   "@markdownEditor_bold": {},
-  "banUser_help": "Ви збираєтеся заблокувати {user} у {magazine}.",
+  "banUser_help": "Ви збираєтеся заблокувати {user} у {community}.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -290,8 +286,6 @@
   "@action_hide": {},
   "action_setLocation": "Встановити місце проведення аукціону",
   "@action_setLocation": {},
-  "magazine": "Журнал",
-  "@magazine": {},
   "language": "Мова",
   "@language": {},
   "tags": "Тег",
@@ -378,8 +372,6 @@
   "@uploadFromCamera": {},
   "search": "Пошук",
   "@search": {},
-  "magazines": "Журнали",
-  "@magazines": {},
   "settings_colorScheme_bigStone": "Великий камінь",
   "@settings_colorScheme_bigStone": {},
   "settings_colorScheme_wasabi": "Васабі",
@@ -444,8 +436,6 @@
   },
   "notSafeForWork_short": "NSFW",
   "@notSafeForWork_short": {},
-  "pinnedInMagazine": "Прикріплений до журналу",
-  "@pinnedInMagazine": {},
   "createdAt": "Створений на {datetime}",
   "@createdAt": {
     "placeholders": {

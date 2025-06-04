@@ -1,6 +1,6 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -74,12 +74,12 @@ enum APIExploreSort {
   };
 }
 
-class APIMagazines {
+class APICommunity {
   final ServerClient client;
 
-  APIMagazines(this.client);
+  APICommunity(this.client);
 
-  Future<DetailedMagazineListModel> list({
+  Future<DetailedCommunityListModel> list({
     String? page,
     ExploreFilter? filter,
     APIExploreSort sort = APIExploreSort.hot,
@@ -106,7 +106,7 @@ class APIMagazines {
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedMagazineListModel.fromMbin(response.bodyJson);
+        return DetailedCommunityListModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         if (search == null) {
@@ -118,7 +118,7 @@ class APIMagazines {
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
               ExploreFilter.blocked => throw Exception(
-                'Can not filter magazines by blocked on Lemmy',
+                'Can not filter communities by blocked on Lemmy',
               ),
               null => 'All',
             },
@@ -136,7 +136,7 @@ class APIMagazines {
             page,
           );
 
-          return DetailedMagazineListModel.fromLemmy(json);
+          return DetailedCommunityListModel.fromLemmy(json);
         } else {
           const path = '/search';
           final query = {
@@ -147,7 +147,7 @@ class APIMagazines {
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
               ExploreFilter.blocked => throw Exception(
-                'Can not filter magazines by blocked on Lemmy',
+                'Can not filter communities by blocked on Lemmy',
               ),
               null => 'All',
             },
@@ -166,7 +166,7 @@ class APIMagazines {
             page,
           );
 
-          return DetailedMagazineListModel.fromLemmy(json);
+          return DetailedCommunityListModel.fromLemmy(json);
         }
 
       case ServerSoftware.piefed:
@@ -179,7 +179,7 @@ class APIMagazines {
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
               ExploreFilter.blocked => throw Exception(
-                'Can not filter magazines by blocked on Lemmy',
+                'Can not filter communities by blocked on Lemmy',
               ),
               null => 'All',
             },
@@ -197,7 +197,7 @@ class APIMagazines {
             page,
           );
 
-          return DetailedMagazineListModel.fromPiefed(json);
+          return DetailedCommunityListModel.fromPiefed(json);
         } else {
           const path = '/search';
           final query = {
@@ -208,7 +208,7 @@ class APIMagazines {
               ExploreFilter.moderated => 'ModeratorView',
               ExploreFilter.subscribed => 'Subscribed',
               ExploreFilter.blocked => throw Exception(
-                'Can not filter magazines by blocked on Lemmy',
+                'Can not filter communities by blocked on Lemmy',
               ),
               null => 'All',
             },
@@ -227,88 +227,88 @@ class APIMagazines {
             page,
           );
 
-          return DetailedMagazineListModel.fromPiefed(json);
+          return DetailedCommunityListModel.fromPiefed(json);
         }
     }
   }
 
-  Future<DetailedMagazineModel> get(int magazineId) async {
+  Future<DetailedCommunityModel> get(int communityId) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/$magazineId';
+        final path = '/magazine/$communityId';
 
         final response = await client.get(path);
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/community';
-        final query = {'id': magazineId.toString()};
+        final query = {'id': communityId.toString()};
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedMagazineModel.fromLemmy(
+        return DetailedCommunityModel.fromLemmy(
           response.bodyJson['community_view'] as JsonMap,
         );
 
       case ServerSoftware.piefed:
         const path = '/community';
-        final query = {'id': magazineId.toString()};
+        final query = {'id': communityId.toString()};
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedMagazineModel.fromPiefed(response.bodyJson);
+        return DetailedCommunityModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<DetailedMagazineModel> getByName(String magazineName) async {
+  Future<DetailedCommunityModel> getByName(String communityName) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/name/$magazineName';
+        final path = '/magazine/name/$communityName';
 
         final response = await client.get(path);
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/community';
-        final query = {'name': magazineName.toString()};
+        final query = {'name': communityName.toString()};
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedMagazineModel.fromLemmy(
+        return DetailedCommunityModel.fromLemmy(
           response.bodyJson['community_view'] as JsonMap,
         );
 
       case ServerSoftware.piefed:
         const path = '/community';
-        final query = {'name': magazineName.toString()};
+        final query = {'name': communityName.toString()};
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedMagazineModel.fromPiefed(response.bodyJson);
+        return DetailedCommunityModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<DetailedMagazineModel> subscribe(int magazineId, bool state) async {
+  Future<DetailedCommunityModel> subscribe(int communityId, bool state) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path =
-            '/magazine/$magazineId/${state ? 'subscribe' : 'unsubscribe'}';
+            '/magazine/$communityId/${state ? 'subscribe' : 'unsubscribe'}';
 
         final response = await client.put(path);
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/community/follow';
 
         final response = await client.post(
           path,
-          body: {'community_id': magazineId, 'follow': state},
+          body: {'community_id': communityId, 'follow': state},
         );
 
-        return DetailedMagazineModel.fromLemmy(
+        return DetailedCommunityModel.fromLemmy(
           response.bodyJson['community_view'] as JsonMap,
         );
 
@@ -317,31 +317,31 @@ class APIMagazines {
 
         final response = await client.post(
           path,
-          body: {'community_id': magazineId, 'follow': state},
+          body: {'community_id': communityId, 'follow': state},
         );
 
-        return DetailedMagazineModel.fromPiefed(response.bodyJson);
+        return DetailedCommunityModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<DetailedMagazineModel> block(int magazineId, bool state) async {
+  Future<DetailedCommunityModel> block(int communityId, bool state) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/$magazineId/${state ? 'block' : 'unblock'}';
+        final path = '/magazine/$communityId/${state ? 'block' : 'unblock'}';
 
         final response = await client.put(path);
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/community/block';
 
         final response = await client.post(
           path,
-          body: {'community_id': magazineId, 'block': state},
+          body: {'community_id': communityId, 'block': state},
         );
 
-        return DetailedMagazineModel.fromLemmy(
+        return DetailedCommunityModel.fromLemmy(
           response.bodyJson['community_view'] as JsonMap,
         );
 
@@ -350,10 +350,10 @@ class APIMagazines {
 
         final response = await client.post(
           path,
-          body: {'community_id': magazineId, 'block': state},
+          body: {'community_id': communityId, 'block': state},
         );
 
-        return DetailedMagazineModel.fromPiefed(response.bodyJson);
+        return DetailedCommunityModel.fromPiefed(response.bodyJson);
     }
   }
 }
