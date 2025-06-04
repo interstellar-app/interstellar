@@ -24,7 +24,7 @@ class BehaviorSettingsScreen extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Symbols.translate_rounded),
-            title: Text(l(context).settings_defaultPostLanguage),
+            title: Text(l(context).settings_defaultCreateLanguage),
             subtitle: Text(
               getLanguageName(context, ac.profile.defaultCreateLanguage),
             ),

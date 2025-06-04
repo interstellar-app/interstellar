@@ -594,7 +594,12 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
-                                    if (widget.lang != null)
+                                    if (widget.lang != null &&
+                                        widget.lang !=
+                                            context
+                                                .read<AppController>()
+                                                .profile
+                                                .defaultCreateLanguage)
                                       Padding(
                                         padding: const EdgeInsets.only(
                                           right: 10,
@@ -1123,7 +1128,12 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
-                      if (widget.lang != null)
+                      if (widget.lang != null &&
+                          widget.lang !=
+                              context
+                                  .read<AppController>()
+                                  .profile
+                                  .defaultCreateLanguage)
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: Tooltip(
