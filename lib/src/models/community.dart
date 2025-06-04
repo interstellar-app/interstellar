@@ -5,6 +5,8 @@ import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/post.dart';
 
 part 'community.freezed.dart';
 
@@ -258,4 +260,76 @@ class CommunityBanModel with _$CommunityBanModel {
     bannedBy: UserModel.fromPiefed(json['bannedBy'] as JsonMap),
     expired: json['expired'] as bool,
   );
+}
+
+@freezed
+class CommunityReportListModel with _$CommunityReportListModel {
+  const factory CommunityReportListModel({
+    required List<CommunityReportModel> items,
+    required String? nextPage,
+  }) = _CommunityReportListModel;
+
+  factory CommunityReportListModel.fromMbin(JsonMap json) =>
+      CommunityReportListModel(
+        items: (json['items'] as List<dynamic>)
+            .map((item) => CommunityReportModel.fromMbin(item as JsonMap))
+            .toList(),
+        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+      );
+}
+
+@freezed
+class CommunityReportModel with _$CommunityReportModel {
+  const factory CommunityReportModel({
+    required int id,
+    required CommunityModel? community,
+    required UserModel? reportedBy,
+    required UserModel? reportedUser,
+    required PostModel? subjectPost,
+    required CommentModel? subjectComment,
+    required String? reason,
+    required String? status,
+    required DateTime? createdAt,
+    required DateTime? consideredAt,
+    required UserModel? consideredBy,
+    required int? weight,
+  }) = _CommunityReportModel;
+
+  factory CommunityReportModel.fromMbin(JsonMap json) {
+    String? type = json['type'] as String?;
+    PostModel? subjectPost = (switch (type) {
+      'entry_report' => PostModel.fromMbinEntry(json['subject'] as JsonMap),
+      'post_report' => PostModel.fromMbinPost(json['subject'] as JsonMap),
+      null => null,
+      String() => null,
+    });
+
+    CommentModel? subjectComment = (switch (type) {
+      'entry_comment_report' => CommentModel.fromMbin(
+        json['subject'] as JsonMap,
+      ),
+      'post_comment_report' => CommentModel.fromMbin(
+        json['subject'] as JsonMap,
+      ),
+      null => null,
+      String() => null,
+    });
+
+    return CommunityReportModel(
+      id: json['reportId'] as int,
+      community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
+      reportedBy: UserModel.fromMbin(json['reporting'] as JsonMap),
+      reportedUser: UserModel.fromMbin(json['reported'] as JsonMap),
+      subjectPost: subjectPost,
+      subjectComment: subjectComment,
+      reason: json['reason'] as String?,
+      status: json['status'] as String?,
+      createdAt: optionalDateTime(json['createdAt'] as String?),
+      consideredAt: optionalDateTime(json['consideredAt'] as String?),
+      consideredBy: json['consideredBy'] != null
+          ? UserModel.fromMbin(json['consideredBy'] as JsonMap)
+          : null,
+      weight: json['weight'] as int?,
+    );
+  }
 }

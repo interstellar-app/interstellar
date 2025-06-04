@@ -3,10 +3,65 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
+enum ReportStatus { any, appeal, approved, closed, pending, rejected }
+
 class APICommunityModeration {
   final ServerClient client;
 
   APICommunityModeration(this.client);
+
+  Future<CommunityReportListModel> listReports(
+    int communityId, {
+    String? page,
+    ReportStatus? status,
+  }) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/moderate/magazine/$communityId/reports';
+        final query = {'p': page, 'status': status?.name};
+
+        final response = await client.get(path, queryParams: query);
+
+        return CommunityReportListModel.fromMbin(response.bodyJson);
+      case ServerSoftware.lemmy:
+      case ServerSoftware.piefed:
+        throw UnimplementedError('Not yet implemented');
+    }
+  }
+
+  Future<CommunityReportModel> acceptReport(
+    int communityId,
+    int reportId,
+  ) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/moderate/magazine/$communityId/reports/$reportId/accept';
+
+        final response = await client.post(path);
+
+        return CommunityReportModel.fromMbin(response.bodyJson);
+      case ServerSoftware.lemmy:
+      case ServerSoftware.piefed:
+        throw UnimplementedError('Not yet implemented');
+    }
+  }
+
+  Future<CommunityReportModel> rejectReport(
+    int communityId,
+    int reportId,
+  ) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/moderate/magazine/$communityId/reports/$reportId/reject';
+
+        final response = await client.post(path);
+
+        return CommunityReportModel.fromMbin(response.bodyJson);
+      case ServerSoftware.lemmy:
+      case ServerSoftware.piefed:
+        throw UnimplementedError('Not yet implemented');
+    }
+  }
 
   Future<CommunityBanListModel> listBans(
     int communityId, {
