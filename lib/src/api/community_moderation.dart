@@ -1,6 +1,7 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class APICommunityModeration {
@@ -27,16 +28,18 @@ class APICommunityModeration {
       case ServerSoftware.piefed:
         final path = '/community/moderate/bans';
 
-        final page_ = page ?? 1;
-
-        final query = {
-          'community_id': communityId.toString(),
-          'page': page_.toString(),
-        };
+        final query = {'community_id': communityId.toString(), 'page': page};
 
         final response = await client.get(path, queryParams: query);
 
-        return CommunityBanListModel.fromPiefed(response.bodyJson);
+        final json = response.bodyJson;
+
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['items'] as List<dynamic>,
+          page,
+        );
+
+        return CommunityBanListModel.fromPiefed(json);
     }
   }
 

@@ -112,8 +112,15 @@ class APIComments {
 
         final response = await client.get(path, queryParams: query);
 
+        final json = response.bodyJson;
+
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['comments'] as List<dynamic>,
+          page,
+        );
+
         return CommentListModel.fromPiefedToTree(
-          response.bodyJson,
+          json,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
