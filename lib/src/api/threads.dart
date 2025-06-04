@@ -154,7 +154,11 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        return PostListModel.fromPiefed(response.bodyJson);
+        final json = response.bodyJson;
+
+        if (json['next_page'] == 'None') json['next_page'] = null;
+
+        return PostListModel.fromPiefed(json);
     }
   }
 
