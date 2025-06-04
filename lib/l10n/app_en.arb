@@ -130,6 +130,10 @@
   "reportStatus_closed": "Closed",
   "reportStatus_pending": "Pending",
   "reportStatus_rejected": "Rejected",
+  "report_accept": "Accept",
+  "report_reject": "Reject",
+  "reportedUser": "Reported user: ",
+  "reportedBy": "Reported by: ",
   "copy": "Copy",
   "copied": "Copied",
   "share": "Share",
@@ -364,6 +368,7 @@
       }
     }
   },
+  "status": "Status",
   "reason": "Reason",
   "moderate": "Moderate",
   "submit": "Submit",

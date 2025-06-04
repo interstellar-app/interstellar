@@ -305,7 +305,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                         children: [
                           Row(
                             children: [
-                              Text('Reported user: '),
+                              Text(l(context).reportedUser),
                               DisplayName(
                                 item.reportedUser!.name,
                                 icon: item.reportedUser!.avatar,
@@ -320,7 +320,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                           ),
                           Row(
                             children: [
-                              Text('Reported by: '),
+                              Text(l(context).reportedBy),
                               DisplayName(
                                 item.reportedBy!.name,
                                 icon: item.reportedBy!.avatar,
@@ -333,10 +333,10 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                               ),
                             ],
                           ),
-                          Text('Reason: ${item.reason}'),
+                          Text('${l(context).reason}: ${item.reason}'),
                           Row(
                             children: [
-                              Text('Status: '),
+                              Text('${l(context).status}: '),
                               Text(
                                 '${item.status}',
                                 style: TextStyle(
@@ -372,7 +372,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                                   );
                                 }
                               },
-                              child: const Text('View'),
+                              child: Text(l(context).settings_feedDefaults_view),
                             ),
                           ),
                         ],
@@ -400,7 +400,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                                         _pagingController.itemList = newList;
                                       });
                                     },
-                              label: const Text('Accept'),
+                              label: Text(l(context).report_accept),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.green,
                               ),
@@ -427,7 +427,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                                         _pagingController.itemList = newList;
                                       });
                                     },
-                              label: const Text('Reject'),
+                              label: Text(l(context).report_reject),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.red,
                               ),
@@ -452,7 +452,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                                   _pagingController.itemList = newList;
                                 });
                               },
-                              label: const Text('Ban'),
+                              label: Text(l(context).banUser),
                             ),
                           ),
                         ],
