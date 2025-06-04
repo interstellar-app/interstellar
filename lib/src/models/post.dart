@@ -59,9 +59,7 @@ class PostListModel with _$PostListModel {
           ),
         )
         .toList(),
-    nextPage: (json['next_page'] as String?) != 'None'
-        ? json['next_page'] as String?
-        : null,
+    nextPage: json['next_page'] as String?,
   );
 }
 

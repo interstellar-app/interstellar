@@ -165,8 +165,6 @@ class APIThreads {
 
         final json = response.bodyJson;
 
-        if (json['next_page'] == 'None') json['next_page'] = null;
-
         return PostListModel.fromPiefed(
           json,
           langCodeIdPairs: await client.languageCodeIdPairs(),
