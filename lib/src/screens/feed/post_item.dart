@@ -51,10 +51,12 @@ class _PostItemState extends State<PostItem> {
     super.initState();
     if (context.read<AppController>().profile.autoTranslate &&
         widget.item.lang !=
-            context.read<AppController>().profile.defaultPostLanguage &&
+            context.read<AppController>().profile.defaultCreateLanguage &&
         widget.item.body != null &&
         widget.item.lang != null) {
-      getTranslation(context.read<AppController>().profile.defaultPostLanguage);
+      getTranslation(
+        context.read<AppController>().profile.defaultCreateLanguage,
+      );
     }
   }
 

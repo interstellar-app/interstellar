@@ -22,7 +22,7 @@ class ProfileRequired with _$ProfileRequired {
     // If the autoSwitchAccount key is ever changed, be sure to update the AppController code that removes accounts, which references this key.
     required String? autoSwitchAccount,
     // Behavior settings
-    required String defaultPostLanguage,
+    required String defaultCreateLanguage,
     required bool useAccountLanguageFilter,
     required List<String> customLanguageFilter,
     required bool disableTabSwiping,
@@ -81,8 +81,8 @@ class ProfileRequired with _$ProfileRequired {
     ProfileOptional? profile,
   ) => ProfileRequired(
     autoSwitchAccount: profile?.autoSwitchAccount,
-    defaultPostLanguage:
-        profile?.defaultPostLanguage ?? defaultProfile.defaultPostLanguage,
+    defaultCreateLanguage:
+        profile?.defaultCreateLanguage ?? defaultProfile.defaultCreateLanguage,
     useAccountLanguageFilter:
         profile?.useAccountLanguageFilter ??
         defaultProfile.useAccountLanguageFilter,
@@ -176,7 +176,7 @@ class ProfileRequired with _$ProfileRequired {
 
   static const defaultProfile = ProfileRequired(
     autoSwitchAccount: null,
-    defaultPostLanguage: 'en',
+    defaultCreateLanguage: 'en',
     useAccountLanguageFilter: true,
     customLanguageFilter: [],
     disableTabSwiping: false,
@@ -233,7 +233,7 @@ class ProfileOptional with _$ProfileOptional {
   const factory ProfileOptional({
     required String? autoSwitchAccount,
     // Behavior settings
-    required String? defaultPostLanguage,
+    required String? defaultCreateLanguage,
     required bool? useAccountLanguageFilter,
     required List<String>? customLanguageFilter,
     required bool? disableTabSwiping,
@@ -289,7 +289,7 @@ class ProfileOptional with _$ProfileOptional {
 
   static const nullProfile = ProfileOptional(
     autoSwitchAccount: null,
-    defaultPostLanguage: null,
+    defaultCreateLanguage: null,
     useAccountLanguageFilter: null,
     customLanguageFilter: null,
     disableTabSwiping: null,
@@ -341,7 +341,8 @@ class ProfileOptional with _$ProfileOptional {
 
     return ProfileOptional(
       autoSwitchAccount: other.autoSwitchAccount,
-      defaultPostLanguage: other.defaultPostLanguage ?? defaultPostLanguage,
+      defaultCreateLanguage:
+          other.defaultCreateLanguage ?? defaultCreateLanguage,
       useAccountLanguageFilter:
           other.useAccountLanguageFilter ?? useAccountLanguageFilter,
       customLanguageFilter: other.customLanguageFilter ?? customLanguageFilter,

@@ -52,10 +52,12 @@ class _PostCommentState extends State<PostComment> {
     super.initState();
     if (context.read<AppController>().profile.autoTranslate &&
         widget.comment.lang !=
-            context.read<AppController>().profile.defaultPostLanguage &&
+            context.read<AppController>().profile.defaultCreateLanguage &&
         widget.comment.body != null &&
         widget.comment.lang != null) {
-      getTranslation(context.read<AppController>().profile.defaultPostLanguage);
+      getTranslation(
+        context.read<AppController>().profile.defaultCreateLanguage,
+      );
     }
   }
 

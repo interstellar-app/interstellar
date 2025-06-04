@@ -265,8 +265,6 @@
   },
   "settings_about": "Hakkında",
   "@settings_about": {},
-  "settings_defaultPostLanguage": "Varsayılan gönderi dili",
-  "@settings_defaultPostLanguage": {},
   "settings_useAccountLanguageFilter": "Hesap dil filtresini kullan",
   "@settings_useAccountLanguageFilter": {},
   "settings_useAccountLanguageFilter_help": "Lütfen dikkat: dil filtreleri yalnızca \"Tümü\" ve keşfet akışlarına uygulanır",

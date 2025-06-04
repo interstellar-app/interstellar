@@ -49,7 +49,7 @@ class _CreateScreenState extends State<CreateScreen> {
   void initState() {
     super.initState();
 
-    _lang = context.read<AppController>().profile.defaultPostLanguage;
+    _lang = context.read<AppController>().profile.defaultCreateLanguage;
 
     if (widget.initCommunity != null) _community = widget.initCommunity;
     if (widget.initTitle != null) _titleTextController.text = widget.initTitle!;

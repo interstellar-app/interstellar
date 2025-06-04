@@ -185,7 +185,10 @@ class _ContentItemState extends State<ContentItem> {
   void initState() {
     super.initState();
 
-    _replyLanguage = context.read<AppController>().profile.defaultPostLanguage;
+    _replyLanguage = context
+        .read<AppController>()
+        .profile
+        .defaultCreateLanguage;
   }
 
   @override

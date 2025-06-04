@@ -26,19 +26,21 @@ class BehaviorSettingsScreen extends StatelessWidget {
             leading: const Icon(Symbols.translate_rounded),
             title: Text(l(context).settings_defaultPostLanguage),
             subtitle: Text(
-              getLanguageName(context, ac.profile.defaultPostLanguage),
+              getLanguageName(context, ac.profile.defaultCreateLanguage),
             ),
             onTap: () async {
               final langCode = await languageSelectionMenu(context)
                   .askSelection(
                     context,
-                    ac.selectedProfileValue.defaultPostLanguage,
+                    ac.selectedProfileValue.defaultCreateLanguage,
                   );
 
               if (langCode == null) return;
 
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(defaultPostLanguage: langCode),
+                ac.selectedProfileValue.copyWith(
+                  defaultCreateLanguage: langCode,
+                ),
               );
             },
           ),
