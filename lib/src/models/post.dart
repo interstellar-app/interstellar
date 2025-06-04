@@ -32,18 +32,36 @@ class PostListModel with _$PostListModel {
     nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
   );
 
-  factory PostListModel.fromLemmy(JsonMap json) => PostListModel(
+  factory PostListModel.fromLemmy(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => PostListModel(
     items: (json['posts'] as List<dynamic>)
-        .map((post) => PostModel.fromLemmy(post as JsonMap))
+        .map(
+          (post) => PostModel.fromLemmy(
+            post as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
         .toList(),
     nextPage: json['next_page'] as String?,
   );
 
-  factory PostListModel.fromPiefed(JsonMap json) => PostListModel(
+  factory PostListModel.fromPiefed(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => PostListModel(
     items: (json['posts'] as List<dynamic>)
-        .map((post) => PostModel.fromPiefed(post as JsonMap))
+        .map(
+          (post) => PostModel.fromPiefed(
+            post as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
         .toList(),
-    nextPage: json['next_page'] as String?,
+    nextPage: (json['next_page'] as String?) != 'None'
+        ? json['next_page'] as String?
+        : null,
   );
 }
 
@@ -156,7 +174,10 @@ class PostModel with _$PostModel {
     read: false,
   );
 
-  factory PostModel.fromLemmy(JsonMap json) {
+  factory PostModel.fromLemmy(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) {
     final lemmyPost = json['post'] as JsonMap;
     final lemmyCounts = json['counts'] as JsonMap;
 
@@ -178,7 +199,10 @@ class PostModel with _$PostModel {
         lemmyPost['alt_text'] as String?,
       ),
       body: lemmyPost['body'] as String?,
-      lang: null,
+      lang: langCodeIdPairs
+          .where((pair) => pair.$2 == lemmyPost['language_id'] as int)
+          .firstOrNull
+          ?.$1,
       numComments: lemmyCounts['comments'] as int,
       upvotes: lemmyCounts['upvotes'] as int,
       downvotes: lemmyCounts['downvotes'] as int,
@@ -204,7 +228,10 @@ class PostModel with _$PostModel {
     );
   }
 
-  factory PostModel.fromPiefed(JsonMap json) {
+  factory PostModel.fromPiefed(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) {
     final piefedPost = json['post'] as JsonMap;
     final piefedCounts = json['counts'] as JsonMap;
 
@@ -226,7 +253,10 @@ class PostModel with _$PostModel {
         piefedPost['alt_text'] as String?,
       ),
       body: piefedPost['body'] as String?,
-      lang: null,
+      lang: langCodeIdPairs
+          .where((pair) => pair.$2 == piefedPost['language_id'] as int)
+          .firstOrNull
+          ?.$1,
       numComments: piefedCounts['comments'] as int,
       upvotes: piefedCounts['upvotes'] as int,
       downvotes: piefedCounts['downvotes'] as int,

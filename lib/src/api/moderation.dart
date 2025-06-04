@@ -42,7 +42,10 @@ class APIModeration {
           },
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -72,7 +75,10 @@ class APIModeration {
 
         final response = await client.post(path, body: body);
 
-        return PostModel.fromPiefed(response.bodyJson);
+        return PostModel.fromPiefed(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -104,7 +110,10 @@ class APIModeration {
           body: {'post_id': postId, 'removed': status, 'reason': 'Moderated'},
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -139,6 +148,7 @@ class APIModeration {
 
         return CommentModel.fromPiefed(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }

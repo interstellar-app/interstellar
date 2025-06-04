@@ -96,7 +96,10 @@ class APIComments {
 
         final response = await client.get(path, queryParams: query);
 
-        return CommentListModel.fromLemmyToTree(response.bodyJson);
+        return CommentListModel.fromLemmyToTree(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/comment/list';
@@ -109,7 +112,10 @@ class APIComments {
 
         final response = await client.get(path, queryParams: query);
 
-        return CommentListModel.fromPiefedToTree(response.bodyJson);
+        return CommentListModel.fromPiefedToTree(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -152,7 +158,10 @@ class APIComments {
           page,
         );
 
-        return CommentListModel.fromLemmyToFlat(json);
+        return CommentListModel.fromLemmyToFlat(
+          json,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/user';
@@ -171,7 +180,10 @@ class APIComments {
           page,
         );
 
-        return CommentListModel.fromPiefedToFlat(json);
+        return CommentListModel.fromPiefedToFlat(
+          json,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -195,6 +207,7 @@ class APIComments {
             (item) => item['comment']['id'] == commentId,
           ),
           possibleChildrenJson: response.bodyJson['comments'] as List<dynamic>,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
       case ServerSoftware.piefed:
@@ -208,6 +221,7 @@ class APIComments {
             (item) => item['comment']['id'] == commentId,
           ),
           possibleChildrenJson: response.bodyJson['comments'] as List<dynamic>,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
@@ -238,6 +252,7 @@ class APIComments {
 
         return CommentModel.fromLemmy(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
       case ServerSoftware.piefed:
@@ -250,6 +265,7 @@ class APIComments {
 
         return CommentModel.fromPiefed(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
@@ -300,6 +316,7 @@ class APIComments {
 
         return CommentModel.fromLemmy(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
       case ServerSoftware.piefed:
@@ -312,6 +329,7 @@ class APIComments {
 
         return CommentModel.fromPiefed(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
@@ -339,6 +357,7 @@ class APIComments {
 
         return CommentModel.fromLemmy(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
       case ServerSoftware.piefed:
@@ -351,6 +370,7 @@ class APIComments {
 
         return CommentModel.fromPiefed(
           response.bodyJson['comment_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
