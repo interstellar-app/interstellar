@@ -5,7 +5,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
@@ -29,7 +29,7 @@ class FeedScreen extends StatefulWidget {
   final int? sourceId;
   final String? title;
   final Widget? details;
-  final DetailedMagazineModel? createPostMagazine;
+  final DetailedCommunityModel? createPostCommunity;
 
   const FeedScreen({
     super.key,
@@ -37,7 +37,7 @@ class FeedScreen extends StatefulWidget {
     this.sourceId,
     this.title,
     this.details,
-    this.createPostMagazine,
+    this.createPostCommunity,
   });
 
   @override
@@ -101,14 +101,14 @@ class _FeedScreenState extends State<FeedScreen>
     final currentFeedModeOption = feedViewSelect(context).getOption(_view);
     final currentFeedSortOption = feedSortSelect(context).getOption(sort);
 
-    // in magazine check if user is moderator
+    // in community check if user is moderator
     // don't really need for mbin since mbin api returns
     // canAuthUserModerate with content items
     // lemmy and piefed don't return this info
     final localUserPart = context.read<AppController>().localName;
-    final userCanModerate = widget.createPostMagazine == null
+    final userCanModerate = widget.createPostCommunity == null
         ? false
-        : widget.createPostMagazine!.moderators.any(
+        : widget.createPostCommunity!.moderators.any(
             (mod) => mod.name == localUserPart,
           );
 
@@ -121,7 +121,7 @@ class _FeedScreenState extends State<FeedScreen>
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) =>
-                  CreateScreen(initMagazine: widget.createPostMagazine),
+                  CreateScreen(initCommunity: widget.createPostCommunity),
             ),
           );
         },

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/image.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -137,7 +137,7 @@ class MentionWidget extends StatefulWidget {
 }
 
 Map<String, DetailedUserModel> userMentionCache = {};
-Map<String, DetailedMagazineModel> magazineMentionCache = {};
+Map<String, DetailedCommunityModel> communityMentionCache = {};
 
 class MentionWidgetState extends State<MentionWidget> {
   late String _displayName;
@@ -190,33 +190,33 @@ class MentionWidgetState extends State<MentionWidget> {
           };
         });
       } else if (modifier == '!') {
-        if (!magazineMentionCache.containsKey(cacheKey)) {
-          magazineMentionCache[cacheKey] = await context
+        if (!communityMentionCache.containsKey(cacheKey)) {
+          communityMentionCache[cacheKey] = await context
               .read<AppController>()
               .api
-              .magazines
+              .community
               .getByName(
                 host == context.read<AppController>().instanceHost
                     ? name
                     : '$name@$host',
               );
         }
-        final magazine = magazineMentionCache[cacheKey]!;
+        final community = communityMentionCache[cacheKey]!;
 
         setState(() {
-          _icon = magazine.icon;
+          _icon = community.icon;
           _onClick = () {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
-                    MagazineScreen(magazine.id, initData: magazine),
+                    CommunityScreen(community.id, initData: community),
               ),
             );
           };
         });
       }
     } catch (_) {
-      // User/Magazine not found
+      // User/Community not found
     }
   }
 

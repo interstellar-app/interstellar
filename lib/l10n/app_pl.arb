@@ -105,10 +105,10 @@
   },
   "search": "Szukaj",
   "@search": {},
-  "modsOf": "Moderacja {magazine}",
+  "modsOf": "Moderacja {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -153,18 +153,12 @@
   "@sort_topSixMonths": {},
   "sort_topNineMonths": "Top dziewięciu miesięcy",
   "@sort_topNineMonths": {},
-  "subscriptions_magazine": "Subskrypcje magazynów",
-  "@subscriptions_magazine": {},
   "comment_openParent": "Otwórz nadrzędny",
   "@comment_openParent": {},
   "domains": "Domeny",
   "@domains": {},
-  "subscriptions_magazine_all": "Wszystkie subs. magazynów",
-  "@subscriptions_magazine_all": {},
   "comment": "Komentarz",
   "@comment": {},
-  "magazines": "Magazyny",
-  "@magazines": {},
   "openInBrowser": "Otwórz w przeglądarce",
   "@openInBrowser": {},
   "copy": "Kopia",
@@ -289,8 +283,6 @@
   "@browser": {},
   "webView": "WebView",
   "@webView": {},
-  "magazine": "Magazyn",
-  "@magazine": {},
   "action_hide": "Ukryj",
   "@action_hide": {},
   "notifications_registerPush": "Włącz powiadomienia push",
@@ -367,8 +359,6 @@
   },
   "originalPoster_long": "Autorstwo oryginału",
   "@originalPoster_long": {},
-  "pinnedInMagazine": "Przypięte w magazynie",
-  "@pinnedInMagazine": {},
   "notSafeForWork_long": "Not Safe For Work (NSFW)",
   "@notSafeForWork_long": {},
   "notSafeForWork_mark": "Oznacz jako NSFW",
@@ -429,13 +419,13 @@
       }
     }
   },
-  "banUser_help": "Zamierzasz zbanować {user} w {magazine}.",
+  "banUser_help": "Zamierzasz zbanować {user} w {community}.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }

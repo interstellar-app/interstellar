@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/image.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
@@ -58,7 +58,7 @@ class PostModel with _$PostModel {
     required PostType type,
     required int id,
     required UserModel user,
-    required MagazineModel magazine,
+    required CommunityModel community,
     required DomainModel? domain,
     required String? title,
     required String? url,
@@ -88,7 +88,7 @@ class PostModel with _$PostModel {
     type: PostType.thread,
     id: json['entryId'] as int,
     user: UserModel.fromMbin(json['user'] as JsonMap),
-    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     domain: json['domain'] == null
         ? null
         : DomainModel.fromMbin(json['domain'] as JsonMap),
@@ -129,7 +129,7 @@ class PostModel with _$PostModel {
     type: PostType.microblog,
     id: json['postId'] as int,
     user: UserModel.fromMbin(json['user'] as JsonMap),
-    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     domain: null,
     title: null,
     url: null,
@@ -169,7 +169,7 @@ class PostModel with _$PostModel {
       type: PostType.thread,
       id: lemmyPost['id'] as int,
       user: UserModel.fromLemmy(json['creator'] as JsonMap),
-      magazine: MagazineModel.fromLemmy(json['community'] as JsonMap),
+      community: CommunityModel.fromLemmy(json['community'] as JsonMap),
       domain: null,
       title: lemmyPost['name'] as String,
       // Only include link if it's not an Image post
@@ -217,7 +217,7 @@ class PostModel with _$PostModel {
       type: PostType.thread,
       id: piefedPost['id'] as int,
       user: UserModel.fromPiefed(json['creator'] as JsonMap),
-      magazine: MagazineModel.fromPiefed(json['community'] as JsonMap),
+      community: CommunityModel.fromPiefed(json['community'] as JsonMap),
       domain: null,
       title: piefedPost['title'] as String,
       // Only include link if it's not an Image post

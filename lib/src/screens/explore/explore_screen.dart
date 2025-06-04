@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:interstellar/src/api/magazines.dart';
+import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
@@ -25,7 +25,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   String search = '';
   final searchDebounce = Debouncer(duration: const Duration(milliseconds: 500));
 
-  ExploreType type = ExploreType.magazines;
+  ExploreType type = ExploreType.communities;
 
   APIExploreSort sort = APIExploreSort.hot;
   ExploreFilter filter = ExploreFilter.all;
@@ -57,11 +57,11 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     try {
       switch (type) {
-        case ExploreType.magazines:
+        case ExploreType.communities:
           final newPage = await context
               .read<AppController>()
               .api
-              .magazines
+              .community
               .list(
                 page: nullIfEmpty(pageKey),
                 filter: filter,
@@ -160,7 +160,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(switch (widget.subOnlyMode) {
-          ExploreType.magazines => l(context).subscriptions_magazine,
+          ExploreType.communities => l(context).subscriptions_community,
           ExploreType.people => l(context).subscriptions_user,
           ExploreType.domains => l(context).subscriptions_domain,
           _ =>
@@ -208,12 +208,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                       Row(
                         children: [
                           ChoiceChip(
-                            label: Text(l(context).magazines),
-                            selected: type == ExploreType.magazines,
+                            label: Text(l(context).communities),
+                            selected: type == ExploreType.communities,
                             onSelected: (bool selected) {
                               if (selected) {
                                 setState(() {
-                                  type = ExploreType.magazines;
+                                  type = ExploreType.communities;
                                   _pagingController.refresh();
                                 });
                               }
@@ -344,14 +344,14 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 const Icon(Symbols.arrow_drop_down_rounded),
                               ],
                             ),
-                            // For Mbin, sorting only works for magazines, and only
+                            // For Mbin, sorting only works for communities, and only
                             // when the all or local filters are enabled
                             onPressed:
                                 context.watch<AppController>().serverSoftware ==
                                         ServerSoftware.mbin &&
                                     ((filter != ExploreFilter.all &&
                                             filter != ExploreFilter.local) ||
-                                        type != ExploreType.magazines)
+                                        type != ExploreType.communities)
                                 ? null
                                 : () async {
                                     final result = await exploreSortSelection(
@@ -403,7 +403,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 }
 
-enum ExploreType { magazines, people, domains, all }
+enum ExploreType { communities, people, domains, all }
 
 enum ExploreFilter {
   all,
@@ -423,7 +423,7 @@ SelectionMenu<ExploreFilter> exploreFilterSelection(
     icon: Symbols.newspaper_rounded,
   ),
   if (context.read<AppController>().serverSoftware != ServerSoftware.mbin ||
-      type == ExploreType.magazines)
+      type == ExploreType.communities)
     SelectionMenuItem(
       value: ExploreFilter.local,
       title: l(context).filter_local,
@@ -432,7 +432,7 @@ SelectionMenu<ExploreFilter> exploreFilterSelection(
   ...(whenLoggedIn(context, [
         if (context.read<AppController>().serverSoftware ==
                 ServerSoftware.mbin ||
-            type == ExploreType.magazines)
+            type == ExploreType.communities)
           SelectionMenuItem(
             value: ExploreFilter.subscribed,
             title: type == ExploreType.people

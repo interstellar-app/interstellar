@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -10,20 +10,20 @@ import 'package:provider/provider.dart';
 Future<void> openBanDialog(
   BuildContext context, {
   required UserModel user,
-  required MagazineModel magazine,
+  required CommunityModel community,
 }) async {
-  await showDialog<DetailedMagazineModel>(
+  await showDialog<DetailedCommunityModel>(
     context: context,
     builder: (BuildContext context) =>
-        BanDialog(user: user, magazine: magazine),
+        BanDialog(user: user, community: community),
   );
 }
 
 class BanDialog extends StatefulWidget {
   final UserModel user;
-  final MagazineModel magazine;
+  final CommunityModel community;
 
-  const BanDialog({required this.user, required this.magazine, super.key});
+  const BanDialog({required this.user, required this.community, super.key});
 
   @override
   State<BanDialog> createState() => _BanDialogState();
@@ -39,7 +39,9 @@ class _BanDialogState extends State<BanDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(l(context).banUser_help(widget.user.name, widget.magazine.name)),
+          Text(
+            l(context).banUser_help(widget.user.name, widget.community.name),
+          ),
           const SizedBox(height: 16),
           TextEditor(
             _reasonTextEditingController,
@@ -62,9 +64,9 @@ class _BanDialogState extends State<BanDialog> {
                   await context
                       .read<AppController>()
                       .api
-                      .magazineModeration
+                      .communityModeration
                       .createBan(
-                        widget.magazine.id,
+                        widget.community.id,
                         widget.user.id,
                         reason: _reasonTextEditingController.text,
                       );

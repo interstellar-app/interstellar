@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/models/image.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -73,7 +73,7 @@ class CommentModel with _$CommentModel {
   const factory CommentModel({
     required int id,
     required UserModel user,
-    required MagazineModel magazine,
+    required CommunityModel community,
     required PostType postType,
     required int postId,
     required int? rootId,
@@ -99,7 +99,7 @@ class CommentModel with _$CommentModel {
   factory CommentModel.fromMbin(JsonMap json) => CommentModel(
     id: json['commentId'] as int,
     user: UserModel.fromMbin(json['user'] as JsonMap),
-    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     postType: (json['postId'] != null ? PostType.microblog : PostType.thread),
     postId: (json['entryId'] ?? json['postId']) as int,
     rootId: json['rootId'] as int?,
@@ -157,7 +157,7 @@ class CommentModel with _$CommentModel {
     return CommentModel(
       id: lemmyComment['id'] as int,
       user: UserModel.fromLemmy(json['creator'] as JsonMap),
-      magazine: MagazineModel.fromLemmy(json['community'] as JsonMap),
+      community: CommunityModel.fromLemmy(json['community'] as JsonMap),
       postType: PostType.thread,
       postId: (json['post'] as JsonMap)['id'] as int,
       rootId: lemmyPathSegments.length > 2 ? lemmyPathSegments[1] : null,
@@ -220,7 +220,7 @@ class CommentModel with _$CommentModel {
     return CommentModel(
       id: piefedComment['id'] as int,
       user: UserModel.fromPiefed(json['creator'] as JsonMap),
-      magazine: MagazineModel.fromPiefed(json['community'] as JsonMap),
+      community: CommunityModel.fromPiefed(json['community'] as JsonMap),
       postType: PostType.thread,
       postId: (json['post'] as JsonMap)['id'] as int,
       rootId: piefedPathSegments.length > 2 ? piefedPathSegments[1] : null,

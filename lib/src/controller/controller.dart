@@ -384,7 +384,7 @@ class AppController with ChangeNotifier {
     await _updateAPI();
 
     userMentionCache.clear();
-    magazineMentionCache.clear();
+    communityMentionCache.clear();
 
     notifyListeners();
     refreshState();

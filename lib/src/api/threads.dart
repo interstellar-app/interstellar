@@ -55,7 +55,7 @@ class APIThreads {
           FeedSource.subscribed => '/entries/subscribed',
           FeedSource.moderated => '/entries/moderated',
           FeedSource.favorited => '/entries/favourited',
-          FeedSource.magazine => '/magazine/${sourceId!}/entries',
+          FeedSource.community => '/magazine/${sourceId!}/entries',
           FeedSource.user => '/users/${sourceId!}/entries',
           FeedSource.domain => '/domain/${sourceId!}/entries',
         };
@@ -101,7 +101,7 @@ class APIThreads {
             FeedSource.subscribed => {'type_': 'Subscribed'},
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
-            FeedSource.magazine => {'community_id': sourceId!.toString()},
+            FeedSource.community => {'community_id': sourceId!.toString()},
             FeedSource.user => throw Exception(
               'User source not allowed for lemmy',
             ),
@@ -143,7 +143,7 @@ class APIThreads {
             FeedSource.subscribed => {'type_': 'Subscribed'},
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
-            FeedSource.magazine => {'community_id': sourceId!.toString()},
+            FeedSource.community => {'community_id': sourceId!.toString()},
             FeedSource.user => throw Exception(
               'User source not allowed for fromPiefed',
             ),
@@ -315,7 +315,7 @@ class APIThreads {
   }
 
   Future<PostModel> createArticle(
-    int magazineID, {
+    int communityId, {
     required String title,
     required bool isOc,
     required String body,
@@ -325,7 +325,7 @@ class APIThreads {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/$magazineID/article';
+        final path = '/magazine/$communityId/article';
 
         final response = await client.post(
           path,
@@ -347,7 +347,7 @@ class APIThreads {
           path,
           body: {
             'name': title,
-            'community_id': magazineID,
+            'community_id': communityId,
             'body': body,
             'nsfw': isAdult,
           },
@@ -361,7 +361,7 @@ class APIThreads {
           path,
           body: {
             'title': title,
-            'community_id': magazineID,
+            'community_id': communityId,
             'body': body,
             'nsfw': isAdult,
           },
@@ -372,7 +372,7 @@ class APIThreads {
   }
 
   Future<PostModel> createLink(
-    int magazineID, {
+    int communityId, {
     required String title,
     required String url,
     required bool isOc,
@@ -383,7 +383,7 @@ class APIThreads {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/$magazineID/link';
+        final path = '/magazine/$communityId/link';
 
         final response = await client.post(
           path,
@@ -406,7 +406,7 @@ class APIThreads {
           path,
           body: {
             'name': title,
-            'community_id': magazineID,
+            'community_id': communityId,
             'url': url,
             'body': body,
             'nsfw': isAdult,
@@ -421,7 +421,7 @@ class APIThreads {
           path,
           body: {
             'title': title,
-            'community_id': magazineID,
+            'community_id': communityId,
             'url': url,
             'body': body,
             'nsfw': isAdult,
@@ -433,7 +433,7 @@ class APIThreads {
   }
 
   Future<PostModel> createImage(
-    int magazineID, {
+    int communityId, {
     required String title,
     required XFile image,
     required String alt,
@@ -445,7 +445,7 @@ class APIThreads {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/$magazineID/image';
+        final path = '/magazine/$communityId/image';
 
         var request = http.MultipartRequest(
           'POST',
@@ -498,7 +498,7 @@ class APIThreads {
           path,
           body: {
             'name': title,
-            'community_id': magazineID,
+            'community_id': communityId,
             'url': 'https://${client.domain}/pictrs/image/$imageName',
             'body': body,
             'nsfw': isAdult,
@@ -533,7 +533,7 @@ class APIThreads {
           path,
           body: {
             'title': title,
-            'community_id': magazineID,
+            'community_id': communityId,
             'url': imageUrl,
             'body': body,
             'nsfw': isAdult,

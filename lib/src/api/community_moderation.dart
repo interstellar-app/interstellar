@@ -1,22 +1,25 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-class APIMagazineModeration {
+class APICommunityModeration {
   final ServerClient client;
 
-  APIMagazineModeration(this.client);
+  APICommunityModeration(this.client);
 
-  Future<MagazineBanListModel> listBans(int magazineId, {String? page}) async {
+  Future<CommunityBanListModel> listBans(
+    int communityId, {
+    String? page,
+  }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId/bans';
+        final path = '/moderate/magazine/$communityId/bans';
         final query = {'p': page};
 
         final response = await client.get(path, queryParams: query);
 
-        return MagazineBanListModel.fromMbin(response.bodyJson);
+        return CommunityBanListModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         throw Exception('List banned users not allowed on lemmy');
@@ -27,32 +30,32 @@ class APIMagazineModeration {
         final page_ = page ?? 1;
 
         final query = {
-          'community_id': magazineId.toString(),
+          'community_id': communityId.toString(),
           'page': page_.toString(),
         };
 
         final response = await client.get(path, queryParams: query);
 
-        return MagazineBanListModel.fromPiefed(response.bodyJson);
+        return CommunityBanListModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<MagazineBanModel> createBan(
-    int magazineId,
+  Future<CommunityBanModel> createBan(
+    int communityId,
     int userId, {
     String? reason,
     DateTime? expiredAt,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId/ban/$userId';
+        final path = '/moderate/magazine/$communityId/ban/$userId';
 
         final response = await client.post(
           path,
           body: {'reason': reason, 'expiredAt': expiredAt?.toIso8601String()},
         );
 
-        return MagazineBanModel.fromMbin(response.bodyJson);
+        return CommunityBanModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         throw Exception('Ban update not implemented on Lemmy yet');
@@ -60,7 +63,7 @@ class APIMagazineModeration {
       case ServerSoftware.piefed:
         final path = '/community/moderate/ban';
         final body = {
-          'community_id': magazineId,
+          'community_id': communityId,
           'user_id': userId,
           'reason': reason,
           'expiredAt': expiredAt?.toIso8601String(),
@@ -68,18 +71,18 @@ class APIMagazineModeration {
 
         final response = await client.post(path, body: body);
 
-        return MagazineBanModel.fromPiefed(response.bodyJson);
+        return CommunityBanModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<MagazineBanModel> removeBan(int magazineId, int userId) async {
+  Future<CommunityBanModel> removeBan(int communityId, int userId) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId/ban/$userId';
+        final path = '/moderate/magazine/$communityId/ban/$userId';
 
         final response = await client.delete(path);
 
-        return MagazineBanModel.fromMbin(response.bodyJson);
+        return CommunityBanModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         throw Exception('Ban update not implemented on Lemmy yet');
@@ -87,15 +90,15 @@ class APIMagazineModeration {
       case ServerSoftware.piefed:
         final path = '/community/moderate/unban';
 
-        final body = {'community_id': magazineId, 'user_id': userId};
+        final body = {'community_id': communityId, 'user_id': userId};
 
         final response = await client.put(path, body: body);
 
-        return MagazineBanModel.fromPiefed(response.bodyJson);
+        return CommunityBanModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<DetailedMagazineModel> create({
+  Future<DetailedCommunityModel> create({
     required String name,
     required String title,
     required String description,
@@ -117,7 +120,7 @@ class APIMagazineModeration {
           },
         );
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const path = '/community';
@@ -133,7 +136,7 @@ class APIMagazineModeration {
           },
         );
 
-        return DetailedMagazineModel.fromLemmy(
+        return DetailedCommunityModel.fromLemmy(
           response.bodyJson['community_view'] as JsonMap,
         );
 
@@ -151,12 +154,12 @@ class APIMagazineModeration {
           },
         );
 
-        return DetailedMagazineModel.fromPiefed(response.bodyJson);
+        return DetailedCommunityModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<DetailedMagazineModel> edit(
-    int magazineId, {
+  Future<DetailedCommunityModel> edit(
+    int communityId, {
     required String title,
     required String description,
     required bool isAdult,
@@ -164,7 +167,7 @@ class APIMagazineModeration {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId';
+        final path = '/moderate/magazine/$communityId';
 
         final response = await client.put(
           path,
@@ -176,10 +179,10 @@ class APIMagazineModeration {
           },
         );
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        throw Exception('Magazine edit not implemented on Lemmy yet');
+        throw Exception('Community edit not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
         const path = '/community';
@@ -187,7 +190,7 @@ class APIMagazineModeration {
         final response = await client.put(
           path,
           body: {
-            'community_id': magazineId,
+            'community_id': communityId,
             'title': title,
             'description': description,
             'nsfw': isAdult,
@@ -195,24 +198,24 @@ class APIMagazineModeration {
           },
         );
 
-        return DetailedMagazineModel.fromPiefed(response.bodyJson);
+        return DetailedCommunityModel.fromPiefed(response.bodyJson);
     }
   }
 
-  Future<DetailedMagazineModel> updateModerator(
-    int magazineId,
+  Future<DetailedCommunityModel> updateModerator(
+    int communityId,
     int userId,
     bool state,
   ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId/mod/$userId';
+        final path = '/moderate/magazine/$communityId/mod/$userId';
 
         final response = state
             ? await client.post(path)
             : await client.delete(path);
 
-        return DetailedMagazineModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         throw Exception('Moderator update not implemented on Lemmy yet');
@@ -222,10 +225,10 @@ class APIMagazineModeration {
     }
   }
 
-  Future<void> removeIcon(int magazineId) async {
+  Future<void> removeIcon(int communityId) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId/icon';
+        final path = '/moderate/magazine/$communityId/icon';
 
         final response = await client.delete(path);
 
@@ -243,24 +246,24 @@ class APIMagazineModeration {
     }
   }
 
-  Future<void> delete(int magazineId) async {
+  Future<void> delete(int communityId) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$magazineId';
+        final path = '/moderate/magazine/$communityId';
 
         final response = await client.delete(path);
 
         return;
 
       case ServerSoftware.lemmy:
-        throw Exception('Magazine delete not implemented on Lemmy yet');
+        throw Exception('Community delete not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
         const path = '/community/delete';
 
         final response = await client.post(
           path,
-          body: {'community_id': magazineId, 'deleted': true},
+          body: {'community_id': communityId, 'deleted': true},
         );
     }
   }

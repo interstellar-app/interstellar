@@ -3,7 +3,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_menu.dart';
@@ -40,7 +40,7 @@ class ContentItem extends StatefulWidget {
 
   final bool isPreview;
   final bool fullImageSize;
-  final bool showMagazineFirst;
+  final bool showCommunityFirst;
   final bool read;
 
   final bool isPinned;
@@ -54,9 +54,9 @@ class ContentItem extends StatefulWidget {
   final bool userIsBot;
   final int? opUserId;
 
-  final String? magazine;
-  final ImageModel? magazineIcon;
-  final int? magazineIdOnClick;
+  final String? community;
+  final ImageModel? communityIcon;
+  final int? communityIdOnClick;
 
   final String? domain;
   final int? domainIdOnClick;
@@ -119,7 +119,7 @@ class ContentItem extends StatefulWidget {
     this.editedAt,
     this.isPreview = false,
     this.fullImageSize = false,
-    this.showMagazineFirst = false,
+    this.showCommunityFirst = false,
     this.read = false,
     this.isPinned = false,
     this.isNSFW = false,
@@ -130,9 +130,9 @@ class ContentItem extends StatefulWidget {
     this.userCakeDay,
     this.userIsBot = false,
     this.opUserId,
-    this.magazine,
-    this.magazineIcon,
-    this.magazineIdOnClick,
+    this.community,
+    this.communityIcon,
+    this.communityIdOnClick,
     this.domain,
     this.domainIdOnClick,
     this.boosts,
@@ -325,18 +325,18 @@ class _ContentItemState extends State<ContentItem> {
             ),
           )
         : null;
-    final Widget? magazineWidget = widget.magazine != null
+    final Widget? communityWidget = widget.community != null
         ? Flexible(
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
               child: DisplayName(
-                widget.magazine!,
-                icon: widget.magazineIcon,
-                onTap: widget.magazineIdOnClick != null
+                widget.community!,
+                icon: widget.communityIcon,
+                onTap: widget.communityIdOnClick != null
                     ? () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              MagazineScreen(widget.magazineIdOnClick!),
+                              CommunityScreen(widget.communityIdOnClick!),
                         ),
                       )
                     : null,
@@ -377,7 +377,7 @@ class _ContentItemState extends State<ContentItem> {
                           .watch<AppController>()
                           .profile
                           .coverMediaMarkedSensitive,
-                  hero: '${widget.magazine}${widget.user}${widget.createdAt}',
+                  hero: '${widget.community}${widget.user}${widget.createdAt}',
                 ),
               )
             : (!widget.fullImageSize
@@ -390,7 +390,7 @@ class _ContentItemState extends State<ContentItem> {
                         openTitle: imageOpenTitle,
                         enableBlur: widget.isNSFW,
                         hero:
-                            '${widget.magazine}${widget.user}${widget.createdAt}',
+                            '${widget.community}${widget.user}${widget.createdAt}',
                       ),
                     )
                   : AdvancedImage(
@@ -399,7 +399,7 @@ class _ContentItemState extends State<ContentItem> {
                       fit: BoxFit.scaleDown,
                       enableBlur: widget.isNSFW,
                       hero:
-                          '${widget.magazine}${widget.user}${widget.createdAt}',
+                          '${widget.community}${widget.user}${widget.createdAt}',
                     ));
 
         final titleStyle = hasWideSize
@@ -537,7 +537,7 @@ class _ContentItemState extends State<ContentItem> {
                                           right: 10,
                                         ),
                                         child: Tooltip(
-                                          message: l(context).pinnedInMagazine,
+                                          message: l(context).pinnedInCommunity,
                                           triggerMode: TooltipTriggerMode.tap,
                                           child: const Icon(
                                             Symbols.push_pin_rounded,
@@ -583,9 +583,9 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
-                                    if (!widget.showMagazineFirst) ?userWidget,
-                                    if (widget.showMagazineFirst)
-                                      ?magazineWidget,
+                                    if (!widget.showCommunityFirst) ?userWidget,
+                                    if (widget.showCommunityFirst)
+                                      ?communityWidget,
                                     if (widget.createdAt != null)
                                       Padding(
                                         padding: const EdgeInsets.only(
@@ -610,9 +610,9 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
-                                    if (widget.showMagazineFirst) ?userWidget,
-                                    if (!widget.showMagazineFirst)
-                                      ?magazineWidget,
+                                    if (widget.showCommunityFirst) ?userWidget,
+                                    if (!widget.showCommunityFirst)
+                                      ?communityWidget,
                                   ],
                                 ),
                               ),
@@ -910,7 +910,7 @@ class _ContentItemState extends State<ContentItem> {
                       .watch<AppController>()
                       .profile
                       .coverMediaMarkedSensitive,
-              hero: '${widget.magazine}${widget.user}${widget.createdAt}',
+              hero: '${widget.community}${widget.user}${widget.createdAt}',
             ),
           );
 
@@ -943,17 +943,17 @@ class _ContentItemState extends State<ContentItem> {
             ),
           )
         : null;
-    final Widget? magazineWidget = widget.magazine != null
+    final Widget? communityWidget = widget.community != null
         ? Flexible(
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
               child: DisplayName(
-                widget.magazine!,
-                onTap: widget.magazineIdOnClick != null
+                widget.community!,
+                onTap: widget.communityIdOnClick != null
                     ? () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              MagazineScreen(widget.magazineIdOnClick!),
+                              CommunityScreen(widget.communityIdOnClick!),
                         ),
                       )
                     : null,
@@ -1030,7 +1030,7 @@ class _ContentItemState extends State<ContentItem> {
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: Tooltip(
-                            message: l(context).pinnedInMagazine,
+                            message: l(context).pinnedInCommunity,
                             triggerMode: TooltipTriggerMode.tap,
                             child: const Icon(
                               Symbols.push_pin_rounded,
@@ -1068,8 +1068,8 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
-                      if (!widget.showMagazineFirst) ?userWidget,
-                      if (widget.showMagazineFirst) ?magazineWidget,
+                      if (!widget.showCommunityFirst) ?userWidget,
+                      if (widget.showCommunityFirst) ?communityWidget,
                       if (widget.createdAt != null)
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
@@ -1090,8 +1090,8 @@ class _ContentItemState extends State<ContentItem> {
                             ),
                           ),
                         ),
-                      if (widget.showMagazineFirst) ?userWidget,
-                      if (!widget.showMagazineFirst) ?magazineWidget,
+                      if (widget.showCommunityFirst) ?userWidget,
+                      if (!widget.showCommunityFirst) ?communityWidget,
                     ],
                   ),
                   const SizedBox(height: 4),

@@ -76,10 +76,10 @@
   "microblog": "Microblog",
   "timeline": "Timeline",
   "stars": "Stars",
-  "stars_empty": "This feels empty; star a magazine or user to appear here.",
+  "stars_empty": "This feels empty; star a community or user to appear here.",
   "subscriptions": "Subscriptions",
-  "subscriptions_magazine": "Magazine Subscriptions",
-  "subscriptions_magazine_all": "All Magazine Subs",
+  "subscriptions_community": "Community Subscriptions",
+  "subscriptions_community_all": "All Community Subs",
   "subscriptions_user": "User Follows",
   "subscriptions_user_all": "All User Follows",
   "subscriptions_domain": "Domain Subscriptions",
@@ -109,14 +109,14 @@
     }
   },
   "search": "Search",
-  "magazines": "Magazines",
+  "communities": "Communities",
   "people": "People",
   "domains": "Domains",
   "openInBrowser": "Open in Browser",
-  "modsOf": "Mods of {magazine}",
+  "modsOf": "Mods of {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -139,12 +139,12 @@
   "account_settings_blurNSFW": "Blur NSFW",
   "account_settings_showReadPosts": "Show read posts",
   "account_settings_showSubscribedUsers": "Show subscribed users",
-  "account_settings_showSubscribedMagazines": "Show subscribed magazines",
+  "account_settings_showSubscribedCommunities": "Show subscribed communities",
   "account_settings_showSubscribedDomains": "Show subscribed domains",
   "account_settings_showProfileSubscriptions": "Show profile subscriptions publicly",
   "account_settings_showProfileFollowings": "Show profile followings publicly",
-  "account_settings_notifyOnThread": "Notify on new threads in subscribed magazines",
-  "account_settings_notifyOnMicroblog": "Notify on new microblogs in subscribed magazines",
+  "account_settings_notifyOnThread": "Notify on new threads in subscribed communities",
+  "account_settings_notifyOnMicroblog": "Notify on new microblogs in subscribed communities",
   "account_settings_notifyOnThreadReply": "Notify on comments in authored threads",
   "account_settings_notifyOnThreadCommentReply": "Notify on thread comment reply",
   "account_settings_notifyOnMicroblogReply": "Notify on comments in authored microblogs",
@@ -196,7 +196,7 @@
   "settings_hideFeedUIOnScroll": "Hide feed UI on scroll",
   "settings_globalTextScale": "Global text scale",
   "settings_alwaysShowInstance": "Always show instance",
-  "settings_alwaysShowInstance_help": "When enabled, the instance of a user/magazine will always display after their username",
+  "settings_alwaysShowInstance_help": "When enabled, the instance of a user/community will always display after their username",
   "settings_coverMediaMarkedSensitive": "Cover up media marked as sensitive",
   "settings_fullImageSizeThreads": "Full image size for threads",
   "settings_fullImageSizeMicroblogs": "Full image size for microblogs",
@@ -207,8 +207,8 @@
   "settings_translate": "Translate",
   "settings_reportIssue": "Report Issue",
   "settings_matrixSpace": "Matrix Space",
-  "settings_mbinMagazine": "Mbin Magazine",
-  "settings_mbinConfigsMagazine": "Configs Share Magazine",
+  "settings_mbinCommunity": "Mbin Community",
+  "settings_mbinConfigsCommunity": "Configs Share Community",
   "settings_colorScheme": "Color Scheme",
   "settings_colorScheme_dynamic": "Dynamic (System)",
   "settings_colorScheme_blue": "Blue",
@@ -285,7 +285,7 @@
   "originalPoster_short": "OP",
   "originalPoster_long": "Original Poster",
   "pin": "Pin",
-  "pinnedInMagazine": "Pinned in Magazine",
+  "pinnedInCommunity": "Pinned in Community",
   "notSafeForWork_short": "NSFW",
   "notSafeForWork_long": "Not Safe For Work",
   "notSafeForWork_mark": "Mark NSFW",
@@ -347,13 +347,13 @@
       }
     }
   },
-  "banUser_help": "You are about to ban {user} from {magazine}.",
+  "banUser_help": "You are about to ban {user} from {community}.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -400,16 +400,16 @@
   "create_link": "Link",
   "create_link_invalid": "Url is invalid",
   "create_microblog": "Microblog",
-  "create_magazine": "Magazine",
-  "microblog_magazineHelperText": "Defaults to the 'random' magazine for microblogs since that's where Mbin stores uncatagorized microblogs.",
-  "selectMagazine": "Select a magazine ...",
+  "create_community": "Community",
+  "microblog_communityHelperText": "Defaults to the 'random' community for microblogs since that's where Mbin stores uncatagorized microblogs.",
+  "selectCommunity": "Select a community ...",
   "title": "Title",
   "body": "Body",
   "link": "Link",
   "tags": "Tags",
   "tags_hint": "Separate with spaces",
   "language": "Language",
-  "magazine": "Magazine",
+  "community": "Community",
   "action_setLocation": "Set Action Location",
   "action_hide": "Hide",
   "action_appBar": "App Bar",
@@ -495,8 +495,8 @@
   "settings_accountMigration_step1_source": "Source account",
   "settings_accountMigration_step1_destination": "Destination account",
   "settings_accountMigration_step2": "Enable/disable migration categories",
-  "settings_accountMigration_step2_migrateMagazineSubscriptions": "Migrate magazine subscriptions",
-  "settings_accountMigration_step2_migrateMagazineBlocks": "Migrate magazine blocks",
+  "settings_accountMigration_step2_migrateCommunitySubscriptions": "Migrate community subscriptions",
+  "settings_accountMigration_step2_migrateCommunityBlocks": "Migrate community blocks",
   "settings_accountMigration_step2_migrateUserFollows": "Migrate user follows",
   "settings_accountMigration_step2_migrateUserBlocks": "Migrate user blocks",
   "settings_accountMigration_step3": "Confirm data migration",
@@ -538,8 +538,8 @@
   "settings_accountReset_help": "Remove subscriptions, follows, and blocks from an account",
   "settings_accountReset_step1": "Select account",
   "settings_accountReset_step2": "Enable/disable reset categories",
-  "settings_accountReset_step2_resetMagazineSubscriptions": "Reset magazine subscriptions",
-  "settings_accountReset_step2_resetMagazineBlocks": "Reset magazine blocks",
+  "settings_accountReset_step2_resetCommunitySubscriptions": "Reset community subscriptions",
+  "settings_accountReset_step2_resetCommunityBlocks": "Reset community blocks",
   "settings_accountReset_step2_resetUserFollows": "Reset user follows",
   "settings_accountReset_step2_resetUserBlocks": "Reset user blocks",
   "settings_accountReset_step3": "Confirm data reset",

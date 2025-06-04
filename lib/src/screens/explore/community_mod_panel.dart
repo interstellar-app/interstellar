@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:provider/provider.dart';
 
-class MagazineModPanel extends StatefulWidget {
-  final DetailedMagazineModel initData;
-  final void Function(DetailedMagazineModel) onUpdate;
+class CommunityModPanel extends StatefulWidget {
+  final DetailedCommunityModel initData;
+  final void Function(DetailedCommunityModel) onUpdate;
 
-  const MagazineModPanel({
+  const CommunityModPanel({
     super.key,
     required this.initData,
     required this.onUpdate,
   });
 
   @override
-  State<MagazineModPanel> createState() => _MagazineModPanelState();
+  State<CommunityModPanel> createState() => _CommunityModPanelState();
 }
 
-class _MagazineModPanelState extends State<MagazineModPanel> {
-  late DetailedMagazineModel _data;
+class _CommunityModPanelState extends State<CommunityModPanel> {
+  late DetailedCommunityModel _data;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _MagazineModPanelState extends State<MagazineModPanel> {
 
   @override
   Widget build(BuildContext context) {
-    onUpdate(DetailedMagazineModel newValue) {
+    onUpdate(DetailedCommunityModel newValue) {
       setState(() {
         _data = newValue;
         widget.onUpdate(newValue);
@@ -51,7 +51,7 @@ class _MagazineModPanelState extends State<MagazineModPanel> {
         body: TabBarView(
           physics: appTabViewPhysics(context),
           children: <Widget>[
-            MagazineModPanelBans(data: _data, onUpdate: onUpdate),
+            CommunityModPanelBans(data: _data, onUpdate: onUpdate),
           ],
         ),
       ),
@@ -59,22 +59,22 @@ class _MagazineModPanelState extends State<MagazineModPanel> {
   }
 }
 
-class MagazineModPanelBans extends StatefulWidget {
-  final DetailedMagazineModel data;
-  final void Function(DetailedMagazineModel) onUpdate;
+class CommunityModPanelBans extends StatefulWidget {
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
-  const MagazineModPanelBans({
+  const CommunityModPanelBans({
     super.key,
     required this.data,
     required this.onUpdate,
   });
 
   @override
-  State<MagazineModPanelBans> createState() => _MagazineModPanelBansState();
+  State<CommunityModPanelBans> createState() => _CommunityModPanelBansState();
 }
 
-class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
-  final PagingController<String, MagazineBanModel> _pagingController =
+class _CommunityModPanelBansState extends State<CommunityModPanelBans> {
+  final PagingController<String, CommunityBanModel> _pagingController =
       PagingController(firstPageKey: '');
 
   @override
@@ -89,7 +89,7 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
       final newPage = await context
           .read<AppController>()
           .api
-          .magazineModeration
+          .communityModeration
           .listBans(widget.data.id, page: nullIfEmpty(pageKey));
 
       // Check BuildContext
@@ -98,12 +98,12 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
       // Prevent duplicates
       final currentItemIds =
           _pagingController.itemList?.map(
-            (e) => (e.magazine.id, e.bannedUser.id),
+            (e) => (e.community.id, e.bannedUser.id),
           ) ??
           [];
       final newItems = newPage.items
           .where(
-            (e) => !currentItemIds.contains((e.magazine.id, e.bannedUser.id)),
+            (e) => !currentItemIds.contains((e.community.id, e.bannedUser.id)),
           )
           .toList();
 
@@ -121,7 +121,7 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
         slivers: [
           PagedSliverList(
             pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<MagazineBanModel>(
+            builderDelegate: PagedChildBuilderDelegate<CommunityBanModel>(
               firstPageErrorIndicatorBuilder: (context) =>
                   FirstPageErrorIndicator(
                     error: _pagingController.error,
@@ -139,7 +139,7 @@ class _MagazineModPanelBansState extends State<MagazineModPanelBans> {
                       await context
                           .read<AppController>()
                           .api
-                          .magazineModeration
+                          .communityModeration
                           .removeBan(widget.data.id, item.bannedUser.id);
 
                       var newList = _pagingController.itemList;

@@ -77,8 +77,6 @@
   "@microblog": {},
   "subscriptions": "Abonnements",
   "@subscriptions": {},
-  "subscriptions_magazine_all": "Alle Magazinabos",
-  "@subscriptions_magazine_all": {},
   "subscriptions_user": "Nutzer folgt",
   "@subscriptions_user": {},
   "post": "Post",
@@ -117,10 +115,10 @@
   "@modPanel": {},
   "viewMods": "Moderatoren ansehen",
   "@viewMods": {},
-  "modsOf": "Mods von {magazine}",
+  "modsOf": "Mods von {community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -175,13 +173,13 @@
       }
     }
   },
-  "banUser_help": "Du bist dabei, {user} von {magazine} zu bannen.",
+  "banUser_help": "Du bist dabei, {user} von {community} zu bannen.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -212,8 +210,6 @@
   "@save": {},
   "language": "Sprache",
   "@language": {},
-  "magazine": "Magazin",
-  "@magazine": {},
   "action_backToTop": "Zurück nach oben",
   "@action_backToTop": {},
   "share": "Teilen",
@@ -292,8 +288,6 @@
   "@originalPoster_short": {},
   "originalPoster_long": "Poster*in",
   "@originalPoster_long": {},
-  "pinnedInMagazine": "Im Magazin angepinnt",
-  "@pinnedInMagazine": {},
   "pin": "Pin",
   "@pin": {},
   "notSafeForWork_short": "NSFW",
@@ -400,14 +394,10 @@
   "@sort_active": {},
   "sort_newComments": "Neue Kommentare",
   "@sort_newComments": {},
-  "subscriptions_magazine": "Magazinabonnements",
-  "@subscriptions_magazine": {},
   "comment": "Kommentar",
   "@comment": {},
   "postDeleted": "Post gelöscht",
   "@postDeleted": {},
-  "magazines": "Magazine",
-  "@magazines": {},
   "reply": "Antworten",
   "@reply": {},
   "settings": "Einstellungen",
@@ -464,8 +454,6 @@
   "@account_settings_about": {},
   "account_settings_showReadPosts": "Gelesene Beiträge anzeigen",
   "@account_settings_showReadPosts": {},
-  "account_settings_showSubscribedMagazines": "Abonnierte Magazine anzeigen",
-  "@account_settings_showSubscribedMagazines": {},
   "account_edit": "Kontoprofil bearbeiten",
   "@account_edit": {},
   "account_settings_showSubscribedUsers": "Abonnierte Benutzer anzeigen",

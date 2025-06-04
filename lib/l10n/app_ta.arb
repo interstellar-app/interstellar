@@ -17,10 +17,6 @@
   "@guest": {},
   "subscriptions": "சந்தாக்கள்",
   "@subscriptions": {},
-  "subscriptions_magazine": "செய்தித் தாள் சந்தாக்கள்",
-  "@subscriptions_magazine": {},
-  "subscriptions_magazine_all": "அனைத்து செய்தித் தாள் துணை",
-  "@subscriptions_magazine_all": {},
   "subscriptions_user": "பயனர் பின்வருமாறு",
   "@subscriptions_user": {},
   "subscriptions_user_all": "அனைத்து பயனர்களும் பின்வருமாறு",
@@ -209,18 +205,16 @@
   "@comment_openRoot": {},
   "comment_openParent": "திறந்த பெற்றோர்",
   "@comment_openParent": {},
-  "magazines": "பத்திரிகைகள்",
-  "@magazines": {},
   "people": "மக்கள்",
   "@people": {},
   "domains": "களங்கள்",
   "@domains": {},
   "openInBrowser": "உலாவியில் திற",
   "@openInBrowser": {},
-  "modsOf": "{magazine}",
+  "modsOf": "{community}",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -259,8 +253,6 @@
   "@account_settings_showSubscribedUsers": {},
   "account_settings_showProfileSubscriptions": "சுயவிவர சந்தாக்களை பகிரங்கமாகக் காட்டு",
   "@account_settings_showProfileSubscriptions": {},
-  "account_settings_showSubscribedMagazines": "சந்தா பத்திரிகைகளைக் காட்டு",
-  "@account_settings_showSubscribedMagazines": {},
   "account_settings_showSubscribedDomains": "சந்தா களங்களைக் காட்டு",
   "@account_settings_showSubscribedDomains": {},
   "account_settings_showProfileFollowings": "சுயவிவரப் பின்தொடர்வுகளை பகிரங்கமாகக் காட்டுங்கள்",
@@ -363,8 +355,6 @@
   "@settings_reportIssue": {},
   "settings_matrixSpace": "அணி இடம்",
   "@settings_matrixSpace": {},
-  "settings_mbinMagazine": "செய்தித் தாள்",
-  "@settings_mbinMagazine": {},
   "settings_colorScheme": "வண்ணத் திட்டம்",
   "@settings_colorScheme": {},
   "settings_colorScheme_indigo": "இண்டிகோ",
@@ -445,7 +435,7 @@
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -524,8 +514,6 @@
   "@tags_hint": {},
   "language": "மொழி",
   "@language": {},
-  "magazine": "செய்தித் தாள்",
-  "@magazine": {},
   "action_setLocation": "செயல் இருப்பிடத்தை அமைக்கவும்",
   "@action_setLocation": {},
   "action_hide": "மறை",
@@ -614,8 +602,6 @@
   "@originalPoster_long": {},
   "pin": "முள்",
   "@pin": {},
-  "pinnedInMagazine": "பத்திரிகையில் பொருத்தப்பட்டது",
-  "@pinnedInMagazine": {},
   "notSafeForWork_short": "NSFW",
   "@notSafeForWork_short": {},
   "notSafeForWork_long": "வேலைக்கு பாதுகாப்பாக இல்லை",

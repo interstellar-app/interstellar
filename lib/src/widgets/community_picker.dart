@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/models/magazine.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class MagazinePicker extends StatefulWidget {
-  final DetailedMagazineModel? value;
-  final void Function(DetailedMagazineModel?) onChange;
+class CommunityPicker extends StatefulWidget {
+  final DetailedCommunityModel? value;
+  final void Function(DetailedCommunityModel?) onChange;
   final bool microblogMode;
 
-  const MagazinePicker({
+  const CommunityPicker({
     required this.value,
     required this.onChange,
     this.microblogMode = false,
@@ -21,13 +21,13 @@ class MagazinePicker extends StatefulWidget {
   });
 
   @override
-  State<MagazinePicker> createState() => _MagazinePickerState();
+  State<CommunityPicker> createState() => _CommunityPickerState();
 }
 
-class _MagazinePickerState extends State<MagazinePicker> {
+class _CommunityPickerState extends State<CommunityPicker> {
   @override
   Widget build(BuildContext context) {
-    return Autocomplete<DetailedMagazineModel>(
+    return Autocomplete<DetailedCommunityModel>(
       initialValue: widget.value == null
           ? null
           : TextEditingValue(text: widget.value!.name),
@@ -37,8 +37,8 @@ class _MagazinePickerState extends State<MagazinePicker> {
                 controller: textEditingController,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
-                  label: Text(l(context).magazine),
-                  hintText: l(context).selectMagazine,
+                  label: Text(l(context).community),
+                  hintText: l(context).selectCommunity,
                   prefixIcon: widget.value?.icon == null
                       ? null
                       : Avatar(widget.value!.icon!, radius: 14),
@@ -47,7 +47,7 @@ class _MagazinePickerState extends State<MagazinePicker> {
                       : IconButton(
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => MagazineScreen(
+                              builder: (context) => CommunityScreen(
                                 widget.value!.id,
                                 initData: widget.value!,
                                 onUpdate: (newValue) =>
@@ -58,7 +58,7 @@ class _MagazinePickerState extends State<MagazinePicker> {
                           icon: Icon(Symbols.open_in_new_rounded),
                         ),
                   helperText: widget.microblogMode
-                      ? l(context).microblog_magazineHelperText
+                      ? l(context).microblog_communityHelperText
                       : null,
                 ),
                 focusNode: focusNode,
@@ -67,19 +67,19 @@ class _MagazinePickerState extends State<MagazinePicker> {
               ),
       optionsBuilder: (TextEditingValue textEditingValue) async {
         final exactFuture =
-            (context.read<AppController>().api.magazines.getByName(
+            (context.read<AppController>().api.community.getByName(
                       textEditingValue.text,
                     )
-                    as Future<DetailedMagazineModel?>)
+                    as Future<DetailedCommunityModel?>)
                 .onError((error, stackTrace) => null);
 
-        final searchFuture = context.read<AppController>().api.magazines.list(
+        final searchFuture = context.read<AppController>().api.community.list(
           search: textEditingValue.text,
         );
 
         final [
-          exactResult as DetailedMagazineModel?,
-          searchResults as DetailedMagazineListModel,
+          exactResult as DetailedCommunityModel?,
+          searchResults as DetailedCommunityListModel,
         ] = await Future.wait([
           exactFuture,
           searchFuture,

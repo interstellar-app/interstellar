@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -14,10 +14,10 @@ const _translateLink =
 const _reportIssueLink =
     'https://github.com/interstellar-app/interstellar/issues';
 const _matrixSpaceLink = 'https://matrix.to/#/#interstellar-space:matrix.org';
-const _mbinMagazineName = 'interstellar@kbin.earth';
-const _mbinMagazineLink = 'https://kbin.earth/m/interstellar';
-const mbinConfigsMagazineName = 'interstellar_configs@kbin.earth';
-const _mbinConfigsMagazineLink = 'https://kbin.earth/m/interstellar_configs';
+const _mbinCommunityName = 'interstellar@kbin.earth';
+const _mbinCommunityLink = 'https://kbin.earth/m/interstellar';
+const mbinConfigsCommunityName = 'interstellar_configs@kbin.earth';
+const _mbinConfigsCommunityLink = 'https://kbin.earth/m/interstellar_configs';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -80,18 +80,18 @@ class _AboutScreenState extends State<AboutScreen> {
           ),
           ListTile(
             leading: const ImageIcon(AssetImage('assets/icons/mbin.png')),
-            title: Text(l(context).settings_mbinMagazine),
+            title: Text(l(context).settings_mbinCommunity),
             onTap: () async {
               try {
-                String name = _mbinMagazineName;
+                String name = _mbinCommunityName;
                 if (name.endsWith(context.read<AppController>().instanceHost)) {
                   name = name.split('@').first;
                 }
 
-                final magazine = await context
+                final community = await context
                     .read<AppController>()
                     .api
-                    .magazines
+                    .community
                     .getByName(name);
 
                 if (!mounted) return;
@@ -99,29 +99,29 @@ class _AboutScreenState extends State<AboutScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
-                        MagazineScreen(magazine.id, initData: magazine),
+                        CommunityScreen(community.id, initData: community),
                   ),
                 );
               } catch (e) {
                 if (!mounted) return;
-                openWebpagePrimary(context, Uri.parse(_mbinMagazineLink));
+                openWebpagePrimary(context, Uri.parse(_mbinCommunityLink));
               }
             },
           ),
           ListTile(
             leading: const Icon(Symbols.share_rounded),
-            title: Text(l(context).settings_mbinConfigsMagazine),
+            title: Text(l(context).settings_mbinConfigsCommunity),
             onTap: () async {
               try {
-                String name = mbinConfigsMagazineName;
+                String name = mbinConfigsCommunityName;
                 if (name.endsWith(context.read<AppController>().instanceHost)) {
                   name = name.split('@').first;
                 }
 
-                final magazine = await context
+                final community = await context
                     .read<AppController>()
                     .api
-                    .magazines
+                    .community
                     .getByName(name);
 
                 if (!mounted) return;
@@ -129,14 +129,14 @@ class _AboutScreenState extends State<AboutScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
-                        MagazineScreen(magazine.id, initData: magazine),
+                        CommunityScreen(community.id, initData: community),
                   ),
                 );
               } catch (e) {
                 if (!mounted) return;
                 openWebpagePrimary(
                   context,
-                  Uri.parse(_mbinConfigsMagazineLink),
+                  Uri.parse(_mbinConfigsCommunityLink),
                 );
               }
             },

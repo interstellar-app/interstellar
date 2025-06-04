@@ -22,8 +22,8 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
 
   MigrationOrResetProgress _resetProgress = MigrationOrResetProgress.pending;
 
-  final _resetMagazineSubscriptions = MigrationOrResetType<int>();
-  final _resetMagazineBlocks = MigrationOrResetType<int>();
+  final _resetCommunitySubscriptions = MigrationOrResetType<int>();
+  final _resetCommunityBlocks = MigrationOrResetType<int>();
   final _resetUserFollows = MigrationOrResetType<int>();
   final _resetUserBlocks = MigrationOrResetType<int>();
 
@@ -54,15 +54,15 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
           _resetProgress = MigrationOrResetProgress.readingSource;
         });
         final api = await ac.getApiForAccount(_selectedAccount!);
-        if (_resetMagazineSubscriptions.enabled) {
+        if (_resetCommunitySubscriptions.enabled) {
           String? nextPage;
           do {
-            final res = await api.magazines.list(
+            final res = await api.community.list(
               page: nextPage,
               filter: ExploreFilter.subscribed,
             );
 
-            _resetMagazineSubscriptions.found.addAll(
+            _resetCommunitySubscriptions.found.addAll(
               res.items.map((e) => e.id),
             );
             nextPage = res.nextPage;
@@ -70,15 +70,15 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
             if (progressAndCheckCancel()) return;
           } while (nextPage != null);
         }
-        if (_resetMagazineBlocks.enabled && isAccountMbin) {
+        if (_resetCommunityBlocks.enabled && isAccountMbin) {
           String? nextPage;
           do {
-            final res = await api.magazines.list(
+            final res = await api.community.list(
               page: nextPage,
               filter: ExploreFilter.blocked,
             );
 
-            _resetMagazineBlocks.found.addAll(res.items.map((e) => e.id));
+            _resetCommunityBlocks.found.addAll(res.items.map((e) => e.id));
             nextPage = res.nextPage;
 
             if (progressAndCheckCancel()) return;
@@ -116,21 +116,21 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         setState(() {
           _resetProgress = MigrationOrResetProgress.writingDestination;
         });
-        for (var item in _resetMagazineSubscriptions.found) {
+        for (var item in _resetCommunitySubscriptions.found) {
           try {
-            await api.magazines.subscribe(item, false);
-            _resetMagazineSubscriptions.complete.add(item);
+            await api.community.subscribe(item, false);
+            _resetCommunitySubscriptions.complete.add(item);
           } catch (e) {
-            _resetMagazineSubscriptions.failed.add(item);
+            _resetCommunitySubscriptions.failed.add(item);
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _resetMagazineBlocks.found) {
+        for (var item in _resetCommunityBlocks.found) {
           try {
-            await api.magazines.block(item, false);
-            _resetMagazineBlocks.complete.add(item);
+            await api.community.block(item, false);
+            _resetCommunityBlocks.complete.add(item);
           } catch (e) {
-            _resetMagazineBlocks.failed.add(item);
+            _resetCommunityBlocks.failed.add(item);
           }
           if (progressAndCheckCancel()) return;
         }
@@ -233,13 +233,13 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                         title: Text(
                           l(
                             context,
-                          ).settings_accountReset_step2_resetMagazineSubscriptions,
+                          ).settings_accountReset_step2_resetCommunitySubscriptions,
                         ),
-                        value: _resetMagazineSubscriptions.enabled,
+                        value: _resetCommunitySubscriptions.enabled,
                         onChanged: (value) => {
                           if (value != null)
                             setState(() {
-                              _resetMagazineSubscriptions.enabled = value;
+                              _resetCommunitySubscriptions.enabled = value;
                             }),
                         },
                       ),
@@ -248,13 +248,13 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                           title: Text(
                             l(
                               context,
-                            ).settings_accountReset_step2_resetMagazineBlocks,
+                            ).settings_accountReset_step2_resetCommunityBlocks,
                           ),
-                          value: _resetMagazineBlocks.enabled,
+                          value: _resetCommunityBlocks.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
-                                _resetMagazineBlocks.enabled = value;
+                                _resetCommunityBlocks.enabled = value;
                               }),
                           },
                         ),
@@ -308,8 +308,8 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                   Text(l(context).settings_accountReset_readingFromAccount),
                   Text(
                     l(context).settings_accountReset_foundXItems(
-                      _resetMagazineSubscriptions.found.length +
-                          _resetMagazineBlocks.found.length +
+                      _resetCommunitySubscriptions.found.length +
+                          _resetCommunityBlocks.found.length +
                           _resetUserFollows.found.length +
                           _resetUserBlocks.found.length,
                     ),
@@ -327,24 +327,24 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                   Text(l(context).settings_accountReset_removingItems),
                   Text(
                     l(context).settings_accountReset_completeXItems(
-                      _resetMagazineSubscriptions.complete.length +
-                          _resetMagazineBlocks.complete.length +
+                      _resetCommunitySubscriptions.complete.length +
+                          _resetCommunityBlocks.complete.length +
                           _resetUserFollows.complete.length +
                           _resetUserBlocks.complete.length,
-                      _resetMagazineSubscriptions.found.length +
-                          _resetMagazineBlocks.found.length +
+                      _resetCommunitySubscriptions.found.length +
+                          _resetCommunityBlocks.found.length +
                           _resetUserFollows.found.length +
                           _resetUserBlocks.found.length,
                     ),
                   ),
                   Text(
                     l(context).settings_accountReset_failedXItems(
-                      _resetMagazineSubscriptions.failed.length +
-                          _resetMagazineBlocks.failed.length +
+                      _resetCommunitySubscriptions.failed.length +
+                          _resetCommunityBlocks.failed.length +
                           _resetUserFollows.failed.length +
                           _resetUserBlocks.failed.length,
-                      _resetMagazineSubscriptions.found.length +
-                          _resetMagazineBlocks.found.length +
+                      _resetCommunitySubscriptions.found.length +
+                          _resetCommunityBlocks.found.length +
                           _resetUserFollows.found.length +
                           _resetUserBlocks.found.length,
                     ),
@@ -361,24 +361,24 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                   Text(l(context).settings_accountReset_complete),
                   Text(
                     l(context).settings_accountReset_completeXItems(
-                      _resetMagazineSubscriptions.complete.length +
-                          _resetMagazineBlocks.complete.length +
+                      _resetCommunitySubscriptions.complete.length +
+                          _resetCommunityBlocks.complete.length +
                           _resetUserFollows.complete.length +
                           _resetUserBlocks.complete.length,
-                      _resetMagazineSubscriptions.found.length +
-                          _resetMagazineBlocks.found.length +
+                      _resetCommunitySubscriptions.found.length +
+                          _resetCommunityBlocks.found.length +
                           _resetUserFollows.found.length +
                           _resetUserBlocks.found.length,
                     ),
                   ),
                   Text(
                     l(context).settings_accountReset_failedXItems(
-                      _resetMagazineSubscriptions.failed.length +
-                          _resetMagazineBlocks.failed.length +
+                      _resetCommunitySubscriptions.failed.length +
+                          _resetCommunityBlocks.failed.length +
                           _resetUserFollows.failed.length +
                           _resetUserBlocks.failed.length,
-                      _resetMagazineSubscriptions.found.length +
-                          _resetMagazineBlocks.found.length +
+                      _resetCommunitySubscriptions.found.length +
+                          _resetCommunityBlocks.found.length +
                           _resetUserFollows.found.length +
                           _resetUserBlocks.found.length,
                     ),

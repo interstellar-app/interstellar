@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
@@ -62,11 +62,13 @@ class _NotificationItemState extends State<NotificationItem> {
 
     final software = context.watch<AppController>().serverSoftware;
 
-    MagazineModel? bannedMagazine = switch (software) {
+    CommunityModel? bannedCommunity = switch (software) {
       ServerSoftware.mbin =>
         widget.item.type == NotificationType.ban &&
                 widget.item.subject['magazine'] != null
-            ? MagazineModel.fromMbin(widget.item.subject['magazine'] as JsonMap)
+            ? CommunityModel.fromMbin(
+                widget.item.subject['magazine'] as JsonMap,
+              )
             : null,
       ServerSoftware.lemmy => null,
       ServerSoftware.piefed => null,
@@ -255,17 +257,17 @@ class _NotificationItemState extends State<NotificationItem> {
                           ),
                         ),
                         Text(notificationTitle[widget.item.type]!),
-                        if (bannedMagazine != null)
+                        if (bannedCommunity != null)
                           Flexible(
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8),
                               child: DisplayName(
-                                bannedMagazine.name,
-                                icon: bannedMagazine.icon,
+                                bannedCommunity.name,
+                                icon: bannedCommunity.icon,
                                 onTap: () => Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        MagazineScreen(bannedMagazine.id),
+                                        CommunityScreen(bannedCommunity.id),
                                   ),
                                 ),
                               ),

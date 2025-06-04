@@ -26,10 +26,6 @@
   "@settings_accountReset_step1": {},
   "settings_accountReset_step2": "启用/禁用重置类别",
   "@settings_accountReset_step2": {},
-  "settings_accountReset_step2_resetMagazineSubscriptions": "重置杂志订阅",
-  "@settings_accountReset_step2_resetMagazineSubscriptions": {},
-  "settings_accountReset_step2_resetMagazineBlocks": "重置杂志屏蔽",
-  "@settings_accountReset_step2_resetMagazineBlocks": {},
   "settings_accountReset_step2_resetUserFollows": "重置用户关注",
   "@settings_accountReset_step2_resetUserFollows": {},
   "settings_accountReset_step2_resetUserBlocks": "重置用户屏蔽",
@@ -172,10 +168,6 @@
   "@stars": {},
   "stars_empty": "这里感觉空荡荡的；收藏一个杂志或用户来显示在这里。",
   "@stars_empty": {},
-  "subscriptions_magazine": "杂志订阅",
-  "@subscriptions_magazine": {},
-  "subscriptions_magazine_all": "所有杂志订阅",
-  "@subscriptions_magazine_all": {},
   "subscriptions_user": "用户关注",
   "@subscriptions_user": {},
   "subscriptions_user_all": "所有用户关注",
@@ -218,18 +210,16 @@
   },
   "search": "搜索",
   "@search": {},
-  "magazines": "杂志",
-  "@magazines": {},
   "people": "人",
   "@people": {},
   "domains": "域名",
   "@domains": {},
   "openInBrowser": "在浏览器中打开",
   "@openInBrowser": {},
-  "modsOf": "{magazine} 的版主",
+  "modsOf": "{community} 的版主",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -282,8 +272,6 @@
   "@account_settings_showReadPosts": {},
   "account_settings_showSubscribedUsers": "显示已订阅的用户",
   "@account_settings_showSubscribedUsers": {},
-  "account_settings_showSubscribedMagazines": "显示已订阅的杂志",
-  "@account_settings_showSubscribedMagazines": {},
   "account_settings_showSubscribedDomains": "显示已订阅的域名",
   "@account_settings_showSubscribedDomains": {},
   "account_settings_showProfileSubscriptions": "公开显示个人订阅",
@@ -392,8 +380,6 @@
   "@settings_reportIssue": {},
   "settings_matrixSpace": "Matrix 空间",
   "@settings_matrixSpace": {},
-  "settings_mbinMagazine": "Mbin 杂志",
-  "@settings_mbinMagazine": {},
   "settings_colorScheme": "颜色方案",
   "@settings_colorScheme": {},
   "settings_colorScheme_dynamic": "动态（系统）",
@@ -514,8 +500,6 @@
   "@originalPoster_short": {},
   "originalPoster_long": "原始发布者",
   "@originalPoster_long": {},
-  "pinnedInMagazine": "置顶于杂志",
-  "@pinnedInMagazine": {},
   "notSafeForWork_short": "NSFW",
   "@notSafeForWork_short": {},
   "notSafeForWork_long": "不适合工作环境",
@@ -590,13 +574,13 @@
       }
     }
   },
-  "banUser_help": "您即将封禁 {user} 于 {magazine}。",
+  "banUser_help": "您即将封禁 {user} 于 {community}。",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -683,8 +667,6 @@
   "@tags_hint": {},
   "language": "语言",
   "@language": {},
-  "magazine": "杂志",
-  "@magazine": {},
   "action_setLocation": "设置操作位置",
   "@action_setLocation": {},
   "action_hide": "隐藏",
@@ -801,10 +783,6 @@
   "@settings_accountMigration_step1_destination": {},
   "settings_accountMigration_step2": "启用/禁用迁移类别",
   "@settings_accountMigration_step2": {},
-  "settings_accountMigration_step2_migrateMagazineSubscriptions": "迁移杂志订阅",
-  "@settings_accountMigration_step2_migrateMagazineSubscriptions": {},
-  "settings_accountMigration_step2_migrateMagazineBlocks": "迁移杂志屏蔽",
-  "@settings_accountMigration_step2_migrateMagazineBlocks": {},
   "settings_accountMigration_step2_migrateUserFollows": "迁移用户关注",
   "@settings_accountMigration_step2_migrateUserFollows": {},
   "settings_accountMigration_step2_migrateUserBlocks": "迁移用户屏蔽",
@@ -875,8 +853,6 @@
   "@notificationControlStatus_loud": {},
   "errorPage_newPage": "出现问题。点击重试。",
   "@errorPage_newPage": {},
-  "settings_mbinConfigsMagazine": "共享杂志配置",
-  "@settings_mbinConfigsMagazine": {},
   "continueInBrowser_manual": "如果浏览器未启动，请单击以复制并手动粘贴",
   "@continueInBrowser_manual": {},
   "filterList_import": "导入过滤器列表",
@@ -907,8 +883,6 @@
   "@settings_feedDefaults_view": {},
   "action_setView": "设置视图",
   "@action_setView": {},
-  "microblog_magazineHelperText": "默认为微博的“随机”杂志，因为 Mbin 将未分类的微博存储在这里。",
-  "@microblog_magazineHelperText": {},
   "feedView": "信息流视图",
   "@feedView": {},
   "timeline": "时间线",
@@ -923,10 +897,6 @@
   "@create_link_invalid": {},
   "create_microblog": "微博",
   "@create_microblog": {},
-  "create_magazine": "杂志",
-  "@create_magazine": {},
-  "selectMagazine": "选择杂志...",
-  "@selectMagazine": {},
   "action_createNew": "新建...",
   "@action_createNew": {},
   "settings_hapticFeedback": "触觉反馈",

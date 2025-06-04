@@ -6,43 +6,43 @@ import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 
-part 'magazine.freezed.dart';
+part 'community.freezed.dart';
 
 @freezed
-class DetailedMagazineListModel with _$DetailedMagazineListModel {
-  const factory DetailedMagazineListModel({
-    required List<DetailedMagazineModel> items,
+class DetailedCommunityListModel with _$DetailedCommunityListModel {
+  const factory DetailedCommunityListModel({
+    required List<DetailedCommunityModel> items,
     required String? nextPage,
-  }) = _DetailedMagazineListModel;
+  }) = _DetailedCommunityListModel;
 
-  factory DetailedMagazineListModel.fromMbin(JsonMap json) =>
-      DetailedMagazineListModel(
+  factory DetailedCommunityListModel.fromMbin(JsonMap json) =>
+      DetailedCommunityListModel(
         items: (json['items'] as List<dynamic>)
-            .map((item) => DetailedMagazineModel.fromMbin(item as JsonMap))
+            .map((item) => DetailedCommunityModel.fromMbin(item as JsonMap))
             .toList(),
         nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
       );
 
-  factory DetailedMagazineListModel.fromLemmy(JsonMap json) =>
-      DetailedMagazineListModel(
+  factory DetailedCommunityListModel.fromLemmy(JsonMap json) =>
+      DetailedCommunityListModel(
         items: (json['communities'] as List<dynamic>)
-            .map((item) => DetailedMagazineModel.fromLemmy(item as JsonMap))
+            .map((item) => DetailedCommunityModel.fromLemmy(item as JsonMap))
             .toList(),
         nextPage: json['next_page'] as String?,
       );
 
-  factory DetailedMagazineListModel.fromPiefed(JsonMap json) =>
-      DetailedMagazineListModel(
+  factory DetailedCommunityListModel.fromPiefed(JsonMap json) =>
+      DetailedCommunityListModel(
         items: (json['communities'] as List<dynamic>)
-            .map((item) => DetailedMagazineModel.fromPiefed(item as JsonMap))
+            .map((item) => DetailedCommunityModel.fromPiefed(item as JsonMap))
             .toList(),
         nextPage: json['next_page'] as String?,
       );
 }
 
 @freezed
-class DetailedMagazineModel with _$DetailedMagazineModel {
-  const factory DetailedMagazineModel({
+class DetailedCommunityModel with _$DetailedCommunityModel {
+  const factory DetailedCommunityModel({
     required int id,
     required String name,
     required String title,
@@ -60,10 +60,10 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
     required bool? isBlockedByUser,
     required bool isPostingRestrictedToMods,
     required NotificationControlStatus? notificationControlStatus,
-  }) = _DetailedMagazineModel;
+  }) = _DetailedCommunityModel;
 
-  factory DetailedMagazineModel.fromMbin(JsonMap json) {
-    final magazine = DetailedMagazineModel(
+  factory DetailedCommunityModel.fromMbin(JsonMap json) {
+    final community = DetailedCommunityModel(
       id: json['magazineId'] as int,
       name: json['name'] as String,
       title: json['title'] as String,
@@ -92,16 +92,16 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
             ),
     );
 
-    magazineMentionCache[magazine.name] = magazine;
+    communityMentionCache[community.name] = community;
 
-    return magazine;
+    return community;
   }
 
-  factory DetailedMagazineModel.fromLemmy(JsonMap json) {
+  factory DetailedCommunityModel.fromLemmy(JsonMap json) {
     final lemmyCommunity = json['community'] as JsonMap;
     final lemmyCounts = json['counts'] as JsonMap;
 
-    final magazine = DetailedMagazineModel(
+    final community = DetailedCommunityModel(
       id: lemmyCommunity['id'] as int,
       name: getLemmyPiefedActorName(lemmyCommunity),
       title: lemmyCommunity['title'] as String,
@@ -122,17 +122,17 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
       notificationControlStatus: null,
     );
 
-    magazineMentionCache[magazine.name] = magazine;
+    communityMentionCache[community.name] = community;
 
-    return magazine;
+    return community;
   }
 
-  factory DetailedMagazineModel.fromPiefed(JsonMap json) {
+  factory DetailedCommunityModel.fromPiefed(JsonMap json) {
     final communityView = json['community_view'] as JsonMap? ?? json;
     final piefedCommunity = communityView['community'] as JsonMap;
     final piefedCounts = communityView['counts'] as JsonMap;
 
-    final magazine = DetailedMagazineModel(
+    final community = DetailedCommunityModel(
       id: piefedCommunity['id'] as int,
       name: getLemmyPiefedActorName(piefedCommunity),
       title: piefedCommunity['title'] as String,
@@ -169,33 +169,33 @@ class DetailedMagazineModel with _$DetailedMagazineModel {
           : NotificationControlStatus.default_,
     );
 
-    magazineMentionCache[magazine.name] = magazine;
+    communityMentionCache[community.name] = community;
 
-    return magazine;
+    return community;
   }
 }
 
 @freezed
-class MagazineModel with _$MagazineModel {
-  const factory MagazineModel({
+class CommunityModel with _$CommunityModel {
+  const factory CommunityModel({
     required int id,
     required String name,
     required ImageModel? icon,
-  }) = _MagazineModel;
+  }) = _CommunityModel;
 
-  factory MagazineModel.fromMbin(JsonMap json) => MagazineModel(
+  factory CommunityModel.fromMbin(JsonMap json) => CommunityModel(
     id: json['magazineId'] as int,
     name: json['name'] as String,
     icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
   );
 
-  factory MagazineModel.fromLemmy(JsonMap json) => MagazineModel(
+  factory CommunityModel.fromLemmy(JsonMap json) => CommunityModel(
     id: json['id'] as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
   );
 
-  factory MagazineModel.fromPiefed(JsonMap json) => MagazineModel(
+  factory CommunityModel.fromPiefed(JsonMap json) => CommunityModel(
     id: json['id'] as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
@@ -203,56 +203,57 @@ class MagazineModel with _$MagazineModel {
 }
 
 @freezed
-class MagazineBanListModel with _$MagazineBanListModel {
-  const factory MagazineBanListModel({
-    required List<MagazineBanModel> items,
+class CommunityBanListModel with _$CommunityBanListModel {
+  const factory CommunityBanListModel({
+    required List<CommunityBanModel> items,
     required String? nextPage,
-  }) = _MagazineBanListModel;
+  }) = _CommunityBanListModel;
 
-  factory MagazineBanListModel.fromMbin(JsonMap json) => MagazineBanListModel(
+  factory CommunityBanListModel.fromMbin(JsonMap json) => CommunityBanListModel(
     items: (json['items'] as List<dynamic>)
-        .map((item) => MagazineBanModel.fromMbin(item as JsonMap))
+        .map((item) => CommunityBanModel.fromMbin(item as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
   );
 
-  factory MagazineBanListModel.fromPiefed(JsonMap json) => MagazineBanListModel(
-    items: (json['items'] as List<dynamic>)
-        .map((item) => MagazineBanModel.fromPiefed(item as JsonMap))
-        .toList(),
-    // if next_page is None we have reached the end of the bans
-    // so set nextPage to null. Otherwise set it to the next page number
-    // to request
-    nextPage: (json['next_page'] as String?) != 'None'
-        ? json['next_page'] as String?
-        : null,
-  );
+  factory CommunityBanListModel.fromPiefed(JsonMap json) =>
+      CommunityBanListModel(
+        items: (json['items'] as List<dynamic>)
+            .map((item) => CommunityBanModel.fromPiefed(item as JsonMap))
+            .toList(),
+        // if next_page is None we have reached the end of the bans
+        // so set nextPage to null. Otherwise set it to the next page number
+        // to request
+        nextPage: (json['next_page'] as String?) != 'None'
+            ? json['next_page'] as String?
+            : null,
+      );
 }
 
 @freezed
-class MagazineBanModel with _$MagazineBanModel {
-  const factory MagazineBanModel({
+class CommunityBanModel with _$CommunityBanModel {
+  const factory CommunityBanModel({
     required String? reason,
     required DateTime? expiresAt,
-    required MagazineModel magazine,
+    required CommunityModel community,
     required UserModel bannedUser,
     required UserModel bannedBy,
     required bool expired,
-  }) = _MagazineBanModel;
+  }) = _CommunityBanModel;
 
-  factory MagazineBanModel.fromMbin(JsonMap json) => MagazineBanModel(
+  factory CommunityBanModel.fromMbin(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expiresAt'] as String?),
-    magazine: MagazineModel.fromMbin(json['magazine'] as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     bannedUser: UserModel.fromMbin(json['bannedUser'] as JsonMap),
     bannedBy: UserModel.fromMbin(json['bannedBy'] as JsonMap),
     expired: json['expired'] as bool,
   );
 
-  factory MagazineBanModel.fromPiefed(JsonMap json) => MagazineBanModel(
+  factory CommunityBanModel.fromPiefed(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expiresAt'] as String?),
-    magazine: MagazineModel.fromPiefed(json['community'] as JsonMap),
+    community: CommunityModel.fromPiefed(json['community'] as JsonMap),
     bannedUser: UserModel.fromPiefed(json['bannedUser'] as JsonMap),
     bannedBy: UserModel.fromPiefed(json['bannedBy'] as JsonMap),
     expired: json['expired'] as bool,

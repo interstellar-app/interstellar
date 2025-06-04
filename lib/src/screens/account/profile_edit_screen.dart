@@ -335,17 +335,17 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                                 });
                               },
                             ),
-                          if (_settings!.showSubscribedMagazines != null)
+                          if (_settings!.showSubscribedCommunities != null)
                             SwitchListTile(
                               title: Text(
                                 l(
                                   context,
-                                ).account_settings_showSubscribedMagazines,
+                                ).account_settings_showSubscribedCommunities,
                               ),
-                              value: _settings!.showSubscribedMagazines!,
+                              value: _settings!.showSubscribedCommunities!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showSubscribedMagazines = value!;
+                                  _settings!.showSubscribedCommunities = value!;
                                   _settingsChanged = true;
                                 });
                               },

@@ -106,7 +106,7 @@ class _PostItemState extends State<PostItem> {
                   PostType.microblog => ac.profile.fullImageSizeMicroblogs,
                 }
               : true,
-          showMagazineFirst: widget.item.type == PostType.thread,
+          showCommunityFirst: widget.item.type == PostType.thread,
           read: widget.isTopLevel && widget.item.read,
           isPinned: widget.item.isPinned,
           isNSFW: widget.item.isNSFW,
@@ -116,9 +116,9 @@ class _PostItemState extends State<PostItem> {
           userIdOnClick: widget.item.user.id,
           userCakeDay: widget.item.user.createdAt,
           userIsBot: widget.item.user.isBot,
-          magazine: widget.item.magazine.name,
-          magazineIcon: widget.item.magazine.icon,
-          magazineIdOnClick: widget.item.magazine.id,
+          community: widget.item.community.name,
+          communityIcon: widget.item.community.icon,
+          communityIdOnClick: widget.item.community.id,
           domain: widget.item.domain?.name,
           domainIdOnClick: widget.item.domain?.id,
           boosts: widget.item.boosts,
@@ -229,14 +229,14 @@ class _PostItemState extends State<PostItem> {
                   await openBanDialog(
                     context,
                     user: widget.item.user,
-                    magazine: widget.item.magazine,
+                    community: widget.item.community,
                   );
                 },
           numComments: widget.item.numComments,
           openLinkUri: Uri.https(
             ac.instanceHost,
             ac.serverSoftware == ServerSoftware.mbin
-                ? '/m/${widget.item.magazine.name}/${switch (widget.item.type) {
+                ? '/m/${widget.item.community.name}/${switch (widget.item.type) {
                     PostType.thread => 't',
                     PostType.microblog => 'p',
                   }}/${widget.item.id}'

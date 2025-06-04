@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/magazine.dart';
-import 'package:interstellar/src/screens/explore/magazine_owner_panel.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/image_selector.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/magazine_picker.dart';
+import 'package:interstellar/src/widgets/community_picker.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
@@ -19,13 +19,13 @@ import 'package:provider/provider.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({
-    this.initMagazine,
+    this.initCommunity,
     this.initTitle,
     this.initBody,
     super.key,
   });
 
-  final DetailedMagazineModel? initMagazine;
+  final DetailedCommunityModel? initCommunity;
   final String? initTitle;
   final String? initBody;
 
@@ -34,7 +34,7 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  DetailedMagazineModel? _magazine;
+  DetailedCommunityModel? _community;
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
@@ -51,7 +51,7 @@ class _CreateScreenState extends State<CreateScreen> {
 
     _lang = context.read<AppController>().profile.defaultPostLanguage;
 
-    if (widget.initMagazine != null) _magazine = widget.initMagazine;
+    if (widget.initCommunity != null) _community = widget.initCommunity;
     if (widget.initTitle != null) _titleTextController.text = widget.initTitle!;
     if (widget.initBody != null) _bodyTextController.text = widget.initBody!;
   }
@@ -61,19 +61,19 @@ class _CreateScreenState extends State<CreateScreen> {
     final ac = context.watch<AppController>();
 
     final bodyDraftController = context.watch<DraftsController>().auto(
-      'create:${widget.initMagazine == null ? '' : ':${ac.instanceHost}:${widget.initMagazine!.name}'}',
+      'create:${widget.initCommunity == null ? '' : ':${ac.instanceHost}:${widget.initCommunity!.name}'}',
     );
 
     Widget listViewWidget(List<Widget> children) =>
         ListView(padding: const EdgeInsets.all(12), children: children);
 
-    Widget magazinePickerWidget({bool microblogMode = false}) => Padding(
+    Widget communityPickerWidget({bool microblogMode = false}) => Padding(
       padding: const EdgeInsets.all(8),
-      child: MagazinePicker(
-        value: _magazine,
-        onChange: (newMagazine) {
+      child: CommunityPicker(
+        value: _community,
+        onChange: (newCommunity) {
           setState(() {
-            _magazine = newMagazine;
+            _community = newCommunity;
           });
         },
         microblogMode: microblogMode,
@@ -234,7 +234,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   icon: Icon(Symbols.edit_note_rounded),
                 ),
               Tab(
-                text: l(context).create_magazine,
+                text: l(context).create_community,
                 icon: Icon(Symbols.group_rounded),
               ),
             ],
@@ -243,7 +243,7 @@ class _CreateScreenState extends State<CreateScreen> {
         body: TabBarView(
           children: [
             listViewWidget([
-              magazinePickerWidget(),
+              communityPickerWidget(),
               titleEditorWidget(),
               bodyEditorWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
@@ -251,13 +251,13 @@ class _CreateScreenState extends State<CreateScreen> {
               nsfwToggleWidget(),
               languagePickerWidget(),
               submitButtonWidget(
-                _magazine == null
+                _community == null
                     ? null
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
                         await ac.api.threads.createArticle(
-                          _magazine!.id,
+                          _community!.id,
                           title: _titleTextController.text,
                           isOc: _isOc,
                           body: _bodyTextController.text,
@@ -276,7 +276,7 @@ class _CreateScreenState extends State<CreateScreen> {
               ),
             ]),
             listViewWidget([
-              magazinePickerWidget(),
+              communityPickerWidget(),
               titleEditorWidget(),
               imagePickerWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
@@ -284,13 +284,13 @@ class _CreateScreenState extends State<CreateScreen> {
               nsfwToggleWidget(),
               languagePickerWidget(),
               submitButtonWidget(
-                _magazine == null
+                _community == null
                     ? null
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
                         await ac.api.threads.createImage(
-                          _magazine!.id,
+                          _community!.id,
                           title: _titleTextController.text,
                           image: _imageFile!,
                           alt: _altText ?? '',
@@ -309,7 +309,7 @@ class _CreateScreenState extends State<CreateScreen> {
               ),
             ]),
             listViewWidget([
-              magazinePickerWidget(),
+              communityPickerWidget(),
               linkEditorWidget(),
               titleEditorWidget(),
               bodyEditorWidget(),
@@ -318,13 +318,13 @@ class _CreateScreenState extends State<CreateScreen> {
               nsfwToggleWidget(),
               languagePickerWidget(),
               submitButtonWidget(
-                _magazine == null || !linkIsValid
+                _community == null || !linkIsValid
                     ? null
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
                         await ac.api.threads.createLink(
-                          _magazine!.id,
+                          _community!.id,
                           title: _titleTextController.text,
                           url: _urlTextController.text,
                           isOc: _isOc,
@@ -345,30 +345,30 @@ class _CreateScreenState extends State<CreateScreen> {
             ]),
             if (ac.serverSoftware == ServerSoftware.mbin)
               listViewWidget([
-                magazinePickerWidget(microblogMode: true),
+                communityPickerWidget(microblogMode: true),
                 bodyEditorWidget(),
                 imagePickerWidget(),
                 nsfwToggleWidget(),
                 languagePickerWidget(),
                 submitButtonWidget(() async {
-                  final magazine =
-                      _magazine ??
+                  final community =
+                      _community ??
                       await context
                           .read<AppController>()
                           .api
-                          .magazines
+                          .community
                           .getByName('random');
 
                   if (_imageFile == null) {
                     await ac.api.microblogs.create(
-                      magazine.id,
+                      community.id,
                       body: _bodyTextController.text,
                       lang: _lang,
                       isAdult: _isAdult,
                     );
                   } else {
                     await ac.api.microblogs.createImage(
-                      magazine.id,
+                      community.id,
                       image: _imageFile!,
                       alt: '',
                       body: _bodyTextController.text,
@@ -385,15 +385,17 @@ class _CreateScreenState extends State<CreateScreen> {
                   Navigator.pop(context);
                 }),
               ]),
-            MagazineOwnerPanelGeneral(
+            CommunityOwnerPanelGeneral(
               data: null,
-              onUpdate: (newMagazine) {
+              onUpdate: (newCommunity) {
                 Navigator.pop(context);
 
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        MagazineScreen(newMagazine.id, initData: newMagazine),
+                    builder: (context) => CommunityScreen(
+                      newCommunity.id,
+                      initData: newCommunity,
+                    ),
                   ),
                 );
               },

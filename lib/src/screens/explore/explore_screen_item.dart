@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/domain.dart';
-import 'package:interstellar/src/models/magazine.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/domain_screen.dart';
-import 'package:interstellar/src/screens/explore/magazine_screen.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
@@ -26,43 +26,43 @@ class ExploreScreenItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ListTile based items
-    if (item is DetailedMagazineModel ||
+    if (item is DetailedCommunityModel ||
         item is DetailedUserModel ||
         item is DomainModel) {
       final icon = switch (item) {
-        DetailedMagazineModel i => i.icon,
+        DetailedCommunityModel i => i.icon,
         DetailedUserModel i => i.avatar,
         _ => null,
       };
       final title = switch (item) {
-        DetailedMagazineModel i => i.title,
+        DetailedCommunityModel i => i.title,
         DetailedUserModel i => i.displayName ?? i.name.split('@').first,
         DomainModel i => i.name,
         _ => throw 'Unreachable',
       };
       final subtitle = switch (item) {
-        DetailedMagazineModel i => i.name,
+        DetailedCommunityModel i => i.name,
         DetailedUserModel i => i.name,
         _ => null,
       };
       final isSubscribed = switch (item) {
-        DetailedMagazineModel i => i.isUserSubscribed,
+        DetailedCommunityModel i => i.isUserSubscribed,
         DetailedUserModel i => i.isFollowedByUser,
         DomainModel i => i.isUserSubscribed,
         _ => throw 'Unreachable',
       };
       final subscriptions = switch (item) {
-        DetailedMagazineModel i => i.subscriptionsCount,
+        DetailedCommunityModel i => i.subscriptionsCount,
         DetailedUserModel i => i.followersCount ?? 0,
         DomainModel i => i.subscriptionsCount,
         _ => throw 'Unreachable',
       };
       final onSubscribe = switch (item) {
-        DetailedMagazineModel i => (selected) async {
+        DetailedCommunityModel i => (selected) async {
           var newValue = await context
               .read<AppController>()
               .api
-              .magazines
+              .community
               .subscribe(i.id, selected);
 
           onUpdate(newValue);
@@ -87,10 +87,10 @@ class ExploreScreenItem extends StatelessWidget {
         _ => throw 'Unreachable',
       };
       final onClick = switch (item) {
-        DetailedMagazineModel i => () => Navigator.of(context).push(
+        DetailedCommunityModel i => () => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return MagazineScreen(i.id, initData: i, onUpdate: onUpdate);
+              return CommunityScreen(i.id, initData: i, onUpdate: onUpdate);
             },
           ),
         ),

@@ -22,8 +22,8 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
   MigrationOrResetProgress _migrationProgress =
       MigrationOrResetProgress.pending;
 
-  final _migrateMagazineSubscriptions = MigrationOrResetType<String>();
-  final _migrateMagazineBlocks = MigrationOrResetType<String>();
+  final _migrateCommunitySubscriptions = MigrationOrResetType<String>();
+  final _migrateCommunityBlocks = MigrationOrResetType<String>();
   final _migrateUserFollows = MigrationOrResetType<String>();
   final _migrateUserBlocks = MigrationOrResetType<String>();
 
@@ -63,15 +63,15 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         });
         final sourceAPI = await ac.getApiForAccount(_sourceAccount!);
         final sourceAccountHost = _sourceAccount!.split('@').last;
-        if (_migrateMagazineSubscriptions.enabled) {
+        if (_migrateCommunitySubscriptions.enabled) {
           String? nextPage;
           do {
-            final res = await sourceAPI.magazines.list(
+            final res = await sourceAPI.community.list(
               page: nextPage,
               filter: ExploreFilter.subscribed,
             );
 
-            _migrateMagazineSubscriptions.found.addAll(
+            _migrateCommunitySubscriptions.found.addAll(
               res.items.map((e) => normalizeName(e.name, sourceAccountHost)),
             );
             nextPage = res.nextPage;
@@ -79,15 +79,15 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
             if (progressAndCheckCancel()) return;
           } while (nextPage != null);
         }
-        if (_migrateMagazineBlocks.enabled && sourceIsMbin) {
+        if (_migrateCommunityBlocks.enabled && sourceIsMbin) {
           String? nextPage;
           do {
-            final res = await sourceAPI.magazines.list(
+            final res = await sourceAPI.community.list(
               page: nextPage,
               filter: ExploreFilter.blocked,
             );
 
-            _migrateMagazineBlocks.found.addAll(
+            _migrateCommunityBlocks.found.addAll(
               res.items.map((e) => normalizeName(e.name, sourceAccountHost)),
             );
             nextPage = res.nextPage;
@@ -133,31 +133,31 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         });
         final destAPI = await ac.getApiForAccount(_destinationAccount!);
         final destAccountHost = _destinationAccount!.split('@').last;
-        for (var item in _migrateMagazineSubscriptions.found) {
+        for (var item in _migrateCommunitySubscriptions.found) {
           try {
-            final res = await destAPI.magazines.getByName(
+            final res = await destAPI.community.getByName(
               denormalizeName(item, destAccountHost),
             );
             if (res.isUserSubscribed == false) {
-              await destAPI.magazines.subscribe(res.id, true);
+              await destAPI.community.subscribe(res.id, true);
             }
-            _migrateMagazineSubscriptions.complete.add(item);
+            _migrateCommunitySubscriptions.complete.add(item);
           } catch (e) {
-            _migrateMagazineSubscriptions.failed.add(item);
+            _migrateCommunitySubscriptions.failed.add(item);
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _migrateMagazineBlocks.found) {
+        for (var item in _migrateCommunityBlocks.found) {
           try {
-            final res = await destAPI.magazines.getByName(
+            final res = await destAPI.community.getByName(
               denormalizeName(item, destAccountHost),
             );
             if (res.isBlockedByUser == false) {
-              await destAPI.magazines.block(res.id, true);
+              await destAPI.community.block(res.id, true);
             }
-            _migrateMagazineBlocks.complete.add(item);
+            _migrateCommunityBlocks.complete.add(item);
           } catch (e) {
-            _migrateMagazineBlocks.failed.add(item);
+            _migrateCommunityBlocks.failed.add(item);
           }
           if (progressAndCheckCancel()) return;
         }
@@ -305,13 +305,13 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                         title: Text(
                           l(
                             context,
-                          ).settings_accountMigration_step2_migrateMagazineSubscriptions,
+                          ).settings_accountMigration_step2_migrateCommunitySubscriptions,
                         ),
-                        value: _migrateMagazineSubscriptions.enabled,
+                        value: _migrateCommunitySubscriptions.enabled,
                         onChanged: (value) => {
                           if (value != null)
                             setState(() {
-                              _migrateMagazineSubscriptions.enabled = value;
+                              _migrateCommunitySubscriptions.enabled = value;
                             }),
                         },
                       ),
@@ -320,13 +320,13 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                           title: Text(
                             l(
                               context,
-                            ).settings_accountMigration_step2_migrateMagazineBlocks,
+                            ).settings_accountMigration_step2_migrateCommunityBlocks,
                           ),
-                          value: _migrateMagazineBlocks.enabled,
+                          value: _migrateCommunityBlocks.enabled,
                           onChanged: (value) => {
                             if (value != null)
                               setState(() {
-                                _migrateMagazineBlocks.enabled = value;
+                                _migrateCommunityBlocks.enabled = value;
                               }),
                           },
                         ),
@@ -380,8 +380,8 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                   Text(l(context).settings_accountMigration_readingFromSource),
                   Text(
                     l(context).settings_accountMigration_foundXItems(
-                      _migrateMagazineSubscriptions.found.length +
-                          _migrateMagazineBlocks.found.length +
+                      _migrateCommunitySubscriptions.found.length +
+                          _migrateCommunityBlocks.found.length +
                           _migrateUserFollows.found.length +
                           _migrateUserBlocks.found.length,
                     ),
@@ -399,24 +399,24 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                   Text(l(context).settings_accountMigration_readingFromSource),
                   Text(
                     l(context).settings_accountMigration_completeXItems(
-                      _migrateMagazineSubscriptions.complete.length +
-                          _migrateMagazineBlocks.complete.length +
+                      _migrateCommunitySubscriptions.complete.length +
+                          _migrateCommunityBlocks.complete.length +
                           _migrateUserFollows.complete.length +
                           _migrateUserBlocks.complete.length,
-                      _migrateMagazineSubscriptions.found.length +
-                          _migrateMagazineBlocks.found.length +
+                      _migrateCommunitySubscriptions.found.length +
+                          _migrateCommunityBlocks.found.length +
                           _migrateUserFollows.found.length +
                           _migrateUserBlocks.found.length,
                     ),
                   ),
                   Text(
                     l(context).settings_accountMigration_failedXItems(
-                      _migrateMagazineSubscriptions.failed.length +
-                          _migrateMagazineBlocks.failed.length +
+                      _migrateCommunitySubscriptions.failed.length +
+                          _migrateCommunityBlocks.failed.length +
                           _migrateUserFollows.failed.length +
                           _migrateUserBlocks.failed.length,
-                      _migrateMagazineSubscriptions.found.length +
-                          _migrateMagazineBlocks.found.length +
+                      _migrateCommunitySubscriptions.found.length +
+                          _migrateCommunityBlocks.found.length +
                           _migrateUserFollows.found.length +
                           _migrateUserBlocks.found.length,
                     ),
@@ -433,24 +433,24 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                   Text(l(context).settings_accountMigration_complete),
                   Text(
                     l(context).settings_accountMigration_completeXItems(
-                      _migrateMagazineSubscriptions.complete.length +
-                          _migrateMagazineBlocks.complete.length +
+                      _migrateCommunitySubscriptions.complete.length +
+                          _migrateCommunityBlocks.complete.length +
                           _migrateUserFollows.complete.length +
                           _migrateUserBlocks.complete.length,
-                      _migrateMagazineSubscriptions.found.length +
-                          _migrateMagazineBlocks.found.length +
+                      _migrateCommunitySubscriptions.found.length +
+                          _migrateCommunityBlocks.found.length +
                           _migrateUserFollows.found.length +
                           _migrateUserBlocks.found.length,
                     ),
                   ),
                   Text(
                     l(context).settings_accountMigration_failedXItems(
-                      _migrateMagazineSubscriptions.failed.length +
-                          _migrateMagazineBlocks.failed.length +
+                      _migrateCommunitySubscriptions.failed.length +
+                          _migrateCommunityBlocks.failed.length +
                           _migrateUserFollows.failed.length +
                           _migrateUserBlocks.failed.length,
-                      _migrateMagazineSubscriptions.found.length +
-                          _migrateMagazineBlocks.found.length +
+                      _migrateCommunitySubscriptions.found.length +
+                          _migrateCommunityBlocks.found.length +
                           _migrateUserFollows.found.length +
                           _migrateUserBlocks.found.length,
                     ),

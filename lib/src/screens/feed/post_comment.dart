@@ -269,13 +269,13 @@ class _PostCommentState extends State<PostComment> {
               await openBanDialog(
                 context,
                 user: widget.comment.user,
-                magazine: widget.comment.magazine,
+                community: widget.comment.community,
               );
             },
       openLinkUri: Uri.https(
         ac.instanceHost,
         ac.serverSoftware == ServerSoftware.mbin
-            ? '/m/${widget.comment.magazine.name}/${switch (widget.comment.postType) {
+            ? '/m/${widget.comment.community.name}/${switch (widget.comment.postType) {
                 PostType.thread => 't',
                 PostType.microblog => 'p',
               }}/${widget.comment.postId}/-/${switch (widget.comment.postType) {

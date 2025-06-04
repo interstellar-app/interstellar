@@ -3,8 +3,8 @@ import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/domains.dart';
-import 'package:interstellar/src/api/magazine_moderation.dart';
-import 'package:interstellar/src/api/magazines.dart';
+import 'package:interstellar/src/api/community_moderation.dart';
+import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/api/messages.dart';
 import 'package:interstellar/src/api/microblogs.dart';
 import 'package:interstellar/src/api/moderation.dart';
@@ -21,8 +21,8 @@ class API {
   final APIComments comments;
   final MbinAPIDomains domains;
   final APIThreads threads;
-  final APIMagazines magazines;
-  final APIMagazineModeration magazineModeration;
+  final APICommunity community;
+  final APICommunityModeration communityModeration;
   final APIMessages messages;
   final APIModeration moderation;
   final APINotifications notifications;
@@ -35,8 +35,8 @@ class API {
     : comments = APIComments(client),
       domains = MbinAPIDomains(client),
       threads = APIThreads(client),
-      magazines = APIMagazines(client),
-      magazineModeration = APIMagazineModeration(client),
+      community = APICommunity(client),
+      communityModeration = APICommunityModeration(client),
       messages = APIMessages(client),
       moderation = APIModeration(client),
       notifications = APINotifications(client),

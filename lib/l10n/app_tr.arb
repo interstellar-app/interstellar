@@ -117,10 +117,6 @@
   "@stars_empty": {},
   "subscriptions": "Abonelikler",
   "@subscriptions": {},
-  "subscriptions_magazine": "Dergi Abonelikleri",
-  "@subscriptions_magazine": {},
-  "subscriptions_magazine_all": "Tüm Dergi Abonelikleri",
-  "@subscriptions_magazine_all": {},
   "subscriptions_user": "Kullanıcı Takip Edilenler",
   "@subscriptions_user": {},
   "subscriptions_user_all": "Tüm Kullanıcı Takip Edilenler",
@@ -163,18 +159,16 @@
   },
   "search": "Ara",
   "@search": {},
-  "magazines": "Dergiler",
-  "@magazines": {},
   "people": "Kişiler",
   "@people": {},
   "domains": "Alanlar",
   "@domains": {},
   "openInBrowser": "Tarayıcıda Aç",
   "@openInBrowser": {},
-  "modsOf": "{magazine} Moderatörleri",
+  "modsOf": "{community} Moderatörleri",
   "@modsOf": {
     "placeholders": {
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -215,8 +209,6 @@
   "@account_settings_showReadPosts": {},
   "account_settings_showSubscribedUsers": "Abonelik yapılan kullanıcıları göster",
   "@account_settings_showSubscribedUsers": {},
-  "account_settings_showSubscribedMagazines": "Abonelik yapılan dergileri göster",
-  "@account_settings_showSubscribedMagazines": {},
   "account_settings_showSubscribedDomains": "Abonelik yapılan alanları göster",
   "@account_settings_showSubscribedDomains": {},
   "account_settings_showProfileSubscriptions": "Profil aboneliklerini herkese açık göster",
@@ -329,10 +321,6 @@
   "@settings_reportIssue": {},
   "settings_matrixSpace": "Matrix Alanı",
   "@settings_matrixSpace": {},
-  "settings_mbinMagazine": "Mbin Dergisi",
-  "@settings_mbinMagazine": {},
-  "settings_mbinConfigsMagazine": "Yapılandırma Paylaşım Dergisi",
-  "@settings_mbinConfigsMagazine": {},
   "settings_colorScheme": "Renk Şeması",
   "@settings_colorScheme": {},
   "settings_colorScheme_dynamic": "Dinamik (Sistem)",
@@ -475,8 +463,6 @@
   "@originalPoster_long": {},
   "pin": "Sabitle",
   "@pin": {},
-  "pinnedInMagazine": "Dergide Sabitlendi",
-  "@pinnedInMagazine": {},
   "notSafeForWork_short": "NSFW",
   "@notSafeForWork_short": {},
   "notSafeForWork_long": "İş İçin Güvenli Değil",
@@ -551,13 +537,13 @@
       }
     }
   },
-  "banUser_help": "{user} kullanıcısını {magazine} dergisinden yasaklamak üzeresiniz.",
+  "banUser_help": "{user} kullanıcısını {community} dergisinden yasaklamak üzeresiniz.",
   "@banUser_help": {
     "placeholders": {
       "user": {
         "type": "String"
       },
-      "magazine": {
+      "community": {
         "type": "String"
       }
     }
@@ -646,12 +632,6 @@
   "@create_link_invalid": {},
   "create_microblog": "Mikroblog",
   "@create_microblog": {},
-  "create_magazine": "Dergi",
-  "@create_magazine": {},
-  "microblog_magazineHelperText": "Mikrobloglar için varsayılan olarak 'rastgele' dergiye ayarlanır, çünkü Mbin kategorize edilmemiş mikroblogları burada saklar.",
-  "@microblog_magazineHelperText": {},
-  "selectMagazine": "Bir dergi seçin ...",
-  "@selectMagazine": {},
   "title": "Başlık",
   "@title": {},
   "body": "Gövde",
@@ -664,8 +644,6 @@
   "@tags_hint": {},
   "language": "Dil",
   "@language": {},
-  "magazine": "Dergi",
-  "@magazine": {},
   "action_setLocation": "Eylem Konumunu Ayarla",
   "@action_setLocation": {},
   "action_hide": "Gizle",
@@ -806,10 +784,6 @@
   "@settings_accountMigration_step1_destination": {},
   "settings_accountMigration_step2": "Geçiş kategorilerini etkinleştir/devre dışı bırak",
   "@settings_accountMigration_step2": {},
-  "settings_accountMigration_step2_migrateMagazineSubscriptions": "Dergi aboneliklerini taşı",
-  "@settings_accountMigration_step2_migrateMagazineSubscriptions": {},
-  "settings_accountMigration_step2_migrateMagazineBlocks": "Dergi engellemelerini taşı",
-  "@settings_accountMigration_step2_migrateMagazineBlocks": {},
   "settings_accountMigration_step2_migrateUserFollows": "Kullanıcı takiplerini taşı",
   "@settings_accountMigration_step2_migrateUserFollows": {},
   "settings_accountMigration_step2_migrateUserBlocks": "Kullanıcı engellemelerini taşı",
@@ -862,10 +836,6 @@
   "@settings_accountReset_step1": {},
   "settings_accountReset_step2": "Sıfırlama kategorilerini etkinleştir/devre dışı bırak",
   "@settings_accountReset_step2": {},
-  "settings_accountReset_step2_resetMagazineSubscriptions": "Dergi aboneliklerini sıfırla",
-  "@settings_accountReset_step2_resetMagazineSubscriptions": {},
-  "settings_accountReset_step2_resetMagazineBlocks": "Dergi engellemelerini sıfırla",
-  "@settings_accountReset_step2_resetMagazineBlocks": {},
   "settings_accountReset_step2_resetUserFollows": "Kullanıcı takiplerini sıfırla",
   "@settings_accountReset_step2_resetUserFollows": {},
   "settings_accountReset_step2_resetUserBlocks": "Kullanıcı engellemelerini sıfırla",
