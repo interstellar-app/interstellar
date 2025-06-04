@@ -32,9 +32,19 @@ class VideoPlayer extends StatefulWidget {
 class _VideoPlayerState extends State<VideoPlayer> {
   final player = Player();
   late final controller = VideoController(player);
+  bool _isPlaying = false;
 
   Future<void> _initController() async {
     final autoPlay = context.read<AppController>().profile.autoPlayVideos;
+    setState(() {
+      _isPlaying = autoPlay;
+    });
+    player.stream.playing.listen((bool playing) {
+      if (!mounted) return;
+      setState(() {
+        _isPlaying = playing;
+      });
+    });
 
     if (isSupportedYouTubeVideo(widget.uri)) {
       final yt = youtube_explode_dart.YoutubeExplode();
@@ -53,18 +63,18 @@ class _VideoPlayerState extends State<VideoPlayer> {
         final audioStream = manifest.audio.withHighestBitrate();
         final media = Media(videoStream.url.toString());
 
-        player.open(media, play: autoPlay);
+        player.open(media, play: _isPlaying);
         player.setAudioTrack(AudioTrack.uri(audioStream.url.toString()));
       }
     } else {
-      player.open(Media(widget.uri.toString()), play: autoPlay);
+      player.open(Media(widget.uri.toString()), play: _isPlaying);
     }
   }
 
   @override
   void initState() {
-    _initController();
     super.initState();
+    _initController();
   }
 
   @override
@@ -79,6 +89,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
           return Stack(
             children: [
               media_kit_video_controls.AdaptiveVideoControls(state),
+              if (!_isPlaying)
+                Center(
+                  child: MaterialPlayOrPauseButton(iconSize: 56),
+                ),
               if (!state.isFullscreen())
                 Align(
                   alignment: Alignment.topRight,
@@ -109,7 +123,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ModalRoute.of(context)!.isCurrent) {
+      if (!(ModalRoute.of(context)?.isCurrent ?? false)) {
         player.pause();
       }
     });
