@@ -583,6 +583,26 @@ class _ContentItemState extends State<ContentItem> {
                                           ),
                                         ),
                                       ),
+                                    if (widget.lang != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
+                                        child: Tooltip(
+                                          message: getLanguageName(
+                                            context,
+                                            widget.lang!,
+                                          ),
+                                          triggerMode: TooltipTriggerMode.tap,
+                                          child: Text(
+                                            widget.lang!,
+                                            style: const TextStyle(
+                                              color: Colors.purple,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     if (!widget.showCommunityFirst) ?userWidget,
                                     if (widget.showCommunityFirst)
                                       ?communityWidget,
@@ -1063,6 +1083,21 @@ class _ContentItemState extends State<ContentItem> {
                               l(context).originalContent_short,
                               style: const TextStyle(
                                 color: Colors.lightGreen,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (widget.lang != null)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Tooltip(
+                            message: getLanguageName(context, widget.lang!),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Text(
+                              widget.lang!,
+                              style: const TextStyle(
+                                color: Colors.purple,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
