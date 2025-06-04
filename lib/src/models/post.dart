@@ -43,12 +43,7 @@ class PostListModel with _$PostListModel {
     items: (json['posts'] as List<dynamic>)
         .map((post) => PostModel.fromPiefed(post as JsonMap))
         .toList(),
-    // if next_page is None we have reached the end of the notifications
-    // so set nextPage to null. Otherwise set it to the next page number
-    // to request
-    nextPage: (json['next_page'] as String?) != 'None'
-        ? json['next_page'] as String?
-        : null,
+    nextPage: json['next_page'] as String?,
   );
 }
 
