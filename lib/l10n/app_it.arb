@@ -328,5 +328,159 @@
   "settings_colorScheme_indigo": "Indaco",
   "@settings_colorScheme_indigo": {},
   "settings_colorScheme_hippieBlue": "Blu hippie",
-  "@settings_colorScheme_hippieBlue": {}
+  "@settings_colorScheme_hippieBlue": {},
+  "settings_colorScheme_brandBlue": "Blu brand",
+  "@settings_colorScheme_brandBlue": {},
+  "settings_colorScheme_sakura": "Sakura",
+  "@settings_colorScheme_sakura": {},
+  "settings_colorScheme_deepBlue": "Blu profondo",
+  "@settings_colorScheme_deepBlue": {},
+  "settings_colorScheme_redWine": "Rosso vino",
+  "@settings_colorScheme_redWine": {},
+  "settings_colorScheme_purpleBrown": "Marrone porpora",
+  "@settings_colorScheme_purpleBrown": {},
+  "settings_colorScheme_green": "Verde",
+  "@settings_colorScheme_green": {},
+  "settings_colorScheme_mandyRed": "Rosso mandy",
+  "@settings_colorScheme_mandyRed": {},
+  "settings_colorScheme_red": "Rosso",
+  "@settings_colorScheme_red": {},
+  "settings_colorScheme_jungle": "Giungla",
+  "@settings_colorScheme_jungle": {},
+  "settings_colorScheme_greyLaw": "Grigio law",
+  "@settings_colorScheme_greyLaw": {},
+  "settings_colorScheme_wasabi": "Wasabi",
+  "@settings_colorScheme_wasabi": {},
+  "settings_colorScheme_money": "Money",
+  "@settings_colorScheme_money": {},
+  "settings_colorScheme_vesuviusBurn": "Fuoco del Vesuvio",
+  "@settings_colorScheme_vesuviusBurn": {},
+  "settings_colorScheme_deepPurple": "Viola intenso",
+  "@settings_colorScheme_deepPurple": {},
+  "settings_colorScheme_mango": "Mango",
+  "@settings_colorScheme_mango": {},
+  "settings_colorScheme_amber": "Ambra",
+  "@settings_colorScheme_amber": {},
+  "settings_colorScheme_barossa": "Barossa",
+  "@settings_colorScheme_barossa": {},
+  "settings_colorScheme_ebonyClay": "Argilla ebano",
+  "@settings_colorScheme_ebonyClay": {},
+  "settings_colorScheme_shark": "Squalo",
+  "@settings_colorScheme_shark": {},
+  "settings_feedDefaults_commentSort": "Ordine commenti",
+  "@settings_feedDefaults_commentSort": {},
+  "settings_feedDefaults_microblogSort": "Ordine microblog",
+  "@settings_feedDefaults_microblogSort": {},
+  "settings_feedDefaults_exploreSort": "Ordine Esplora",
+  "@settings_feedDefaults_exploreSort": {},
+  "settings_swipeActionRightLong": "Destra lungo",
+  "@settings_swipeActionRightLong": {},
+  "settings_enableSwipeActions": "Abilita azioni scorrimento",
+  "@settings_enableSwipeActions": {},
+  "settings_swipeThreshold": "Soglia azione scorrimento",
+  "@settings_swipeThreshold": {},
+  "profiles": "Profili",
+  "@profiles": {},
+  "settings_swipeActionRightShort": "Destra breve",
+  "@settings_swipeActionRightShort": {},
+  "profile_switch": "Cambia profilo",
+  "@profile_switch": {},
+  "profile_main": "Profilo principale",
+  "@profile_main": {},
+  "profile_new": "Nuovo profilo",
+  "@profile_new": {},
+  "profile_name": "Nome",
+  "@profile_name": {},
+  "profile_edit": "Modifica profilo",
+  "@profile_edit": {},
+  "profile_import": "Importa profilo",
+  "@profile_import": {},
+  "profile_delete": "Elimina profilo",
+  "@profile_delete": {},
+  "profile_setAsMain": "Imposta come profilo principale",
+  "@profile_setAsMain": {},
+  "profile_setAsMain_help": "Il profilo principale serve come fondamento per tutti gli altri profili. Le modifiche apportate ad esso saranno applicate a tutti i profili a meno che una specifica impostazione non sia stata sovrascritta.",
+  "@profile_setAsMain_help": {},
+  "unsupportedSoftware": "{host} utilizza software non supportato",
+  "@unsupportedSoftware": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "pin": "Fissa",
+  "@pin": {},
+  "notSafeForWork_short": "NSFW",
+  "@notSafeForWork_short": {},
+  "expand": "Espandi",
+  "@expand": {},
+  "collapse": "Comprimi",
+  "@collapse": {},
+  "report": "Segnala",
+  "@report": {},
+  "reportX": "Segnala {name}",
+  "@reportX": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "edit": "Modifica",
+  "@edit": {},
+  "delete": "Elimina",
+  "@delete": {},
+  "viewSource": "Mostra sorgente",
+  "@viewSource": {},
+  "close": "Chiudi",
+  "@close": {},
+  "banUser": "Banna utente",
+  "@banUser": {},
+  "banUserX": "Banna {user}",
+  "@banUserX": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_colorScheme_gold": "Oro",
+  "@settings_colorScheme_gold": {},
+  "settings_feedDefaults_view": "Vista",
+  "@settings_feedDefaults_view": {},
+  "settings_feedDefaults_filter": "Filtro",
+  "@settings_feedDefaults_filter": {},
+  "settings_feedDefaults_threadsSort": "Ordine thread",
+  "@settings_feedDefaults_threadsSort": {},
+  "settings_feedDefaults_hideReadPosts": "Nascondi post letti",
+  "@settings_feedDefaults_hideReadPosts": {},
+  "settings_swipeActionLeftShort": "Sinistra breve",
+  "@settings_swipeActionLeftShort": {},
+  "settings_swipeActionLeftLong": "Sinistra lungo",
+  "@settings_swipeActionLeftLong": {},
+  "profile_autoSelect": "Seleziona automaticamente all'avvio",
+  "@profile_autoSelect": {},
+  "profile_autoSelectAccount": "Seleziona automaticamente l'account quando il profilo è abilitato",
+  "@profile_autoSelectAccount": {},
+  "profile_autoSelectAccount_none": "Nessuno",
+  "@profile_autoSelectAccount_none": {},
+  "profile_about_title": "Informazioni profili",
+  "@profile_about_title": {},
+  "moreFrom": "Altro da {name}",
+  "@moreFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteX": "Elimina {name}",
+  "@deleteX": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
