@@ -37,7 +37,7 @@ class _NavDrawerState extends State<NavDrawer> {
           .community
           .list(filter: ExploreFilter.subscribed)
           .then((value) {
-            if (mounted && value.items.isNotEmpty) {
+            if (mounted) {
               setState(() => subbedCommunities = value.items);
             }
           });
@@ -48,7 +48,7 @@ class _NavDrawerState extends State<NavDrawer> {
             .users
             .list(filter: ExploreFilter.subscribed)
             .then((value) {
-              if (mounted && value.items.isNotEmpty) {
+              if (mounted) {
                 setState(() => subbedUsers = value.items);
               }
             });
@@ -58,7 +58,7 @@ class _NavDrawerState extends State<NavDrawer> {
             .domains
             .list(filter: ExploreFilter.subscribed)
             .then((value) {
-              if (mounted && value.items.isNotEmpty) {
+              if (mounted) {
                 setState(() => subbedDomains = value.items);
               }
             });
@@ -139,14 +139,14 @@ class _NavDrawerState extends State<NavDrawer> {
             children: [CircularProgressIndicator()],
           ),
         if (context.watch<AppController>().isLoggedIn &&
-            (subbedCommunities != null ||
-                subbedUsers != null ||
-                subbedDomains != null)) ...[
+            ((subbedCommunities?.isNotEmpty ?? false) ||
+                (subbedUsers?.isNotEmpty ?? false) ||
+                (subbedDomains?.isNotEmpty ?? false))) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SettingsHeader(l(context).subscriptions),
           ),
-          if (subbedCommunities != null) ...[
+          if (subbedCommunities?.isNotEmpty ?? false) ...[
             ...subbedCommunities!
                 .asMap()
                 .map(
@@ -200,9 +200,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ),
           ],
         ],
-        if (context.read<AppController>().serverSoftware ==
-                ServerSoftware.mbin &&
-            subbedUsers != null) ...[
+        if (subbedUsers?.isNotEmpty ?? false) ...[
           ...subbedUsers!
               .asMap()
               .map(
@@ -252,9 +250,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ),
           ),
         ],
-        if (context.read<AppController>().serverSoftware ==
-                ServerSoftware.mbin &&
-            subbedDomains != null) ...[
+        if (subbedDomains?.isNotEmpty ?? false) ...[
           ...subbedDomains!
               .asMap()
               .map(
