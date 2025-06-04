@@ -21,17 +21,52 @@ final Map<String, List<(String, ServerSoftware)>> _recommendedInstances = {
     ('piefed.social', ServerSoftware.piefed),
     ('feddit.online', ServerSoftware.piefed),
   ],
+  'bg': [('feddit.bg', ServerSoftware.lemmy)],
+  'da': [('feddit.dk', ServerSoftware.lemmy)],
   'de': [
     ('gehirneimer.de', ServerSoftware.mbin),
     ('feddit.org', ServerSoftware.lemmy),
     ('discuss.tchncs.de', ServerSoftware.lemmy),
+  ],
+  'es': [
+    ('feddit.cl', ServerSoftware.lemmy),
+    ('chachara.club', ServerSoftware.lemmy),
+  ],
+  'fi': [
+    ('sopuli.xyz', ServerSoftware.lemmy),
+    ('suppo.fi', ServerSoftware.lemmy),
   ],
   'fr': [
     ('jlai.lu', ServerSoftware.lemmy),
     ('lemmy.ca', ServerSoftware.lemmy),
     ('feddit.fr', ServerSoftware.piefed),
   ],
-  'it': [('feddit.it', ServerSoftware.lemmy)],
+  'it': [
+    ('feddit.it', ServerSoftware.lemmy),
+    ('diggita.com', ServerSoftware.lemmy),
+    ('lemminielettrici.it', ServerSoftware.lemmy),
+  ],
+  'ja': [
+    ('lm.korako.me', ServerSoftware.lemmy),
+    ('pf.korako.me', ServerSoftware.piefed),
+  ],
+  'lt': [('group.lt', ServerSoftware.lemmy)],
+  'ms': [('monyet.cc', ServerSoftware.lemmy)],
+  'nl': [('feddit.nl', ServerSoftware.lemmy)],
+  'pl': [
+    ('szmer.info', ServerSoftware.lemmy),
+    ('fedit.pl', ServerSoftware.lemmy),
+  ],
+  'pt': [
+    ('lemmy.eco.br', ServerSoftware.lemmy),
+    ('forum.ayom.media', ServerSoftware.lemmy),
+    ('bolha.forum', ServerSoftware.lemmy),
+    ('lemmy.pt', ServerSoftware.lemmy),
+  ],
+  'sv': [
+    ('feddit.nu', ServerSoftware.lemmy),
+    ('aggregatet.org', ServerSoftware.lemmy),
+  ],
 };
 
 class LoginSelectScreen extends StatefulWidget {
