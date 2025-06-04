@@ -29,7 +29,7 @@ class PostItem extends StatefulWidget {
 
   final PostModel item;
   final void Function(PostModel) onUpdate;
-  final Future<void> Function(String)? onReply;
+  final Future<void> Function(String body, String lang)? onReply;
   final Future<void> Function(String)? onEdit;
   final Future<void> Function()? onDelete;
   final void Function()? onTap;

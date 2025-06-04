@@ -189,12 +189,13 @@ class _PostCommentState extends State<PostComment> {
         );
       }),
       contentTypeName: l(context).comment,
-      onReply: whenLoggedIn(context, (body) async {
+      onReply: whenLoggedIn(context, (body, lang) async {
         var newSubComment = await ac.api.comments.create(
           widget.comment.postType,
           widget.comment.postId,
           body,
           parentCommentId: widget.comment.id,
+          lang: lang,
         );
 
         widget.onUpdate(
