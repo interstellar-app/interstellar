@@ -636,8 +636,36 @@ class _ContentItemState extends State<ContentItem> {
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: LayoutBuilder(
-                                builder: (context, constrains) {
-                                  final votingWidgets = [
+                                builder: (context, constrains) => Row(
+                                  children: [
+                                    if (constrains.maxWidth > 250) ...[
+                                      if (widget.numComments != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 8,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Symbols.comment_rounded),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                intFormat(widget.numComments!),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      if (widget.onReply != null)
+                                        IconButton(
+                                          icon: const Icon(
+                                            Symbols.reply_rounded,
+                                          ),
+                                          onPressed: () => setState(() {
+                                            _replyTextController =
+                                                TextEditingController();
+                                          }),
+                                        ),
+                                    ],
+                                    const Spacer(),
                                     if (widget.activeBookmarkLists != null)
                                       widget.activeBookmarkLists!.isEmpty
                                           ? LoadingIconButton(
@@ -707,58 +735,8 @@ class _ContentItemState extends State<ContentItem> {
                                             ),
                                         ],
                                       ),
-                                  ];
-                                  final commentWidgets = [
-                                    if (widget.numComments != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 8,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Icon(Symbols.comment_rounded),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              intFormat(widget.numComments!),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    if (widget.onReply != null)
-                                      IconButton(
-                                        icon: const Icon(Symbols.reply_rounded),
-                                        onPressed: () => setState(() {
-                                          _replyTextController =
-                                              TextEditingController();
-                                        }),
-                                      ),
-                                  ];
-
-                                  return constrains.maxWidth < 300
-                                      ? Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: votingWidgets,
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Row(
-                                              children: <Widget>[
-                                                ...commentWidgets,
-                                                const Spacer(),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                      : Row(
-                                          children: <Widget>[
-                                            ...commentWidgets,
-                                            const Spacer(),
-                                            ...votingWidgets,
-                                          ],
-                                        );
-                                },
+                                  ],
+                                ),
                               ),
                             ),
                           if (!widget.isPreview &&
