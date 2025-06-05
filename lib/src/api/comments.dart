@@ -171,7 +171,7 @@ class APIComments {
         );
 
       case ServerSoftware.piefed:
-        const path = '/user';
+        const path = '/comment/list';
         final query = {
           'person_id': userId.toString(),
           'page': page,

@@ -105,9 +105,7 @@ class APIThreads {
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.community => {'community_id': sourceId!.toString()},
-            FeedSource.user => throw Exception(
-              'User source not allowed for lemmy',
-            ),
+            FeedSource.user => throw Exception('Unreachable'),
             FeedSource.domain => throw Exception(
               'Domain source not allowed for lemmy',
             ),
@@ -121,29 +119,6 @@ class APIThreads {
         );
 
       case ServerSoftware.piefed:
-        if (source == FeedSource.user) {
-          const path = '/user';
-          final query = {
-            'person_id': sourceId.toString(),
-            'page': page,
-            'sort': lemmyFeedSortMap[sort],
-          };
-
-          final response = await client.get(path, queryParams: query);
-
-          final json = response.bodyJson;
-
-          json['next_page'] = lemmyCalcNextIntPage(
-            json['posts'] as List<dynamic>,
-            page,
-          );
-
-          return PostListModel.fromPiefed(
-            json,
-            langCodeIdPairs: await client.languageCodeIdPairs(),
-          );
-        }
-
         const path = '/post/list';
         final query = {'page_cursor': page, 'sort': lemmyFeedSortMap[sort]}
           ..addAll(switch (source) {
@@ -153,9 +128,7 @@ class APIThreads {
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.community => {'community_id': sourceId!.toString()},
-            FeedSource.user => throw Exception(
-              'User source not allowed for fromPiefed',
-            ),
+            FeedSource.user => {'person_id': sourceId.toString()},
             FeedSource.domain => throw Exception(
               'Domain source not allowed for fromPiefed',
             ),
