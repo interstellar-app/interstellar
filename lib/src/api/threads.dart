@@ -466,11 +466,11 @@ class APIThreads {
       case ServerSoftware.mbin:
         final path = '/magazine/$communityId/image';
 
-        var request = http.MultipartRequest(
+        final request = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + path),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
           filename: basename(image.path),
@@ -493,23 +493,22 @@ class APIThreads {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request = http.MultipartRequest(
+        final uploadRequest = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, pictrsPath),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
-        request.files.add(multipartFile);
-        var pictrsResponse = await client.sendRequest(request);
-
-        final json = jsonDecode(pictrsResponse.body) as JsonMap;
+        uploadRequest.files.add(multipartFile);
+        final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((json['files'] as List<Object?>).first as JsonMap)['file']
+            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+                    as JsonMap)['file']
                 as String?;
 
         const path = '/post';
@@ -534,22 +533,21 @@ class APIThreads {
       case ServerSoftware.piefed:
         const uploadPath = '/upload/image';
 
-        var request = http.MultipartRequest(
+        final uploadRequest = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'file',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
-        request.files.add(multipartFile);
-        var uploadResponse = await client.sendRequest(request);
+        uploadRequest.files.add(multipartFile);
 
-        final json = uploadResponse.bodyJson;
+        final uploadResponse = await client.sendRequest(uploadRequest);
 
-        final imageUrl = json['url'] as String?;
+        final imageUrl = uploadResponse.bodyJson['url'] as String?;
 
         const path = '/post';
         final response = await client.post(
