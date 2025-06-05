@@ -153,7 +153,7 @@ jobs:
         working-directory: ${{ matrix.build_path }}
 
       - name: Build AppImage for linux
-        if: false && matrix.target_os == 'linux'
+        if: matrix.target_os == 'linux'
         run: |
           PKG_URL_PREFIX="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous"
 
