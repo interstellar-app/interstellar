@@ -80,14 +80,7 @@ class APINotifications {
 
         final response = await client.get(path, queryParams: query);
 
-        final json = response.bodyJson;
-
-        json['next_page'] = lemmyCalcNextIntPage(
-          json['items'] as List<dynamic>,
-          page,
-        );
-
-        return NotificationListModel.fromPiefed(json);
+        return NotificationListModel.fromPiefed(response.bodyJson);
     }
   }
 

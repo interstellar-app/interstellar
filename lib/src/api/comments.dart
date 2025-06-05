@@ -112,15 +112,8 @@ class APIComments {
 
         final response = await client.get(path, queryParams: query);
 
-        final json = response.bodyJson;
-
-        json['next_page'] = lemmyCalcNextIntPage(
-          json['comments'] as List<dynamic>,
-          page,
-        );
-
         return CommentListModel.fromPiefedToTree(
-          json,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -180,15 +173,8 @@ class APIComments {
 
         final response = await client.get(path, queryParams: query);
 
-        final json = response.bodyJson;
-
-        json['next_page'] = lemmyCalcNextIntPage(
-          json['comments'] as List<dynamic>,
-          page,
-        );
-
         return CommentListModel.fromPiefedToFlat(
-          json,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }

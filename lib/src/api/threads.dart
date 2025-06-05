@@ -136,10 +136,8 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        final json = response.bodyJson;
-
         return PostListModel.fromPiefed(
-          json,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }

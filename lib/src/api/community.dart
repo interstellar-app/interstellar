@@ -190,14 +190,7 @@ class APICommunity {
 
           final response = await client.get(path, queryParams: query);
 
-          final json = response.bodyJson;
-
-          json['next_page'] = lemmyCalcNextIntPage(
-            json['communities'] as List<dynamic>,
-            page,
-          );
-
-          return DetailedCommunityListModel.fromPiefed(json);
+          return DetailedCommunityListModel.fromPiefed(response.bodyJson);
         } else {
           const path = '/search';
           final query = {
@@ -220,14 +213,7 @@ class APICommunity {
 
           final response = await client.get(path, queryParams: query);
 
-          final json = response.bodyJson;
-
-          json['next_page'] = lemmyCalcNextIntPage(
-            json['communities'] as List<dynamic>,
-            page,
-          );
-
-          return DetailedCommunityListModel.fromPiefed(json);
+          return DetailedCommunityListModel.fromPiefed(response.bodyJson);
         }
     }
   }

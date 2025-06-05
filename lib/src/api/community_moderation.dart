@@ -32,14 +32,7 @@ class APICommunityModeration {
 
         final response = await client.get(path, queryParams: query);
 
-        final json = response.bodyJson;
-
-        json['next_page'] = lemmyCalcNextIntPage(
-          json['items'] as List<dynamic>,
-          page,
-        );
-
-        return CommunityBanListModel.fromPiefed(json);
+        return CommunityBanListModel.fromPiefed(response.bodyJson);
     }
   }
 
