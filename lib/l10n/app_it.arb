@@ -249,8 +249,6 @@
   },
   "settings_about": "Informazioni",
   "@settings_about": {},
-  "settings_defaultPostLanguage": "Lingua dei post predefinita",
-  "@settings_defaultPostLanguage": {},
   "settings_useAccountLanguageFilter": "Usa filtro lingua dell'account",
   "@settings_useAccountLanguageFilter": {},
   "settings_useAccountLanguageFilter_help": "Nota: i filtri della lingua si applicano solo a \"Tutto\" e ad esplora feed",
