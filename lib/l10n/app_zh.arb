@@ -1022,5 +1022,7 @@
   "subscriptions_community": "社区订阅",
   "@subscriptions_community": {},
   "subscriptions_community_all": "所有社区订阅",
-  "@subscriptions_community_all": {}
+  "@subscriptions_community_all": {},
+  "settings_defaultCreateLanguage": "默认帖子/评论创建语言",
+  "@settings_defaultCreateLanguage": {}
 }
