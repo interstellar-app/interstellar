@@ -193,7 +193,10 @@ class PostModel with _$PostModel {
           ? null
           : lemmyPost['url'] as String?,
       image: lemmyGetOptionalImage(
-        lemmyPost['thumbnail_url'] as String?,
+        (lemmyPost['url_content_type'] != null &&
+                (lemmyPost['url_content_type'] as String).startsWith('image/'))
+            ? lemmyPost['url'] as String?
+            : lemmyPost['thumbnail_url'] as String?,
         lemmyPost['alt_text'] as String?,
       ),
       body: lemmyPost['body'] as String?,
