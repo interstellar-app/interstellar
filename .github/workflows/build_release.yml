@@ -5,29 +5,27 @@ permissions:
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to create (e.g. 1.2.3)'
-        required: true
-        default: 'X.X.X'
-        type: string
-      build-number:
-        description: 'Build number to use (e.g. 65)'
-        required: true
-        type: number
 
 jobs:
-  draft-release:
-    name: Draft v${{ inputs.version }}; build num ${{ inputs.build-number }}
+  prepare-release:
+    name: Prepare release
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.draft_release.outputs.upload_url }}
+      interstellar_version: ${{ steps.build_info.outputs.INTERSTELLAR_VERSION }}
+      flutter_version: ${{ steps.build_info.outputs.FLUTTER_VERSION }}
+
     steps:
-      - name: Draft release
+      - name: Gather build info
+        id: build_info
+        run: |
+          echo "INTERSTELLAR_VERSION=$(sed -nr 's/version: ([0-9.]+)\+[0-9]+/\1/p' pubspec.yaml)" >> "$GITHUB_OUTPUT"
+          echo "FLUTTER_VERSION=$(sed -nE 's/  flutter: ([0-9.]+)/\1/p' pubspec.yaml)" >> "$GITHUB_OUTPUT"
+      - name: Draft v${{ steps.build_info.outputs.INTERSTELLAR_VERSION }} release
         id: draft_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ inputs.version }}
+          tag_name: v${{ steps.build_info.outputs.INTERSTELLAR_VERSION }}
           draft: true
 
   create-build:
@@ -93,7 +91,7 @@ jobs:
         with:
           # Use master until Flutter action is fixed for arm (https://github.com/subosito/flutter-action/issues/345)
           channel: ${{ matrix.target == 'linux-aarch64' && 'master' || 'stable' }}
-          flutter-version: 3.32.0
+          flutter-version: ${{ needs.prepare-release.outputs.flutter_version }}
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -102,11 +100,6 @@ jobs:
       - name: git-config add safe directory
         if: matrix.target_os == 'linux'
         run: git config --global --add safe.directory $FLUTTER_ROOT
-
-      - name: Set version
-        run: |
-          flutter pub global activate cider
-          cider version ${{ github.event.inputs.version }}+${{ github.event.inputs.build-number }}
 
       - name: Configure android Keystore
         if: matrix.target_os == 'android'
@@ -193,11 +186,11 @@ jobs:
           path: scripts/build-windows-setup.iss
           options: /O+
         env:
-          INTERSTELLAR_VERSION: ${{ github.event.inputs.version }}
+          INTERSTELLAR_VERSION: ${{ needs.prepare-release.outputs.interstellar_version }}
           INTERSTELLAR_BUILD_PATH: ${{ github.workspace }}\${{ matrix.build_path }}
 
       - name: Upload build to release draft
         uses: shogo82148/actions-upload-release-asset@v1
         with:
-          upload_url: ${{ needs.draft-release.outputs.upload_url }}
+          upload_url: ${{ needs.prepare-release.outputs.upload_url }}
           asset_path: dist/*
