@@ -6,6 +6,7 @@ import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:mime/mime.dart';
 
 part 'post.freezed.dart';
 
@@ -179,6 +180,13 @@ class PostModel with _$PostModel {
     final lemmyPost = json['post'] as JsonMap;
     final lemmyCounts = json['counts'] as JsonMap;
 
+    final isImagePost =
+        ((lemmyPost['url_content_type'] != null &&
+            (lemmyPost['url_content_type'] as String).startsWith('image/')) ||
+        (lemmyPost['url'] != null &&
+            (lookupMimeType(lemmyPost['url'] as String)?.startsWith('image/') ??
+                false)));
+
     return PostModel(
       type: PostType.thread,
       id: lemmyPost['id'] as int,
@@ -187,14 +195,9 @@ class PostModel with _$PostModel {
       domain: null,
       title: lemmyPost['name'] as String,
       // Only include link if it's not an Image post
-      url:
-          (lemmyPost['url_content_type'] != null &&
-              (lemmyPost['url_content_type'] as String).startsWith('image/'))
-          ? null
-          : lemmyPost['url'] as String?,
+      url: isImagePost ? null : lemmyPost['url'] as String?,
       image: lemmyGetOptionalImage(
-        (lemmyPost['url_content_type'] != null &&
-                (lemmyPost['url_content_type'] as String).startsWith('image/'))
+        isImagePost
             ? lemmyPost['url'] as String?
             : lemmyPost['thumbnail_url'] as String?,
         lemmyPost['alt_text'] as String?,
@@ -236,6 +239,15 @@ class PostModel with _$PostModel {
     final piefedPost = json['post'] as JsonMap;
     final piefedCounts = json['counts'] as JsonMap;
 
+    final isImagePost =
+        ((piefedPost['url_content_type'] != null &&
+            (piefedPost['url_content_type'] as String).startsWith('image/')) ||
+        (piefedPost['url'] != null &&
+            (lookupMimeType(
+                  piefedPost['url'] as String,
+                )?.startsWith('image/') ??
+                false)));
+
     return PostModel(
       type: PostType.thread,
       id: piefedPost['id'] as int,
@@ -244,13 +256,11 @@ class PostModel with _$PostModel {
       domain: null,
       title: piefedPost['title'] as String,
       // Only include link if it's not an Image post
-      url:
-          (piefedPost['url_content_type'] != null &&
-              (piefedPost['url_content_type'] as String).startsWith('image/'))
-          ? null
-          : piefedPost['url'] as String?,
+      url: isImagePost ? null : piefedPost['url'] as String?,
       image: lemmyGetOptionalImage(
-        piefedPost['thumbnail_url'] as String?,
+        isImagePost
+            ? piefedPost['url'] as String?
+            : piefedPost['thumbnail_url'] as String?,
         piefedPost['alt_text'] as String?,
       ),
       body: piefedPost['body'] as String?,
