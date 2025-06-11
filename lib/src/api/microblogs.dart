@@ -120,12 +120,12 @@ class MbinAPIMicroblogs {
   }) async {
     final path = '/magazine/$communityId/posts/image';
 
-    var request = http.MultipartRequest(
+    final request = http.MultipartRequest(
       'POST',
       Uri.https(client.domain, client.software.apiPathPrefix + path),
     );
 
-    var multipartFile = http.MultipartFile.fromBytes(
+    final multipartFile = http.MultipartFile.fromBytes(
       'uploadImage',
       await image.readAsBytes(),
       filename: basename(image.path),

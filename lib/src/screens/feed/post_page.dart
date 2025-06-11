@@ -176,12 +176,12 @@ class _PostPageState extends State<PostPage> {
               child: PostItem(
                 post,
                 _onUpdate,
-                onReply: whenLoggedIn(context, (body) async {
+                onReply: whenLoggedIn(context, (body, lang) async {
                   var newComment = await context
                       .read<AppController>()
                       .api
                       .comments
-                      .create(post.type, post.id, body);
+                      .create(post.type, post.id, body, lang: lang);
                   var newList = _pagingController.itemList;
                   newList?.insert(0, newComment);
                   setState(() {

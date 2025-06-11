@@ -223,12 +223,7 @@ class CommunityBanListModel with _$CommunityBanListModel {
         items: (json['items'] as List<dynamic>)
             .map((item) => CommunityBanModel.fromPiefed(item as JsonMap))
             .toList(),
-        // if next_page is None we have reached the end of the bans
-        // so set nextPage to null. Otherwise set it to the next page number
-        // to request
-        nextPage: (json['next_page'] as String?) != 'None'
-            ? json['next_page'] as String?
-            : null,
+        nextPage: json['next_page'] as String?,
       );
 }
 

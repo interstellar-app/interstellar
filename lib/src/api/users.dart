@@ -272,11 +272,11 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/avatar';
 
-        var request = http.MultipartRequest(
+        final request = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + path),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
           filename: basename(image.path),
@@ -290,23 +290,22 @@ class APIUsers {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request = http.MultipartRequest(
+        final uploadRequest = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, pictrsPath),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
-        request.files.add(multipartFile);
-        final pictrsResponse = await client.sendRequest(request);
-
-        final json = jsonDecode(pictrsResponse.body) as JsonMap;
+        uploadRequest.files.add(multipartFile);
+        final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((json['files'] as List<Object?>).first as JsonMap)['file']
+            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+                    as JsonMap)['file']
                 as String?;
 
         const path = '/user/save_user_settings';
@@ -319,7 +318,28 @@ class APIUsers {
         return null;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const uploadPath = '/upload/user_image';
+
+        final uploadRequest = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
+        );
+        final multipartFile = http.MultipartFile.fromBytes(
+          'file',
+          await image.readAsBytes(),
+          filename: basename(image.path),
+          contentType: MediaType.parse(lookupMimeType(image.path)!),
+        );
+        uploadRequest.files.add(multipartFile);
+        final uploadResponse = await client.sendRequest(uploadRequest);
+
+        final imageUrl = uploadResponse.bodyJson['url'] as String?;
+
+        const path = '/user/save_user_settings';
+
+        final response = await client.put(path, body: {'avatar': imageUrl});
+
+        return null;
     }
   }
 
@@ -339,7 +359,11 @@ class APIUsers {
         return null;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/save_user_settings';
+
+        final response = await client.put(path, body: {'avatar': ''});
+
+        return null;
     }
   }
 
@@ -366,23 +390,22 @@ class APIUsers {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request = http.MultipartRequest(
+        final request = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, pictrsPath),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
         request.files.add(multipartFile);
-        var pictrsResponse = await client.sendRequest(request);
-
-        final json = jsonDecode(pictrsResponse.body) as JsonMap;
+        final pictrsResponse = await client.sendRequest(request);
 
         final imageName =
-            ((json['files'] as List<Object?>).first as JsonMap)['file']
+            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+                    as JsonMap)['file']
                 as String?;
 
         const path = '/user/save_user_settings';
@@ -395,7 +418,28 @@ class APIUsers {
         return null;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const uploadPath = '/upload/user_image';
+
+        final uploadRequest = http.MultipartRequest(
+          'POST',
+          Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
+        );
+        final multipartFile = http.MultipartFile.fromBytes(
+          'file',
+          await image.readAsBytes(),
+          filename: basename(image.path),
+          contentType: MediaType.parse(lookupMimeType(image.path)!),
+        );
+        uploadRequest.files.add(multipartFile);
+        final uploadResponse = await client.sendRequest(uploadRequest);
+
+        final imageUrl = uploadResponse.bodyJson['url'] as String?;
+
+        const path = '/user/save_user_settings';
+
+        final response = await client.put(path, body: {'banner': imageUrl});
+
+        return null;
     }
   }
 
@@ -415,7 +459,11 @@ class APIUsers {
         return null;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        const path = '/user/save_user_settings';
+
+        final response = await client.put(path, body: {'banner': ''});
+
+        return null;
     }
   }
 

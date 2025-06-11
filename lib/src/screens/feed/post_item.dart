@@ -29,7 +29,7 @@ class PostItem extends StatefulWidget {
 
   final PostModel item;
   final void Function(PostModel) onUpdate;
-  final Future<void> Function(String)? onReply;
+  final Future<void> Function(String body, String lang)? onReply;
   final Future<void> Function(String)? onEdit;
   final Future<void> Function()? onDelete;
   final void Function()? onTap;
@@ -51,10 +51,12 @@ class _PostItemState extends State<PostItem> {
     super.initState();
     if (context.read<AppController>().profile.autoTranslate &&
         widget.item.lang !=
-            context.read<AppController>().profile.defaultPostLanguage &&
+            context.read<AppController>().profile.defaultCreateLanguage &&
         widget.item.body != null &&
         widget.item.lang != null) {
-      getTranslation(context.read<AppController>().profile.defaultPostLanguage);
+      getTranslation(
+        context.read<AppController>().profile.defaultCreateLanguage,
+      );
     }
   }
 

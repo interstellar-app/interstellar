@@ -42,6 +42,11 @@ android {
         }
 
         multiDexEnabled = true
+
+        // Disable build-time-generated IDs to allow reproducible builds
+        externalNativeBuild.cmake {
+          cFlags "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none"
+        }
     }
 
     signingConfigs {

@@ -243,8 +243,6 @@
   "@settings_feedDefaults": {},
   "settings_notifications": "Notificaties",
   "@settings_notifications": {},
-  "settings_defaultPostLanguage": "Standaardtaal voor berichten",
-  "@settings_defaultPostLanguage": {},
   "settings_useAccountLanguageFilter": "Gebruik account taalfilter",
   "@settings_useAccountLanguageFilter": {},
   "settings_useAccountLanguageFilter_help": "Let op: taalfilters zijn alleen van toepassing op 'Alles' en op verkenningsfeeds",

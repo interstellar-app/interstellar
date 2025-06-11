@@ -90,7 +90,10 @@ class APIThreads {
             page,
           );
 
-          return PostListModel.fromLemmy(json);
+          return PostListModel.fromLemmy(
+            json,
+            langCodeIdPairs: await client.languageCodeIdPairs(),
+          );
         }
 
         const path = '/post/list';
@@ -102,9 +105,7 @@ class APIThreads {
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.community => {'community_id': sourceId!.toString()},
-            FeedSource.user => throw Exception(
-              'User source not allowed for lemmy',
-            ),
+            FeedSource.user => throw Exception('Unreachable'),
             FeedSource.domain => throw Exception(
               'Domain source not allowed for lemmy',
             ),
@@ -112,29 +113,12 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        return PostListModel.fromLemmy(response.bodyJson);
+        return PostListModel.fromLemmy(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
-        if (source == FeedSource.user) {
-          const path = '/user';
-          final query = {
-            'person_id': sourceId.toString(),
-            'page': page,
-            'sort': lemmyFeedSortMap[sort],
-          };
-
-          final response = await client.get(path, queryParams: query);
-
-          final json = response.bodyJson;
-
-          json['next_page'] = lemmyCalcNextIntPage(
-            json['posts'] as List<dynamic>,
-            page,
-          );
-
-          return PostListModel.fromPiefed(json);
-        }
-
         const path = '/post/list';
         final query = {'page_cursor': page, 'sort': lemmyFeedSortMap[sort]}
           ..addAll(switch (source) {
@@ -144,9 +128,7 @@ class APIThreads {
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.community => {'community_id': sourceId!.toString()},
-            FeedSource.user => throw Exception(
-              'User source not allowed for fromPiefed',
-            ),
+            FeedSource.user => {'person_id': sourceId.toString()},
             FeedSource.domain => throw Exception(
               'Domain source not allowed for fromPiefed',
             ),
@@ -154,7 +136,10 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        return PostListModel.fromPiefed(response.bodyJson);
+        return PostListModel.fromPiefed(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -173,7 +158,10 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromLemmy(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post';
@@ -181,7 +169,10 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -202,7 +193,10 @@ class APIThreads {
           body: {'post_id': postId, 'score': newScore},
         );
 
-        return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromLemmy(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         final response = await client.post(
@@ -210,7 +204,10 @@ class APIThreads {
           body: {'post_id': postId, 'score': newScore},
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -232,7 +229,7 @@ class APIThreads {
   }
 
   Future<PostModel> edit(
-    int entryID,
+    int postId,
     String title,
     bool? isOc,
     String body,
@@ -241,7 +238,7 @@ class APIThreads {
   ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/entry/$entryID';
+        final path = '/entry/$postId';
 
         final response = await client.put(
           path,
@@ -263,14 +260,17 @@ class APIThreads {
         final response = await client.put(
           path,
           body: {
-            'post_id': entryID,
+            'post_id': postId,
             'name': title,
             'body': body,
             'nsfw': isAdult,
           },
         );
 
-        return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromLemmy(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post';
@@ -278,14 +278,17 @@ class APIThreads {
         final response = await client.put(
           path,
           body: {
-            'post_id': entryID,
+            'post_id': postId,
             'name': title,
             'body': body,
             'nsfw': isAdult,
           },
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -350,10 +353,14 @@ class APIThreads {
             'community_id': communityId,
             'body': body,
             'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
           },
         );
 
-        return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromLemmy(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post';
@@ -364,10 +371,14 @@ class APIThreads {
             'community_id': communityId,
             'body': body,
             'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
           },
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -410,10 +421,14 @@ class APIThreads {
             'url': url,
             'body': body,
             'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
           },
         );
 
-        return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromLemmy(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post';
@@ -425,10 +440,14 @@ class APIThreads {
             'url': url,
             'body': body,
             'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
           },
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 
@@ -447,11 +466,11 @@ class APIThreads {
       case ServerSoftware.mbin:
         final path = '/magazine/$communityId/image';
 
-        var request = http.MultipartRequest(
+        final request = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + path),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
           filename: basename(image.path),
@@ -474,23 +493,22 @@ class APIThreads {
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        var request = http.MultipartRequest(
+        final uploadRequest = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, pictrsPath),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
-        request.files.add(multipartFile);
-        var pictrsResponse = await client.sendRequest(request);
-
-        final json = jsonDecode(pictrsResponse.body) as JsonMap;
+        uploadRequest.files.add(multipartFile);
+        final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((json['files'] as List<Object?>).first as JsonMap)['file']
+            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+                    as JsonMap)['file']
                 as String?;
 
         const path = '/post';
@@ -503,30 +521,33 @@ class APIThreads {
             'body': body,
             'nsfw': isAdult,
             'alt_text': nullIfEmpty(alt),
+            'language_id': await client.languageIdFromCode(lang),
           },
         );
 
-        return PostModel.fromLemmy(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromLemmy(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const uploadPath = '/upload/image';
 
-        var request = http.MultipartRequest(
+        final uploadRequest = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'file',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
-        request.files.add(multipartFile);
-        var uploadResponse = await client.sendRequest(request);
+        uploadRequest.files.add(multipartFile);
 
-        final json = uploadResponse.bodyJson;
+        final uploadResponse = await client.sendRequest(uploadRequest);
 
-        final imageUrl = json['url'] as String?;
+        final imageUrl = uploadResponse.bodyJson['url'] as String?;
 
         const path = '/post';
         final response = await client.post(
@@ -537,10 +558,14 @@ class APIThreads {
             'url': imageUrl,
             'body': body,
             'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
           },
         );
 
-        return PostModel.fromPiefed(response.bodyJson['post_view'] as JsonMap);
+        return PostModel.fromPiefed(
+          response.bodyJson['post_view'] as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
     }
   }
 

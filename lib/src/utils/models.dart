@@ -37,4 +37,4 @@ String getLemmyPiefedActorName(JsonMap json) {
 }
 
 String? lemmyCalcNextIntPage(List<dynamic> list, String? currentPage) =>
-    list.isEmpty ? null : (int.parse(currentPage ?? '0') + 1).toString();
+    list.isEmpty ? null : (int.parse(currentPage ?? '1') + 1).toString();

@@ -23,7 +23,7 @@
   "@guest": {},
   "botAccount": "Bot-Konto",
   "@botAccount": {},
-  "totpToken": "TOTP-Token",
+  "totpToken": "TOTP-Token (falls benötigt)",
   "@totpToken": {},
   "newUser": "Neuer Nutzer",
   "@newUser": {},
@@ -461,5 +461,149 @@
   "account_overview": "Übersicht",
   "@account_overview": {},
   "account_settings_showSubscribedDomains": "Abonnierte Domains anzeigen",
-  "@account_settings_showSubscribedDomains": {}
+  "@account_settings_showSubscribedDomains": {},
+  "bookmark": "Lesezeichen",
+  "@bookmark": {},
+  "settings_accountMigration_completeXItems": "Einträge {current}/{total} fertiggestellt",
+  "@settings_accountMigration_completeXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountMigration_failedXItems": "Einträge {current}/{total} fehlgeschlagen",
+  "@settings_accountMigration_failedXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountMigration_foundXItems": "{count} Einträge gefunden",
+  "@settings_accountMigration_foundXItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset_step1": "Konto auswählen",
+  "@settings_accountReset_step1": {},
+  "settings_accountReset_step2_resetUserBlocks": "Geblockte Nutzer zurücksetzen",
+  "@settings_accountReset_step2_resetUserBlocks": {},
+  "settings_accountReset_step3": "Daten zurücksetzten bestätigen",
+  "@settings_accountReset_step3": {},
+  "settings_accountReset_failedXItems": "Einträge {current}/{total} fehlgeschlagen",
+  "@settings_accountReset_failedXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare": "Konfiguration teilen",
+  "@configShare": {},
+  "notificationControlStatus_muted": "Stumme Benachrichtigungen",
+  "@notificationControlStatus_muted": {},
+  "bookmark_addToX": "Zu {name} hinzufügen",
+  "@bookmark_addToX": {},
+  "configShare_profile_info": "Ändert {count} Einstellungen",
+  "@configShare_profile_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorPage_firstPage": "Etwas ist schief gelaufen",
+  "@errorPage_firstPage": {},
+  "configShare_profile_title": "Interstellar-Profil",
+  "@configShare_profile_title": {},
+  "configShare_filterList_title": "Interstellar Filterliste",
+  "@configShare_filterList_title": {},
+  "notificationControlStatus_default": "Standardbenachrichtigungen",
+  "@notificationControlStatus_default": {},
+  "settings_accountMigration_step1": "Quell- und Zielkonto auswählen",
+  "@settings_accountMigration_step1": {},
+  "settings_accountMigration_step1_source": "Quellkonto",
+  "@settings_accountMigration_step1_source": {},
+  "errorPage_newPage": "Etwas ist schief gelaufen. Tippen um es erneut zu versuchen.",
+  "@errorPage_newPage": {},
+  "settings_accountMigration_step2": "Kategorien übertragen aktivieren/deaktivieren",
+  "@settings_accountMigration_step2": {},
+  "settings_accountMigration_step2_migrateCommunityBlocks": "Geblockte Communities übertragen",
+  "@settings_accountMigration_step2_migrateCommunityBlocks": {},
+  "settings_accountReset": "Konto zurücksetzen",
+  "@settings_accountReset": {},
+  "settings_accountReset_readingFromAccount": "Lese von Konto",
+  "@settings_accountReset_readingFromAccount": {},
+  "errorPage_caughtUp": "Du bist auf dem aktuellen Stand.\nÄltere Einträge laden?",
+  "@errorPage_caughtUp": {},
+  "settings_accountReset_foundXItems": "{count} Einträge gefunden",
+  "@settings_accountReset_foundXItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset_completeXItems": "Einträge {current}/{total} fertiggestellt",
+  "@settings_accountReset_completeXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationControlStatus_loud": "Laute Benachrichtigungen",
+  "@notificationControlStatus_loud": {},
+  "bookmark_removeFromX": "Von {name} entfernen",
+  "@bookmark_removeFromX": {},
+  "configShare_filterList_info": "Enthält {count} Phrasen",
+  "@configShare_filterList_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorPage_firstPage_button": "Erneut versuchen",
+  "@errorPage_firstPage_button": {},
+  "settings_accountMigration_step2_migrateUserBlocks": "Geblockte Nutzer übertragen",
+  "@settings_accountMigration_step2_migrateUserBlocks": {},
+  "settings_accountMigration_step3": "Datenübertragung bestätigen",
+  "@settings_accountMigration_step3": {},
+  "settings_accountMigration_readingFromSource": "Lese von Quellkonto",
+  "@settings_accountMigration_readingFromSource": {},
+  "settings_accountMigration_writingFromSource": "Schreibe in Zielkonto",
+  "@settings_accountMigration_writingFromSource": {},
+  "settings_accountReset_failed": "Zurücksetzen des Kontos aufgrund eines Problems fehlgeschlagen",
+  "@settings_accountReset_failed": {},
+  "settings_accountReset_removingItems": "Einträge entfernen",
+  "@settings_accountReset_removingItems": {},
+  "settings_accountReset_complete": "Konto zurückgesetzt!",
+  "@settings_accountReset_complete": {},
+  "settings_accountMigration_failed": "Kontoübertragung aufgrund eines Problems fehlgeschlagen",
+  "@settings_accountMigration_failed": {},
+  "settings_accountMigration_complete": "Kontoübertragung abgeschlossen!",
+  "@settings_accountMigration_complete": {},
+  "settings_accountMigration_step1_destination": "Zielkonto",
+  "@settings_accountMigration_step1_destination": {},
+  "settings_accountMigration_step2_migrateCommunitySubscriptions": "Community-Abonnements übertragen",
+  "@settings_accountMigration_step2_migrateCommunitySubscriptions": {},
+  "settings_accountReset_step2_resetCommunitySubscriptions": "Community-Abonnements zurücksetzen",
+  "@settings_accountReset_step2_resetCommunitySubscriptions": {}
 }

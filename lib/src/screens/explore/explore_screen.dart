@@ -229,16 +229,26 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 setState(() {
                                   type = ExploreType.people;
 
-                                  if (context
+                                  // Reset explore filter in the following cases:
+                                  if (
+                                  // Using Mbin and filter is set to local
+                                  context
                                                   .read<AppController>()
                                                   .serverSoftware ==
                                               ServerSoftware.mbin &&
                                           filter == ExploreFilter.local ||
+                                      // Using Lemmy or PieFed and filter is set to subscribed
                                       context
                                                   .read<AppController>()
                                                   .serverSoftware !=
                                               ServerSoftware.mbin &&
-                                          filter == ExploreFilter.subscribed) {
+                                          filter == ExploreFilter.subscribed ||
+                                      // Using Lemmy or PieFed and filter is set to moderated
+                                      context
+                                                  .read<AppController>()
+                                                  .serverSoftware !=
+                                              ServerSoftware.mbin &&
+                                          filter == ExploreFilter.moderated) {
                                     filter = ExploreFilter.all;
                                   }
 
@@ -440,7 +450,10 @@ SelectionMenu<ExploreFilter> exploreFilterSelection(
                 : l(context).filter_subscribed,
             icon: Symbols.people_rounded,
           ),
-        if (type != ExploreType.domains)
+        if (type != ExploreType.domains &&
+            (context.read<AppController>().serverSoftware ==
+                    ServerSoftware.mbin ||
+                type != ExploreType.people))
           SelectionMenuItem(
             value: ExploreFilter.moderated,
             title: type == ExploreType.people

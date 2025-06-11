@@ -3,10 +3,11 @@ name: interstellar
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.0.0
+version: 0.9.3+19
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
+  flutter: 3.32.0
 
 dependencies:
   flutter:
@@ -75,5 +76,8 @@ flutter_launcher_icons:
   adaptive_icon_foreground: 'assets/icons/logo-foreground.png'
   adaptive_icon_background: '#294062'
   adaptive_icon_monochrome: 'assets/icons/logo-monochrome.png'
+  ios: true
+  macos:
+    generate: true
   windows:
     generate: true
