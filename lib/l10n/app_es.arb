@@ -446,5 +446,7 @@
   "profiles": "Perfiles",
   "@profiles": {},
   "settings_defaultCreateLanguage": "Idioma predeterminado para creacion de publicaciones/comentarios",
-  "@settings_defaultCreateLanguage": {}
+  "@settings_defaultCreateLanguage": {},
+  "profile_name": "Nombre",
+  "@profile_name": {}
 }
