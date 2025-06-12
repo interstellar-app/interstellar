@@ -294,170 +294,146 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                 onTryAgain: _pagingController.retryLastFailedRequest,
               ),
               itemBuilder: (context, item, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(l(context).reportedUser),
-                              DisplayName(
-                                item.reportedUser!.name,
-                                icon: item.reportedUser!.avatar,
-                                onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserScreen(item.reportedUser!.id),
+                return InkWell(
+                  onTap: () {
+                    if (item.subjectPost != null) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder: (context, _, __) => PostPage(
+                            initData: item.subjectPost,
+                            userCanModerate: true,
+                          ),
+                        ),
+                      );
+                    } else if (item.subjectComment != null) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder: (context, _, __) => PostCommentScreen(
+                            item.subjectComment!.postType,
+                            item.subjectComment!.id,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(l(context).reportedBy),
+                                DisplayName(
+                                  item.reportedBy!.name,
+                                  icon: item.reportedBy!.avatar,
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserScreen(item.reportedBy!.id),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text('${l(context).reason}: ${item.reason}'),
+                            Row(
+                              children: [
+                                Text('${l(context).status}: '),
+                                Text(
+                                  item.status.name,
+                                  style: TextStyle(
+                                    color: item.status == ReportStatus.pending
+                                        ? Colors.blue
+                                        : item.status == ReportStatus.approved
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            if (item.status != ReportStatus.approved)
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: LoadingOutlinedButton(
+                                  onPressed: () async {
+                                    final report = await context
+                                        .read<AppController>()
+                                        .api
+                                        .communityModeration
+                                        .acceptReport(widget.data.id, item.id);
+
+                                    var newList = _pagingController.itemList;
+                                    newList![index] = report;
+                                    setState(() {
+                                      _pagingController.itemList = newList;
+                                    });
+                                  },
+                                  label: Text(l(context).report_accept),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.green,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(l(context).reportedBy),
-                              DisplayName(
-                                item.reportedBy!.name,
-                                icon: item.reportedBy!.avatar,
-                                onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserScreen(item.reportedBy!.id),
+                            if (item.status != ReportStatus.rejected)
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: LoadingOutlinedButton(
+                                  onPressed: () async {
+                                    final report = await context
+                                        .read<AppController>()
+                                        .api
+                                        .communityModeration
+                                        .rejectReport(widget.data.id, item.id);
+
+                                    var newList = _pagingController.itemList;
+                                    newList![index] = report;
+                                    setState(() {
+                                      _pagingController.itemList = newList;
+                                    });
+                                  },
+                                  label: Text(l(context).report_reject),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.red,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          Text('${l(context).reason}: ${item.reason}'),
-                          Row(
-                            children: [
-                              Text('${l(context).status}: '),
-                              Text(
-                                '${item.status}',
-                                style: TextStyle(
-                                  color: item.status == 'approved'
-                                      ? Colors.green
-                                      : Colors.red,
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: LoadingOutlinedButton(
+                                onPressed: () async {
+                                  await context
+                                      .read<AppController>()
+                                      .api
+                                      .communityModeration
+                                      .createBan(
+                                        widget.data.id,
+                                        item.reportedUser!.id,
+                                      );
+
+                                  var newList = _pagingController.itemList;
+                                  newList!.removeAt(index);
+                                  setState(() {
+                                    _pagingController.itemList = newList;
+                                  });
+                                },
+                                label: Text(
+                                  l(context).banUserX(item.reportedUser!.name),
                                 ),
                               ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                if (item.subjectPost != null) {
-                                  Navigator.of(context).push(
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, _, __) => PostPage(
-                                        initData: item.subjectPost,
-                                        userCanModerate: true,
-                                      ),
-                                    ),
-                                  );
-                                } else if (item.subjectComment != null) {
-                                  Navigator.of(context).push(
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, _, __) =>
-                                          PostCommentScreen(
-                                            item.subjectComment!.postType,
-                                            item.subjectComment!.id,
-                                          ),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: Text(l(context).settings_feedDefaults_view),
                             ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: LoadingOutlinedButton(
-                              onPressed: item.status == 'approved'
-                                  ? null
-                                  : () async {
-                                      final report = await context
-                                          .read<AppController>()
-                                          .api
-                                          .communityModeration
-                                          .acceptReport(
-                                            widget.data.id,
-                                            item.id,
-                                          );
-
-                                      var newList = _pagingController.itemList;
-                                      newList![index] = report;
-                                      setState(() {
-                                        _pagingController.itemList = newList;
-                                      });
-                                    },
-                              label: Text(l(context).report_accept),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.green,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: LoadingOutlinedButton(
-                              onPressed: item.status == 'rejected'
-                                  ? null
-                                  : () async {
-                                      final report = await context
-                                          .read<AppController>()
-                                          .api
-                                          .communityModeration
-                                          .rejectReport(
-                                            widget.data.id,
-                                            item.id,
-                                          );
-
-                                      var newList = _pagingController.itemList;
-                                      newList![index] = report;
-                                      setState(() {
-                                        _pagingController.itemList = newList;
-                                      });
-                                    },
-                              label: Text(l(context).report_reject),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.red,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: LoadingOutlinedButton(
-                              onPressed: () async {
-                                await context
-                                    .read<AppController>()
-                                    .api
-                                    .communityModeration
-                                    .createBan(
-                                      widget.data.id,
-                                      item.reportedUser!.id,
-                                    );
-
-                                var newList = _pagingController.itemList;
-                                newList!.removeAt(index);
-                                setState(() {
-                                  _pagingController.itemList = newList;
-                                });
-                              },
-                              label: Text(l(context).banUser),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -488,11 +464,6 @@ SelectionMenu<ReportStatus> reportStatusSelect(BuildContext context) =>
         icon: Symbols.schedule_rounded,
       ),
       SelectionMenuItem(
-        value: ReportStatus.appeal,
-        title: l(context).reportStatus_appeal,
-        icon: Symbols.gavel_rounded,
-      ),
-      SelectionMenuItem(
         value: ReportStatus.approved,
         title: l(context).reportStatus_approved,
         icon: Symbols.check_rounded,
@@ -501,10 +472,5 @@ SelectionMenu<ReportStatus> reportStatusSelect(BuildContext context) =>
         value: ReportStatus.rejected,
         title: l(context).reportStatus_rejected,
         icon: Symbols.close_rounded,
-      ),
-      SelectionMenuItem(
-        value: ReportStatus.closed,
-        title: l(context).reportStatus_closed,
-        icon: Symbols.do_disturb_off_rounded,
       ),
     ]);

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -283,7 +284,7 @@ class CommunityReportModel with _$CommunityReportModel {
     required PostModel? subjectPost,
     required CommentModel? subjectComment,
     required String? reason,
-    required String? status,
+    required ReportStatus status,
     required DateTime? createdAt,
     required DateTime? consideredAt,
     required UserModel? consideredBy,
@@ -318,7 +319,7 @@ class CommunityReportModel with _$CommunityReportModel {
       subjectPost: subjectPost,
       subjectComment: subjectComment,
       reason: json['reason'] as String?,
-      status: json['status'] as String?,
+      status: ReportStatus.values.byName(json['status'] as String? ?? 'pending'),
       createdAt: optionalDateTime(json['createdAt'] as String?),
       consideredAt: optionalDateTime(json['consideredAt'] as String?),
       consideredBy: json['consideredBy'] != null

@@ -1,10 +1,9 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-enum ReportStatus { any, appeal, approved, closed, pending, rejected }
+enum ReportStatus { any, approved, pending, rejected }
 
 class APICommunityModeration {
   final ServerClient client;
