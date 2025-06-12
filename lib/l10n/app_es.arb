@@ -448,5 +448,242 @@
   "settings_defaultCreateLanguage": "Idioma predeterminado para creacion de publicaciones/comentarios",
   "@settings_defaultCreateLanguage": {},
   "profile_name": "Nombre",
-  "@profile_name": {}
+  "@profile_name": {},
+  "moreFrom": "Más de {name}",
+  "@moreFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "action_refresh": "Recargar",
+  "@action_refresh": {},
+  "saveChanges": "Guardar cambios",
+  "@saveChanges": {},
+  "searchTheFediverse": "Buscar por el fediverso",
+  "@searchTheFediverse": {},
+  "systemLanguage": "Idioma del sistema",
+  "@systemLanguage": {},
+  "filterLists": "Lista de filtros",
+  "@filterLists": {},
+  "profile_about_title": "Sobre perfiles",
+  "@profile_about_title": {},
+  "action_setSort": "Definir orden",
+  "@action_setSort": {},
+  "filterList_showWithContentWarning": "Mostrar con advertencia de contenido",
+  "@filterList_showWithContentWarning": {},
+  "notSafeForWork_mark": "Marcar como NSFW",
+  "@notSafeForWork_mark": {},
+  "filterList_name": "Nombre",
+  "@filterList_name": {},
+  "createdAt": "Creado en {datetime}",
+  "@createdAt": {
+    "placeholders": {
+      "datetime": {
+        "type": "String"
+      }
+    }
+  },
+  "banUserX": "Banear a {user}",
+  "@banUserX": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "languages": "Idiomas",
+  "@languages": {},
+  "banUser_help": "Estás a punto de banear a {user} de {community}.",
+  "@banUser_help": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "community": {
+        "type": "String"
+      }
+    }
+  },
+  "profile_about_body": "Los perfiles le permiten guardar y cambiar entre grupos de configuraciones fácilmente. El **perfil principal** sirve como el valor predeterminado, con otros perfiles que anulan la configuración específica según sea necesario.\n\n## Modificación de perfiles\n\nPara alterar un perfil, cambie a él y ajuste la configuración. Actualmente, para restablecer una configuración anulada al valor predeterminado, debe eliminar y recrear el perfil.\n\n##  Configuraciones incluidas\n\n- Configuración de comportamiento\n- Mostrar configuración\n- Acciones del feed\n- Predeterminados del feed\n- Estado de activación de la lista de filtros\n\n## Opciones adicionales\n\n- Cambiar qué perfil es principal\n- Auto activar un perfil específico al inicio\n- Auto cambia a una cuenta cuando se activa un determinado perfil\n  \n\nSi no usa perfiles, solo manténgase en el perfil principal y la aplicación funcionará como de costumbre.",
+  "@profile_about_body": {},
+  "collapse": "Colapsar",
+  "@collapse": {},
+  "report": "Denunciar",
+  "@report": {},
+  "title": "Título",
+  "@title": {},
+  "tags": "Etiquetas",
+  "@tags": {},
+  "settings_accountMigration_help": "Migrar suscripciones, siguiendo, y bloqueos entre cuentas",
+  "@settings_accountMigration_help": {},
+  "pointsX": "{num} Puntos",
+  "@pointsX": {
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "action_reply": "Responder",
+  "@action_reply": {},
+  "action_moderatePin": "Fijar Publicación",
+  "@action_moderatePin": {},
+  "editedAt": "Editado en {datetime}",
+  "@editedAt": {
+    "placeholders": {
+      "datetime": {
+        "type": "String"
+      }
+    }
+  },
+  "expand": "Expandir",
+  "@expand": {},
+  "tags_hint": "Separar con espacios",
+  "@tags_hint": {},
+  "profile_setAsMain": "Definir como perfil principal",
+  "@profile_setAsMain": {},
+  "profile_setAsMain_help": "El perfil principal sirve como base para todos los demás perfiles. Los cambios realizados se aplicarán a todos los perfiles a menos que se haya anulado una configuración específica.",
+  "@profile_setAsMain_help": {},
+  "profile_autoSelect": "Seleccionar automaticamente al iniciar la app",
+  "@profile_autoSelect": {},
+  "pin": "Fijar",
+  "@pin": {},
+  "notSafeForWork_short": "NSFW",
+  "@notSafeForWork_short": {},
+  "notSafeForWork_long": "No apto para el trabajo",
+  "@notSafeForWork_long": {},
+  "confirmUnfollow": "Estas a punto de dejar de seguir. Continuar?",
+  "@confirmUnfollow": {},
+  "confirmUnsubscribe": "Estas a punto de desuscribirte. Continuar?",
+  "@confirmUnsubscribe": {},
+  "markdownEditor_edit": "Editar",
+  "@markdownEditor_edit": {},
+  "reason": "Razón",
+  "@reason": {},
+  "moderate": "Moderar",
+  "@moderate": {},
+  "alternativeSources": "Fuentes Alternativas",
+  "@alternativeSources": {},
+  "continueInBrowser_manual": "Si el navegador no inicia, haz clic para copiar y pegar manualmente",
+  "@continueInBrowser_manual": {},
+  "profile_autoSelectAccount_none": "Ninguno",
+  "@profile_autoSelectAccount_none": {},
+  "originalPoster_long": "Publicador Original",
+  "@originalPoster_long": {},
+  "pinnedInCommunity": "Fijado en la Comunidad",
+  "@pinnedInCommunity": {},
+  "originalContent_short": "CO",
+  "@originalContent_short": {},
+  "originalContent_long": "Contenido Original",
+  "@originalContent_long": {},
+  "reportX": "Denunciar a {name}",
+  "@reportX": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "edit": "Editar",
+  "@edit": {},
+  "delete": "Eliminar",
+  "@delete": {},
+  "deleteX": "Eliminar a {name}",
+  "@deleteX": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "viewSource": "Ver Fuente",
+  "@viewSource": {},
+  "close": "Cerrar",
+  "@close": {},
+  "banUser": "Banear usuario",
+  "@banUser": {},
+  "markdownEditor_preview": "Vista previa",
+  "@markdownEditor_preview": {},
+  "redirectReceivedMessage": "Redirección recibida. Puede cerrar esta pestaña ahora y volver a la aplicación.",
+  "@redirectReceivedMessage": {},
+  "create_community": "Comunidad",
+  "@create_community": {},
+  "microblog_communityHelperText": "El valor predeterminado a la comunidad 'aleatoria' para microblogs, ya que ahí es donde Mbin almacena microblogs no categorizados.",
+  "@microblog_communityHelperText": {},
+  "selectCommunity": "Selecciona una comunidad ...",
+  "@selectCommunity": {},
+  "body": "Cuerpo",
+  "@body": {},
+  "link": "Enlace",
+  "@link": {},
+  "language": "Idioma",
+  "@language": {},
+  "community": "Comunidad",
+  "@community": {},
+  "action_setLocation": "Elegir ubicación de accion",
+  "@action_setLocation": {},
+  "action_hide": "Ocultar",
+  "@action_hide": {},
+  "action_appBar": "Barra de app",
+  "@action_appBar": {},
+  "action_backToTop": "Volver al inicio",
+  "@action_backToTop": {},
+  "action_createNew": "Crear nuevo ...",
+  "@action_createNew": {},
+  "action_setFilter": "Definir filtro",
+  "@action_setFilter": {},
+  "action_setView": "Definir vista",
+  "@action_setView": {},
+  "action_showReadPosts": "Mostrar publicaciones leidas",
+  "@action_showReadPosts": {},
+  "action_boost": "Impulsar",
+  "@action_boost": {},
+  "action_bookmark": "Guardar",
+  "@action_bookmark": {},
+  "action_markRead": "Marcar como leido",
+  "@action_markRead": {},
+  "action_markUnread": "Marcar como no leido",
+  "@action_markUnread": {},
+  "action_moderateMarkNSFW": "Marcar como NSFW",
+  "@action_moderateMarkNSFW": {},
+  "action_moderateBan": "Banear",
+  "@action_moderateBan": {},
+  "settings_appLanguage": "Idioma de la app",
+  "@settings_appLanguage": {},
+  "commentsX": "{num} Comentarios",
+  "@commentsX": {
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "filterList_activateFilter": "Activar filtro",
+  "@filterList_activateFilter": {},
+  "filterList_new": "Nueva lista de filtros",
+  "@filterList_new": {},
+  "filterList_edit": "Editar lista de filtros",
+  "@filterList_edit": {},
+  "filterList_import": "Importar lista de filtros",
+  "@filterList_import": {},
+  "filterList_delete": "Eliminar lista de filtros",
+  "@filterList_delete": {},
+  "filterList_phrases": "Palabras",
+  "@filterList_phrases": {},
+  "filterList_addPhrase": "Añadir palabras",
+  "@filterList_addPhrase": {},
+  "altText": "Texto alternativo",
+  "@altText": {},
+  "settings_accountMigration": "Migración de cuenta",
+  "@settings_accountMigration": {},
+  "create_text": "Texto",
+  "@create_text": {},
+  "create_image": "Imagen",
+  "@create_image": {},
+  "create_link": "Enlace",
+  "@create_link": {},
+  "create_link_invalid": "La direccion es invalida",
+  "@create_link_invalid": {}
 }
