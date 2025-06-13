@@ -319,7 +319,9 @@ class CommunityReportModel with _$CommunityReportModel {
       subjectPost: subjectPost,
       subjectComment: subjectComment,
       reason: json['reason'] as String?,
-      status: ReportStatus.values.byName(json['status'] as String? ?? 'pending'),
+      status: json['status'] == 'closed'
+          ? ReportStatus.approved
+          : ReportStatus.values.byName(json['status'] as String? ?? 'pending'),
       createdAt: optionalDateTime(json['createdAt'] as String?),
       consideredAt: optionalDateTime(json['consideredAt'] as String?),
       consideredBy: json['consideredBy'] != null
