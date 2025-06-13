@@ -3,6 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
+import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -319,115 +320,111 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(l(context).reportedBy),
-                                DisplayName(
-                                  item.reportedBy!.name,
-                                  icon: item.reportedBy!.avatar,
-                                  onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          UserScreen(item.reportedBy!.id),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(l(context).reportedBy),
+                                  DisplayName(
+                                    item.reportedBy!.name,
+                                    icon: item.reportedBy!.avatar,
+                                    onTap: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserScreen(item.reportedBy!.id),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Text('${l(context).reason}: ${item.reason}'),
-                            Row(
-                              children: [
-                                Text('${l(context).status}: '),
-                                Text(
-                                  item.status.name,
-                                  style: TextStyle(
-                                    color: item.status == ReportStatus.pending
-                                        ? Colors.blue
-                                        : item.status == ReportStatus.approved
-                                        ? Colors.green
-                                        : Colors.red,
+                                ],
+                              ),
+                              Text('${l(context).reason}: ${item.reason}'),
+                              Row(
+                                children: [
+                                  Text('${l(context).status}: '),
+                                  Text(
+                                    item.status.name,
+                                    style: TextStyle(
+                                      color: item.status == ReportStatus.pending
+                                          ? Colors.blue
+                                          : item.status == ReportStatus.approved
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        Column(
+                        Flex(
+                          direction: Breakpoints.isCompact(context)
+                              ? Axis.vertical
+                              : Axis.horizontal,
+                          spacing: 4,
                           children: [
                             if (item.status != ReportStatus.approved)
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: LoadingOutlinedButton(
-                                  onPressed: () async {
-                                    final report = await context
-                                        .read<AppController>()
-                                        .api
-                                        .communityModeration
-                                        .acceptReport(widget.data.id, item.id);
-
-                                    var newList = _pagingController.itemList;
-                                    newList![index] = report;
-                                    setState(() {
-                                      _pagingController.itemList = newList;
-                                    });
-                                  },
-                                  label: Text(l(context).report_accept),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.green,
-                                  ),
-                                ),
-                              ),
-                            if (item.status != ReportStatus.rejected)
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: LoadingOutlinedButton(
-                                  onPressed: () async {
-                                    final report = await context
-                                        .read<AppController>()
-                                        .api
-                                        .communityModeration
-                                        .rejectReport(widget.data.id, item.id);
-
-                                    var newList = _pagingController.itemList;
-                                    newList![index] = report;
-                                    setState(() {
-                                      _pagingController.itemList = newList;
-                                    });
-                                  },
-                                  label: Text(l(context).report_reject),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: LoadingOutlinedButton(
+                              LoadingOutlinedButton(
                                 onPressed: () async {
-                                  await context
+                                  final report = await context
                                       .read<AppController>()
                                       .api
                                       .communityModeration
-                                      .createBan(
-                                        widget.data.id,
-                                        item.reportedUser!.id,
-                                      );
+                                      .acceptReport(widget.data.id, item.id);
 
                                   var newList = _pagingController.itemList;
-                                  newList!.removeAt(index);
+                                  newList![index] = report;
                                   setState(() {
                                     _pagingController.itemList = newList;
                                   });
                                 },
-                                label: Text(
-                                  l(context).banUserX(item.reportedUser!.name),
+                                label: Text(l(context).report_accept),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.green,
                                 ),
+                              ),
+                            if (item.status != ReportStatus.rejected)
+                              LoadingOutlinedButton(
+                                onPressed: () async {
+                                  final report = await context
+                                      .read<AppController>()
+                                      .api
+                                      .communityModeration
+                                      .rejectReport(widget.data.id, item.id);
+
+                                  var newList = _pagingController.itemList;
+                                  newList![index] = report;
+                                  setState(() {
+                                    _pagingController.itemList = newList;
+                                  });
+                                },
+                                label: Text(l(context).report_reject),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                              ),
+                            LoadingOutlinedButton(
+                              onPressed: () async {
+                                await context
+                                    .read<AppController>()
+                                    .api
+                                    .communityModeration
+                                    .createBan(
+                                      widget.data.id,
+                                      item.reportedUser!.id,
+                                    );
+
+                                var newList = _pagingController.itemList;
+                                newList!.removeAt(index);
+                                setState(() {
+                                  _pagingController.itemList = newList;
+                                });
+                              },
+                              label: Text(
+                                l(context).banUserX(item.reportedUser!.name),
                               ),
                             ),
                           ],
