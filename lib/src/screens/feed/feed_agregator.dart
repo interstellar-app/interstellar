@@ -4,6 +4,7 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'feed_screen.dart';
 
@@ -144,7 +145,7 @@ int commented(PostModel lhs, PostModel rhs) {
   return (posts, remainder);
 }
 
-class FeedInput {
+class FeedInputState {
   final String title;
   final FeedSource source;
   final int? sourceId;
@@ -152,7 +153,7 @@ class FeedInput {
   String? _nextPage = '';
   String? _timelinePage = '';
 
-  FeedInput({
+  FeedInputState({
     required this.title,
     required this.source,
     required this.sourceId,
@@ -237,9 +238,26 @@ class FeedInput {
 }
 
 class FeedAggregator {
-  final List<FeedInput> inputs;
+  final List<FeedInputState> inputs;
 
   const FeedAggregator({required this.inputs});
+
+  static Future<FeedAggregator> createFeed(AppController ac, Feed feed) async {
+    final inputs = await feed.inputs.map((input) async {
+      final source = (switch (input.sourceType) {
+        FeedSource.all => null,
+        FeedSource.local => null,
+        FeedSource.subscribed => null,
+        FeedSource.moderated => null,
+        FeedSource.favorited => null,
+        FeedSource.community => (await ac.api.community.getByName(input.name)).id,
+        FeedSource.user => (await ac.api.users.getByName(input.name)).id,
+        FeedSource.domain => throw UnimplementedError(),
+      });
+      return FeedInputState(title: input.name, source: input.sourceType, sourceId: source);
+    }).wait;
+    return FeedAggregator(inputs: inputs);
+  }
 
   Future<(List<PostModel>, String?)> fetchPage(
     AppController ac,

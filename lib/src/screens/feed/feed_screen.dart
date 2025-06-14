@@ -25,6 +25,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../controller/feed.dart';
+
 class FeedScreen extends StatefulWidget {
   final FeedSource? source;
   final int? sourceId;
@@ -809,20 +811,18 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   final _markAsReadDebounce = Debouncer(duration: Duration(milliseconds: 500));
   bool _lastPageFilteredOut = false;
 
-  late final FeedAggregator _aggregator;
+  late FeedAggregator _aggregator;
 
   void createTestFeed() async {
-    final community = await context.read<AppController>().api.community.getByName('interstellar');
-    final communitya = await context.read<AppController>().api.community.getByName('testing');
-    final communityb = await context.read<AppController>().api.community.getByName('kbinEarth');
-    final usera = await context.read<AppController>().api.users.getByName('olorin99');
-    final userb = await context.read<AppController>().api.users.getByName('jwr1');
-    _aggregator.inputs.clear();
-    _aggregator.inputs.add(FeedInput(title: 'interstellar@kbin.earth', source: FeedSource.community, sourceId: community.id));
-    _aggregator.inputs.add(FeedInput(title: 'testing@kbin.earth', source: FeedSource.community, sourceId: communitya.id));
-    _aggregator.inputs.add(FeedInput(title: 'kbinEarth@kbin.earth', source: FeedSource.community, sourceId: communityb.id));
-    _aggregator.inputs.add(FeedInput(title: 'olorin99@kbin.earth', source: FeedSource.user, sourceId: usera.id));
-    _aggregator.inputs.add(FeedInput(title: 'jwr1@kbin.earth', source: FeedSource.user, sourceId: userb.id));
+    final feed = Feed(name: 'test_feed', inputs: [
+      FeedInput(name: 'interstellar', sourceType: FeedSource.community),
+      FeedInput(name: 'testing', sourceType: FeedSource.community),
+      FeedInput(name: 'kbinEarth', sourceType: FeedSource.community),
+      FeedInput(name: 'olorin99', sourceType: FeedSource.user),
+      FeedInput(name: 'jwr1', sourceType: FeedSource.user),
+    ]);
+
+    _aggregator = await FeedAggregator.createFeed(context.read<AppController>(), feed);
 
     _aggregator.refresh();
     _pagingController.refresh();
@@ -834,7 +834,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
     _aggregator = FeedAggregator(
       inputs: [
-        FeedInput(
+        FeedInputState(
           title: 'Home',
           source: widget.source,
           sourceId: widget.sourceId,
