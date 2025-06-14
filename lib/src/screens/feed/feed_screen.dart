@@ -8,6 +8,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
+import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
@@ -515,7 +516,9 @@ class _FeedScreenState extends State<FeedScreen>
                                   key: _getFeedKey(2),
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
-                                  sort: FeedSort.newest,
+                                  sort:
+                                      _sort ??
+                                      _defaultSortFromMode(FeedView.timeline),
                                   view: FeedView.timeline,
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
@@ -802,17 +805,44 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   // If a post matches any FilterList that is not shown with warning, then the post is not shown at all.
   final Map<(PostType, int), Set<String>> _filterListWarnings = {};
 
-  PostType _timelineViewLeftoverType = PostType.thread;
-  List<PostModel> _timelineViewLeftoverPosts = [];
-
   int _lastVisibleIndex = 0;
   final _markAsReadDebounce = Debouncer(duration: Duration(milliseconds: 500));
   bool _lastPageFilteredOut = false;
+
+  late final FeedAggregator _aggregator;
+
+  void createTestFeed() async {
+    final community = await context.read<AppController>().api.community.getByName('interstellar');
+    final communitya = await context.read<AppController>().api.community.getByName('testing');
+    final communityb = await context.read<AppController>().api.community.getByName('kbinEarth');
+    final usera = await context.read<AppController>().api.users.getByName('olorin99');
+    final userb = await context.read<AppController>().api.users.getByName('jwr1');
+    _aggregator.inputs.clear();
+    _aggregator.inputs.add(FeedInput(title: 'interstellar@kbin.earth', source: FeedSource.community, sourceId: community.id));
+    _aggregator.inputs.add(FeedInput(title: 'testing@kbin.earth', source: FeedSource.community, sourceId: communitya.id));
+    _aggregator.inputs.add(FeedInput(title: 'kbinEarth@kbin.earth', source: FeedSource.community, sourceId: communityb.id));
+    _aggregator.inputs.add(FeedInput(title: 'olorin99@kbin.earth', source: FeedSource.user, sourceId: usera.id));
+    _aggregator.inputs.add(FeedInput(title: 'jwr1@kbin.earth', source: FeedSource.user, sourceId: userb.id));
+
+    _aggregator.refresh();
+    _pagingController.refresh();
+  }
 
   @override
   void initState() {
     super.initState();
 
+    _aggregator = FeedAggregator(
+      inputs: [
+        FeedInput(
+          title: 'Home',
+          source: widget.source,
+          sourceId: widget.sourceId,
+        ),
+      ],
+    );
+
+    createTestFeed();
     _pagingController.addPageRequestListener(_fetchPage);
     _scrollController?.addListener(getScrollDirection);
   }
@@ -831,165 +861,28 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   bool get wantKeepAlive => true;
 
   Future<(List<PostModel>, String?)> _tryFetchPage(String pageKey) async {
-    List<PostModel> newItems;
-    String? nextPageKey;
-    switch (widget.view) {
-      case FeedView.threads:
-        final postListModel = await context
-            .read<AppController>()
-            .api
-            .threads
-            .list(
-              widget.source,
-              sourceId: widget.sourceId,
-              page: nullIfEmpty(pageKey),
-              sort: widget.sort,
-              usePreferredLangs: whenLoggedIn(
-                context,
-                context.read<AppController>().profile.useAccountLanguageFilter,
-              ),
-              langs: context
-                  .read<AppController>()
-                  .profile
-                  .customLanguageFilter
-                  .toList(),
-            );
+    final ac = context.read<AppController>();
 
-        newItems = postListModel.items;
-        nextPageKey = postListModel.nextPage;
-
-        break;
-
-      case FeedView.microblog:
-        final postListModel = await context
-            .read<AppController>()
-            .api
-            .microblogs
-            .list(
-              widget.source,
-              sourceId: widget.sourceId,
-              page: nullIfEmpty(pageKey),
-              sort: widget.sort,
-              usePreferredLangs: whenLoggedIn(
-                context,
-                context.read<AppController>().profile.useAccountLanguageFilter,
-              ),
-              langs: context
-                  .read<AppController>()
-                  .profile
-                  .customLanguageFilter
-                  .toList(),
-            );
-
-        newItems = postListModel.items;
-        nextPageKey = postListModel.nextPage;
-
-        break;
-
-      case FeedView.timeline:
-        final threadsFuture = context.read<AppController>().api.threads.list(
-          widget.source,
-          sourceId: widget.sourceId,
-          page: nullIfEmpty(pageKey),
-          sort: FeedSort.newest,
-          usePreferredLangs: whenLoggedIn(
-            context,
-            context.read<AppController>().profile.useAccountLanguageFilter,
-          ),
-          langs: context
-              .read<AppController>()
-              .profile
-              .customLanguageFilter
-              .toList(),
-        );
-        final microblogFuture = context
-            .read<AppController>()
-            .api
-            .microblogs
-            .list(
-              widget.source,
-              sourceId: widget.sourceId,
-              page: nullIfEmpty(pageKey),
-              sort: FeedSort.newest,
-              usePreferredLangs: whenLoggedIn(
-                context,
-                context.read<AppController>().profile.useAccountLanguageFilter,
-              ),
-              langs: context
-                  .read<AppController>()
-                  .profile
-                  .customLanguageFilter
-                  .toList(),
-            );
-
-        final [threadsResult, microblogResult] = await Future.wait([
-          threadsFuture,
-          microblogFuture,
-        ]);
-
-        final newThreads = [
-          if (_timelineViewLeftoverType == PostType.thread)
-            ..._timelineViewLeftoverPosts,
-          ...threadsResult.items,
-        ];
-        final newMicroblog = [
-          if (_timelineViewLeftoverType == PostType.microblog)
-            ..._timelineViewLeftoverPosts,
-          ...microblogResult.items,
-        ];
-
-        newItems = [];
-
-        // While both lists still have items, keep popping the item from the front that is newer.
-        while (newThreads.isNotEmpty && newMicroblog.isNotEmpty) {
-          if (newThreads.first.createdAt.compareTo(
-                newMicroblog.first.createdAt,
-              ) >
-              0) {
-            newItems.add(newThreads.removeAt(0));
-          } else {
-            newItems.add(newMicroblog.removeAt(0));
-          }
-        }
-
-        // Once one of the lists is drained out, if one of the next page's is null, then just add the rest of the items.
-        if (threadsResult.nextPage == null ||
-            microblogResult.nextPage == null) {
-          newItems.addAll([...newThreads, ...newMicroblog]);
-        } else {
-          // Otherwise, store the leftover (unsorted) posts for next round.
-          if (newThreads.isNotEmpty) {
-            _timelineViewLeftoverType = PostType.thread;
-            _timelineViewLeftoverPosts = newThreads;
-          } else {
-            _timelineViewLeftoverType = PostType.microblog;
-            _timelineViewLeftoverPosts = newMicroblog;
-          }
-        }
-
-        nextPageKey = threadsResult.nextPage ?? microblogResult.nextPage;
-
-        break;
-    }
-
-    // Check BuildContext
-    // if (!mounted) return;
+    final page = await _aggregator.fetchPage(
+      ac,
+      pageKey,
+      widget.view,
+      widget.sort,
+    );
+    final newItems = page.$1;
+    final nextPageKey = page.$2;
 
     // Prevent duplicates
     final currentItemIds =
         _pagingController.itemList?.map((post) => (post.type, post.id)) ?? [];
-    final filterListActivations = context
-        .read<AppController>()
-        .profile
-        .filterLists;
+    final filterListActivations = ac.profile.filterLists;
     final items = newItems
         .where((post) => !currentItemIds.contains((post.type, post.id)))
         .where((post) {
           // Skip feed filters if it's an explore page
           if (widget.sourceId != null) return true;
 
-          for (var filterListEntry
-              in context.read<AppController>().filterLists.entries) {
+          for (var filterListEntry in ac.filterLists.entries) {
             if (filterListActivations[filterListEntry.key] == true) {
               final filterList = filterListEntry.value;
 
@@ -1014,20 +907,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         })
         .toList();
 
-    final ac = context.read<AppController>();
-
-    final finalItems =
-        ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
-        ? items
-        : await Future.wait(
-            items.map(
-              (item) async =>
-                  (await ac.isRead(item)) ? item.copyWith(read: true) : item,
-            ),
-          );
-
     return (
-      finalItems.where((item) => !(widget.hideReadPosts && item.read)).toList(),
+      items.where((item) => !(widget.hideReadPosts && item.read)).toList(),
       nextPageKey,
     );
   }
@@ -1065,6 +946,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   }
 
   void refresh() {
+    _aggregator.refresh();
     _pagingController.refresh();
   }
 
@@ -1087,6 +969,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         widget.sort != oldWidget.sort ||
         widget.source != oldWidget.source ||
         widget.sourceId != oldWidget.sourceId) {
+      _aggregator.refresh();
       _pagingController.refresh();
     }
     _scrollController?.isActive = widget.isActive;
