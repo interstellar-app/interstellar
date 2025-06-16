@@ -33,6 +33,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
   final player = Player();
   late final controller = VideoController(player);
   bool _isPlaying = false;
+  youtube_explode_dart.YoutubeExplode? yt;
+  String? error;
 
   Future<void> _initController() async {
     final autoPlay = context.read<AppController>().profile.autoPlayVideos;
@@ -46,28 +48,33 @@ class _VideoPlayerState extends State<VideoPlayer> {
       });
     });
 
-    if (isSupportedYouTubeVideo(widget.uri)) {
-      final yt = youtube_explode_dart.YoutubeExplode();
+    try {
+      if (isSupportedYouTubeVideo(widget.uri)) {
+        yt ??= youtube_explode_dart.YoutubeExplode();
+        if (yt == null) return;
 
-      final manifest = await yt.videos.streamsClient.getManifest(widget.uri);
+        final manifest = await yt!.videos.streamsClient.getManifest(widget.uri);
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      // Use best muxed stream if available, else use best separate video and audio streams
-      // TODO: calculate best quality for device based on screen size and data saver mode, also add manual stream selection
-      if (manifest.muxed.isNotEmpty) {
-        final muxedStream = manifest.muxed.bestQuality;
-        player.open(Media(muxedStream.url.toString()), play: autoPlay);
+        // Use best muxed stream if available, else use best separate video and audio streams
+        // TODO: calculate best quality for device based on screen size and data saver mode, also add manual stream selection
+        if (manifest.muxed.isNotEmpty) {
+          final muxedStream = manifest.muxed.bestQuality;
+          player.open(Media(muxedStream.url.toString()), play: autoPlay);
+        } else {
+          final videoStream = manifest.video.bestQuality;
+          final audioStream = manifest.audio.withHighestBitrate();
+          final media = Media(videoStream.url.toString());
+
+          player.open(media, play: _isPlaying);
+          player.setAudioTrack(AudioTrack.uri(audioStream.url.toString()));
+        }
       } else {
-        final videoStream = manifest.video.bestQuality;
-        final audioStream = manifest.audio.withHighestBitrate();
-        final media = Media(videoStream.url.toString());
-
-        player.open(media, play: _isPlaying);
-        player.setAudioTrack(AudioTrack.uri(audioStream.url.toString()));
+        player.open(Media(widget.uri.toString()), play: _isPlaying);
       }
-    } else {
-      player.open(Media(widget.uri.toString()), play: _isPlaying);
+    } catch (e) {
+      error = e.toString();
     }
   }
 
@@ -83,38 +90,47 @@ class _VideoPlayerState extends State<VideoPlayer> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 9.0 / 16.0,
-      child: Video(
-        controller: controller,
-        controls: (state) {
-          return Stack(
-            children: [
-              media_kit_video_controls.AdaptiveVideoControls(state),
-              if (!_isPlaying)
-                Center(
-                  child: MaterialPlayOrPauseButton(iconSize: 56),
-                ),
-              if (!state.isFullscreen())
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LoadingIconButton(
-                        onPressed: () async => await shareUri(widget.uri),
-                        icon: const Icon(Symbols.share_rounded),
+      child: Stack(
+        children: [
+          if (error != null)
+            DecoratedBox(
+              decoration: BoxDecoration(color: Colors.black),
+              child: Center(child: Text(error!)),
+            ),
+          if (error == null)
+            Video(
+              controller: controller,
+              controls: (state) {
+                return Stack(
+                  children: [
+                    media_kit_video_controls.AdaptiveVideoControls(state),
+                    if (!_isPlaying)
+                      Center(child: MaterialPlayOrPauseButton(iconSize: 56)),
+                    if (!state.isFullscreen())
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            LoadingIconButton(
+                              onPressed: () async => await shareUri(widget.uri),
+                              icon: const Icon(Symbols.share_rounded),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-            ],
-          );
-        },
+                  ],
+                );
+              },
+            ),
+        ],
       ),
     );
   }
 
   @override
   void dispose() {
+    yt?.close();
     player.dispose();
     super.dispose();
   }
