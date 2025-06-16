@@ -103,12 +103,30 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: LoadingFilledButton(
-                              onPressed: () async {
-                                await ac.api.bookmark.deleteBookmarkList(
-                                  _bookmarkLists[index].name,
-                                );
-                                _fetch();
-                              },
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => AlertDialog(
+                                    title: Text('Delete bookmark list'),
+                                    content: Text(_bookmarkLists[index].name),
+                                    actions: [
+                                      OutlinedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text(l(context).cancel),
+                                      ),
+                                      FilledButton(
+                                        onPressed: () async {
+                                          await ac.api.bookmark.deleteBookmarkList(
+                                            _bookmarkLists[index].name,
+                                          );
+                                          _fetch();
+                                          if (!context.mounted) return;
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(l(context).delete),
+                                      ),
+                                    ],
+                                  )
+                              ),
                               label: Text(l(context).delete),
                             ),
                           ),
@@ -156,12 +174,12 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
     _pagingController.addPageRequestListener(_fetchPage);
   }
 
-  Future<void> _fetchPage(String pagekey) async {
+  Future<void> _fetchPage(String pageKey) async {
     final ac = context.read<AppController>();
 
     try {
       final bookmarks = await ac.api.bookmark.list(
-        page: nullIfEmpty(pagekey),
+        page: nullIfEmpty(pageKey),
         list: widget.bookmarkList,
       );
       _pagingController.appendPage(bookmarks.$1, bookmarks.$2);

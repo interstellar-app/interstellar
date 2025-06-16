@@ -70,22 +70,43 @@ class APIBookmark {
 
       case ServerSoftware.lemmy:
         const postsPath = '/post/list';
+        const commentsPath = '/comment/list';
 
         final query = {
           'type_': 'All',
           'sort': 'New',
-          'page_cursor': page,
+          'page': page,
           'saved_only': 'true',
         };
 
-        final response = await client.get(postsPath, queryParams: query);
+        final [postResponse, commentResponse] = await Future.wait([
+          client.get(postsPath, queryParams: query),
+          client.get(commentsPath, queryParams: query)
+        ]);
+
+        final postJson = postResponse.bodyJson;
+        postJson['next_page'] = lemmyCalcNextIntPage(
+          postJson['posts'] as List<dynamic>,
+          page,
+        );
+
+        final commentJson = commentResponse.bodyJson;
+        commentJson['next_page'] = lemmyCalcNextIntPage(
+          commentJson['comments'] as List<dynamic>,
+          page,
+        );
 
         final postLists = PostListModel.fromLemmy(
-          response.bodyJson,
+          postJson,
           langCodeIdPairs: await client.languageCodeIdPairs()
         );
 
-        return (postLists.items, postLists.nextPage);
+        final commentLists = CommentListModel.fromLemmyToFlat(
+          commentJson,
+          langCodeIdPairs: await client.languageCodeIdPairs()
+        );
+
+        return ([...postLists.items, ...commentLists.items], postLists.nextPage);
 
       case ServerSoftware.piefed:
         throw UnimplementedError('Unimplemented');
