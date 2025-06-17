@@ -8,7 +8,7 @@ import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'feed_screen.dart';
 
-double calcRanking(PostModel post, DateTime time) {
+double calcLemmyRanking(PostModel post, DateTime time) {
   final scaleFactor = 10000;
   final gravity = 1.8;
   final score = (post.upvotes ?? 0) - (post.downvotes ?? 0);
@@ -19,24 +19,54 @@ double calcRanking(PostModel post, DateTime time) {
 }
 
 int lemmyActive(PostModel lhs, PostModel rhs) {
-  return calcRanking(
+  return calcLemmyRanking(
     rhs,
     rhs.lastActive,
-  ).compareTo(calcRanking(lhs, lhs.lastActive));
+  ).compareTo(calcLemmyRanking(lhs, lhs.lastActive));
 }
 
 int lemmyHot(PostModel lhs, PostModel rhs) {
-  return calcRanking(
+  return calcLemmyRanking(
     rhs,
     rhs.createdAt,
-  ).compareTo(calcRanking(lhs, lhs.createdAt));
+  ).compareTo(calcLemmyRanking(lhs, lhs.createdAt));
 }
 
 int mbinActive(PostModel lhs, PostModel rhs) {
   return rhs.lastActive.compareTo(lhs.lastActive);
 }
 
-//TODO: mbinHot
+double calcMbinRanking(PostModel post) {
+  final netscoreMultiplier = 4500;
+  final commentMultiplier = 1500;
+  final commentUniqueMultiplier = 5000;
+  final downvotedCutoff = -5;
+  final commentDownvotedMultiplier = 500;
+  final maxAdvantage = 86400;
+  final maxPenalty = 43200;
+
+  final score = (post.upvotes ?? 0) - (post.downvotes ?? 0);
+  final scoreAdvantage = score * netscoreMultiplier;
+
+  var commentAdvantage = 0;
+  if (score > downvotedCutoff) {
+    commentAdvantage = post.numComments * commentMultiplier;
+    //TODO: unique comment check here
+  } else {
+    commentAdvantage = post.numComments * commentDownvotedMultiplier;
+    //TODO: unique comment check here
+  }
+
+  final advantage = max(min(scoreAdvantage + commentAdvantage, maxAdvantage), -maxPenalty);
+
+  final dateAdvantage = min(post.createdAt.millisecondsSinceEpoch / 1000, DateTime.now().millisecondsSinceEpoch / 1000);
+
+  return min((dateAdvantage + advantage), pow(2, 31) - 1);
+}
+
+int mbinHot(PostModel lhs, PostModel rhs) {
+  return calcMbinRanking(rhs).compareTo(calcMbinRanking(lhs));
+}
 
 int top(PostModel lhs, PostModel rhs) {
   return ((rhs.upvotes ?? 0) - (rhs.downvotes ?? 0)).compareTo(
@@ -61,6 +91,7 @@ int commented(PostModel lhs, PostModel rhs) {
 }
 
 (List<PostModel>, List<List<PostModel>>) merge(
+  ServerSoftware software,
   List<List<PostModel>> inputs,
   FeedSort sort, {
   List<PostModel>? previousRemainder,
@@ -70,8 +101,8 @@ int commented(PostModel lhs, PostModel rhs) {
   }
 
   final sortFunc = switch (sort) {
-    FeedSort.active => mbinActive,
-    FeedSort.hot => lemmyHot,
+    FeedSort.active => software == ServerSoftware.mbin ? mbinActive : lemmyActive,
+    FeedSort.hot => software == ServerSoftware.mbin ? mbinHot : lemmyHot,
     FeedSort.newest => newest,
     FeedSort.oldest => oldest,
     FeedSort.commented => commented,
@@ -219,6 +250,7 @@ class FeedInputState {
             .map((postListModel) => postListModel?.items ?? <PostModel>[])
             .toList();
         final merged = merge(
+          ac.serverSoftware,
           [...postLists],
           sort,
           previousRemainder: _leftover,
@@ -281,7 +313,7 @@ class FeedAggregator {
 
     final postInputs = results.map((result) => result.$1).toList();
 
-    final merged = merge(postInputs, sort);
+    final merged = merge(ac.serverSoftware, postInputs, sort);
 
     for (var (index, posts) in merged.$2.indexed) {
       inputs[index]._leftover = posts;
