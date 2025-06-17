@@ -206,7 +206,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                   builder: (context) => ExploreFeedInputsScreen(
                     inputs: feedData.inputs.map((input) => input.name).toSet(),
                     onSelect: (selected, item) {
-                      final name = switch (item) {
+                      var name = switch (item) {
                         DetailedCommunityModel i => i.name,
                         DetailedUserModel i => i.name,
                         DomainModel i => i.name,
@@ -220,6 +220,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                       };
 
                       if (name == null || source == null) return;
+
+                      name = normalizeName(name, ac.instanceHost);
 
                       if (selected) {
                         addInput(FeedInput(name: name, sourceType: source));

@@ -244,19 +244,28 @@ class FeedAggregator {
 
   static Future<FeedAggregator> createFeed(AppController ac, Feed feed) async {
     final inputs = await feed.inputs.map((input) async {
-      final source = (switch (input.sourceType) {
-        FeedSource.all => null,
-        FeedSource.local => null,
-        FeedSource.subscribed => null,
-        FeedSource.moderated => null,
-        FeedSource.favorited => null,
-        FeedSource.community => (await ac.api.community.getByName(input.name)).id,
-        FeedSource.user => (await ac.api.users.getByName(input.name)).id,
-        FeedSource.domain => throw UnimplementedError(),
-      });
+      int? source;
+      try {
+        source = (switch (input.sourceType) {
+          FeedSource.all => null,
+          FeedSource.local => null,
+          FeedSource.subscribed => null,
+          FeedSource.moderated => null,
+          FeedSource.favorited => null,
+          FeedSource.community =>
+          (await ac.api.community.getByName(
+              denormalizeName(input.name, ac.instanceHost))).id,
+          FeedSource.user =>
+          (await ac.api.users.getByName(
+              denormalizeName(input.name, ac.instanceHost))).id,
+          FeedSource.domain => throw UnimplementedError(),
+        });
+      } catch (error) {
+        return null;
+      }
       return FeedInputState(title: input.name, source: input.sourceType, sourceId: source);
     }).wait;
-    return FeedAggregator(inputs: inputs);
+    return FeedAggregator(inputs: inputs.nonNulls.toList());
   }
 
   Future<(List<PostModel>, String?)> fetchPage(

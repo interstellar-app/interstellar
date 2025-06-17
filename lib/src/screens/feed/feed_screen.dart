@@ -130,7 +130,7 @@ class _FeedScreenState extends State<FeedScreen>
         },
       ),
       feedActionSetFilter(context).withProps(
-        whenLoggedIn(context, widget.source != null && widget.feed == null) ??
+        whenLoggedIn(context, widget.source != null || widget.feed != null) ??
                 true
             ? ActionLocation.hide
             : parseEnum(
