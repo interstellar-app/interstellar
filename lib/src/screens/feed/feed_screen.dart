@@ -74,7 +74,7 @@ class _FeedScreenState extends State<FeedScreen>
             context.read<AppController>().profile.feedDefaultThreadsSort,
           FeedView.microblog =>
             context.read<AppController>().profile.feedDefaultMicroblogSort,
-          FeedView.timeline => FeedSort.newest,
+          FeedView.timeline => context.read<AppController>().profile.feedDefaultTimelineSort,
         };
 
   @override
@@ -349,16 +349,13 @@ class _FeedScreenState extends State<FeedScreen>
                       subtitle: Row(
                         children: [
                           Text(currentFeedModeOption.title),
-                          if (currentFeedModeOption.value !=
-                              FeedView.timeline) ...[
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: Text('•'),
-                            ),
-                            Icon(currentFeedSortOption.icon, size: 20),
-                            const SizedBox(width: 2),
-                            Text(currentFeedSortOption.title),
-                          ],
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Text('•'),
+                          ),
+                          Icon(currentFeedSortOption.icon, size: 20),
+                          const SizedBox(width: 2),
+                          Text(currentFeedSortOption.title),
                         ],
                       ),
                     ),
