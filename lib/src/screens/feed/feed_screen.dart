@@ -25,9 +25,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../controller/feed.dart';
-
 class FeedScreen extends StatefulWidget {
+  final FeedAggregator? feed;
   final FeedSource? source;
   final int? sourceId;
   final String? title;
@@ -36,6 +35,7 @@ class FeedScreen extends StatefulWidget {
 
   const FeedScreen({
     super.key,
+    this.feed,
     this.source,
     this.sourceId,
     this.title,
@@ -130,7 +130,8 @@ class _FeedScreenState extends State<FeedScreen>
         },
       ),
       feedActionSetFilter(context).withProps(
-        whenLoggedIn(context, widget.source != null) ?? true
+        whenLoggedIn(context, widget.source != null && widget.feed == null) ??
+                true
             ? ActionLocation.hide
             : parseEnum(
                 ActionLocation.values,
@@ -235,6 +236,7 @@ class _FeedScreenState extends State<FeedScreen>
       if (context.watch<AppController>().profile.feedActionSetFilter ==
               ActionLocationWithTabs.tabs &&
           widget.source == null &&
+          widget.feed == null &&
           context.watch<AppController>().isLoggedIn)
         actions.firstWhere(
           (action) => action.name == feedActionSetFilter(context).name,
@@ -419,6 +421,7 @@ class _FeedScreenState extends State<FeedScreen>
                   return tabsAction == null
                       ? FeedScreenBody(
                           key: _getFeedKey(0),
+                          feed: widget.feed,
                           source: widget.source ?? _filter,
                           sourceId: widget.sourceId,
                           sort: sort,
@@ -436,6 +439,7 @@ class _FeedScreenState extends State<FeedScreen>
                               [
                                 FeedScreenBody(
                                   key: _getFeedKey(0),
+                                  feed: widget.feed,
                                   source: FeedSource.subscribed,
                                   sort: sort,
                                   view: _view,
@@ -446,6 +450,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
+                                  feed: widget.feed,
                                   source: FeedSource.moderated,
                                   sort: sort,
                                   view: _view,
@@ -456,6 +461,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
+                                  feed: widget.feed,
                                   source: FeedSource.favorited,
                                   sort: sort,
                                   view: _view,
@@ -466,6 +472,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(3),
+                                  feed: widget.feed,
                                   source: FeedSource.all,
                                   sort: sort,
                                   view: _view,
@@ -476,6 +483,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(4),
+                                  feed: widget.feed,
                                   source: FeedSource.local,
                                   sort: sort,
                                   view: _view,
@@ -490,6 +498,7 @@ class _FeedScreenState extends State<FeedScreen>
                               [
                                 FeedScreenBody(
                                   key: _getFeedKey(0),
+                                  feed: widget.feed,
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -503,6 +512,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
+                                  feed: widget.feed,
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -516,6 +526,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
+                                  feed: widget.feed,
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -556,7 +567,9 @@ class _FeedScreenState extends State<FeedScreen>
                 .toList(),
           ),
         ),
-        drawer: widget.sourceId != null ? null : const NavDrawer(),
+        drawer: (widget.sourceId != null || widget.feed != null)
+            ? null
+            : const NavDrawer(),
       ),
     );
   }
@@ -770,6 +783,7 @@ SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
     ]);
 
 class FeedScreenBody extends StatefulWidget {
+  final FeedAggregator? feed;
   final FeedSource source;
   final int? sourceId;
   final FeedSort sort;
@@ -781,6 +795,7 @@ class FeedScreenBody extends StatefulWidget {
 
   const FeedScreenBody({
     super.key,
+    this.feed,
     required this.source,
     this.sourceId,
     required this.sort,
@@ -813,36 +828,22 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
   late FeedAggregator _aggregator;
 
-  void createTestFeed() async {
-    final feed = Feed(name: 'test_feed', inputs: [
-      FeedInput(name: 'interstellar', sourceType: FeedSource.community),
-      FeedInput(name: 'testing', sourceType: FeedSource.community),
-      FeedInput(name: 'kbinEarth', sourceType: FeedSource.community),
-      FeedInput(name: 'olorin99', sourceType: FeedSource.user),
-      FeedInput(name: 'jwr1', sourceType: FeedSource.user),
-    ]);
-
-    _aggregator = await FeedAggregator.createFeed(context.read<AppController>(), feed);
-
-    _aggregator.refresh();
-    _pagingController.refresh();
-  }
-
   @override
   void initState() {
     super.initState();
 
-    _aggregator = FeedAggregator(
-      inputs: [
-        FeedInputState(
-          title: 'Home',
-          source: widget.source,
-          sourceId: widget.sourceId,
-        ),
-      ],
-    );
+    _aggregator =
+        widget.feed ??
+        FeedAggregator(
+          inputs: [
+            FeedInputState(
+              title: 'Home',
+              source: widget.source,
+              sourceId: widget.sourceId,
+            ),
+          ],
+        );
 
-    createTestFeed();
     _pagingController.addPageRequestListener(_fetchPage);
     _scrollController?.addListener(getScrollDirection);
   }
