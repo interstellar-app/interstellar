@@ -436,7 +436,7 @@ class _FeedScreenState extends State<FeedScreen>
                               [
                                 FeedScreenBody(
                                   key: _getFeedKey(0),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: FeedSource.subscribed,
                                   sort: sort,
                                   view: _view,
@@ -447,7 +447,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: FeedSource.moderated,
                                   sort: sort,
                                   view: _view,
@@ -458,7 +458,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: FeedSource.favorited,
                                   sort: sort,
                                   view: _view,
@@ -469,7 +469,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(3),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: FeedSource.all,
                                   sort: sort,
                                   view: _view,
@@ -480,7 +480,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(4),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: FeedSource.local,
                                   sort: sort,
                                   view: _view,
@@ -495,7 +495,7 @@ class _FeedScreenState extends State<FeedScreen>
                               [
                                 FeedScreenBody(
                                   key: _getFeedKey(0),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -509,7 +509,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -523,7 +523,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
-                                  feed: widget.feed,
+                                  feed: widget.feed?.clone(),
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
