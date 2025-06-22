@@ -437,7 +437,7 @@ class _FeedScreenState extends State<FeedScreen>
                               [
                                 FeedScreenBody(
                                   key: _getFeedKey(0),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: FeedSource.subscribed,
                                   sort: sort,
                                   view: _view,
@@ -448,7 +448,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: FeedSource.moderated,
                                   sort: sort,
                                   view: _view,
@@ -459,7 +459,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: FeedSource.favorited,
                                   sort: sort,
                                   view: _view,
@@ -470,7 +470,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(3),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: FeedSource.all,
                                   sort: sort,
                                   view: _view,
@@ -481,7 +481,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(4),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: FeedSource.local,
                                   sort: sort,
                                   view: _view,
@@ -496,7 +496,7 @@ class _FeedScreenState extends State<FeedScreen>
                               [
                                 FeedScreenBody(
                                   key: _getFeedKey(0),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -510,7 +510,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(1),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -524,7 +524,7 @@ class _FeedScreenState extends State<FeedScreen>
                                 ),
                                 FeedScreenBody(
                                   key: _getFeedKey(2),
-                                  feed: widget.feed?.clone(),
+                                  feed: widget.feed,
                                   source: widget.source ?? _filter,
                                   sourceId: widget.sourceId,
                                   sort:
@@ -970,8 +970,10 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         widget.source != oldWidget.source ||
         widget.sourceId != oldWidget.sourceId ||
         widget.feed != oldWidget.feed) {
-      _aggregator.refresh();
-      _pagingController.refresh();
+      if (widget.feed != null && widget.feed != oldWidget.feed) {
+        _aggregator = widget.feed!;
+      }
+      refresh();
     }
     _scrollController?.isActive = widget.isActive;
   }
