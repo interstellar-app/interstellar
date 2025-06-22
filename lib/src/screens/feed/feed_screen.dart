@@ -74,7 +74,8 @@ class _FeedScreenState extends State<FeedScreen>
             context.read<AppController>().profile.feedDefaultThreadsSort,
           FeedView.microblog =>
             context.read<AppController>().profile.feedDefaultMicroblogSort,
-          FeedView.timeline => context.read<AppController>().profile.feedDefaultTimelineSort,
+          FeedView.timeline =>
+            context.read<AppController>().profile.feedDefaultTimelineSort,
         };
 
   @override
@@ -832,6 +833,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     _aggregator =
         widget.feed ??
         FeedAggregator(
+          name: 'Home',
           inputs: [
             FeedInputState(
               title: 'Home',
@@ -966,7 +968,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     if (widget.view != oldWidget.view ||
         widget.sort != oldWidget.sort ||
         widget.source != oldWidget.source ||
-        widget.sourceId != oldWidget.sourceId) {
+        widget.sourceId != oldWidget.sourceId ||
+        widget.feed != oldWidget.feed) {
       _aggregator.refresh();
       _pagingController.refresh();
     }
@@ -977,7 +980,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   Widget build(BuildContext context) {
     super.build(context);
     return RefreshIndicator(
-      onRefresh: () => Future.sync(() => _pagingController.refresh()),
+      onRefresh: () => Future.sync(() => refresh()),
       child: CustomScrollView(
         controller: _scrollController,
         slivers: [

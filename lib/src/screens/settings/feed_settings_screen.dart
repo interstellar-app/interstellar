@@ -41,17 +41,14 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
     final ac = context.watch<AppController>();
 
     return Scaffold(
-      appBar: AppBar(title: Text('Feeds')),
+      appBar: AppBar(title: Text(l(context).feeds)),
       body: ListView(
         children: [
           ...ac.feeds.keys.map(
             (name) => ListTile(
               title: Text(name),
               onTap: () async {
-                final feed = await FeedAggregator.createFeed(
-                  ac,
-                  ac.feeds[name]!,
-                );
+                final feed = await FeedAggregator.create(ac, ac.feeds[name]!);
                 if (!context.mounted) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -80,7 +77,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                       final feed = ac.feeds[name]!;
 
                       final config = await ConfigShare.create(
-                        type: ConfigShareType.filterList,
+                        type: ConfigShareType.feed,
                         name: name,
                         payload: feed.toJson(),
                       );
@@ -100,7 +97,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                       await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => CreateScreen(
-                            initTitle: '[Filter List] $name',
+                            initTitle: '[Feed] $name',
                             initBody:
                                 'Short description here...\n\n${config.toMarkdown()}',
                             initCommunity: community,
@@ -116,7 +113,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Symbols.add_rounded),
-            title: Text('New feed'),
+            title: Text(l(context).feeds_new),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const EditFeedScreen(feed: null),
@@ -174,7 +171,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
     return Scaffold(
-      appBar: AppBar(title: Text('Edit feed ${widget.feed}')),
+      appBar: AppBar(title: Text(l(context).feeds_edit(widget.feed!))),
       body: ListView(
         children: [
           Padding(
@@ -198,7 +195,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
           }),
           ListTile(
             leading: const Icon(Symbols.add_rounded),
-            title: Text('Add input'),
+            title: Text(l(context).feeds_input),
             onTap: () async {
               // final item = await Navigator.of(context).push(
               Navigator.of(context).push(
@@ -213,9 +210,9 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                         _ => null,
                       };
                       final source = switch (item) {
-                        DetailedCommunityModel i => FeedSource.community,
-                        DetailedUserModel i => FeedSource.user,
-                        DomainModel i => FeedSource.domain,
+                        DetailedCommunityModel _ => FeedSource.community,
+                        DetailedUserModel _ => FeedSource.user,
+                        DomainModel _ => FeedSource.domain,
                         _ => null,
                       };
 

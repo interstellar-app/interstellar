@@ -80,10 +80,26 @@
   "subscriptions": "Subscriptions",
   "subscriptions_community": "Community Subscriptions",
   "subscriptions_community_all": "All Community Subs",
+  "subscriptions_community_empty": "This feels empty; subscribe to a community to appear here.",
   "subscriptions_user": "User Follows",
   "subscriptions_user_all": "All User Follows",
+  "subscriptions_user_empty": "This feels empty; subscribe to a user to appear here.",
   "subscriptions_domain": "Domain Subscriptions",
   "subscriptions_domain_all": "All Domain Subs",
+  "subscriptions_domain_empty": "This feels empty; subscribe to a domain to appear here.",
+  "feeds": "Feeds",
+  "feeds_empty": "This feels empty; create a feed to appear here.",
+  "feeds_new": "New feed",
+  "feeds_edit": "Edit feed {feed}",
+  "@feeds_edit": {
+    "placeholders": {
+      "feed": {
+        "type": "String"
+      }
+    }
+  },
+  "feeds_input": "Add input",
+  "feeds_import": "Import feed",
   "post": "Post",
   "postDeleted": "Post Deleted",
   "comment": "Comment",
@@ -607,6 +623,15 @@
   "configShare_filterList_title": "Interstellar filter list",
   "configShare_filterList_info": "Contains {count} phrases",
   "@configShare_filterList_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_feed_title": "Interstellar feed",
+  "configShare_feed_info": "Contains {count} inputs",
+  "@configShare_feed_info": {
     "placeholders": {
       "count": {
         "type": "int"

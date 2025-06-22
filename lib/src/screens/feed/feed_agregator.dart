@@ -39,7 +39,7 @@ int mbinActive(PostModel lhs, PostModel rhs) {
 double calcMbinRanking(PostModel post) {
   final netscoreMultiplier = 4500;
   final commentMultiplier = 1500;
-  final commentUniqueMultiplier = 5000;
+  // final commentUniqueMultiplier = 5000;
   final downvotedCutoff = -5;
   final commentDownvotedMultiplier = 500;
   final maxAdvantage = 86400;
@@ -304,11 +304,12 @@ class FeedInputState {
 }
 
 class FeedAggregator {
+  final String name;
   final List<FeedInputState> inputs;
 
-  const FeedAggregator({required this.inputs});
+  const FeedAggregator({required this.name, required this.inputs});
 
-  static Future<FeedAggregator> createFeed(AppController ac, Feed feed) async {
+  static Future<FeedAggregator> create(AppController ac, Feed feed) async {
     final inputs = await feed.inputs.map((input) async {
       int? source;
       try {
@@ -335,7 +336,7 @@ class FeedAggregator {
         sourceId: source,
       );
     }).wait;
-    return FeedAggregator(inputs: inputs.nonNulls.toList());
+    return FeedAggregator(name: feed.name, inputs: inputs.nonNulls.toList());
   }
 
   Future<(List<PostModel>, String?)> fetchPage(
@@ -344,6 +345,8 @@ class FeedAggregator {
     FeedView view,
     FeedSort sort,
   ) async {
+    if (inputs.isEmpty) return (<PostModel>[], null);
+
     final futures = inputs.map(
       (input) => input.fetchPage(ac, pageKey, view, sort),
     );
@@ -397,6 +400,7 @@ class FeedAggregator {
 
   FeedAggregator clone() {
     return FeedAggregator(
+      name: name,
       inputs: inputs.map((input) => input.clone()).toList(),
     );
   }
