@@ -7,6 +7,7 @@ import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/models/config_share.dart';
+import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -14,9 +15,6 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import '../../screens/feed/feed_agregator.dart';
-import '../../screens/feed/feed_screen.dart';
 
 class ConfigShareMarkdownSyntax extends md.BlockSyntax {
   @override
@@ -180,14 +178,9 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                         );
                       },
                       ConfigShareType.feed => () async {
-                        final aggregator = await FeedAggregator.create(
-                          context.read<AppController>(),
-                          configFeed!,
-                        );
-                        if (!context.mounted) return;
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => FeedScreen(feed: aggregator),
+                            builder: (context) => EditFeedScreen(feed: config.name, feedData: configFeed),
                           ),
                         );
                       },

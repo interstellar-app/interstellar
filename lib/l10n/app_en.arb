@@ -91,6 +91,7 @@
   "feeds_empty": "This feels empty; create a feed to appear here.",
   "feeds_new": "New feed",
   "feeds_edit": "Edit feed {feed}",
+  "feeds_delete": "Delete feed",
   "@feeds_edit": {
     "placeholders": {
       "feed": {

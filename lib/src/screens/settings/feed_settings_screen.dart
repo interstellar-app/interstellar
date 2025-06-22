@@ -72,8 +72,6 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      final ac = context.watch<AppController>();
-
                       final feed = ac.feeds[name]!;
 
                       final config = await ConfigShare.create(
@@ -88,9 +86,14 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                         communityName = communityName.split('@').first;
                       }
 
-                      final community = await ac.api.community.getByName(
-                        communityName,
-                      );
+                      DetailedCommunityModel? community;
+                      try {
+                        community = await ac.api.community.getByName(
+                          communityName,
+                        );
+                      } catch (e) {
+                        //
+                      }
 
                       if (!context.mounted) return;
 
@@ -262,7 +265,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                   showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      title: Text(l(context).filterList_delete),
+                      title: Text(l(context).feeds_delete),
                       content: Text(widget.feed!),
                       actions: <Widget>[
                         OutlinedButton(
@@ -283,7 +286,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     ),
                   );
                 },
-                label: Text(l(context).filterList_delete),
+                label: Text(l(context).feeds_delete),
               ),
             ),
         ],
