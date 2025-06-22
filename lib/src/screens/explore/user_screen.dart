@@ -11,6 +11,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/account/profile_edit_screen.dart';
+import 'package:interstellar/src/screens/explore/bookmarks_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
@@ -101,6 +102,22 @@ class _UserScreenState extends State<UserScreen> {
       appBar: AppBar(
         title: Text(user.name),
         actions: [
+          if (isMyUser && ac.serverSoftware != ServerSoftware.piefed)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ActionChip(
+                label: Icon(Symbols.bookmarks_rounded, size: 20),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ac.serverSoftware == ServerSoftware.mbin
+                          ? BookmarkListScreen()
+                          : BookmarksScreen();
+                    },
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: ActionChip(
