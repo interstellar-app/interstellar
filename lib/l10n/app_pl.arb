@@ -495,5 +495,13 @@
   "action_setFilter": "Ustaw filtr",
   "@action_setFilter": {},
   "action_setSort": "Ustaw sortowanie",
-  "@action_setSort": {}
+  "@action_setSort": {},
+  "settings_askBeforeDeleting": "Pytaj przed usunięciem",
+  "@settings_askBeforeDeleting": {},
+  "settings_aboutInterstellar": "O Interstellar",
+  "@settings_aboutInterstellar": {},
+  "settings_autoTranslate": "Tłumacz automatycznie posty/komentarze",
+  "@settings_autoTranslate": {},
+  "settings_colorScheme_dynamic": "Dynamiczny (System)",
+  "@settings_colorScheme_dynamic": {}
 }
