@@ -831,7 +831,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     super.initState();
 
     _aggregator =
-        widget.feed ??
+        widget.feed?.clone() ??
         FeedAggregator(
           name: 'Home',
           inputs: [

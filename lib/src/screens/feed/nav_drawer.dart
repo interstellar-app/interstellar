@@ -89,7 +89,7 @@ class _NavDrawerState extends State<NavDrawer> {
               ),
             ...(ac.stars.toList()..sort()).map(
               (star) => ListTile(
-                title: Text(star),
+                title: Text(ac.profile.alwaysShowInstance ? star.substring(1) : star.substring(1).split('@').first),
                 onTap: () async {
                   String name = star.substring(1);
                   if (name.endsWith(ac.instanceHost)) {
@@ -185,7 +185,7 @@ class _NavDrawerState extends State<NavDrawer> {
                       (index, community) => MapEntry(
                         index,
                         ListTile(
-                          title: Text(community.name),
+                          title: Text(ac.profile.alwaysShowInstance ? community.name : community.name.split('@').first),
                           leading: community.icon == null
                               ? null
                               : Avatar(community.icon, radius: 16),
@@ -256,7 +256,7 @@ class _NavDrawerState extends State<NavDrawer> {
                       (index, user) => MapEntry(
                         index,
                         ListTile(
-                          title: Text(user.name),
+                          title: Text(ac.profile.alwaysShowInstance ? user.name : user.name.split('@').first),
                           leading: user.avatar == null
                               ? null
                               : Avatar(user.avatar, radius: 16),
