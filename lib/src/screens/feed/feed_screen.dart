@@ -537,7 +537,11 @@ class _FeedScreenState extends State<FeedScreen>
                   context.read<AppController>().profile.hideFeedUIOnScroll
               ? Offset(0, 0.2)
               : Offset.zero,
-          duration: Duration(milliseconds: 300),
+          duration: context.read<AppController>().profile.animationSpeed == 0
+              ? Duration.zero
+              : Duration(milliseconds: (300 / context.read<AppController>()
+                .profile.animationSpeed).toInt(),
+                ),
           child: FloatingMenu(
             key: _fabKey,
             tapAction: actions
@@ -1129,6 +1133,24 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                 void onPostTap() {
                   Navigator.of(context).push(
                     PageRouteBuilder(
+                      transitionDuration:
+                          context.read<AppController>()
+                              .profile.animationSpeed == 0
+                          ? Duration.zero
+                          : Duration(
+                              milliseconds:
+                                  (300 / context.read<AppController>()
+                                      .profile.animationSpeed).toInt(),
+                            ),
+                      reverseTransitionDuration:
+                          context.read<AppController>()
+                                .profile.animationSpeed == 0
+                          ? Duration.zero
+                          : Duration(
+                              milliseconds:
+                                  (300 / context.read<AppController>()
+                                        .profile.animationSpeed).toInt(),
+                            ),
                       pageBuilder: (context, _, __) => PostPage(
                         initData: item,
                         onUpdate: (newValue) {

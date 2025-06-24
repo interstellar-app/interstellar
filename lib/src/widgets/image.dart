@@ -11,6 +11,8 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
+import 'package:interstellar/src/controller/controller.dart';
 
 class AdvancedImage extends StatelessWidget {
   final ImageModel image;
@@ -42,6 +44,24 @@ class AdvancedImage extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               PageRouteBuilder(
+                transitionDuration:
+                context.read<AppController>()
+                    .profile.animationSpeed == 0
+                    ? Duration.zero
+                    : Duration(
+                  milliseconds:
+                  (300 / context.read<AppController>()
+                      .profile.animationSpeed).toInt(),
+                ),
+                reverseTransitionDuration:
+                context.read<AppController>()
+                    .profile.animationSpeed == 0
+                    ? Duration.zero
+                    : Duration(
+                  milliseconds:
+                  (300 / context.read<AppController>()
+                      .profile.animationSpeed).toInt(),
+                ),
                 pageBuilder: (context, _, __) => AdvancedImagePage(
                   image,
                   title: openTitle!,
