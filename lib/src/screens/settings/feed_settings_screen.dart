@@ -174,7 +174,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
     return Scaffold(
-      appBar: AppBar(title: Text(l(context).feeds_edit(widget.feed!))),
+      appBar: AppBar(title: Text(l(context).feeds_edit(widget.feed?? nameController.text))),
       body: ListView(
         children: [
           Padding(
