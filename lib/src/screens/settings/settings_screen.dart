@@ -9,6 +9,7 @@ import 'package:interstellar/src/screens/settings/display_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_actions_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults_screen.dart';
 import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
+import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/screens/settings/notification_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -42,6 +43,15 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const DisplaySettingsScreen(),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.feed_rounded),
+            title: Text('Feeds'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const FeedSettingsScreen(),
               ),
             ),
           ),
