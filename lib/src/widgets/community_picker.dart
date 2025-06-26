@@ -45,14 +45,12 @@ class _CommunityPickerState extends State<CommunityPicker> {
                   suffixIcon: widget.value == null
                       ? null
                       : IconButton(
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => CommunityScreen(
-                                widget.value!.id,
-                                initData: widget.value!,
-                                onUpdate: (newValue) =>
-                                    widget.onChange(newValue),
-                              ),
+                          onPressed: () => pushRoute(
+                            context,
+                            builder: (context) => CommunityScreen(
+                              widget.value!.id,
+                              initData: widget.value!,
+                              onUpdate: (newValue) => widget.onChange(newValue),
                             ),
                           ),
                           icon: Icon(Symbols.open_in_new_rounded),

@@ -298,21 +298,19 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                 return InkWell(
                   onTap: () {
                     if (item.subjectPost != null) {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          pageBuilder: (context, _, __) => PostPage(
-                            initData: item.subjectPost,
-                            userCanModerate: true,
-                          ),
+                      pushRoute(
+                        context,
+                        builder: (context) => PostPage(
+                          initData: item.subjectPost,
+                          userCanModerate: true,
                         ),
                       );
                     } else if (item.subjectComment != null) {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          pageBuilder: (context, _, __) => PostCommentScreen(
-                            item.subjectComment!.postType,
-                            item.subjectComment!.id,
-                          ),
+                      pushRoute(
+                        context,
+                        builder: (context) => PostCommentScreen(
+                          item.subjectComment!.postType,
+                          item.subjectComment!.id,
                         ),
                       );
                     }
@@ -332,11 +330,10 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                                   DisplayName(
                                     item.reportedBy!.name,
                                     icon: item.reportedBy!.avatar,
-                                    onTap: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserScreen(item.reportedBy!.id),
-                                      ),
+                                    onTap: () => pushRoute(
+                                      context,
+                                      builder: (context) =>
+                                          UserScreen(item.reportedBy!.id),
                                     ),
                                   ),
                                 ],

@@ -107,14 +107,13 @@ class _UserScreenState extends State<UserScreen> {
               padding: const EdgeInsets.only(right: 8),
               child: ActionChip(
                 label: Icon(Symbols.bookmarks_rounded, size: 20),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ac.serverSoftware == ServerSoftware.mbin
-                          ? BookmarkListScreen()
-                          : BookmarksScreen();
-                    },
-                  ),
+                onPressed: () => pushRoute(
+                  context,
+                  builder: (context) {
+                    return ac.serverSoftware == ServerSoftware.mbin
+                        ? BookmarkListScreen()
+                        : BookmarksScreen();
+                  },
                 ),
               ),
             ),
@@ -192,15 +191,13 @@ class _UserScreenState extends State<UserScreen> {
                               children: [
                                 if (isMyUser)
                                   FilledButton(
-                                    onPressed: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return ProfileEditScreen(_data!, (
-                                            DetailedUserModel user,
-                                          ) {
-                                            setState(() {
-                                              _data = user;
-                                            });
+                                    onPressed: () => pushRoute(
+                                      context,
+                                      builder: (context) => ProfileEditScreen(
+                                        _data!,
+                                        (DetailedUserModel user) {
+                                          setState(() {
+                                            _data = user;
                                           });
                                         },
                                       ),
@@ -381,14 +378,13 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _messageController = null;
 
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MessageThreadScreen(
-                                                    threadId: newThread.id,
-                                                    initData: newThread,
-                                                  ),
-                                            ),
+                                          pushRoute(
+                                            context,
+                                            builder: (context) =>
+                                                MessageThreadScreen(
+                                                  threadId: newThread.id,
+                                                  initData: newThread,
+                                                ),
                                           );
                                         });
                                       },
@@ -647,24 +643,19 @@ class _UserScreenBodyState extends State<UserScreenBody>
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PostPage(
-                                initData: item,
-                                onUpdate: (newValue) {
-                                  var newList = _pagingController.itemList;
-                                  newList![index] = newValue;
-                                  setState(() {
-                                    _pagingController.itemList = newList;
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        );
-                      },
+                      onTap: () => pushRoute(
+                        context,
+                        builder: (context) => PostPage(
+                          initData: item,
+                          onUpdate: (newValue) {
+                            var newList = _pagingController.itemList;
+                            newList![index] = newValue;
+                            setState(() {
+                              _pagingController.itemList = newList;
+                            });
+                          },
+                        ),
+                      ),
                       child: PostItem(item, (newValue) {
                         var newList = _pagingController.itemList;
                         newList![index] = newValue;
@@ -685,15 +676,11 @@ class _UserScreenBodyState extends State<UserScreenBody>
                           _pagingController.itemList = newList;
                         });
                       },
-                      onClick: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PostCommentScreen(item.postType, item.id);
-                            },
-                          ),
-                        );
-                      },
+                      onClick: () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            PostCommentScreen(item.postType, item.id),
+                      ),
                     ),
                   ),
                   UserFeedType.follower ||

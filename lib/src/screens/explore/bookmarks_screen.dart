@@ -104,28 +104,29 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                             padding: const EdgeInsets.only(left: 8),
                             child: LoadingFilledButton(
                               onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) => AlertDialog(
-                                    title: Text('Delete bookmark list'),
-                                    content: Text(_bookmarkLists[index].name),
-                                    actions: [
-                                      OutlinedButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text(l(context).cancel),
-                                      ),
-                                      FilledButton(
-                                        onPressed: () async {
-                                          await ac.api.bookmark.deleteBookmarkList(
-                                            _bookmarkLists[index].name,
-                                          );
-                                          _fetch();
-                                          if (!context.mounted) return;
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(l(context).delete),
-                                      ),
-                                    ],
-                                  )
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: Text('Delete bookmark list'),
+                                  content: Text(_bookmarkLists[index].name),
+                                  actions: [
+                                    OutlinedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text(l(context).cancel),
+                                    ),
+                                    FilledButton(
+                                      onPressed: () async {
+                                        await ac.api.bookmark
+                                            .deleteBookmarkList(
+                                              _bookmarkLists[index].name,
+                                            );
+                                        _fetch();
+                                        if (!context.mounted) return;
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(l(context).delete),
+                                    ),
+                                  ],
+                                ),
                               ),
                               label: Text(l(context).delete),
                             ),
@@ -135,14 +136,10 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                   ],
                 ),
                 trailing: Text(_bookmarkLists[index].count.toString()),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return BookmarksScreen(
-                        bookmarkList: _bookmarkLists[index].name,
-                      );
-                    },
-                  ),
+                onTap: () => pushRoute(
+                  context,
+                  builder: (context) =>
+                      BookmarksScreen(bookmarkList: _bookmarkLists[index].name),
                 ),
               );
             },
@@ -218,24 +215,19 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                             _pagingController.itemList = newList;
                           });
                         },
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return PostPage(
-                                  initData: item,
-                                  onUpdate: (newValue) {
-                                    var newList = _pagingController.itemList;
-                                    newList![index] = newValue;
-                                    setState(() {
-                                      _pagingController.itemList = newList;
-                                    });
-                                  },
-                                );
-                              },
-                            ),
-                          );
-                        },
+                        onTap: () => pushRoute(
+                          context,
+                          builder: (context) => PostPage(
+                            initData: item,
+                            onUpdate: (newValue) {
+                              var newList = _pagingController.itemList;
+                              newList![index] = newValue;
+                              setState(() {
+                                _pagingController.itemList = newList;
+                              });
+                            },
+                          ),
+                        ),
                         isPreview: item.type == PostType.thread,
                         isTopLevel: true,
                       ),
@@ -251,18 +243,11 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                             _pagingController.itemList = newList;
                           });
                         },
-                        onClick: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return PostCommentScreen(
-                                  item.postType,
-                                  item.id,
-                                );
-                              },
-                            ),
-                          );
-                        },
+                        onClick: () => pushRoute(
+                          context,
+                          builder: (context) =>
+                              PostCommentScreen(item.postType, item.id),
+                        ),
                       ),
                     ),
                     _ => throw 'unreachable',

@@ -115,12 +115,11 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => EditProfileScreen(
-                                  profile: profileName,
-                                  profileList: profileList!,
-                                ),
+                            await pushRoute(
+                              context,
+                              builder: (context) => EditProfileScreen(
+                                profile: profileName,
+                                profileList: profileList!,
                               ),
                             );
                             getProfiles();
@@ -154,16 +153,15 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                                 .community
                                 .getByName(communityName);
 
-                            if (!mounted) return;
+                            if (!context.mounted) return;
 
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => CreateScreen(
-                                  initTitle: '[Profile] $profileName',
-                                  initBody:
-                                      'Short description here...\n\n${config.toMarkdown()}',
-                                  initCommunity: community,
-                                ),
+                            await pushRoute(
+                              context,
+                              builder: (context) => CreateScreen(
+                                initTitle: '[Profile] $profileName',
+                                initBody:
+                                    'Short description here...\n\n${config.toMarkdown()}',
+                                initCommunity: community,
                               ),
                             );
                           },
@@ -177,12 +175,11 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                   leading: const Icon(Symbols.add_rounded),
                   title: Text(l(context).profile_new),
                   onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => EditProfileScreen(
-                          profile: null,
-                          profileList: profileList!,
-                        ),
+                    await pushRoute(
+                      context,
+                      builder: (context) => EditProfileScreen(
+                        profile: null,
+                        profileList: profileList!,
                       ),
                     );
                     getProfiles();

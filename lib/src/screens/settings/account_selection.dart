@@ -153,10 +153,9 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                 ListTile(
                   title: Text(l(context).addAccount),
                   leading: const Icon(Symbols.login_rounded),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginSelectScreen(),
-                    ),
+                  onTap: () => pushRoute(
+                    context,
+                    builder: (context) => const LoginSelectScreen(),
                   ),
                 ),
               const SizedBox(height: 16),

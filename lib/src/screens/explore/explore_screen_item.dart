@@ -16,6 +16,7 @@ import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:interstellar/src/utils/utils.dart';
 
 class ExploreScreenItem extends StatelessWidget {
   final dynamic item;
@@ -87,26 +88,20 @@ class ExploreScreenItem extends StatelessWidget {
         _ => throw 'Unreachable',
       };
       final onClick = switch (item) {
-        DetailedCommunityModel i => () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return CommunityScreen(i.id, initData: i, onUpdate: onUpdate);
-            },
-          ),
+        DetailedCommunityModel i => () => pushRoute(
+          context,
+          builder: (context) =>
+              CommunityScreen(i.id, initData: i, onUpdate: onUpdate),
         ),
-        DetailedUserModel i => () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return UserScreen(i.id, initData: i, onUpdate: onUpdate);
-            },
-          ),
+        DetailedUserModel i => () => pushRoute(
+          context,
+          builder: (context) =>
+              UserScreen(i.id, initData: i, onUpdate: onUpdate),
         ),
-        DomainModel i => () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return DomainScreen(i.id, initData: i, onUpdate: onUpdate);
-            },
-          ),
+        DomainModel i => () => pushRoute(
+          context,
+          builder: (context) =>
+              DomainScreen(i.id, initData: i, onUpdate: onUpdate),
         ),
         _ => throw 'Unreachable',
       };
@@ -144,12 +139,9 @@ class ExploreScreenItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return PostPage(initData: item, onUpdate: onUpdate);
-              },
-            ),
+          onTap: () => pushRoute(
+            context,
+            builder: (context) => PostPage(initData: item, onUpdate: onUpdate),
           ),
           child: PostItem(
             item,
@@ -163,12 +155,9 @@ class ExploreScreenItem extends StatelessWidget {
         child: PostComment(
           item,
           onUpdate,
-          onClick: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return PostCommentScreen(item.postType, item.id);
-              },
-            ),
+          onClick: () => pushRoute(
+            context,
+            builder: (context) => PostCommentScreen(item.postType, item.id),
           ),
         ),
       ),

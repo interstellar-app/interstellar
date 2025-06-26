@@ -390,13 +390,10 @@ class _CreateScreenState extends State<CreateScreen> {
               onUpdate: (newCommunity) {
                 Navigator.pop(context);
 
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => CommunityScreen(
-                      newCommunity.id,
-                      initData: newCommunity,
-                    ),
-                  ),
+                pushRoute(
+                  context,
+                  builder: (context) =>
+                      CommunityScreen(newCommunity.id, initData: newCommunity),
                 );
               },
             ),

@@ -64,18 +64,13 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return PostPage(
-                              postType: comment.postType,
-                              postId: comment.postId,
-                            );
-                          },
-                        ),
-                      );
-                    },
+                    onPressed: () => pushRoute(
+                      context,
+                      builder: (context) => PostPage(
+                        postType: comment.postType,
+                        postId: comment.postId,
+                      ),
+                    ),
                     child: Text(l(context).comment_openOriginalPost),
                   ),
                 ),
@@ -83,18 +78,13 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
                     onPressed: comment.rootId != null
-                        ? () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return PostCommentScreen(
-                                    comment.postType,
-                                    comment.rootId!,
-                                  );
-                                },
-                              ),
-                            );
-                          }
+                        ? () => pushRoute(
+                            context,
+                            builder: (context) => PostCommentScreen(
+                              comment.postType,
+                              comment.rootId!,
+                            ),
+                          )
                         : null,
                     child: Text(l(context).comment_openRoot),
                   ),
@@ -103,18 +93,13 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
                     onPressed: comment.parentId != null
-                        ? () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return PostCommentScreen(
-                                    comment.postType,
-                                    comment.parentId!,
-                                  );
-                                },
-                              ),
-                            );
-                          }
+                        ? () => pushRoute(
+                            context,
+                            builder: (context) => PostCommentScreen(
+                              comment.postType,
+                              comment.parentId!,
+                            ),
+                          )
                         : null,
                     child: Text(l(context).comment_openParent),
                   ),

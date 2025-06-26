@@ -118,11 +118,10 @@ class _FeedScreenState extends State<FeedScreen>
             ? context.watch<AppController>().profile.feedActionCreateNew
             : ActionLocation.hide,
         () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  CreateScreen(initCommunity: widget.createPostCommunity),
-            ),
+          await pushRoute(
+            context,
+            builder: (context) =>
+                CreateScreen(initCommunity: widget.createPostCommunity),
           );
         },
       ),
@@ -539,8 +538,14 @@ class _FeedScreenState extends State<FeedScreen>
               : Offset.zero,
           duration: context.read<AppController>().profile.animationSpeed == 0
               ? Duration.zero
-              : Duration(milliseconds: (300 / context.read<AppController>()
-                .profile.animationSpeed).toInt(),
+              : Duration(
+                  milliseconds:
+                      (300 /
+                              context
+                                  .read<AppController>()
+                                  .profile
+                                  .animationSpeed)
+                          .toInt(),
                 ),
           child: FloatingMenu(
             key: _fabKey,
@@ -1131,37 +1136,18 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   : null,
               itemBuilder: (context, item, index) {
                 void onPostTap() {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      transitionDuration:
-                          context.read<AppController>()
-                              .profile.animationSpeed == 0
-                          ? Duration.zero
-                          : Duration(
-                              milliseconds:
-                                  (300 / context.read<AppController>()
-                                      .profile.animationSpeed).toInt(),
-                            ),
-                      reverseTransitionDuration:
-                          context.read<AppController>()
-                                .profile.animationSpeed == 0
-                          ? Duration.zero
-                          : Duration(
-                              milliseconds:
-                                  (300 / context.read<AppController>()
-                                        .profile.animationSpeed).toInt(),
-                            ),
-                      pageBuilder: (context, _, __) => PostPage(
-                        initData: item,
-                        onUpdate: (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                        userCanModerate: widget.userCanModerate,
-                      ),
+                  pushRoute(
+                    context,
+                    builder: (context) => PostPage(
+                      initData: item,
+                      onUpdate: (newValue) {
+                        var newList = _pagingController.itemList;
+                        newList![index] = newValue;
+                        setState(() {
+                          _pagingController.itemList = newList;
+                        });
+                      },
+                      userCanModerate: widget.userCanModerate,
                     ),
                   );
                 }

@@ -100,12 +100,11 @@ class _NavDrawerState extends State<NavDrawer> {
                       .users
                       .getByName(name);
 
-                  if (!mounted) return;
+                  if (!context.mounted) return;
 
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => UserScreen(user.id, initData: user),
-                    ),
+                  pushRoute(
+                    context,
+                    builder: (context) => UserScreen(user.id, initData: user),
                   );
                   break;
 
@@ -116,13 +115,12 @@ class _NavDrawerState extends State<NavDrawer> {
                       .community
                       .getByName(name);
 
-                  if (!mounted) return;
+                  if (!context.mounted) return;
 
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          CommunityScreen(community.id, initData: community),
-                    ),
+                  pushRoute(
+                    context,
+                    builder: (context) =>
+                        CommunityScreen(community.id, initData: community),
                   );
                   break;
               }
@@ -162,25 +160,22 @@ class _NavDrawerState extends State<NavDrawer> {
                             ? '!${community.name}'
                             : '!${community.name}@${context.watch<AppController>().instanceHost}',
                       ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CommunityScreen(
-                              community.id,
-                              initData: community,
-                              onUpdate: (newValue) {
-                                setState(() {
-                                  final newSubbedCommunities = [
-                                    ...subbedCommunities!,
-                                  ];
-                                  newSubbedCommunities[index] = newValue;
-                                  subbedCommunities = newSubbedCommunities;
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
+                      onTap: () => pushRoute(
+                        context,
+                        builder: (context) => CommunityScreen(
+                          community.id,
+                          initData: community,
+                          onUpdate: (newValue) {
+                            setState(() {
+                              final newSubbedCommunities = [
+                                ...subbedCommunities!,
+                              ];
+                              newSubbedCommunities[index] = newValue;
+                              subbedCommunities = newSubbedCommunities;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 )
@@ -188,12 +183,10 @@ class _NavDrawerState extends State<NavDrawer> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: TextButton(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ExploreScreen(
-                      subOnlyMode: ExploreType.communities,
-                    ),
-                  ),
+                onPressed: () => pushRoute(
+                  context,
+                  builder: (context) =>
+                      const ExploreScreen(subOnlyMode: ExploreType.communities),
                 ),
                 child: Text(l(context).subscriptions_community_all),
               ),
@@ -216,23 +209,20 @@ class _NavDrawerState extends State<NavDrawer> {
                           ? '@${user.name}'
                           : '@${user.name}@${context.watch<AppController>().instanceHost}',
                     ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => UserScreen(
-                            user.id,
-                            initData: user,
-                            onUpdate: (newValue) {
-                              setState(() {
-                                final newSubbedUsers = [...subbedUsers!];
-                                newSubbedUsers[index] = newValue;
-                                subbedUsers = newSubbedUsers;
-                              });
-                            },
-                          ),
-                        ),
-                      );
-                    },
+                    onTap: () => pushRoute(
+                      context,
+                      builder: (context) => UserScreen(
+                        user.id,
+                        initData: user,
+                        onUpdate: (newValue) {
+                          setState(() {
+                            final newSubbedUsers = [...subbedUsers!];
+                            newSubbedUsers[index] = newValue;
+                            subbedUsers = newSubbedUsers;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ),
               )
@@ -240,11 +230,10 @@ class _NavDrawerState extends State<NavDrawer> {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: TextButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const ExploreScreen(subOnlyMode: ExploreType.people),
-                ),
+              onPressed: () => pushRoute(
+                context,
+                builder: (context) =>
+                    const ExploreScreen(subOnlyMode: ExploreType.people),
               ),
               child: Text(l(context).subscriptions_user_all),
             ),
@@ -258,23 +247,20 @@ class _NavDrawerState extends State<NavDrawer> {
                   index,
                   ListTile(
                     title: Text(domain.name),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => DomainScreen(
-                            domain.id,
-                            initData: domain,
-                            onUpdate: (newValue) {
-                              setState(() {
-                                final newSubbedDomains = [...subbedDomains!];
-                                newSubbedDomains[index] = newValue;
-                                subbedDomains = newSubbedDomains;
-                              });
-                            },
-                          ),
-                        ),
-                      );
-                    },
+                    onTap: () => pushRoute(
+                      context,
+                      builder: (context) => DomainScreen(
+                        domain.id,
+                        initData: domain,
+                        onUpdate: (newValue) {
+                          setState(() {
+                            final newSubbedDomains = [...subbedDomains!];
+                            newSubbedDomains[index] = newValue;
+                            subbedDomains = newSubbedDomains;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ),
               )
@@ -282,11 +268,10 @@ class _NavDrawerState extends State<NavDrawer> {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: TextButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const ExploreScreen(subOnlyMode: ExploreType.domains),
-                ),
+              onPressed: () => pushRoute(
+                context,
+                builder: (context) =>
+                    const ExploreScreen(subOnlyMode: ExploreType.domains),
               ),
               child: Text(l(context).subscriptions_domain_all),
             ),
