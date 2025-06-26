@@ -201,6 +201,28 @@ class BehaviorSettingsScreen extends StatelessWidget {
               ),
             ),
           ),
+          ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l(context).settings_animationSpeed),
+                Slider(
+                  value: ac.profile.animationSpeed,
+                  divisions: 4,
+                  max: 4,
+                  min: 0,
+                  label: ac.profile.animationSpeed == 0
+                      ? l(context).settings_animationDisabled
+                      : ac.profile.animationSpeed.toString(),
+                  onChanged: (newValue) => ac.updateProfile(
+                    ac.selectedProfileValue.copyWith(
+                      animationSpeed: newValue
+                    )
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

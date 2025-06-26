@@ -178,11 +178,10 @@ void showContentMenu(
                   if (widget.domain != null)
                     ListTile(
                       title: Text(l(context).moreFrom(widget.domain!)),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              DomainScreen(widget.domainIdOnClick!),
-                        ),
+                      onTap: () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            DomainScreen(widget.domainIdOnClick!),
                       ),
                     ),
                   if (widget.onReply != null && onReply != null)

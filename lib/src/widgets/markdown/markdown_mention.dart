@@ -9,6 +9,7 @@ import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
+import 'package:interstellar/src/utils/utils.dart';
 
 class MentionMarkdownSyntax extends md.InlineSyntax {
   /*
@@ -181,13 +182,10 @@ class MentionWidgetState extends State<MentionWidget> {
 
         setState(() {
           _icon = user.avatar;
-          _onClick = () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => UserScreen(user.id, initData: user),
-              ),
-            );
-          };
+          _onClick = () => pushRoute(
+            context,
+            builder: (context) => UserScreen(user.id, initData: user),
+          );
         });
       } else if (modifier == '!') {
         if (!communityMentionCache.containsKey(cacheKey)) {
@@ -205,14 +203,11 @@ class MentionWidgetState extends State<MentionWidget> {
 
         setState(() {
           _icon = community.icon;
-          _onClick = () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) =>
-                    CommunityScreen(community.id, initData: community),
-              ),
-            );
-          };
+          _onClick = () => pushRoute(
+            context,
+            builder: (context) =>
+                CommunityScreen(community.id, initData: community),
+          );
         });
       }
     } catch (_) {

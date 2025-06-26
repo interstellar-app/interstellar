@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/widgets/actions.dart';
+import 'package:provider/provider.dart';
+import 'package:interstellar/src/controller/controller.dart';
 
 class FloatingMenu extends StatefulWidget {
   final ActionItem? tapAction;
@@ -26,11 +28,12 @@ class FloatingMenuState extends State<FloatingMenu>
   void initState() {
     super.initState();
 
-    const totalDuration = 250;
-    final gapDuration = 150 / widget.menuActions.length;
+    final animationSpeed = context.read<AppController>().profile.animationSpeed;
+    final totalDuration = animationSpeed == 0 ? 0 : (250 / animationSpeed).toInt();
+    final gapDuration = (150 / widget.menuActions.length) / animationSpeed;
 
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: totalDuration),
+      duration: Duration(milliseconds: totalDuration),
       vsync: this,
     );
 

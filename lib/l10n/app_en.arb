@@ -194,6 +194,8 @@
   "settings_autoTranslate": "Auto translate posts/comments",
   "settings_markThreadsReadOnScroll": "Mark threads read on scroll",
   "settings_markMicroblogsReadOnScroll": "Mark microblogs read on scroll",
+  "settings_animationSpeed": "Animation speed",
+  "settings_animationDisabled": "Disabled",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
   "settings_themeMode_light": "Light",

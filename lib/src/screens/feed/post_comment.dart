@@ -99,10 +99,9 @@ class _PostCommentState extends State<PostComment> {
               child: DisplayName(
                 widget.comment.user.name,
                 icon: widget.comment.user.avatar,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => UserScreen(widget.comment.user.id),
-                  ),
+                onTap: () => pushRoute(
+                  context,
+                  builder: (context) => UserScreen(widget.comment.user.id),
                 ),
               ),
             ),
@@ -439,13 +438,12 @@ class _PostCommentState extends State<PostComment> {
               _expandableController.expanded &&
               (widget.comment.children?.isEmpty ?? false))
             TextButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostCommentScreen(
-                    widget.comment.postType,
-                    widget.comment.id,
-                    opUserId: widget.opUserId,
-                  ),
+              onPressed: () => pushRoute(
+                context,
+                builder: (context) => PostCommentScreen(
+                  widget.comment.postType,
+                  widget.comment.id,
+                  opUserId: widget.opUserId,
                 ),
               ),
               child: Text(l(context).openReplies(widget.comment.childCount)),

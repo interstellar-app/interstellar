@@ -98,11 +98,10 @@ class MessageThreadItem extends StatelessWidget {
                             DisplayName(
                               currMessage.sender.name,
                               icon: currMessage.sender.avatar,
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      UserScreen(currMessage.sender.id),
-                                ),
+                              onTap: () => pushRoute(
+                                context,
+                                builder: (context) =>
+                                    UserScreen(currMessage.sender.id),
                               ),
                             ),
                           ],

@@ -303,11 +303,10 @@ class _ContentItemState extends State<ContentItem> {
                       widget.user!,
                       icon: widget.userIcon,
                       onTap: widget.userIdOnClick != null
-                          ? () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    UserScreen(widget.userIdOnClick!),
-                              ),
+                          ? () => pushRoute(
+                              context,
+                              builder: (context) =>
+                                  UserScreen(widget.userIdOnClick!),
                             )
                           : null,
                     ),
@@ -344,11 +343,10 @@ class _ContentItemState extends State<ContentItem> {
                 widget.community!,
                 icon: widget.communityIcon,
                 onTap: widget.communityIdOnClick != null
-                    ? () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CommunityScreen(widget.communityIdOnClick!),
-                        ),
+                    ? () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            CommunityScreen(widget.communityIdOnClick!),
                       )
                     : null,
               ),
@@ -963,11 +961,10 @@ class _ContentItemState extends State<ContentItem> {
                     child: DisplayName(
                       widget.user!,
                       onTap: widget.userIdOnClick != null
-                          ? () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    UserScreen(widget.userIdOnClick!),
-                              ),
+                          ? () => pushRoute(
+                              context,
+                              builder: (context) =>
+                                  UserScreen(widget.userIdOnClick!),
                             )
                           : null,
                     ),
@@ -988,11 +985,10 @@ class _ContentItemState extends State<ContentItem> {
               child: DisplayName(
                 widget.community!,
                 onTap: widget.communityIdOnClick != null
-                    ? () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CommunityScreen(widget.communityIdOnClick!),
-                        ),
+                    ? () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            CommunityScreen(widget.communityIdOnClick!),
                       )
                     : null,
               ),
