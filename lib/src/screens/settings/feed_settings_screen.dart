@@ -249,7 +249,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                         await ac.renameFeed(widget.feed!, name);
                       }
 
-                      await ac.setFeed(name, feedData);
+                      await ac.setFeed(name, feedData.copyWith(name: name));
                       if (!context.mounted) return;
                       Navigator.pop(context);
                     },
