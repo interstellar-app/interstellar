@@ -600,65 +600,65 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
       icon: Symbols.local_fire_department_rounded,
     ),
     SelectionMenuItem(
-      value: FeedSort.top,
+      value: isPiefed ? FeedSort.topMonth : FeedSort.top,
       title: l(context).sort_top,
       icon: Symbols.trending_up_rounded,
-      subItems: isPiefed
-          ? null
-          : [
-              if (isLemmy)
-                SelectionMenuItem(
-                  value: FeedSort.topHour,
-                  title: l(context).sort_top_1h,
-                ),
-              if (!isLemmy && !isPiefed)
-                SelectionMenuItem(
-                  value: FeedSort.topThreeHour,
-                  title: l(context).sort_top_3h,
-                ),
-              SelectionMenuItem(
-                value: FeedSort.topSixHour,
-                title: l(context).sort_top_6h,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topTwelveHour,
-                title: l(context).sort_top_12h,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topDay,
-                title: l(context).sort_top_1d,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topWeek,
-                title: l(context).sort_top_1w,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topMonth,
-                title: l(context).sort_top_1m,
-              ),
-              if (isLemmy) ...[
-                SelectionMenuItem(
-                  value: FeedSort.topThreeMonths,
-                  title: l(context).sort_top_3m,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.topSixMonths,
-                  title: l(context).sort_top_6m,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.topNineMonths,
-                  title: l(context).sort_top_9m,
-                ),
-              ],
-              SelectionMenuItem(
-                value: FeedSort.topYear,
-                title: l(context).sort_top_1y,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.top,
-                title: l(context).sort_top_all,
-              ),
-            ],
+      subItems: [
+        if (isLemmy || isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.topHour,
+            title: l(context).sort_top_1h,
+          ),
+        if (!isLemmy && !isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.topThreeHour,
+            title: l(context).sort_top_3h,
+          ),
+        SelectionMenuItem(
+          value: FeedSort.topSixHour,
+          title: l(context).sort_top_6h,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topTwelveHour,
+          title: l(context).sort_top_12h,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topDay,
+          title: l(context).sort_top_1d,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topWeek,
+          title: l(context).sort_top_1w,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topMonth,
+          title: l(context).sort_top_1m,
+        ),
+        if (isLemmy) ...[
+          SelectionMenuItem(
+            value: FeedSort.topThreeMonths,
+            title: l(context).sort_top_3m,
+          ),
+          SelectionMenuItem(
+            value: FeedSort.topSixMonths,
+            title: l(context).sort_top_6m,
+          ),
+          SelectionMenuItem(
+            value: FeedSort.topNineMonths,
+            title: l(context).sort_top_9m,
+          ),
+        ],
+        if (!isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.topYear,
+            title: l(context).sort_top_1y,
+          ),
+        if (!isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.top,
+            title: l(context).sort_top_all,
+          ),
+      ],
     ),
     SelectionMenuItem(
       value: FeedSort.newest,
