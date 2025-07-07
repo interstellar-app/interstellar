@@ -45,7 +45,7 @@ double calcMbinRanking(PostModel post) {
   final maxAdvantage = 86400;
   final maxPenalty = 43200;
 
-  final score = (post.upvotes ?? 0) - (post.downvotes ?? 0);
+  final score = (post.boosts ?? 0) + (post.upvotes ?? 0) - (post.downvotes ?? 0);
   final scoreAdvantage = score * netscoreMultiplier;
 
   var commentAdvantage = 0;
@@ -177,9 +177,6 @@ int commented(PostModel lhs, PostModel rhs) {
     remainder[index] = input;
   }
 
-  debugPrint(
-    'Merge(${inputs.length}, $sort, ${previousRemainder?.length}) -> (${posts.length}, ${remainder.map((i) => i.length)})',
-  );
   return (posts, remainder);
 }
 
@@ -282,7 +279,7 @@ class FeedInputState {
         _timelineMicroblogsLeftover = merged.$2.last;
 
         debugPrint(
-          '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()})',
+          '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_timelinePage)',
         );
 
         // if final page of input also return leftover posts
@@ -374,7 +371,7 @@ class FeedAggregator {
     }
 
     debugPrint(
-      'Aggregator fetch($pageKey, $view, $sort) -> (${result.length}, ${merged.$2.map((i) => i.length).toList()})',
+      'Aggregator fetch($pageKey, $view, $sort) -> (${result.length}, ${merged.$2.map((i) => i.length).toList()})\n---------------------------------------------------------------------',
     );
 
     // check for read status
@@ -395,6 +392,8 @@ class FeedAggregator {
       input._leftover = [];
       input._nextPage = '';
       input._timelinePage = '';
+      input._timelineThreadsLeftover = [];
+      input._timelineMicroblogsLeftover = [];
     }
   }
 
