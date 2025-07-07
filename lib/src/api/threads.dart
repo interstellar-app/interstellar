@@ -606,7 +606,12 @@ class APIThreads {
           body: {'post_ids': postIds, 'read': read},
         );
       case ServerSoftware.piefed:
-        throw UnsupportedError('Piefed doesnt support marking posts as read');
+        const path = '/post/mark_as_read';
+
+        final response = await client.post(
+          path,
+          body: {'post_ids': postIds, 'read': read},
+        );
     }
   }
 }
