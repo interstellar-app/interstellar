@@ -185,9 +185,9 @@ class _CommunityOwnerPanelGeneralState
                             widget.data?.isPostingRestrictedToMods)
                 ? null
                 : () async {
+                    final ac = context.read<AppController>();
                     final result = widget.data == null
-                        ? await context
-                              .read<AppController>()
+                        ? await ac
                               .api
                               .communityModeration
                               .create(
@@ -198,8 +198,7 @@ class _CommunityOwnerPanelGeneralState
                                 isPostingRestrictedToMods:
                                     _isPostingRestrictedToMods,
                               )
-                        : await context
-                              .read<AppController>()
+                        : await ac
                               .api
                               .communityModeration
                               .edit(
@@ -267,7 +266,7 @@ class _CommunityOwnerPanelModeratorsState
                           .users
                           .getByName(_addModController.text);
 
-                      if (!mounted) return;
+                      if (!context.mounted) return;
                       final result = await showDialog<DetailedCommunityModel>(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
@@ -421,7 +420,7 @@ class _CommunityOwnerPanelDeletionState
               );
 
               if (result == true) {
-                if (!mounted) return;
+                if (!context.mounted) return;
                 Navigator.of(context).pop();
               }
             },
@@ -478,7 +477,7 @@ class _CommunityOwnerPanelDeletionDialogState
                       .communityModeration
                       .delete(widget.data.id);
 
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   Navigator.pop(context, true);
                 },
           label: const Text('DELETE COMMUNITY'),

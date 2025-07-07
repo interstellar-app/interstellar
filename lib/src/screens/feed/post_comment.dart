@@ -236,7 +236,7 @@ class _PostCommentState extends State<PostComment> {
                 widget.comment.id,
               );
 
-              if (!mounted) return;
+              if (!context.mounted) return;
 
               widget.onUpdate(
                 widget.comment.copyWith(
