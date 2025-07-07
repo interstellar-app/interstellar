@@ -30,6 +30,7 @@ class FeedScreen extends StatefulWidget {
   final String? title;
   final Widget? details;
   final DetailedCommunityModel? createPostCommunity;
+  final ScrollController? scrollController;
 
   const FeedScreen({
     super.key,
@@ -38,6 +39,7 @@ class FeedScreen extends StatefulWidget {
     this.title,
     this.details,
     this.createPostCommunity,
+    this.scrollController,
   });
 
   @override
@@ -320,6 +322,7 @@ class _FeedScreenState extends State<FeedScreen>
           },
           child: SafeArea(
             child: NestedScrollView(
+              controller: widget.scrollController,
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, isScrolled) {
                 final ac = context.read<AppController>();

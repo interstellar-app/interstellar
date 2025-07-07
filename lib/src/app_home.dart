@@ -4,6 +4,7 @@ import 'package:interstellar/src/screens/account/account_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -24,8 +25,35 @@ class _AppHomeState extends State<AppHome> {
   Key _feedKey = UniqueKey();
   Key _exploreKey = UniqueKey();
   Key _accountKey = UniqueKey();
+  final ScrollController _feedScrollController = ScrollController();
+  final FocusNode _exploreFocusNode = FocusNode();
 
   void _changeNav(int newIndex) {
+    if (newIndex == _navIndex) {
+      switch (newIndex) {
+        case 0:
+          _feedScrollController.animateTo(
+            _feedScrollController.position.minScrollExtent,
+            duration: Durations.long1,
+            curve: Curves.easeInOut,
+          );
+          return;
+        case 1:
+          _exploreFocusNode.requestFocus();
+          return;
+        case 2:
+          () async {
+            final ac = context.read<AppController>();
+            final newAccount = await switchAccount(context);
+            if (newAccount == null || newAccount == ac.selectedAccount) {
+              return;
+            }
+
+            await ac.switchAccounts(newAccount);
+          } ();
+          return;
+      }
+    }
     setState(() {
       _navIndex = newIndex;
     });
@@ -129,8 +157,8 @@ class _AppHomeState extends State<AppHome> {
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                FeedScreen(key: _feedKey),
-                ExploreScreen(key: _exploreKey),
+                FeedScreen(key: _feedKey, scrollController: _feedScrollController),
+                ExploreScreen(key: _exploreKey, focusNode: _exploreFocusNode),
                 AccountScreen(key: _accountKey),
                 SettingsScreen(),
               ],

@@ -13,8 +13,9 @@ import 'package:provider/provider.dart';
 
 class ExploreScreen extends StatefulWidget {
   final ExploreType? subOnlyMode;
+  final FocusNode? focusNode;
 
-  const ExploreScreen({this.subOnlyMode, super.key});
+  const ExploreScreen({this.subOnlyMode, this.focusNode, super.key});
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -200,8 +201,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                           filled: true,
                           hintText: l(context).searchTheFediverse,
                         ),
+                        focusNode: widget.focusNode,
                         onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
+                          widget.focusNode?.unfocus();
                         },
                       ),
                       const SizedBox(height: 12),
