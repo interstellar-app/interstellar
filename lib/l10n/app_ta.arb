@@ -103,7 +103,7 @@
   "@password": {},
   "login": "புகுபதிவு",
   "@login": {},
-  "totpToken": "TOTP கிள்ளாக்கு",
+  "totpToken": "TOTP கிள்ளாக்கு (தேவைப்பட்டால்)",
   "@totpToken": {},
   "cancel": "ரத்துசெய்",
   "@cancel": {},
@@ -123,7 +123,7 @@
   "@filter_all": {},
   "filter_allResults": "அனைத்து முடிவுகளும்",
   "@filter_allResults": {},
-  "filter_subscribed": "சந்தா",
+  "filter_subscribed": "சந்தா கட்டப்பட்டது",
   "@filter_subscribed": {},
   "filter_moderated": "மிதமான",
   "@filter_moderated": {},
@@ -141,7 +141,7 @@
   "@filter_new": {},
   "filter_read": "படிக்க",
   "@filter_read": {},
-  "sort": "வரிசைப்படுத்தவும்",
+  "sort": "மூலம் வரிசைப்படுத்து",
   "@sort": {},
   "sortComments": "கருத்துகளை வரிசைப்படுத்துங்கள்",
   "@sortComments": {},
@@ -155,7 +155,7 @@
   "@sort_oldest": {},
   "sort_top": "மேலே",
   "@sort_top": {},
-  "sort_commented": "கருத்து",
+  "sort_commented": "கருத்திடப்பட்டது",
   "@sort_commented": {},
   "sort_topDay": "மேல் நாள்",
   "@sort_topDay": {},
@@ -189,7 +189,7 @@
   "@microblog": {},
   "stars": "நட்சத்திரங்கள்",
   "@stars": {},
-  "stars_empty": "இது காலியாக உணர்கிறது; இங்கே தோன்றுவதற்கு ஒரு செய்தித் தாள் அல்லது பயனரை விண்மீன்.",
+  "stars_empty": "இது காலியாக உணர்கிறது; இங்கே தோன்றுவதற்கு ஒரு சமூகம் அல்லது பயனரை விண்மீன் செய்யுங்கள்.",
   "@stars_empty": {},
   "subscriptions_domain": "டொமைன் சந்தாக்கள்",
   "@subscriptions_domain": {},
@@ -257,9 +257,9 @@
   "@account_settings_showSubscribedDomains": {},
   "account_settings_showProfileFollowings": "சுயவிவரப் பின்தொடர்வுகளை பகிரங்கமாகக் காட்டுங்கள்",
   "@account_settings_showProfileFollowings": {},
-  "account_settings_notifyOnThread": "சந்தா பத்திரிகைகளில் புதிய நூல்களில் அறிவிக்கவும்",
+  "account_settings_notifyOnThread": "சந்தா சமூகங்களில் புதிய நூல்களுக்கு அறிவிக்கவும்",
   "@account_settings_notifyOnThread": {},
-  "account_settings_notifyOnMicroblog": "சந்தா பத்திரிகைகளில் புதிய மைக்ரோ வலைப்பதிவுகள் குறித்து அறிவிக்கவும்",
+  "account_settings_notifyOnMicroblog": "சந்தா சமூகங்களில் புதிய மைக்ரோ வலைப்பதிவுகள் குறித்து அறிவிக்கவும்",
   "@account_settings_notifyOnMicroblog": {},
   "account_settings_notifyOnThreadReply": "எழுதப்பட்ட நூல்களில் உள்ள கருத்துகளுக்கு அறிவிக்கவும்",
   "@account_settings_notifyOnThreadReply": {},
@@ -335,7 +335,7 @@
   "@settings_coverMediaMarkedSensitive": {},
   "settings_fullImageSizeThreads": "நூல்களுக்கான முழு பட அளவு",
   "@settings_fullImageSizeThreads": {},
-  "settings_alwaysShowInstance_help": "இயக்கப்பட்டால், ஒரு பயனர்/பத்திரிகையின் நிகழ்வு எப்போதும் அவற்றின் பயனர்பெயருக்குப் பிறகு காண்பிக்கப்படும்",
+  "settings_alwaysShowInstance_help": "இயக்கப்பட்டால், ஒரு பயனர்/சமூகத்தின் நிகழ்வு எப்போதும் அவர்களின் பயனர்பெயருக்குப் பிறகு காண்பிக்கப்படும்",
   "@settings_alwaysShowInstance_help": {},
   "settings_fullImageSizeMicroblogs": "மைக்ரோ பிளாக்சிற்கான முழு பட அளவு",
   "@settings_fullImageSizeMicroblogs": {},
@@ -427,7 +427,7 @@
   "@profile_name": {},
   "profile_setAsMain": "முக்கிய சுயவிவரமாக அமைக்கவும்",
   "@profile_setAsMain": {},
-  "banUser_help": "பத்திரிகை இருந்து இலிருந்து {user} தடை செய்யப் போகிறீர்கள்.",
+  "banUser_help": "{சமூகத்திலிருந்து {user} தடை செய்ய உள்ளீர்கள்.",
   "@banUser_help": {
     "placeholders": {
       "user": {
@@ -578,13 +578,13 @@
   "@filterList_matchMode": {},
   "filterList_matchMode_simple": "எளிய",
   "@filterList_matchMode_simple": {},
-  "profile_setAsMain_help": "உங்கள் மற்ற சுயவிவரங்கள் அனைத்தும் உருவாக்கும் அடிப்படை என்பது முக்கிய சுயவிவரம். உங்கள் முதன்மையான சுயவிவரத்தில் ஒரு அமைப்பை நீங்கள் மாற்றினால், நீங்கள் மதிப்பை மேலெழுதாவிட்டால் அது உங்கள் மற்ற எல்லா சுயவிவரங்களிலும் தோன்றும்.",
+  "profile_setAsMain_help": "முதன்மையான சுயவிவரம் மற்ற அனைத்து சுயவிவரங்களுக்கும் அடித்தளமாக செயல்படுகிறது. ஒரு குறிப்பிட்ட அமைப்பு மீறப்படாவிட்டால், அதில் செய்யப்பட்ட மாற்றங்கள் அனைத்து சுயவிவரங்களுக்கும் பொருந்தும்.",
   "@profile_setAsMain_help": {},
   "profile_autoSelect": "பயன்பாட்டு தொடக்கத்தில் தானாகவே தேர்ந்தெடுக்கவும்",
   "@profile_autoSelect": {},
   "profile_about_title": "சுயவிவரங்கள் பற்றி",
   "@profile_about_title": {},
-  "profile_about_body": "இன்டர்ச்டெல்லரில் உள்ள சுயவிவரங்கள் ஒரு சக்திவாய்ந்த அம்சமாகும், இது அமைப்புகளின் குழுவை சேமித்து அவற்றை எளிதாக நினைவுபடுத்த அனுமதிக்கிறது. முக்கிய சுயவிவரம் உங்கள் மற்ற சுயவிவரங்கள் அனைத்தும் உருவாக்கும் தளமாகும், இங்குதான் உங்கள் பெரும்பாலான அமைப்புகளை சேமிக்க விரும்புகிறீர்கள். உங்கள் பிற சுயவிவரங்களில், நீங்கள் அமைப்புகளை மேலெழுதலாம், இதனால் அவை குறிப்பிட்ட சுயவிவரம் செயல்படுத்தப்படும் அடுத்ததை தானாகவே அமைக்கின்றன.\n\n சுயவிவரத்திற்கான அமைப்பை மாற்றுவதற்காக (மெயின் உட்பட), நீங்கள் செய்ய வேண்டியது அந்த சுயவிவரத்திற்கு மாறுவது, பின்னர் நீங்கள் விரும்பும் அமைப்புகளை மாற்றவும். இந்த நேரத்தில், நீங்கள் ஒரு சுயவிவர அமைப்பை அலங்கரிக்க விரும்பினால் (எனவே இது மீண்டும் பிரதானத்திலிருந்து பெறப்படும்), நீங்கள் சுயவிவரத்தை நீக்கி மீண்டும் உருவாக்க வேண்டும்.\n\n சுயவிவரங்களில் சேர்க்கப்பட்டுள்ள அமைப்புகள்:\n\n - அனைத்து நடத்தை அமைப்புகளும்\n - அனைத்து காட்சி அமைப்புகளும்\n - செயல்கள்\n - இயல்புநிலைகளுக்கு தீவனம்\n - வடிகட்டி பட்டியல் இயக்கப்பட்டதா அல்லது முடக்கப்பட்டிருந்தாலும்\n\n கூடுதல் சுயவிவர விருப்பங்கள் பின்வருமாறு:\n\n - எந்த சுயவிவரம் முக்கியமானது என்பதை மாற்றுதல்\n - விண்மீன் தொடங்கும் போது தானாக செயல்படுத்த ஒரு சுயவிவரத்தைத் தேர்ந்தெடுப்பது\n - சுயவிவரம் செயல்படுத்தப்படும் போது தானாக மாற ஒரு கணக்கைத் தேர்ந்தெடுப்பது.\n\n சுயவிவரங்களைப் பயன்படுத்த வேண்டாம் என்று நீங்கள் முடிவு செய்தால், முதன்மையான (இயல்புநிலை) சுயவிவரத்தில் இருங்கள், பயன்பாடு பொதுவாக செயல்படும்.",
+  "profile_about_body": "அமைப்புகளின் குழுக்களுக்கு இடையில் எளிதாக சேமிக்கவும் மாறவும் சுயவிவரங்கள் உங்களை அனுமதிக்கின்றன. ** முதன்மையான சுயவிவரம் ** இயல்புநிலையாக செயல்படுகிறது, பிற சுயவிவரங்கள் குறிப்பிட்ட அமைப்புகளை தேவைக்கேற்ப மீறுகின்றன. \n\n## சுயவிவரங்களை மாற்றியமைத்தல் \n\nஒரு சுயவிவரத்தை மாற்ற, அதற்கு மாறி அமைப்புகளை சரிசெய்யவும். தற்போது, ஒரு மேலெழுதும் அமைப்பை இயல்புநிலைக்கு மீட்டமைக்க, நீங்கள் சுயவிவரத்தை நீக்கி மீண்டும் உருவாக்க வேண்டும். \n\n## அமைப்புகள் சேர்க்கப்பட்டுள்ளன \n\n- நடத்தை அமைப்புகள் \n- அமைப்புகள் காட்சி \n- செயல்கள் \n- இயல்புநிலைகளுக்கு தீவனம் \n- பட்டியல் செயல்படுத்தும் நிலையை வடிகட்டவும் \n\n## கூடுதல் விருப்பங்கள் \n\n- எந்த சுயவிவரம் முக்கியமானது என்பதை மாற்றவும் \n- தொடக்கத்தில் ஒரு குறிப்பிட்ட சுயவிவரத்தை தானாக செயல்படுத்தவும் \n- ஒரு குறிப்பிட்ட சுயவிவரம் செயல்படுத்தப்படும்போது ஒரு கணக்கிற்கு தானாக மாறுகிறது \n\n\nநீங்கள் சுயவிவரங்களைப் பயன்படுத்தவில்லை என்றால், முதன்மையான சுயவிவரத்தில் இருங்கள், பயன்பாடு வழக்கம் போல் செயல்படும்.",
   "@profile_about_body": {},
   "unsupportedSoftware": "{host} ஆதரிக்கப்படாத மென்பொருளைப் பயன்படுத்துகிறது",
   "@unsupportedSoftware": {
@@ -686,7 +686,7 @@
   "@filterList_caseSensitive": {},
   "filterList_caseSensitive_help": "இயக்கப்பட்டால், உள்ளடக்கத்தை சொற்றொடரின் அதே உறையுடன் மட்டுமே பொருத்தும்.",
   "@filterList_caseSensitive_help": {},
-  "filterListWarningX": "எச்சரிக்கை: இந்த இடுகை பின்வரும் வடிகட்டி பட்டியல்களுடன் பொருந்தியது: {lists}",
+  "filterListWarningX": "வடிகட்டி பட்டியல் பொருந்துகிறது: {lists}",
   "@filterListWarningX": {
     "placeholders": {
       "lists": {
@@ -697,5 +697,354 @@
   "confirmUnsubscribe": "நீங்கள் குழுவிலகப் போகிறீர்கள். தொடரவா?",
   "@confirmUnsubscribe": {},
   "confirmUnfollow": "நீங்கள் பின்தொடரப் போகிறீர்கள். தொடரவா?",
-  "@confirmUnfollow": {}
+  "@confirmUnfollow": {},
+  "sort_top_1h": "முதல் 1 மணி நேரம்",
+  "@sort_top_1h": {},
+  "sort_top_3h": "முதல் 3 மணி நேரம்",
+  "@sort_top_3h": {},
+  "sort_top_6h": "முதல் 6 மணி நேரம்",
+  "@sort_top_6h": {},
+  "sort_top_12h": "முதல் 12 மணி நேரம்",
+  "@sort_top_12h": {},
+  "sort_top_1d": "முதல் 1 நாள்",
+  "@sort_top_1d": {},
+  "sort_top_1w": "முதல் 1 வாரம்",
+  "@sort_top_1w": {},
+  "sort_top_1m": "முதல் 1 மாதம்",
+  "@sort_top_1m": {},
+  "sort_top_3m": "முதல் 3 மாதம்",
+  "@sort_top_3m": {},
+  "sort_top_6m": "முதல் 6 மாதம்",
+  "@sort_top_6m": {},
+  "sort_top_9m": "முதல் 9 மாதம்",
+  "@sort_top_9m": {},
+  "sort_top_1y": "முதல் 1 வருடம்",
+  "@sort_top_1y": {},
+  "sort_top_all": "எல்லா நேரத்திலும் மேலே",
+  "@sort_top_all": {},
+  "sort_commented_3h": "3 மணி நேரம் கருத்து",
+  "@sort_commented_3h": {},
+  "sort_commented_6h": "கருத்து தெரிவித்தது 6 மணி நேரம்",
+  "@sort_commented_6h": {},
+  "sort_commented_12h": "கருத்து தெரிவித்தது 12 மணி நேரம்",
+  "@sort_commented_12h": {},
+  "sort_commented_1d": "1 நாள் கருத்து",
+  "@sort_commented_1d": {},
+  "sort_commented_1w": "1 வாரம் கருத்து",
+  "@sort_commented_1w": {},
+  "sort_commented_1m": "1 மாதம் கருத்து தெரிவித்தார்",
+  "@sort_commented_1m": {},
+  "sort_commented_1y": "1 வருடம் கருத்து தெரிவித்தார்",
+  "@sort_commented_1y": {},
+  "sort_commented_all": "எல்லா நேரத்திலும் கருத்து தெரிவித்தார்",
+  "@sort_commented_all": {},
+  "feedView": "உணவுக் காட்சி",
+  "@feedView": {},
+  "timeline": "காலவரிசை",
+  "@timeline": {},
+  "subscriptions_community": "சமூக சந்தாக்கள்",
+  "@subscriptions_community": {},
+  "subscriptions_community_all": "அனைத்து சமூக துணை",
+  "@subscriptions_community_all": {},
+  "openReplies": "திறக்க {count} {எண்ணிக்கை, பன்மை, = 1 {reply} பிற {replies}}",
+  "@openReplies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "communities": "சமூகங்கள்",
+  "@communities": {},
+  "reportStatus_any": "அனைத்தும்",
+  "@reportStatus_any": {},
+  "reportStatus_appeal": "முறையீடு",
+  "@reportStatus_appeal": {},
+  "reportStatus_approved": "அங்கீகரிக்கப்பட்டது",
+  "@reportStatus_approved": {},
+  "reportStatus_closed": "மூடப்பட்டது",
+  "@reportStatus_closed": {},
+  "reportStatus_pending": "நிலுவையில் உள்ளது",
+  "@reportStatus_pending": {},
+  "reportStatus_rejected": "நிராகரிக்கப்பட்டது",
+  "@reportStatus_rejected": {},
+  "report_accept": "ஏற்றுக்கொள்",
+  "@report_accept": {},
+  "report_reject": "நிராகரிக்கவும்",
+  "@report_reject": {},
+  "reportedUser": "அறிவிக்கப்பட்ட பயனர்: ",
+  "@reportedUser": {},
+  "reportedBy": "வழங்கியவர்: ",
+  "@reportedBy": {},
+  "account_settings_showSubscribedCommunities": "சந்தா சமூகங்களைக் காட்டு",
+  "@account_settings_showSubscribedCommunities": {},
+  "settings_defaultCreateLanguage": "இயல்புநிலை இடுகை/கருத்து உருவாக்கும் மொழி",
+  "@settings_defaultCreateLanguage": {},
+  "settings_autoPlayVideos": "ஆட்டோ ப்ளே வீடியோக்கள்",
+  "@settings_autoPlayVideos": {},
+  "settings_hapticFeedback": "ஆப்டிக் கருத்து",
+  "@settings_hapticFeedback": {},
+  "settings_autoTranslate": "இடுகைகள்/கருத்துகளை தானாக மொழிபெயர்க்கவும்",
+  "@settings_autoTranslate": {},
+  "settings_markThreadsReadOnScroll": "சுருளில் படித்த குறிகள்",
+  "@settings_markThreadsReadOnScroll": {},
+  "settings_markMicroblogsReadOnScroll": "சுருளில் படித்த மார்க் மைக்ரோ வலைப்பதிவுகள்",
+  "@settings_markMicroblogsReadOnScroll": {},
+  "settings_hideActionButtons": "செயல் பொத்தான்களை மறைக்கவும்",
+  "@settings_hideActionButtons": {},
+  "settings_hideActionButtons_help": "ஒவ்வொரு இடுகைக்கும் கீழே உள்ள செயல் பொத்தான்களை (வாக்கு, பூச்ட், பதில் போன்றவை) மறைக்கிறது. வழிதல் பட்டியலில் கட்டுப்பாடுகள் இன்னும் அணுகக்கூடியவை. இந்த அமைப்போடு ஒற்றுமையாக ச்வைப் சைகைகளை இயக்க பரிந்துரைக்கப்படுகிறது.",
+  "@settings_hideActionButtons_help": {},
+  "settings_hideFeedUIOnScroll": "சுருளில் ஊட்ட இடைமுகம் ஐ மறைக்கவும்",
+  "@settings_hideFeedUIOnScroll": {},
+  "settings_globalTextScale": "உலகளாவிய உரை அளவு",
+  "@settings_globalTextScale": {},
+  "settings_mbinCommunity": "Mbin சமூகம்",
+  "@settings_mbinCommunity": {},
+  "settings_mbinConfigsCommunity": "உள்ளமைவுகள் சமூகத்தைப் பகிர்ந்து கொள்கின்றன",
+  "@settings_mbinConfigsCommunity": {},
+  "settings_feedDefaults_view": "பார்வை",
+  "@settings_feedDefaults_view": {},
+  "settings_feedDefaults_hideReadPosts": "படிக்க இடுகைகளை மறைக்கவும்",
+  "@settings_feedDefaults_hideReadPosts": {},
+  "settings_swipeActionLeftShort": "குறுகிய இடது",
+  "@settings_swipeActionLeftShort": {},
+  "settings_swipeActionLeftLong": "நீண்டது",
+  "@settings_swipeActionLeftLong": {},
+  "settings_swipeActionRightShort": "சரியான குறுகிய",
+  "@settings_swipeActionRightShort": {},
+  "settings_swipeActionRightLong": "சரியானது",
+  "@settings_swipeActionRightLong": {},
+  "settings_enableSwipeActions": "ச்வைப் செயல்களை இயக்கவும்",
+  "@settings_enableSwipeActions": {},
+  "settings_swipeThreshold": "அதிரடி வாசலை ச்வைப்",
+  "@settings_swipeThreshold": {},
+  "profiles": "சுயவிவரங்கள்",
+  "@profiles": {},
+  "profile_import": "சுயவிவரத்தை இறக்குமதி செய்யுங்கள்",
+  "@profile_import": {},
+  "pinnedInCommunity": "சமூகத்தில் பொருத்தப்பட்டது",
+  "@pinnedInCommunity": {},
+  "status": "நிலை",
+  "@status": {},
+  "continueInBrowser_manual": "உலாவி தொடங்கவில்லை என்றால், நகலெடுக்க சொடுக்கு செய்து கைமுறையாக ஒட்டவும்",
+  "@continueInBrowser_manual": {},
+  "create_text": "உரை",
+  "@create_text": {},
+  "create_image": "படம்",
+  "@create_image": {},
+  "create_link": "இணைப்பு",
+  "@create_link": {},
+  "create_link_invalid": "முகவரி தவறானது",
+  "@create_link_invalid": {},
+  "create_microblog": "மைக்ரோ பிளாக்",
+  "@create_microblog": {},
+  "create_community": "சமூகம்",
+  "@create_community": {},
+  "microblog_communityHelperText": "மைக்ரோ பிளாக்சிற்கான 'சீரற்ற' சமூகத்தின் இயல்புநிலை, ஏனெனில் எம்பின் திட்டமிடப்படாத மைக்ரோ பிளாக்சை சேமிக்கிறது.",
+  "@microblog_communityHelperText": {},
+  "selectCommunity": "ஒரு சமூகத்தைத் தேர்ந்தெடுக்கவும் ...",
+  "@selectCommunity": {},
+  "community": "சமூகம்",
+  "@community": {},
+  "action_createNew": "புதியதை உருவாக்கு ...",
+  "@action_createNew": {},
+  "action_setView": "பார்வையை அமைக்கவும்",
+  "@action_setView": {},
+  "action_showReadPosts": "வாசிப்பு இடுகைகளைக் காட்டு",
+  "@action_showReadPosts": {},
+  "action_upvote": "எழுப்பவும்",
+  "@action_upvote": {},
+  "action_downvote": "கீழ்நோக்கி",
+  "@action_downvote": {},
+  "action_boost": "பூச்ட்",
+  "@action_boost": {},
+  "action_bookmark": "புத்தககுறி",
+  "@action_bookmark": {},
+  "action_reply": "பதில்",
+  "@action_reply": {},
+  "action_markRead": "படித்தபடி குறி",
+  "@action_markRead": {},
+  "action_markUnread": "படிக்காத எனக் குறிக்கவும்",
+  "@action_markUnread": {},
+  "action_moderatePin": "முள் இடுகை",
+  "@action_moderatePin": {},
+  "action_moderateMarkNSFW": "மார்க் என்.எச்.எஃப்.டபிள்யூ",
+  "@action_moderateMarkNSFW": {},
+  "action_moderateDelete": "மோட் நீக்கு",
+  "@action_moderateDelete": {},
+  "action_moderateBan": "தடை",
+  "@action_moderateBan": {},
+  "filterList_import": "வடிகட்டி பட்டியலை இறக்குமதி செய்யுங்கள்",
+  "@filterList_import": {},
+  "settings_dataUtilities": "பீட்டா: தரவு பயன்பாடுகள்",
+  "@settings_dataUtilities": {},
+  "settings_accountMigration": "கணக்கு இடம்பெயர்வு",
+  "@settings_accountMigration": {},
+  "settings_accountMigration_help": "கணக்குகளுக்கு இடையில் சந்தாக்கள், பின்தொடர்தல் மற்றும் தொகுதிகளை மாற்றவும்",
+  "@settings_accountMigration_help": {},
+  "settings_accountMigration_step1": "மூல மற்றும் இலக்கு கணக்குகளைத் தேர்ந்தெடுக்கவும்",
+  "@settings_accountMigration_step1": {},
+  "settings_accountMigration_step1_source": "மூல கணக்கு",
+  "@settings_accountMigration_step1_source": {},
+  "settings_accountMigration_step1_destination": "இலக்கு கணக்கு",
+  "@settings_accountMigration_step1_destination": {},
+  "settings_accountMigration_step2": "இடம்பெயர்வு வகைகளை இயக்கவும்/முடக்கவும்",
+  "@settings_accountMigration_step2": {},
+  "settings_accountMigration_step2_migrateCommunitySubscriptions": "சமூக சந்தாக்களை நகர்த்தவும்",
+  "@settings_accountMigration_step2_migrateCommunitySubscriptions": {},
+  "settings_accountMigration_step2_migrateCommunityBlocks": "சமூகத் தொகுதிகள் இடம்பெயரவும்",
+  "@settings_accountMigration_step2_migrateCommunityBlocks": {},
+  "settings_accountMigration_step2_migrateUserFollows": "இடம்பெயர் பயனர் பின்வருமாறு",
+  "@settings_accountMigration_step2_migrateUserFollows": {},
+  "settings_accountMigration_step2_migrateUserBlocks": "பயனர் தொகுதிகளை இடம்பெயருங்கள்",
+  "@settings_accountMigration_step2_migrateUserBlocks": {},
+  "settings_accountMigration_step3": "தரவு இடம்பெயர்வு உறுதிப்படுத்தவும்",
+  "@settings_accountMigration_step3": {},
+  "settings_accountMigration_readingFromSource": "மூல கணக்கிலிருந்து படித்தல்",
+  "@settings_accountMigration_readingFromSource": {},
+  "settings_accountMigration_writingFromSource": "இலக்கு கணக்கிற்கு எழுதுதல்",
+  "@settings_accountMigration_writingFromSource": {},
+  "settings_accountMigration_complete": "கணக்கு இடம்பெயர்வு முடிந்தது!",
+  "@settings_accountMigration_complete": {},
+  "settings_accountMigration_failed": "பிழை காரணமாக கணக்கு இடம்பெயர்வு தோல்வியடைந்தது",
+  "@settings_accountMigration_failed": {},
+  "settings_accountMigration_foundXItems": "காணப்பட்டது {count} உருப்படிகள்",
+  "@settings_accountMigration_foundXItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountMigration_completeXItems": "முழுமையான {current}/{total} உருப்படிகள்",
+  "@settings_accountMigration_completeXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountMigration_failedXItems": "தோல்வியுற்றது {current}/{total} உருப்படிகள்",
+  "@settings_accountMigration_failedXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset": "கணக்கு மீட்டமைப்பு",
+  "@settings_accountReset": {},
+  "settings_accountReset_help": "ஒரு கணக்கிலிருந்து சந்தாக்கள், பின்தொடர்தல் மற்றும் தொகுதிகளை அகற்றவும்",
+  "@settings_accountReset_help": {},
+  "settings_accountReset_step1": "கணக்கைத் தேர்ந்தெடுக்கவும்",
+  "@settings_accountReset_step1": {},
+  "settings_accountReset_step2": "மீட்டமை வகைகளை இயக்கவும்/முடக்கவும்",
+  "@settings_accountReset_step2": {},
+  "settings_accountReset_step2_resetCommunitySubscriptions": "சமூக சந்தாக்களை மீட்டமைக்கவும்",
+  "@settings_accountReset_step2_resetCommunitySubscriptions": {},
+  "settings_accountReset_step2_resetCommunityBlocks": "சமூக தொகுதிகளை மீட்டமைக்கவும்",
+  "@settings_accountReset_step2_resetCommunityBlocks": {},
+  "settings_accountReset_step2_resetUserFollows": "பயனர் பின்வருமாறு மீட்டமைக்கவும்",
+  "@settings_accountReset_step2_resetUserFollows": {},
+  "settings_accountReset_step2_resetUserBlocks": "பயனர் தொகுதிகளை மீட்டமைக்கவும்",
+  "@settings_accountReset_step2_resetUserBlocks": {},
+  "settings_accountReset_step3": "தரவு மீட்டமைப்பை உறுதிப்படுத்தவும்",
+  "@settings_accountReset_step3": {},
+  "settings_accountReset_readingFromAccount": "கணக்கிலிருந்து படித்தல்",
+  "@settings_accountReset_readingFromAccount": {},
+  "settings_accountReset_removingItems": "பொருட்களை அகற்றுதல்",
+  "@settings_accountReset_removingItems": {},
+  "settings_accountReset_complete": "கணக்கு மீட்டமை முடிந்தது!",
+  "@settings_accountReset_complete": {},
+  "settings_accountReset_failed": "பிழை காரணமாக கணக்கு மீட்டமைப்பு தோல்வியடைந்தது",
+  "@settings_accountReset_failed": {},
+  "settings_accountReset_foundXItems": "காணப்பட்டது {count} உருப்படிகள்",
+  "@settings_accountReset_foundXItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset_completeXItems": "முழுமையான {current}/{total} உருப்படிகள்",
+  "@settings_accountReset_completeXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset_failedXItems": "தோல்வியுற்றது {current}/{total} உருப்படிகள்",
+  "@settings_accountReset_failedXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationControlStatus_default": "இயல்புநிலை அறிவிப்புகள்",
+  "@notificationControlStatus_default": {},
+  "notificationControlStatus_muted": "முடக்கிய அறிவிப்புகள்",
+  "@notificationControlStatus_muted": {},
+  "notificationControlStatus_loud": "உரத்த அறிவிப்புகள்",
+  "@notificationControlStatus_loud": {},
+  "bookmark": "புத்தககுறி",
+  "@bookmark": {},
+  "bookmark_addToX": "{name} இல் சேர்க்கவும்",
+  "@bookmark_addToX": {},
+  "bookmark_removeFromX": "{பெயரில் இருந்து அகற்று",
+  "@bookmark_removeFromX": {},
+  "configShare": "பகிர்வு",
+  "@configShare": {},
+  "configShare_profile_title": "விண்மீன் சுயவிவரம்",
+  "@configShare_profile_title": {},
+  "configShare_profile_info": "{count} அமைப்புகளை மாற்றியமைக்கிறது",
+  "@configShare_profile_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_filterList_title": "விண்மீன் வடிகட்டி பட்டியல்",
+  "@configShare_filterList_title": {},
+  "configShare_filterList_info": "{count} சொற்றொடர்களைக் கொண்டுள்ளது",
+  "@configShare_filterList_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_created": "{date} உடன் {version} உருவாக்கப்பட்டது",
+  "@configShare_created": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "errorPage_firstPage": "ஏதோ தவறு நடந்தது",
+  "@errorPage_firstPage": {},
+  "errorPage_firstPage_button": "மீண்டும் முயற்சிக்கவும்",
+  "@errorPage_firstPage_button": {},
+  "errorPage_newPage": "ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்க தட்டவும்.",
+  "@errorPage_newPage": {},
+  "errorPage_caughtUp": "நீங்கள் அனைவரும் பிடிபட்டீர்கள். \nபழைய உருப்படிகளை ஏற்றவா?",
+  "@errorPage_caughtUp": {}
 }
