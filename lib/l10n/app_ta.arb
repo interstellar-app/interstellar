@@ -746,7 +746,7 @@
   "@subscriptions_community": {},
   "subscriptions_community_all": "அனைத்து சமூக துணை",
   "@subscriptions_community_all": {},
-  "openReplies": "திறக்க {count} {எண்ணிக்கை, பன்மை, = 1 {reply} பிற {replies}}",
+  "openReplies": "திறக்க {count} {count, plural, =1{பதில்} other{பதில்கள்}}",
   "@openReplies": {
     "placeholders": {
       "count": {
