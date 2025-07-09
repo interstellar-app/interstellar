@@ -753,7 +753,7 @@
   "@pinnedInCommunity": {},
   "notSafeForWork_mark": "Segna come NSFW",
   "@notSafeForWork_mark": {},
-  "banUser_help": "Stai per bannare {utente} da {community}",
+  "banUser_help": "Stai per bannare {user} da {community}",
   "@banUser_help": {
     "placeholders": {
       "user": {
