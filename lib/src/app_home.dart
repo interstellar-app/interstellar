@@ -5,6 +5,7 @@ import 'package:interstellar/src/screens/account/notification/notification_badge
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
+import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -51,6 +52,9 @@ class _AppHomeState extends State<AppHome> {
 
             await ac.switchAccounts(newAccount);
           } ();
+          return;
+        case 3:
+          switchProfileSelect(context);
           return;
       }
     }
