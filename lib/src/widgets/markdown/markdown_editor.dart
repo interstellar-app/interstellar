@@ -972,8 +972,9 @@ class _MarkdownEditorConfigShareDialogState
   }
 
   void loadNames() async {
-    _profiles = await context.read<AppController>().getProfileNames();
-    _filterLists = context.read<AppController>().filterLists.keys.toList();
+    final ac = context.read<AppController>();
+    _profiles = await ac.getProfileNames();
+    _filterLists = ac.filterLists.keys.toList();
     setState(() {});
   }
 
@@ -999,6 +1000,7 @@ class _MarkdownEditorConfigShareDialogState
                   name: profileName,
                   payload: profile.toJson(),
                 );
+                if (!context.mounted) return;
                 Navigator.pop(context, config.toMarkdown());
               },
             ),
@@ -1023,6 +1025,7 @@ class _MarkdownEditorConfigShareDialogState
                   payload: filterList.toJson(),
                 );
                 final configStr = jsonEncode(config.toJson());
+                if (!context.mounted) return;
                 Navigator.pop(context, configStr);
               },
             ),

@@ -832,7 +832,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   void getScrollDirection() {
     final direction =
         _scrollController?.position.userScrollDirection ?? ScrollDirection.idle;
-    if (direction != ScrollDirection.idle) {
+    if (direction != ScrollDirection.idle && direction != _scrollDirection) {
       setState(() {
         _scrollDirection = direction;
       });
@@ -843,12 +843,12 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   bool get wantKeepAlive => true;
 
   Future<(List<PostModel>, String?)> _tryFetchPage(String pageKey) async {
+    final ac = context.read<AppController>();
     List<PostModel> newItems;
     String? nextPageKey;
     switch (widget.view) {
       case FeedView.threads:
-        final postListModel = await context
-            .read<AppController>()
+        final postListModel = await ac
             .api
             .threads
             .list(
@@ -858,10 +858,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
               sort: widget.sort,
               usePreferredLangs: whenLoggedIn(
                 context,
-                context.read<AppController>().profile.useAccountLanguageFilter,
+                ac.profile.useAccountLanguageFilter,
               ),
-              langs: context
-                  .read<AppController>()
+              langs: ac
                   .profile
                   .customLanguageFilter
                   .toList(),
@@ -873,8 +872,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         break;
 
       case FeedView.microblog:
-        final postListModel = await context
-            .read<AppController>()
+        final postListModel = await ac
             .api
             .microblogs
             .list(
@@ -884,10 +882,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
               sort: widget.sort,
               usePreferredLangs: whenLoggedIn(
                 context,
-                context.read<AppController>().profile.useAccountLanguageFilter,
+                ac.profile.useAccountLanguageFilter,
               ),
-              langs: context
-                  .read<AppController>()
+              langs: ac
                   .profile
                   .customLanguageFilter
                   .toList(),
@@ -899,23 +896,21 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         break;
 
       case FeedView.timeline:
-        final threadsFuture = context.read<AppController>().api.threads.list(
+        final threadsFuture = ac.api.threads.list(
           widget.source,
           sourceId: widget.sourceId,
           page: nullIfEmpty(pageKey),
           sort: FeedSort.newest,
           usePreferredLangs: whenLoggedIn(
             context,
-            context.read<AppController>().profile.useAccountLanguageFilter,
+            ac.profile.useAccountLanguageFilter,
           ),
-          langs: context
-              .read<AppController>()
+          langs: ac
               .profile
               .customLanguageFilter
               .toList(),
         );
-        final microblogFuture = context
-            .read<AppController>()
+        final microblogFuture = ac
             .api
             .microblogs
             .list(
@@ -925,10 +920,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
               sort: FeedSort.newest,
               usePreferredLangs: whenLoggedIn(
                 context,
-                context.read<AppController>().profile.useAccountLanguageFilter,
+                ac.profile.useAccountLanguageFilter,
               ),
-              langs: context
-                  .read<AppController>()
+              langs: ac
                   .profile
                   .customLanguageFilter
                   .toList(),
@@ -990,8 +984,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     // Prevent duplicates
     final currentItemIds =
         _pagingController.itemList?.map((post) => (post.type, post.id)) ?? [];
-    final filterListActivations = context
-        .read<AppController>()
+    final filterListActivations = ac
         .profile
         .filterLists;
     final items = newItems
@@ -1025,8 +1018,6 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
           return true;
         })
         .toList();
-
-    final ac = context.read<AppController>();
 
     final finalItems =
         ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
@@ -1145,7 +1136,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                       initData: item,
                       onUpdate: (newValue) {
                         var newList = _pagingController.itemList;
-                        newList![index] = newValue;
+                        if (newList == null) return;
+                        newList[index] = newValue;
                         setState(() {
                           _pagingController.itemList = newList;
                         });
@@ -1231,7 +1223,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                 item,
                                 (newValue) {
                                   var newList = _pagingController.itemList;
-                                  newList![index] = newValue;
+                                  if (newList == null) return;
+                                  newList[index] = newValue;
                                   setState(() {
                                     _pagingController.itemList = newList;
                                   });
@@ -1275,7 +1268,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                             item,
                             (newValue) {
                               var newList = _pagingController.itemList;
-                              newList![index] = newValue;
+                              if (newList == null) return;
+                              newList[index] = newValue;
                               setState(() {
                                 _pagingController.itemList = newList;
                               });

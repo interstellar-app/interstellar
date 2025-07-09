@@ -269,7 +269,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         await bodyDraftController.discard();
 
                         // Check BuildContext
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         Navigator.pop(context);
                       },
@@ -302,7 +302,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         );
 
                         // Check BuildContext
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         Navigator.pop(context);
                       },
@@ -337,7 +337,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         await bodyDraftController.discard();
 
                         // Check BuildContext
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         Navigator.pop(context);
                       },
@@ -380,7 +380,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   await bodyDraftController.discard();
 
                   // Check BuildContext
-                  if (!mounted) return;
+                  if (!context.mounted) return;
 
                   Navigator.pop(context);
                 }),

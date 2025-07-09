@@ -193,35 +193,37 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrapper(
-      shouldWrap: widget.onClick != null,
-      parentBuilder: (child) {
-        return InkWell(
-          onTap: widget.onClick,
-          onLongPress: () => showContentMenu(
-            context,
-            widget,
-            onTranslate: widget.onTranslate,
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                    _replyTextController = TextEditingController();
-                  })
-                : () {},
-          ),
-          onSecondaryTap: () => showContentMenu(
-            context,
-            widget,
-            onTranslate: widget.onTranslate,
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                    _replyTextController = TextEditingController();
-                  })
-                : () {},
-          ),
-          child: child,
-        );
-      },
-      child: widget.isCompact ? compact() : full(),
+    return RepaintBoundary(
+      child: Wrapper(
+        shouldWrap: widget.onClick != null,
+        parentBuilder: (child) {
+          return InkWell(
+            onTap: widget.onClick,
+            onLongPress: () => showContentMenu(
+              context,
+              widget,
+              onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                      _replyTextController = TextEditingController();
+                    })
+                  : () {},
+            ),
+            onSecondaryTap: () => showContentMenu(
+              context,
+              widget,
+              onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                      _replyTextController = TextEditingController();
+                    })
+                  : () {},
+            ),
+            child: child,
+          );
+        },
+        child: widget.isCompact ? compact() : full(),
+      )
     );
   }
 
