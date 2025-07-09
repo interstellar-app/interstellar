@@ -291,7 +291,7 @@ class PostModel with _$PostModel {
         // Empty string indicates post is saved. No string indicates post is not saved.
         if (json['saved'] as bool) '',
       ],
-      read: false,
+      read: json['read'] as bool? ?? false,
     );
   }
 }
