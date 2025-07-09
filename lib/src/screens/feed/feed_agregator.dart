@@ -166,7 +166,11 @@ int commented(PostModel lhs, PostModel rhs) {
       }
     }
     // Sort by selected sort function
-    firsts.sort((lhs, rhs) => sortFunc(lhs.$2, rhs.$2));
+    firsts.sort((lhs, rhs) {
+      if (lhs.$2.isPinned) return -1;
+      if (rhs.$2.isPinned) return 1;
+      return sortFunc(lhs.$2, rhs.$2);
+    });
 
     // Remove selected post from input list and add to posts list
     posts.add(mutableInputs[firsts.first.$1].removeAt(0));
