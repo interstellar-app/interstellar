@@ -77,6 +77,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _onUpdate(PostModel newValue) {
+    if (!mounted) return;
     setState(() {
       _data = newValue;
     });

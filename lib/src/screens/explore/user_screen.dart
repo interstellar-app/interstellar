@@ -318,7 +318,7 @@ class _UserScreenState extends State<UserScreen> {
                                   ),
                                 );
 
-                                if (!mounted) return;
+                                if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(l(context).copied),

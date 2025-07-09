@@ -475,6 +475,7 @@ class AppController with ChangeNotifier {
       throw Exception('Notification permissions denied');
     }
 
+    if (!context.mounted) return;
     await UnifiedPush.registerAppWithDialog(context, _selectedAccount, [
       featureAndroidBytesMessage,
     ]);

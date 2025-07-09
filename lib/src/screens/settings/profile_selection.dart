@@ -139,7 +139,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                               payload: profile.toJson(),
                             );
 
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             String communityName = mbinConfigsCommunityName;
                             if (communityName.endsWith(
                               context.read<AppController>().instanceHost,
