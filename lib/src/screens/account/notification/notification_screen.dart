@@ -117,7 +117,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                           .putReadAll();
                       _pagingController.refresh();
 
-                      if (!mounted) return;
+                      if (!context.mounted) return;
                       context.read<NotificationCountController>().reload();
                     },
                     label: Text(l(context).notifications_readAll),

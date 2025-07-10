@@ -39,18 +39,15 @@ class AdvancedImage extends StatelessWidget {
       child: Wrapper(
         shouldWrap: openTitle != null,
         parentBuilder: (child) => GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              PageRouteBuilder(
-                pageBuilder: (context, _, __) => AdvancedImagePage(
-                  image,
-                  title: openTitle!,
-                  hero: hero,
-                  fit: fit,
-                ),
-              ),
-            );
-          },
+          onTap: () => pushRoute(
+            context,
+            builder: (context) => AdvancedImagePage(
+              image,
+              title: openTitle!,
+              hero: hero,
+              fit: fit,
+            ),
+          ),
           child: child,
         ),
         child: Wrapper(

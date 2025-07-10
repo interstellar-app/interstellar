@@ -32,6 +32,7 @@ class FeedScreen extends StatefulWidget {
   final String? title;
   final Widget? details;
   final DetailedCommunityModel? createPostCommunity;
+  final ScrollController? scrollController;
 
   const FeedScreen({
     super.key,
@@ -41,6 +42,7 @@ class FeedScreen extends StatefulWidget {
     this.title,
     this.details,
     this.createPostCommunity,
+    this.scrollController,
   });
 
   @override
@@ -122,11 +124,10 @@ class _FeedScreenState extends State<FeedScreen>
             ? context.watch<AppController>().profile.feedActionCreateNew
             : ActionLocation.hide,
         () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  CreateScreen(initCommunity: widget.createPostCommunity),
-            ),
+          await pushRoute(
+            context,
+            builder: (context) =>
+                CreateScreen(initCommunity: widget.createPostCommunity),
           );
         },
       ),
@@ -327,6 +328,7 @@ class _FeedScreenState extends State<FeedScreen>
           },
           child: SafeArea(
             child: NestedScrollView(
+              controller: widget.scrollController,
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, isScrolled) {
                 final ac = context.read<AppController>();
@@ -551,7 +553,17 @@ class _FeedScreenState extends State<FeedScreen>
                   context.read<AppController>().profile.hideFeedUIOnScroll
               ? Offset(0, 0.2)
               : Offset.zero,
-          duration: Duration(milliseconds: 300),
+          duration: context.read<AppController>().profile.animationSpeed == 0
+              ? Duration.zero
+              : Duration(
+                  milliseconds:
+                      (300 /
+                              context
+                                  .read<AppController>()
+                                  .profile
+                                  .animationSpeed)
+                          .toInt(),
+                ),
           child: FloatingMenu(
             key: _fabKey,
             tapAction: actions
@@ -607,65 +619,65 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
       icon: Symbols.local_fire_department_rounded,
     ),
     SelectionMenuItem(
-      value: FeedSort.top,
+      value: isPiefed ? FeedSort.topMonth : FeedSort.top,
       title: l(context).sort_top,
       icon: Symbols.trending_up_rounded,
-      subItems: isPiefed
-          ? null
-          : [
-              if (isLemmy)
-                SelectionMenuItem(
-                  value: FeedSort.topHour,
-                  title: l(context).sort_top_1h,
-                ),
-              if (!isLemmy && !isPiefed)
-                SelectionMenuItem(
-                  value: FeedSort.topThreeHour,
-                  title: l(context).sort_top_3h,
-                ),
-              SelectionMenuItem(
-                value: FeedSort.topSixHour,
-                title: l(context).sort_top_6h,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topTwelveHour,
-                title: l(context).sort_top_12h,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topDay,
-                title: l(context).sort_top_1d,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topWeek,
-                title: l(context).sort_top_1w,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.topMonth,
-                title: l(context).sort_top_1m,
-              ),
-              if (isLemmy) ...[
-                SelectionMenuItem(
-                  value: FeedSort.topThreeMonths,
-                  title: l(context).sort_top_3m,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.topSixMonths,
-                  title: l(context).sort_top_6m,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.topNineMonths,
-                  title: l(context).sort_top_9m,
-                ),
-              ],
-              SelectionMenuItem(
-                value: FeedSort.topYear,
-                title: l(context).sort_top_1y,
-              ),
-              SelectionMenuItem(
-                value: FeedSort.top,
-                title: l(context).sort_top_all,
-              ),
-            ],
+      subItems: [
+        if (isLemmy || isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.topHour,
+            title: l(context).sort_top_1h,
+          ),
+        if (!isLemmy && !isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.topThreeHour,
+            title: l(context).sort_top_3h,
+          ),
+        SelectionMenuItem(
+          value: FeedSort.topSixHour,
+          title: l(context).sort_top_6h,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topTwelveHour,
+          title: l(context).sort_top_12h,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topDay,
+          title: l(context).sort_top_1d,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topWeek,
+          title: l(context).sort_top_1w,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.topMonth,
+          title: l(context).sort_top_1m,
+        ),
+        if (isLemmy) ...[
+          SelectionMenuItem(
+            value: FeedSort.topThreeMonths,
+            title: l(context).sort_top_3m,
+          ),
+          SelectionMenuItem(
+            value: FeedSort.topSixMonths,
+            title: l(context).sort_top_6m,
+          ),
+          SelectionMenuItem(
+            value: FeedSort.topNineMonths,
+            title: l(context).sort_top_9m,
+          ),
+        ],
+        if (!isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.topYear,
+            title: l(context).sort_top_1y,
+          ),
+        if (!isPiefed)
+          SelectionMenuItem(
+            value: FeedSort.top,
+            title: l(context).sort_top_all,
+          ),
+      ],
     ),
     SelectionMenuItem(
       value: FeedSort.newest,
@@ -850,7 +862,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   void getScrollDirection() {
     final direction =
         _scrollController?.position.userScrollDirection ?? ScrollDirection.idle;
-    if (direction != ScrollDirection.idle) {
+    if (direction != ScrollDirection.idle && direction != _scrollDirection) {
       setState(() {
         _scrollDirection = direction;
       });
@@ -1022,19 +1034,19 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   : null,
               itemBuilder: (context, item, index) {
                 void onPostTap() {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      pageBuilder: (context, _, __) => PostPage(
-                        initData: item,
-                        onUpdate: (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                        userCanModerate: widget.userCanModerate,
-                      ),
+                  pushRoute(
+                    context,
+                    builder: (context) => PostPage(
+                      initData: item,
+                      onUpdate: (newValue) {
+                        var newList = _pagingController.itemList;
+                        if (newList == null) return;
+                        newList[index] = newValue;
+                        setState(() {
+                          _pagingController.itemList = newList;
+                        });
+                      },
+                      userCanModerate: widget.userCanModerate,
                     ),
                   );
                 }
@@ -1115,7 +1127,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                 item,
                                 (newValue) {
                                   var newList = _pagingController.itemList;
-                                  newList![index] = newValue;
+                                  if (newList == null) return;
+                                  newList[index] = newValue;
                                   setState(() {
                                     _pagingController.itemList = newList;
                                   });
@@ -1159,7 +1172,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                             item,
                             (newValue) {
                               var newList = _pagingController.itemList;
-                              newList![index] = newValue;
+                              if (newList == null) return;
+                              newList[index] = newValue;
                               setState(() {
                                 _pagingController.itemList = newList;
                               });

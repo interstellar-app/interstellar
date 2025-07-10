@@ -15,19 +15,17 @@ class DataUtilitiesScreen extends StatelessWidget {
           ListTile(
             title: Text(l(context).settings_accountMigration),
             subtitle: Text(l(context).settings_accountMigration_help),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AccountMigrationScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const AccountMigrationScreen(),
             ),
           ),
           ListTile(
             title: Text(l(context).settings_accountReset),
             subtitle: Text(l(context).settings_accountReset_help),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AccountResetScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const AccountResetScreen(),
             ),
           ),
         ],

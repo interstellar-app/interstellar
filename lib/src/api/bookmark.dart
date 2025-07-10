@@ -3,6 +3,8 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/bookmark_list.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/models.dart';
+import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/models/comment.dart';
 
 enum BookmarkListSubject {
   thread,
@@ -35,6 +37,127 @@ class APIBookmark {
   final ServerClient client;
 
   APIBookmark(this.client);
+
+  Future<(List<Object>, String?)> list({
+    String? list,
+    String? page,
+  }) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        const path = '/bookmark-lists/show';
+        final query = {
+          'list': list,
+          'sort': 'newest',
+          'p': page,
+        };
+
+        final response = await client.get(path, queryParams: query);
+
+        final json = response.bodyJson;
+        final itemList = json['items'] as List<dynamic>;
+        final items = itemList.map((item) {
+          var itemType = item['itemType'];
+          if (itemType == 'entry') {
+            return PostModel.fromMbinEntry(item as JsonMap);
+          } else if (itemType == 'post') {
+            return PostModel.fromMbinPost(item as JsonMap);
+          } else if (itemType == 'entry_comment' || itemType == 'post_comment') {
+            return CommentModel.fromMbin(item as JsonMap);
+          }
+        }).nonNulls.toList();
+
+        return (items, mbinCalcNextPaginationPage(json['pagination'] as JsonMap));
+
+      case ServerSoftware.lemmy:
+        const postsPath = '/post/list';
+        const commentsPath = '/comment/list';
+
+        final query = {
+          'type_': 'All',
+          'sort': 'New',
+          'page': page,
+          'saved_only': 'true',
+        };
+
+        final [postResponse, commentResponse] = await Future.wait([
+          client.get(postsPath, queryParams: query),
+          client.get(commentsPath, queryParams: query)
+        ]);
+
+        final postJson = postResponse.bodyJson;
+        postJson['next_page'] = lemmyCalcNextIntPage(
+          postJson['posts'] as List<dynamic>,
+          page,
+        );
+
+        final commentJson = commentResponse.bodyJson;
+        commentJson['next_page'] = lemmyCalcNextIntPage(
+          commentJson['comments'] as List<dynamic>,
+          page,
+        );
+
+        final postLists = PostListModel.fromLemmy(
+          postJson,
+          langCodeIdPairs: await client.languageCodeIdPairs()
+        );
+
+        final commentLists = CommentListModel.fromLemmyToFlat(
+          commentJson,
+          langCodeIdPairs: await client.languageCodeIdPairs()
+        );
+
+        return ([...postLists.items, ...commentLists.items], postLists.nextPage);
+
+      case ServerSoftware.piefed:
+        throw UnimplementedError('Unimplemented');
+    }
+  }
+
+  Future<BookmarkListModel> createBookmarkList(String name) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/bookmark-lists/$name';
+
+        final response = await client.post(path);
+
+        return BookmarkListModel.fromMbin(response.bodyJson);
+
+      case ServerSoftware.lemmy:
+        throw Exception('Bookmark lists not on Lemmy');
+      case ServerSoftware.piefed:
+        throw Exception('Bookmark lists not on piefed');
+    }
+  }
+
+  Future<void> deleteBookmarkList(String name) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/bookmark-lists/$name';
+
+        final response = await client.delete(path);
+
+      case ServerSoftware.lemmy:
+        throw Exception('Bookmark lists not on Lemmy');
+      case ServerSoftware.piefed:
+        throw Exception('Bookmark lists not on piefed');
+    }
+  }
+
+  Future<BookmarkListModel> makeBookmarkListDefault(String name) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/bookmark-lists/$name/makeDefault';
+
+        final response = await client.put(path);
+
+        return BookmarkListModel.fromMbin(response.bodyJson);
+
+      case ServerSoftware.lemmy:
+        throw Exception('Bookmark lists not on Lemmy');
+      case ServerSoftware.piefed:
+        throw Exception('Bookmark lists not on piefed');
+    }
+  }
 
   Future<List<BookmarkListModel>> getBookmarkLists() async {
     switch (client.software) {

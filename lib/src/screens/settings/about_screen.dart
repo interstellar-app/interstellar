@@ -94,13 +94,12 @@ class _AboutScreenState extends State<AboutScreen> {
                     .community
                     .getByName(name);
 
-                if (!mounted) return;
+                if (!context.mounted) return;
 
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        CommunityScreen(community.id, initData: community),
-                  ),
+                pushRoute(
+                  context,
+                  builder: (context) =>
+                      CommunityScreen(community.id, initData: community),
                 );
               } catch (e) {
                 if (!mounted) return;
@@ -124,13 +123,12 @@ class _AboutScreenState extends State<AboutScreen> {
                     .community
                     .getByName(name);
 
-                if (!mounted) return;
+                if (!context.mounted) return;
 
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        CommunityScreen(community.id, initData: community),
-                  ),
+                pushRoute(
+                  context,
+                  builder: (context) =>
+                      CommunityScreen(community.id, initData: community),
                 );
               } catch (e) {
                 if (!mounted) return;

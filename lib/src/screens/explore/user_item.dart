@@ -21,11 +21,8 @@ class UserItemSimple extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => UserScreen(user.id)));
-      },
+      onTap: () =>
+          pushRoute(context, builder: (context) => UserScreen(user.id)),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(

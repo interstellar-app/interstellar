@@ -11,6 +11,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/account/profile_edit_screen.dart';
+import 'package:interstellar/src/screens/explore/bookmarks_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
@@ -101,6 +102,21 @@ class _UserScreenState extends State<UserScreen> {
       appBar: AppBar(
         title: Text(user.name),
         actions: [
+          if (isMyUser && ac.serverSoftware != ServerSoftware.piefed)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ActionChip(
+                label: Icon(Symbols.bookmarks_rounded, size: 20),
+                onPressed: () => pushRoute(
+                  context,
+                  builder: (context) {
+                    return ac.serverSoftware == ServerSoftware.mbin
+                        ? BookmarkListScreen()
+                        : BookmarksScreen();
+                  },
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: ActionChip(
@@ -175,15 +191,13 @@ class _UserScreenState extends State<UserScreen> {
                               children: [
                                 if (isMyUser)
                                   FilledButton(
-                                    onPressed: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return ProfileEditScreen(_data!, (
-                                            DetailedUserModel user,
-                                          ) {
-                                            setState(() {
-                                              _data = user;
-                                            });
+                                    onPressed: () => pushRoute(
+                                      context,
+                                      builder: (context) => ProfileEditScreen(
+                                        _data!,
+                                        (DetailedUserModel user) {
+                                          setState(() {
+                                            _data = user;
                                           });
                                         },
                                       ),
@@ -304,7 +318,7 @@ class _UserScreenState extends State<UserScreen> {
                                   ),
                                 );
 
-                                if (!mounted) return;
+                                if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(l(context).copied),
@@ -364,14 +378,13 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _messageController = null;
 
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MessageThreadScreen(
-                                                    threadId: newThread.id,
-                                                    initData: newThread,
-                                                  ),
-                                            ),
+                                          pushRoute(
+                                            context,
+                                            builder: (context) =>
+                                                MessageThreadScreen(
+                                                  threadId: newThread.id,
+                                                  initData: newThread,
+                                                ),
                                           );
                                         });
                                       },
@@ -630,24 +643,19 @@ class _UserScreenBodyState extends State<UserScreenBody>
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PostPage(
-                                initData: item,
-                                onUpdate: (newValue) {
-                                  var newList = _pagingController.itemList;
-                                  newList![index] = newValue;
-                                  setState(() {
-                                    _pagingController.itemList = newList;
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        );
-                      },
+                      onTap: () => pushRoute(
+                        context,
+                        builder: (context) => PostPage(
+                          initData: item,
+                          onUpdate: (newValue) {
+                            var newList = _pagingController.itemList;
+                            newList![index] = newValue;
+                            setState(() {
+                              _pagingController.itemList = newList;
+                            });
+                          },
+                        ),
+                      ),
                       child: PostItem(item, (newValue) {
                         var newList = _pagingController.itemList;
                         newList![index] = newValue;
@@ -668,15 +676,11 @@ class _UserScreenBodyState extends State<UserScreenBody>
                           _pagingController.itemList = newList;
                         });
                       },
-                      onClick: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PostCommentScreen(item.postType, item.id);
-                            },
-                          ),
-                        );
-                      },
+                      onClick: () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            PostCommentScreen(item.postType, item.id),
+                      ),
                     ),
                   ),
                   UserFeedType.follower ||

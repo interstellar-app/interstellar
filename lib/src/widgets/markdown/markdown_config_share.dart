@@ -155,25 +155,23 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                             .read<AppController>()
                             .getProfileNames();
 
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(
-                              profile: config.name,
-                              profileList: profileList,
-                              importProfile: configProfile!,
-                            ),
+                        await pushRoute(
+                          context,
+                          builder: (context) => EditProfileScreen(
+                            profile: config.name,
+                            profileList: profileList,
+                            importProfile: configProfile!,
                           ),
                         );
                       },
                       ConfigShareType.filterList => () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EditFilterListScreen(
-                              filterList: config.name,
-                              importFilterList: configFilterList!,
-                            ),
+                        await pushRoute(
+                          context,
+                          builder: (context) => EditFilterListScreen(
+                            filterList: config.name,
+                            importFilterList: configFilterList!,
                           ),
                         );
                       },

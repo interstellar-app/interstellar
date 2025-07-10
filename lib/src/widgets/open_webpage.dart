@@ -37,12 +37,11 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
                 ..setJavaScriptMode(JavaScriptMode.unrestricted)
                 ..loadRequest(uri);
 
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(),
-                    body: WebViewWidget(controller: controller),
-                  ),
+              pushRoute(
+                context,
+                builder: (context) => Scaffold(
+                  appBar: AppBar(),
+                  body: WebViewWidget(controller: controller),
                 ),
               );
             },

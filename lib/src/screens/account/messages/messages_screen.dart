@@ -94,23 +94,20 @@ class _MessagesScreenState extends State<MessagesScreen>
                     _pagingController.itemList = newList;
                   });
                 },
-                onClick: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MessageThreadScreen(
-                        threadId: item.id,
-                        initData: item,
-                        onUpdate: (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                      ),
-                    ),
-                  );
-                },
+                onClick: () => pushRoute(
+                  context,
+                  builder: (context) => MessageThreadScreen(
+                    threadId: item.id,
+                    initData: item,
+                    onUpdate: (newValue) {
+                      var newList = _pagingController.itemList;
+                      newList![index] = newValue;
+                      setState(() {
+                        _pagingController.itemList = newList;
+                      });
+                    },
+                  ),
+                ),
               ),
             ),
           ),

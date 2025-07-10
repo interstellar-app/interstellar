@@ -154,7 +154,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           ).users.getMe();
 
                           // Check BuildContext
-                          if (!mounted) return;
+                          if (!context.mounted) return;
                           context.read<AppController>().setAccount(
                             '${user.name}@${widget.server}',
                             Account(jwt: response.bodyJson['jwt'] as String),
@@ -188,7 +188,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           );
 
                           // Check BuildContext
-                          if (!mounted) return;
+                          if (!context.mounted) return;
 
                           Map<String, String>? result = await Navigator.push(
                             context,
@@ -221,7 +221,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           ).users.getMe();
 
                           // Check BuildContext
-                          if (!mounted) return;
+                          if (!context.mounted) return;
 
                           context.read<AppController>().setAccount(
                             '${user.name}@${widget.server}',

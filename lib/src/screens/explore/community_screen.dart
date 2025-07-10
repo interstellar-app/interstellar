@@ -190,19 +190,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               ),
                               if (isModerator)
                                 MenuItemButton(
-                                  onPressed: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => CommunityModPanel(
-                                        initData: _data!,
-                                        onUpdate: (newValue) {
-                                          setState(() {
-                                            _data = newValue;
-                                          });
-                                          if (widget.onUpdate != null) {
-                                            widget.onUpdate!(newValue);
-                                          }
-                                        },
-                                      ),
+                                  onPressed: () => pushRoute(
+                                    context,
+                                    builder: (context) => CommunityModPanel(
+                                      initData: _data!,
+                                      onUpdate: (newValue) {
+                                        setState(() {
+                                          _data = newValue;
+                                        });
+                                        if (widget.onUpdate != null) {
+                                          widget.onUpdate!(newValue);
+                                        }
+                                      },
                                     ),
                                   ),
                                   child: Text(l(context).modPanel),
@@ -210,19 +209,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               if (_data!.owner != null &&
                                   _data!.owner!.name == ac.localName)
                                 MenuItemButton(
-                                  onPressed: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => CommunityOwnerPanel(
-                                        initData: _data!,
-                                        onUpdate: (newValue) {
-                                          setState(() {
-                                            _data = newValue;
-                                          });
-                                          if (widget.onUpdate != null) {
-                                            widget.onUpdate!(newValue);
-                                          }
-                                        },
-                                      ),
+                                  onPressed: () => pushRoute(
+                                    context,
+                                    builder: (context) => CommunityOwnerPanel(
+                                      initData: _data!,
+                                      onUpdate: (newValue) {
+                                        setState(() {
+                                          _data = newValue;
+                                        });
+                                        if (widget.onUpdate != null) {
+                                          widget.onUpdate!(newValue);
+                                        }
+                                      },
                                     ),
                                   ),
                                   child: Text(l(context).ownerPanel),
@@ -295,7 +293,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                       ),
                                     );
 
-                                    if (!mounted) return;
+                                    if (!context.mounted) return;
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(l(context).copied),

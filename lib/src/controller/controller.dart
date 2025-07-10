@@ -486,6 +486,7 @@ class AppController with ChangeNotifier {
       throw Exception('Notification permissions denied');
     }
 
+    if (!context.mounted) return;
     await UnifiedPush.registerAppWithDialog(context, _selectedAccount, [
       featureAndroidBytesMessage,
     ]);
@@ -649,8 +650,8 @@ class AppController with ChangeNotifier {
   );
 
   Future<List<PostModel>> markAsRead(List<PostModel> posts, bool read) async {
-    // Use Lemmy's read API when available
-    if (serverSoftware == ServerSoftware.lemmy && isLoggedIn) {
+    // Use Lemmy's and PieFed's read API when available
+    if (isLoggedIn && serverSoftware != ServerSoftware.mbin) {
       await api.threads.markAsRead(posts.map((post) => post.id).toList(), read);
     }
     // Use local database otherwise.

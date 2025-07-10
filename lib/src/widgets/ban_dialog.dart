@@ -71,7 +71,7 @@ class _BanDialogState extends State<BanDialog> {
                         reason: _reasonTextEditingController.text,
                       );
 
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   Navigator.of(context).pop();
                 },
           label: Text(l(context).banUserX(widget.user.name)),

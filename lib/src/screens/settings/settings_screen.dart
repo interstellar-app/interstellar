@@ -31,19 +31,17 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.settings_rounded),
             title: Text(l(context).settings_behavior),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const BehaviorSettingsScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const BehaviorSettingsScreen(),
             ),
           ),
           ListTile(
             leading: const Icon(Symbols.palette_rounded),
             title: Text(l(context).settings_display),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const DisplaySettingsScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const DisplaySettingsScreen(),
             ),
           ),
           ListTile(
@@ -58,37 +56,33 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.filter_list_rounded),
             title: Text(l(context).settings_feedActions),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const FeedActionsSettingsScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const FeedActionsSettingsScreen(),
             ),
           ),
           ListTile(
             leading: const Icon(Symbols.tune_rounded),
             title: Text(l(context).settings_feedDefaults),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const FeedDefaultSettingsScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const FeedDefaultSettingsScreen(),
             ),
           ),
           ListTile(
             leading: const Icon(Symbols.filter_1_rounded),
             title: Text(l(context).filterLists),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const FilterListsScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const FilterListsScreen(),
             ),
           ),
           ListTile(
             leading: const Icon(Symbols.notifications_rounded),
             title: Text(l(context).settings_notifications),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const NotificationSettingsScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const NotificationSettingsScreen(),
             ),
             enabled:
                 ac.serverSoftware == ServerSoftware.mbin &&
@@ -102,18 +96,16 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.database_rounded),
             title: Text(l(context).settings_dataUtilities),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const DataUtilitiesScreen(),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const DataUtilitiesScreen(),
             ),
           ),
           ListTile(
             leading: const Icon(Symbols.info_rounded),
             title: Text(l(context).settings_about),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const AboutScreen()),
-            ),
+            onTap: () =>
+                pushRoute(context, builder: (context) => const AboutScreen()),
           ),
           const Divider(),
           ListTile(

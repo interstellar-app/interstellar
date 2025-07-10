@@ -193,35 +193,37 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrapper(
-      shouldWrap: widget.onClick != null,
-      parentBuilder: (child) {
-        return InkWell(
-          onTap: widget.onClick,
-          onLongPress: () => showContentMenu(
-            context,
-            widget,
-            onTranslate: widget.onTranslate,
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                    _replyTextController = TextEditingController();
-                  })
-                : () {},
-          ),
-          onSecondaryTap: () => showContentMenu(
-            context,
-            widget,
-            onTranslate: widget.onTranslate,
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                    _replyTextController = TextEditingController();
-                  })
-                : () {},
-          ),
-          child: child,
-        );
-      },
-      child: widget.isCompact ? compact() : full(),
+    return RepaintBoundary(
+      child: Wrapper(
+        shouldWrap: widget.onClick != null,
+        parentBuilder: (child) {
+          return InkWell(
+            onTap: widget.onClick,
+            onLongPress: () => showContentMenu(
+              context,
+              widget,
+              onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                      _replyTextController = TextEditingController();
+                    })
+                  : () {},
+            ),
+            onSecondaryTap: () => showContentMenu(
+              context,
+              widget,
+              onTranslate: widget.onTranslate,
+              onReply: widget.onReply != null
+                  ? () => setState(() {
+                      _replyTextController = TextEditingController();
+                    })
+                  : () {},
+            ),
+            child: child,
+          );
+        },
+        child: widget.isCompact ? compact() : full(),
+      )
     );
   }
 
@@ -303,11 +305,10 @@ class _ContentItemState extends State<ContentItem> {
                       widget.user!,
                       icon: widget.userIcon,
                       onTap: widget.userIdOnClick != null
-                          ? () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    UserScreen(widget.userIdOnClick!),
-                              ),
+                          ? () => pushRoute(
+                              context,
+                              builder: (context) =>
+                                  UserScreen(widget.userIdOnClick!),
                             )
                           : null,
                     ),
@@ -344,11 +345,10 @@ class _ContentItemState extends State<ContentItem> {
                 widget.community!,
                 icon: widget.communityIcon,
                 onTap: widget.communityIdOnClick != null
-                    ? () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CommunityScreen(widget.communityIdOnClick!),
-                        ),
+                    ? () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            CommunityScreen(widget.communityIdOnClick!),
                       )
                     : null,
               ),
@@ -963,11 +963,10 @@ class _ContentItemState extends State<ContentItem> {
                     child: DisplayName(
                       widget.user!,
                       onTap: widget.userIdOnClick != null
-                          ? () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    UserScreen(widget.userIdOnClick!),
-                              ),
+                          ? () => pushRoute(
+                              context,
+                              builder: (context) =>
+                                  UserScreen(widget.userIdOnClick!),
                             )
                           : null,
                     ),
@@ -988,11 +987,10 @@ class _ContentItemState extends State<ContentItem> {
               child: DisplayName(
                 widget.community!,
                 onTap: widget.communityIdOnClick != null
-                    ? () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CommunityScreen(widget.communityIdOnClick!),
-                        ),
+                    ? () => pushRoute(
+                        context,
+                        builder: (context) =>
+                            CommunityScreen(widget.communityIdOnClick!),
                       )
                     : null,
               ),

@@ -40,11 +40,10 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                 Expanded(
                   child: ListTile(
                     title: Text(name),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            EditFilterListScreen(filterList: name),
-                      ),
+                    onTap: () => pushRoute(
+                      context,
+                      builder: (context) =>
+                          EditFilterListScreen(filterList: name),
                     ),
                     trailing: IconButton(
                       onPressed: () async {
@@ -58,7 +57,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                           payload: filterList.toJson(),
                         );
 
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         String communityName = mbinConfigsCommunityName;
                         if (communityName.endsWith(
                           context.read<AppController>().instanceHost,
@@ -72,16 +71,15 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                             .community
                             .getByName(communityName);
 
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CreateScreen(
-                              initTitle: '[Filter List] $name',
-                              initBody:
-                                  'Short description here...\n\n${config.toMarkdown()}',
-                              initCommunity: community,
-                            ),
+                        await pushRoute(
+                          context,
+                          builder: (context) => CreateScreen(
+                            initTitle: '[Filter List] $name',
+                            initBody:
+                                'Short description here...\n\n${config.toMarkdown()}',
+                            initCommunity: community,
                           ),
                         );
                       },
@@ -111,11 +109,10 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
           ListTile(
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).filterList_new),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) =>
-                    const EditFilterListScreen(filterList: null),
-              ),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) =>
+                  const EditFilterListScreen(filterList: null),
             ),
           ),
         ],

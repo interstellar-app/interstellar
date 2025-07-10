@@ -269,7 +269,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         await bodyDraftController.discard();
 
                         // Check BuildContext
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         Navigator.pop(context);
                       },
@@ -302,7 +302,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         );
 
                         // Check BuildContext
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         Navigator.pop(context);
                       },
@@ -337,7 +337,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         await bodyDraftController.discard();
 
                         // Check BuildContext
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         Navigator.pop(context);
                       },
@@ -380,7 +380,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   await bodyDraftController.discard();
 
                   // Check BuildContext
-                  if (!mounted) return;
+                  if (!context.mounted) return;
 
                   Navigator.pop(context);
                 }),
@@ -390,13 +390,10 @@ class _CreateScreenState extends State<CreateScreen> {
               onUpdate: (newCommunity) {
                 Navigator.pop(context);
 
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => CommunityScreen(
-                      newCommunity.id,
-                      initData: newCommunity,
-                    ),
-                  ),
+                pushRoute(
+                  context,
+                  builder: (context) =>
+                      CommunityScreen(newCommunity.id, initData: newCommunity),
                 );
               },
             ),
