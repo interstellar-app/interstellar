@@ -189,10 +189,10 @@ class FeedInputState {
   final FeedSource source;
   final int? sourceId;
   List<PostModel> _leftover = [];
-  List<PostModel> _timelineThreadsLeftover = [];
-  List<PostModel> _timelineMicroblogsLeftover = [];
+  List<PostModel> _combinedThreadsLeftover = [];
+  List<PostModel> _combinedMicroblogsLeftover = [];
   String? _nextPage = '';
-  String? _timelinePage = '';
+  String? _combinedNextPage = '';
 
   FeedInputState({
     required this.title,
@@ -233,9 +233,9 @@ class FeedInputState {
         );
         _nextPage = postListModel.nextPage;
         return ([..._leftover, ...postListModel.items], postListModel.nextPage);
-      case FeedView.timeline:
+      case FeedView.combined:
         final threadFuture =
-            _nextPage != null && _timelineThreadsLeftover.length < 25
+            _nextPage != null && _combinedThreadsLeftover.length < 25
             ? ac.api.threads.list(
                 source,
                 sourceId: sourceId,
@@ -246,11 +246,11 @@ class FeedInputState {
               )
             : Future.value();
         final microblogFuture =
-            _timelinePage != null && _timelineMicroblogsLeftover.length < 25
+        _combinedNextPage != null && _combinedMicroblogsLeftover.length < 25
             ? ac.api.microblogs.list(
                 source,
                 sourceId: sourceId,
-                page: nullIfEmpty(_timelinePage!),
+                page: nullIfEmpty(_combinedNextPage!),
                 sort: sort,
                 usePreferredLangs: ac.profile.useAccountLanguageFilter,
                 langs: ac.profile.customLanguageFilter.toList(),
@@ -266,36 +266,36 @@ class FeedInputState {
           [...postLists],
           sort,
           previousRemainder: [
-            ..._timelineThreadsLeftover,
-            ..._timelineMicroblogsLeftover,
+            ..._combinedThreadsLeftover,
+            ..._combinedMicroblogsLeftover,
           ],
         );
 
         // get next page if new request was sent
-        if (_timelineMicroblogsLeftover.length < 25) {
-          _timelinePage = results.last?.nextPage;
+        if (_combinedMicroblogsLeftover.length < 25) {
+          _combinedNextPage = results.last?.nextPage;
         }
-        if (_timelineThreadsLeftover.length < 25) {
+        if (_combinedThreadsLeftover.length < 25) {
           _nextPage = results.first?.nextPage;
         }
 
-        _timelineThreadsLeftover = merged.$2.first;
-        _timelineMicroblogsLeftover = merged.$2.last;
+        _combinedThreadsLeftover = merged.$2.first;
+        _combinedMicroblogsLeftover = merged.$2.last;
 
         debugPrint(
-          '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_timelinePage)',
+          '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_combinedNextPage)',
         );
 
         // if final page of input also return leftover posts
         var result = [..._leftover, ...merged.$1];
         if (_nextPage == null) {
-          result.addAll(_timelineThreadsLeftover);
+          result.addAll(_combinedThreadsLeftover);
         }
-        if (_timelinePage == null) {
-          result.addAll(_timelineMicroblogsLeftover);
+        if (_combinedNextPage == null) {
+          result.addAll(_combinedMicroblogsLeftover);
         }
 
-        return (result, _nextPage ?? _timelinePage);
+        return (result, _nextPage ?? _combinedNextPage);
     }
   }
 
@@ -395,9 +395,9 @@ class FeedAggregator {
     for (var input in inputs) {
       input._leftover = [];
       input._nextPage = '';
-      input._timelinePage = '';
-      input._timelineThreadsLeftover = [];
-      input._timelineMicroblogsLeftover = [];
+      input._combinedNextPage = '';
+      input._combinedThreadsLeftover = [];
+      input._combinedMicroblogsLeftover = [];
     }
   }
 

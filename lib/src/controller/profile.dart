@@ -51,7 +51,7 @@ class ProfileRequired with _$ProfileRequired {
     required FeedSource feedDefaultFilter,
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
-    required FeedSort feedDefaultTimelineSort,
+    required FeedSort feedDefaultCombinedSort,
     required FeedSort feedDefaultExploreSort,
     required CommentSort feedDefaultCommentSort,
     required bool feedDefaultHideReadPosts,
@@ -134,7 +134,7 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultMicroblogSort:
         profile?.feedDefaultMicroblogSort ??
         defaultProfile.feedDefaultMicroblogSort,
-    feedDefaultTimelineSort: profile?.feedDefaultTimelineSort ?? defaultProfile.feedDefaultTimelineSort,
+    feedDefaultCombinedSort: profile?.feedDefaultCombinedSort ?? defaultProfile.feedDefaultCombinedSort,
     feedDefaultExploreSort:
         profile?.feedDefaultExploreSort ??
         defaultProfile.feedDefaultExploreSort,
@@ -205,7 +205,7 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
     feedDefaultMicroblogSort: FeedSort.hot,
-    feedDefaultTimelineSort: FeedSort.hot,
+    feedDefaultCombinedSort: FeedSort.hot,
     feedDefaultExploreSort: FeedSort.newest,
     feedDefaultCommentSort: CommentSort.hot,
     feedDefaultHideReadPosts: false,
@@ -265,7 +265,7 @@ class ProfileOptional with _$ProfileOptional {
     required FeedSource? feedDefaultFilter,
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
-    required FeedSort? feedDefaultTimelineSort,
+    required FeedSort? feedDefaultCombinedSort,
     required FeedSort? feedDefaultExploreSort,
     required CommentSort? feedDefaultCommentSort,
     required bool? feedDefaultHideReadPosts,
@@ -320,7 +320,7 @@ class ProfileOptional with _$ProfileOptional {
     feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
     feedDefaultMicroblogSort: null,
-    feedDefaultTimelineSort: null,
+    feedDefaultCombinedSort: null,
     feedDefaultExploreSort: null,
     feedDefaultCommentSort: null,
     feedDefaultHideReadPosts: null,
@@ -382,7 +382,7 @@ class ProfileOptional with _$ProfileOptional {
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:
           other.feedDefaultMicroblogSort ?? feedDefaultMicroblogSort,
-      feedDefaultTimelineSort: other.feedDefaultTimelineSort ?? feedDefaultTimelineSort,
+      feedDefaultCombinedSort: other.feedDefaultCombinedSort ?? feedDefaultCombinedSort,
       feedDefaultExploreSort:
           other.feedDefaultExploreSort ?? feedDefaultExploreSort,
       feedDefaultCommentSort:
