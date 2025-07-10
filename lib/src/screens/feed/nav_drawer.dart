@@ -146,7 +146,7 @@ class _NavDrawerState extends State<NavDrawer> {
       padding: EdgeInsets.zero,
       children: [
         ExpansionTile(
-          title: SettingsHeader('Stars'),
+          title: SettingsHeader(l(context).stars),
           onExpansionChanged: (bool value) {
             ac.cacheValue('nav-stars', value);
             widget.updateState!(
