@@ -76,8 +76,8 @@ class _FeedScreenState extends State<FeedScreen>
             context.read<AppController>().profile.feedDefaultThreadsSort,
           FeedView.microblog =>
             context.read<AppController>().profile.feedDefaultMicroblogSort,
-          FeedView.combined =>
-            context.read<AppController>().profile.feedDefaultCombinedSort,
+          FeedView.timeline =>
+            context.read<AppController>().profile.feedDefaultTimelineSort,
         };
 
   @override
@@ -302,7 +302,7 @@ class _FeedScreenState extends State<FeedScreen>
                     _view = FeedView.microblog;
                     break;
                   case 2:
-                    _view = FeedView.combined;
+                    _view = FeedView.timeline;
                     break;
                   default:
                 }
@@ -533,8 +533,8 @@ class _FeedScreenState extends State<FeedScreen>
                                   sourceId: widget.sourceId,
                                   sort:
                                       _sort ??
-                                      _defaultSortFromMode(FeedView.combined),
-                                  view: FeedView.combined,
+                                      _defaultSortFromMode(FeedView.timeline),
+                                  view: FeedView.timeline,
                                   details: widget.details,
                                   userCanModerate: userCanModerate,
                                   hideReadPosts: _hideReadPosts,
@@ -587,7 +587,7 @@ class _FeedScreenState extends State<FeedScreen>
   }
 }
 
-enum FeedView { threads, microblog, combined }
+enum FeedView { threads, microblog, timeline }
 
 SelectionMenu<FeedView> feedViewSelect(BuildContext context) =>
     SelectionMenu(l(context).feedView, [
@@ -602,8 +602,8 @@ SelectionMenu<FeedView> feedViewSelect(BuildContext context) =>
         icon: Symbols.chat_rounded,
       ),
       SelectionMenuItem(
-        value: FeedView.combined,
-        title: l(context).combined,
+        value: FeedView.timeline,
+        title: l(context).timeline,
         icon: Symbols.view_timeline_rounded,
       ),
     ]);

@@ -65,14 +65,14 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             ),
           ),
           ListTileSelect(
-            title: l(context).settings_feedDefaults_combinedSort,
+            title: 'Timeline Sort',
             icon: Symbols.article_rounded,
             selectionMenu: feedSortSelect(context),
-            value: ac.profile.feedDefaultCombinedSort,
-            oldValue: ac.selectedProfileValue.feedDefaultCombinedSort,
+            value: ac.profile.feedDefaultTimelineSort,
+            oldValue: ac.selectedProfileValue.feedDefaultTimelineSort,
             onChange: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(
-                feedDefaultCombinedSort: newValue,
+                feedDefaultTimelineSort: newValue,
               ),
             ),
           ),
