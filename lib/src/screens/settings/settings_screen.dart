@@ -46,7 +46,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Symbols.feed_rounded),
-            title: Text('Feeds'),
+            title: Text(l(context).feeds),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const FeedSettingsScreen(),

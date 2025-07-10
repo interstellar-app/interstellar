@@ -11,11 +11,23 @@ import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/models/user.dart';
+
 class ExploreScreen extends StatefulWidget {
   final ExploreType? subOnlyMode;
   final FocusNode? focusNode;
+  final void Function(bool, dynamic)? onTap;
+  final Set<String> selected;
 
-  const ExploreScreen({this.subOnlyMode, this.focusNode, super.key});
+  const ExploreScreen({
+    this.subOnlyMode,
+    this.focusNode,
+    this.onTap,
+    this.selected = const {},
+    super.key,
+  });
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -25,6 +37,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     with AutomaticKeepAliveClientMixin<ExploreScreen> {
   String search = '';
   final searchDebounce = Debouncer(duration: const Duration(milliseconds: 500));
+  late Set<String> _selected;
 
   ExploreType type = ExploreType.communities;
 
@@ -41,6 +54,8 @@ class _ExploreScreenState extends State<ExploreScreen>
   @override
   void initState() {
     super.initState();
+
+    _selected = widget.selected;
 
     if (widget.subOnlyMode != null) {
       type = widget.subOnlyMode!;
@@ -164,8 +179,9 @@ class _ExploreScreenState extends State<ExploreScreen>
           ExploreType.communities => l(context).subscriptions_community,
           ExploreType.people => l(context).subscriptions_user,
           ExploreType.domains => l(context).subscriptions_domain,
-          _ =>
-            '${l(context).explore} ${context.watch<AppController>().instanceHost}',
+          _ => _selected.isNotEmpty
+              ? l(context).feeds_selectInputs
+              : '${l(context).explore} ${context.watch<AppController>().instanceHost}',
         }),
       ),
       body: RefreshIndicator(
@@ -398,13 +414,50 @@ class _ExploreScreenState extends State<ExploreScreen>
                       onTryAgain: _pagingController.retryLastFailedRequest,
                     ),
                 itemBuilder: (context, item, index) {
-                  return ExploreScreenItem(item, (newValue) {
-                    var newList = _pagingController.itemList;
-                    newList![index] = newValue;
-                    setState(() {
-                      _pagingController.itemList = newList;
-                    });
+                  final selected = _selected.contains(switch (item) {
+                    DetailedCommunityModel i => i.name,
+                    DetailedUserModel i => i.name,
+                    DomainModel i => i.name,
+                    _ => '',
                   });
+
+                  onSelect(bool selected) {
+                    widget.onTap!(selected, item);
+                    final name = switch (item) {
+                      DetailedCommunityModel i => i.name,
+                      DetailedUserModel i => i.name,
+                      DomainModel i => i.name,
+                      _ => null,
+                    };
+                    if (name == null) return;
+                    setState(() {
+                      if (selected) {
+                        _selected.add(name);
+                      } else {
+                        _selected.remove(name);
+                      }
+                    });
+                  }
+
+                  return ExploreScreenItem(
+                    item,
+                    (newValue) {
+                      var newList = _pagingController.itemList;
+                      newList![index] = newValue;
+                      setState(() {
+                        _pagingController.itemList = newList;
+                      });
+                    },
+                    onTap: _selected.isEmpty || widget.onTap == null
+                        ? null
+                        : () => onSelect(!selected),
+                    button: _selected.isEmpty || widget.onTap == null
+                        ? null
+                        : Checkbox(
+                            value: selected,
+                            onChanged: (newValue) => onSelect(newValue!),
+                          ),
+                  );
                 },
               ),
             ),

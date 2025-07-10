@@ -341,7 +341,9 @@ class _FeedScreenState extends State<FeedScreen>
                     title: ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        widget.title ??
+                        widget.feed != null
+                            ? widget.feed!.name
+                            : widget.title ??
                             context.watch<AppController>().selectedAccount +
                                 (context.watch<AppController>().isLoggedIn
                                     ? ''
