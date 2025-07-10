@@ -18,8 +18,103 @@ import 'package:provider/provider.dart';
 import 'feed_agregator.dart';
 import 'feed_screen.dart';
 
+class NavDrawPersistentState {
+  const NavDrawPersistentState({
+    this.fetchTime = 0,
+    this.initExpandedStars = false,
+    this.initExpandedFeeds = false,
+    this.initExpandedSubscriptions = false,
+    this.initExpandedFollows = false,
+    this.initExpandedDomains = false,
+    this.subbedCommunities = const [],
+    this.subbedUsers = const [],
+    this.subbedDomains = const [],
+  });
+
+  final int fetchTime;
+
+  final bool initExpandedStars;
+  final bool initExpandedFeeds;
+  final bool initExpandedSubscriptions;
+  final bool initExpandedFollows;
+  final bool initExpandedDomains;
+
+  final List<DetailedCommunityModel> subbedCommunities;
+  final List<DetailedUserModel> subbedUsers;
+  final List<DomainModel> subbedDomains;
+
+  NavDrawPersistentState copyWith({
+    bool? initExpandedStars,
+    bool? initExpandedFeeds,
+    bool? initExpandedSubscriptions,
+    bool? initExpandedFollows,
+    bool? initExpandedDomains,
+    List<DetailedCommunityModel>? subbedCommunities,
+    List<DetailedUserModel>? subbedUsers,
+    List<DomainModel>? subbedDomains,
+  }) => NavDrawPersistentState(
+    initExpandedStars: initExpandedStars ?? this.initExpandedStars,
+    initExpandedFeeds: initExpandedFeeds ?? this.initExpandedFeeds,
+    initExpandedSubscriptions:
+        initExpandedSubscriptions ?? this.initExpandedSubscriptions,
+    initExpandedFollows: initExpandedFollows ?? this.initExpandedFollows,
+    initExpandedDomains: initExpandedDomains ?? this.initExpandedDomains,
+    subbedCommunities: subbedCommunities ?? this.subbedCommunities,
+    subbedUsers: subbedUsers ?? this.subbedUsers,
+    subbedDomains: subbedDomains ?? this.subbedDomains,
+  );
+}
+
+Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
+  final fetchTime = DateTime.now();
+  final initExpandedStars = (await ac.fetchCachedValue('nav-stars')) ?? false;
+  final initExpandedFeeds = (await ac.fetchCachedValue('nav-feeds')) ?? false;
+  final initExpandedSubscriptions =
+      (await ac.fetchCachedValue('nav-subscriptions')) ?? false;
+  final initExpandedFollows =
+      (await ac.fetchCachedValue('nav-follows')) ?? false;
+  final initExpandedDomains =
+      (await ac.fetchCachedValue('nav-domains')) ?? false;
+
+  List<DetailedCommunityModel> subbedCommunities = [];
+  List<DetailedUserModel> subbedUsers = [];
+  List<DomainModel> subbedDomains = [];
+  if (ac.isLoggedIn) {
+    subbedCommunities = (await ac.api.community.list(
+      filter: ExploreFilter.subscribed,
+    )).items;
+    if (ac.serverSoftware == ServerSoftware.mbin) {
+      subbedUsers = (await ac.api.users.list(
+        filter: ExploreFilter.subscribed,
+      )).items;
+      subbedDomains = (await ac.api.domains.list(
+        filter: ExploreFilter.subscribed,
+      )).items;
+    }
+  }
+
+  return NavDrawPersistentState(
+    fetchTime: fetchTime.millisecondsSinceEpoch,
+    initExpandedStars: initExpandedStars,
+    initExpandedFeeds: initExpandedFeeds,
+    initExpandedSubscriptions: initExpandedSubscriptions,
+    initExpandedFollows: initExpandedFollows,
+    initExpandedDomains: initExpandedDomains,
+    subbedCommunities: subbedCommunities,
+    subbedUsers: subbedUsers,
+    subbedDomains: subbedDomains,
+  );
+}
+
 class NavDrawer extends StatefulWidget {
-  const NavDrawer({super.key});
+  const NavDrawer({
+    super.key,
+    this.drawerState = const NavDrawPersistentState(),
+    this.updateState,
+  });
+
+  final NavDrawPersistentState drawerState;
+  final Future<void> Function(NavDrawPersistentState?)? updateState;
 
   @override
   State<NavDrawer> createState() => _NavDrawerState();
@@ -34,40 +129,14 @@ class _NavDrawerState extends State<NavDrawer> {
   void initState() {
     super.initState();
 
-    if (context.read<AppController>().isLoggedIn) {
-      context
-          .read<AppController>()
-          .api
-          .community
-          .list(filter: ExploreFilter.subscribed)
-          .then((value) {
-            if (mounted) {
-              setState(() => subbedCommunities = value.items);
-            }
-          });
-      if (context.read<AppController>().serverSoftware == ServerSoftware.mbin) {
-        context
-            .read<AppController>()
-            .api
-            .users
-            .list(filter: ExploreFilter.subscribed)
-            .then((value) {
-              if (mounted) {
-                setState(() => subbedUsers = value.items);
-              }
-            });
-        context
-            .read<AppController>()
-            .api
-            .domains
-            .list(filter: ExploreFilter.subscribed)
-            .then((value) {
-              if (mounted) {
-                setState(() => subbedDomains = value.items);
-              }
-            });
-      }
+    // if state older than 15 minus refresh
+    if (widget.drawerState.fetchTime <
+        DateTime.now().subtract(Duration(minutes: 15)).millisecondsSinceEpoch) {
+      widget.updateState!(null);
     }
+    subbedCommunities = widget.drawerState.subbedCommunities;
+    subbedUsers = widget.drawerState.subbedUsers;
+    subbedDomains = widget.drawerState.subbedDomains;
   }
 
   @override
@@ -78,6 +147,13 @@ class _NavDrawerState extends State<NavDrawer> {
       children: [
         ExpansionTile(
           title: SettingsHeader('Stars'),
+          onExpansionChanged: (bool value) {
+            ac.cacheValue('nav-stars', value);
+            widget.updateState!(
+              widget.drawerState.copyWith(initExpandedStars: value),
+            );
+          },
+          initiallyExpanded: widget.drawerState.initExpandedStars,
           children: [
             if (ac.stars.isEmpty)
               Padding(
@@ -133,6 +209,13 @@ class _NavDrawerState extends State<NavDrawer> {
         ),
         ExpansionTile(
           title: SettingsHeader(l(context).feeds),
+          onExpansionChanged: (bool value) {
+            ac.cacheValue('nav-feeds', value);
+            widget.updateState!(
+              widget.drawerState.copyWith(initExpandedFeeds: value),
+            );
+          },
+          initiallyExpanded: widget.drawerState.initExpandedFeeds,
           children: [
             if (ac.feeds.isEmpty)
               Padding(
@@ -163,6 +246,13 @@ class _NavDrawerState extends State<NavDrawer> {
         if (ac.isLoggedIn)
           ExpansionTile(
             title: SettingsHeader(l(context).subscriptions),
+            onExpansionChanged: (bool value) {
+              ac.cacheValue('nav-subscriptions', value);
+              widget.updateState!(
+                widget.drawerState.copyWith(initExpandedSubscriptions: value),
+              );
+            },
+            initiallyExpanded: widget.drawerState.initExpandedSubscriptions,
             children: [
               if (subbedCommunities == null)
                 const Row(
@@ -234,6 +324,13 @@ class _NavDrawerState extends State<NavDrawer> {
         if (ac.isLoggedIn)
           ExpansionTile(
             title: SettingsHeader(l(context).subscriptions_user),
+            onExpansionChanged: (bool value) {
+              ac.cacheValue('nav-follows', value);
+              widget.updateState!(
+                widget.drawerState.copyWith(initExpandedFollows: value),
+              );
+            },
+            initiallyExpanded: widget.drawerState.initExpandedFollows,
             children: [
               if (subbedUsers == null)
                 const Row(
@@ -303,6 +400,13 @@ class _NavDrawerState extends State<NavDrawer> {
         if (ac.isLoggedIn)
           ExpansionTile(
             title: SettingsHeader(l(context).subscriptions_domain),
+            onExpansionChanged: (bool value) {
+              ac.cacheValue('nav-domains', value);
+              widget.updateState!(
+                widget.drawerState.copyWith(initExpandedDomains: value),
+              );
+            },
+            initiallyExpanded: widget.drawerState.initExpandedDomains,
             children: [
               if (subbedDomains == null)
                 const Row(

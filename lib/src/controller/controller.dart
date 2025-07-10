@@ -32,6 +32,7 @@ class AppController with ChangeNotifier {
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
   final _readStore = StoreRef<String, JsonMap>('read');
+  final _miscStore = StoreRef<String, dynamic>('misc');
 
   late final _mainProfileRecord = _mainStore.record('mainProfile');
   late final _selectedProfileRecord = _mainStore.record('selectedProfile');
@@ -687,5 +688,13 @@ class AppController with ChangeNotifier {
           finder: _readStoreFinder(post),
         )).firstOrNull !=
         null;
+  }
+
+  Future<void> cacheValue(String key, dynamic value) async {
+    await _miscStore.record(key).put(db, value);
+  }
+
+  Future<dynamic> fetchCachedValue(String key) async {
+    return await _miscStore.record(key).get(db);
   }
 }
