@@ -984,16 +984,16 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         widget.feed != oldWidget.feed) {
       _aggregator =
           widget.feed?.clone() ??
-              FeedAggregator(
-                name: '',
-                inputs: [
-                  FeedInputState(
-                    title: '',
-                    source: widget.source,
-                    sourceId: widget.sourceId,
-                  ),
-                ],
-              );
+          FeedAggregator(
+            name: '',
+            inputs: [
+              FeedInputState(
+                title: '',
+                source: widget.source,
+                sourceId: widget.sourceId,
+              ),
+            ],
+          );
       refresh();
     }
     _scrollController?.isActive = widget.isActive;

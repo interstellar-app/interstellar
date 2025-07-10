@@ -89,7 +89,11 @@ class _NavDrawerState extends State<NavDrawer> {
               ),
             ...(ac.stars.toList()..sort()).map(
               (star) => ListTile(
-                title: Text(ac.profile.alwaysShowInstance ? star.substring(1) : star.substring(1).split('@').first),
+                title: Text(
+                  ac.profile.alwaysShowInstance
+                      ? star.substring(1)
+                      : star.substring(1).split('@').first,
+                ),
                 onTap: () async {
                   String name = star.substring(1);
                   if (name.endsWith(ac.instanceHost)) {
@@ -104,7 +108,8 @@ class _NavDrawerState extends State<NavDrawer> {
 
                       pushRoute(
                         context,
-                        builder: (context) => UserScreen(user.id, initData: user),
+                        builder: (context) =>
+                            UserScreen(user.id, initData: user),
                       );
                       break;
 
@@ -179,7 +184,11 @@ class _NavDrawerState extends State<NavDrawer> {
                       (index, community) => MapEntry(
                         index,
                         ListTile(
-                          title: Text(ac.profile.alwaysShowInstance ? community.name : community.name.split('@').first),
+                          title: Text(
+                            ac.profile.alwaysShowInstance
+                                ? community.name
+                                : community.name.split('@').first,
+                          ),
                           leading: community.icon == null
                               ? null
                               : Avatar(community.icon, radius: 16),
@@ -189,22 +198,21 @@ class _NavDrawerState extends State<NavDrawer> {
                                 : '!${community.name}@${ac.instanceHost}',
                           ),
                           onTap: () => pushRoute(
-                              context,
-                              builder: (context) => CommunityScreen(
-                                community.id,
-                                initData: community,
-                                onUpdate: (newValue) {
-                                  setState(() {
-                                    final newSubbedCommunities = [
-                                      ...subbedCommunities!,
-                                    ];
-                                    newSubbedCommunities[index] = newValue;
-                                    subbedCommunities = newSubbedCommunities;
-                                  });
-                                },
-                              ),
-                            );
-                          },
+                            context,
+                            builder: (context) => CommunityScreen(
+                              community.id,
+                              initData: community,
+                              onUpdate: (newValue) {
+                                setState(() {
+                                  final newSubbedCommunities = [
+                                    ...subbedCommunities!,
+                                  ];
+                                  newSubbedCommunities[index] = newValue;
+                                  subbedCommunities = newSubbedCommunities;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     )
@@ -213,10 +221,10 @@ class _NavDrawerState extends State<NavDrawer> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextButton(
                   onPressed: () => pushRoute(
-                      context,
-                      builder: (context) => const ExploreScreen(
-                        subOnlyMode: ExploreType.communities,
-                      ),
+                    context,
+                    builder: (context) => const ExploreScreen(
+                      subOnlyMode: ExploreType.communities,
+                    ),
                   ),
                   child: Text(l(context).subscriptions_community_all),
                 ),
@@ -247,7 +255,11 @@ class _NavDrawerState extends State<NavDrawer> {
                       (index, user) => MapEntry(
                         index,
                         ListTile(
-                          title: Text(ac.profile.alwaysShowInstance ? user.name : user.name.split('@').first),
+                          title: Text(
+                            ac.profile.alwaysShowInstance
+                                ? user.name
+                                : user.name.split('@').first,
+                          ),
                           leading: user.avatar == null
                               ? null
                               : Avatar(user.avatar, radius: 16),
@@ -257,20 +269,19 @@ class _NavDrawerState extends State<NavDrawer> {
                                 : '@${user.name}@${ac.instanceHost}',
                           ),
                           onTap: () => pushRoute(
-                              context,
-                              builder: (context) => UserScreen(
-                                user.id,
-                                initData: user,
-                                onUpdate: (newValue) {
-                                  setState(() {
-                                    final newSubbedUsers = [...subbedUsers!];
-                                    newSubbedUsers[index] = newValue;
-                                    subbedUsers = newSubbedUsers;
-                                  });
-                                },
-                              ),
-                            );
-                          },
+                            context,
+                            builder: (context) => UserScreen(
+                              user.id,
+                              initData: user,
+                              onUpdate: (newValue) {
+                                setState(() {
+                                  final newSubbedUsers = [...subbedUsers!];
+                                  newSubbedUsers[index] = newValue;
+                                  subbedUsers = newSubbedUsers;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     )
@@ -280,10 +291,9 @@ class _NavDrawerState extends State<NavDrawer> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: TextButton(
                     onPressed: () => pushRoute(
-                        context,
-                        builder: (context) => const ExploreScreen(
-                          subOnlyMode: ExploreType.people,
-                        ),
+                      context,
+                      builder: (context) =>
+                          const ExploreScreen(subOnlyMode: ExploreType.people),
                     ),
                     child: Text(l(context).subscriptions_user_all),
                   ),
@@ -316,22 +326,19 @@ class _NavDrawerState extends State<NavDrawer> {
                         ListTile(
                           title: Text(domain.name),
                           onTap: () => pushRoute(
-                              context,
-                              builder: (context) => DomainScreen(
-                                domain.id,
-                                initData: domain,
-                                onUpdate: (newValue) {
-                                  setState(() {
-                                    final newSubbedDomains = [
-                                      ...subbedDomains!,
-                                    ];
-                                    newSubbedDomains[index] = newValue;
-                                    subbedDomains = newSubbedDomains;
-                                  });
-                                },
-                              ),
-                            );
-                          },
+                            context,
+                            builder: (context) => DomainScreen(
+                              domain.id,
+                              initData: domain,
+                              onUpdate: (newValue) {
+                                setState(() {
+                                  final newSubbedDomains = [...subbedDomains!];
+                                  newSubbedDomains[index] = newValue;
+                                  subbedDomains = newSubbedDomains;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     )
@@ -341,11 +348,10 @@ class _NavDrawerState extends State<NavDrawer> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: TextButton(
                     onPressed: () => pushRoute(
-                        context,
-                        builder: (context) => const ExploreScreen(
-                          subOnlyMode: ExploreType.domains,
-                        ),
-                      ),
+                      context,
+                      builder: (context) =>
+                          const ExploreScreen(subOnlyMode: ExploreType.domains),
+                    ),
                     child: Text(l(context).subscriptions_domain_all),
                   ),
                 ),
