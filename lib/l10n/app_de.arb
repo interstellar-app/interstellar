@@ -651,5 +651,21 @@
   "sort_commented_all": "Kommentiert Aller Zeiten",
   "@sort_commented_all": {},
   "sort_top_1y": "Top 1 Jahr",
-  "@sort_top_1y": {}
+  "@sort_top_1y": {},
+  "settings_animationDisabled": "Deaktiviert",
+  "@settings_animationDisabled": {},
+  "reportStatus_any": "Alle",
+  "@reportStatus_any": {},
+  "reportStatus_approved": "Genehmigt",
+  "@reportStatus_approved": {},
+  "reportStatus_closed": "Geschlossen",
+  "@reportStatus_closed": {},
+  "reportStatus_pending": "Ausstehend",
+  "@reportStatus_pending": {},
+  "reportStatus_rejected": "Abgelehnt",
+  "@reportStatus_rejected": {},
+  "report_accept": "Annehmen",
+  "@report_accept": {},
+  "report_reject": "Ablehnen",
+  "@report_reject": {}
 }
