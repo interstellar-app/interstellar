@@ -1046,5 +1046,19 @@
   "reportedUser": "举报用户： ",
   "@reportedUser": {},
   "reportedBy": "举报人： ",
-  "@reportedBy": {}
+  "@reportedBy": {},
+  "settings_animationSpeed": "动画速度",
+  "@settings_animationSpeed": {},
+  "settings_animationDisabled": "已禁用",
+  "@settings_animationDisabled": {},
+  "bookmarks": "书签",
+  "@bookmarks": {},
+  "bookmarkLists": "书签列表",
+  "@bookmarkLists": {},
+  "bookmarkLists_create": "创建列表",
+  "@bookmarkLists_create": {},
+  "bookmarkLists_setDefault": "设为默认",
+  "@bookmarkLists_setDefault": {},
+  "bookmarkLists_createHint": "新列表名称",
+  "@bookmarkLists_createHint": {}
 }
