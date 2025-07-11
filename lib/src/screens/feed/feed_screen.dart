@@ -59,7 +59,7 @@ class _FeedScreenState extends State<FeedScreen>
   late bool _hideReadPosts;
   bool _isHidden = false;
 
-  late NavDrawPersistentState _navDrawPersistentState;
+  NavDrawPersistentState? _navDrawPersistentState;
 
   @override
   bool get wantKeepAlive => true;
@@ -99,14 +99,6 @@ class _FeedScreenState extends State<FeedScreen>
         .read<AppController>()
         .profile
         .feedDefaultHideReadPosts;
-
-    _navDrawPersistentState = NavDrawPersistentState();
-    () async {
-      final drawerState = await fetchNavDrawerState(context.read<AppController>());
-      setState(() {
-        _navDrawPersistentState = drawerState;
-      });
-    } ();
   }
 
   @override
@@ -596,6 +588,7 @@ class _FeedScreenState extends State<FeedScreen>
               updateState: (NavDrawPersistentState? drawerState) async {
                 drawerState ??= await fetchNavDrawerState(context.read<AppController>());
 
+                if (!mounted) return;
                 setState(() {
                   _navDrawPersistentState = drawerState!;
                 });

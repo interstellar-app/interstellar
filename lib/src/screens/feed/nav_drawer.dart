@@ -109,11 +109,11 @@ Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
 class NavDrawer extends StatefulWidget {
   const NavDrawer({
     super.key,
-    this.drawerState = const NavDrawPersistentState(),
+    this.drawerState,
     this.updateState,
   });
 
-  final NavDrawPersistentState drawerState;
+  final NavDrawPersistentState? drawerState;
   final Future<void> Function(NavDrawPersistentState?)? updateState;
 
   @override
@@ -130,18 +130,36 @@ class _NavDrawerState extends State<NavDrawer> {
     super.initState();
 
     // if state older than 15 minus refresh
-    if (widget.drawerState.fetchTime <
+    if (widget.drawerState == null || widget.drawerState!.fetchTime <
         DateTime.now().subtract(Duration(minutes: 15)).millisecondsSinceEpoch) {
       widget.updateState!(null);
     }
-    subbedCommunities = widget.drawerState.subbedCommunities;
-    subbedUsers = widget.drawerState.subbedUsers;
-    subbedDomains = widget.drawerState.subbedDomains;
+    subbedCommunities = widget.drawerState?.subbedCommunities;
+    subbedUsers = widget.drawerState?.subbedUsers;
+    subbedDomains = widget.drawerState?.subbedDomains;
+  }
+
+  @override
+  void didUpdateWidget(covariant NavDrawer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.drawerState != oldWidget.drawerState) {
+      setState(() {
+        subbedCommunities = widget.drawerState?.subbedCommunities;
+        subbedUsers = widget.drawerState?.subbedUsers;
+        subbedDomains = widget.drawerState?.subbedDomains;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
+    if (widget.drawerState == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return ListView(
       padding: EdgeInsets.zero,
       children: [
@@ -150,10 +168,10 @@ class _NavDrawerState extends State<NavDrawer> {
           onExpansionChanged: (bool value) {
             ac.cacheValue('nav-stars', value);
             widget.updateState!(
-              widget.drawerState.copyWith(initExpandedStars: value),
+              widget.drawerState!.copyWith(initExpandedStars: value),
             );
           },
-          initiallyExpanded: widget.drawerState.initExpandedStars,
+          initiallyExpanded: widget.drawerState!.initExpandedStars,
           children: [
             if (ac.stars.isEmpty)
               Padding(
@@ -212,10 +230,10 @@ class _NavDrawerState extends State<NavDrawer> {
           onExpansionChanged: (bool value) {
             ac.cacheValue('nav-feeds', value);
             widget.updateState!(
-              widget.drawerState.copyWith(initExpandedFeeds: value),
+              widget.drawerState!.copyWith(initExpandedFeeds: value),
             );
           },
-          initiallyExpanded: widget.drawerState.initExpandedFeeds,
+          initiallyExpanded: widget.drawerState!.initExpandedFeeds,
           children: [
             if (ac.feeds.isEmpty)
               Padding(
@@ -249,10 +267,10 @@ class _NavDrawerState extends State<NavDrawer> {
             onExpansionChanged: (bool value) {
               ac.cacheValue('nav-subscriptions', value);
               widget.updateState!(
-                widget.drawerState.copyWith(initExpandedSubscriptions: value),
+                widget.drawerState!.copyWith(initExpandedSubscriptions: value),
               );
             },
-            initiallyExpanded: widget.drawerState.initExpandedSubscriptions,
+            initiallyExpanded: widget.drawerState!.initExpandedSubscriptions,
             children: [
               if (subbedCommunities == null)
                 const Row(
@@ -327,10 +345,10 @@ class _NavDrawerState extends State<NavDrawer> {
             onExpansionChanged: (bool value) {
               ac.cacheValue('nav-follows', value);
               widget.updateState!(
-                widget.drawerState.copyWith(initExpandedFollows: value),
+                widget.drawerState!.copyWith(initExpandedFollows: value),
               );
             },
-            initiallyExpanded: widget.drawerState.initExpandedFollows,
+            initiallyExpanded: widget.drawerState!.initExpandedFollows,
             children: [
               if (subbedUsers == null)
                 const Row(
@@ -403,10 +421,10 @@ class _NavDrawerState extends State<NavDrawer> {
             onExpansionChanged: (bool value) {
               ac.cacheValue('nav-domains', value);
               widget.updateState!(
-                widget.drawerState.copyWith(initExpandedDomains: value),
+                widget.drawerState!.copyWith(initExpandedDomains: value),
               );
             },
-            initiallyExpanded: widget.drawerState.initExpandedDomains,
+            initiallyExpanded: widget.drawerState!.initExpandedDomains,
             children: [
               if (subbedDomains == null)
                 const Row(
