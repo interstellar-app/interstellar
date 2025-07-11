@@ -277,7 +277,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             padding: chipPadding,
                           ),
                           if (context.watch<AppController>().serverSoftware ==
-                              ServerSoftware.mbin) ...[
+                              ServerSoftware.mbin && _selected.isEmpty) ...[
                             const SizedBox(width: 4),
                             ChoiceChip(
                               label: Text(l(context).domains),
@@ -298,33 +298,35 @@ class _ExploreScreenState extends State<ExploreScreen>
                               padding: chipPadding,
                             ),
                           ],
-                          const SizedBox(width: 4),
-                          ChoiceChip(
-                            label: Text(l(context).filter_all),
-                            selected: type == ExploreType.all,
-                            onSelected: (bool selected) {
-                              if (selected) {
-                                setState(() {
-                                  if (context
-                                              .read<AppController>()
-                                              .serverSoftware ==
-                                          ServerSoftware.mbin ||
-                                      context
-                                                  .read<AppController>()
-                                                  .serverSoftware !=
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.subscribed) {
-                                    filter = ExploreFilter.all;
-                                  }
+                          if (_selected.isEmpty) ...[
+                            const SizedBox(width: 4),
+                            ChoiceChip(
+                              label: Text(l(context).filter_all),
+                              selected: type == ExploreType.all,
+                              onSelected: (bool selected) {
+                                if (selected) {
+                                  setState(() {
+                                    if (context
+                                                .read<AppController>()
+                                                .serverSoftware ==
+                                            ServerSoftware.mbin ||
+                                        context
+                                                    .read<AppController>()
+                                                    .serverSoftware !=
+                                                ServerSoftware.mbin &&
+                                            filter == ExploreFilter.subscribed) {
+                                      filter = ExploreFilter.all;
+                                    }
 
-                                  type = ExploreType.all;
+                                    type = ExploreType.all;
 
-                                  _pagingController.refresh();
-                                });
-                              }
-                            },
-                            padding: chipPadding,
-                          ),
+                                    _pagingController.refresh();
+                                  });
+                                }
+                              },
+                              padding: chipPadding,
+                            ),
+                          ]
                         ],
                       ),
                       const SizedBox(height: 8),
