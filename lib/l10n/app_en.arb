@@ -74,16 +74,34 @@
   "feedView": "Feed View",
   "threads": "Threads",
   "microblog": "Microblog",
-  "timeline": "Timeline",
+  "timeline": "Combined",
   "stars": "Stars",
   "stars_empty": "This feels empty; star a community or user to appear here.",
   "subscriptions": "Subscriptions",
   "subscriptions_community": "Community Subscriptions",
   "subscriptions_community_all": "All Community Subs",
+  "subscriptions_community_empty": "This feels empty; subscribe to a community to appear here.",
   "subscriptions_user": "User Follows",
   "subscriptions_user_all": "All User Follows",
+  "subscriptions_user_empty": "This feels empty; subscribe to a user to appear here.",
   "subscriptions_domain": "Domain Subscriptions",
   "subscriptions_domain_all": "All Domain Subs",
+  "subscriptions_domain_empty": "This feels empty; subscribe to a domain to appear here.",
+  "feeds": "Feeds",
+  "feeds_empty": "This feels empty; create a feed to appear here.",
+  "feeds_new": "New feed",
+  "feeds_edit": "Edit feed {feed}",
+  "feeds_delete": "Delete feed",
+  "@feeds_edit": {
+    "placeholders": {
+      "feed": {
+        "type": "String"
+      }
+    }
+  },
+  "feeds_input": "Add input",
+  "feeds_import": "Import feed",
+  "feeds_selectInputs": "Select inputs",
   "post": "Post",
   "postDeleted": "Post Deleted",
   "comment": "Comment",
@@ -262,6 +280,7 @@
   "settings_feedDefaults_filter": "Filter",
   "settings_feedDefaults_threadsSort": "Threads Sort",
   "settings_feedDefaults_microblogSort": "Microblog Sort",
+  "settings_feedDefaults_combinedSort": "Combined Sort",
   "settings_feedDefaults_exploreSort": "Explore Sort",
   "settings_feedDefaults_commentSort": "Comment Sort",
   "settings_feedDefaults_hideReadPosts": "Hide read posts",
@@ -614,6 +633,15 @@
   "configShare_filterList_title": "Interstellar filter list",
   "configShare_filterList_info": "Contains {count} phrases",
   "@configShare_filterList_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_feed_title": "Interstellar feed",
+  "configShare_feed_info": "Contains {count} inputs",
+  "@configShare_feed_info": {
     "placeholders": {
       "count": {
         "type": "int"

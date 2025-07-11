@@ -7,6 +7,7 @@ import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/oauth.dart';
 import 'package:interstellar/src/controller/account.dart';
 import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -26,10 +27,12 @@ enum HapticsType { light, medium, heavy, selection, vibrate }
 class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
   final _accountStore = StoreRef<String, JsonMap>('account');
+  final _feedStore = StoreRef<String, JsonMap>('feeds');
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
   final _readStore = StoreRef<String, JsonMap>('read');
+  final _miscStore = StoreRef<String, dynamic>('misc');
 
   late final _mainProfileRecord = _mainStore.record('mainProfile');
   late final _selectedProfileRecord = _mainStore.record('selectedProfile');
@@ -77,6 +80,9 @@ class AppController with ChangeNotifier {
   bool get isLoggedIn => localName.isNotEmpty;
   ServerSoftware get serverSoftware => _servers[instanceHost]!.software;
   API get api => _api;
+
+  late Map<String, Feed> _feeds;
+  Map<String, Feed> get feeds => _feeds;
 
   late Map<String, FilterList> _filterLists;
   Map<String, FilterList> get filterLists => _filterLists;
@@ -143,6 +149,12 @@ class AppController with ChangeNotifier {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount('@kbin.earth', const Account(), switchNow: true);
     }
+
+    _feeds = Map.fromEntries(
+      (await _feedStore.find(
+        db,
+      )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
+    );
 
     _filterLists = Map.fromEntries(
       (await _filterListStore.find(db)).map(
@@ -517,6 +529,34 @@ class AppController with ChangeNotifier {
     await _accountStore.record(account).put(db, _accounts[account]!.toJson());
   }
 
+  Future<void> setFeed(String name, Feed value) async {
+    _feeds[name] = value;
+
+    notifyListeners();
+
+    await _feedStore.record(FieldKey.escape(name)).put(db, value.toJson());
+  }
+
+  Future<void> removeFeed(String name) async {
+    _feeds.remove(name);
+
+    notifyListeners();
+
+    await _feedStore.record(FieldKey.escape(name)).delete(db);
+  }
+
+  Future<void> renameFeed(String oldName, String newName) async {
+    _feeds[newName] = _feeds[oldName]!.copyWith(name: newName);
+    _feeds.remove(oldName);
+
+    notifyListeners();
+
+    await _feedStore
+        .record(FieldKey.escape(newName))
+        .put(db, _feeds[newName]!.toJson());
+    await _feedStore.record(FieldKey.escape(oldName)).delete(db);
+  }
+
   Future<void> setFilterList(String name, FilterList value) async {
     _filterLists[name] = value;
 
@@ -648,5 +688,13 @@ class AppController with ChangeNotifier {
           finder: _readStoreFinder(post),
         )).firstOrNull !=
         null;
+  }
+
+  Future<void> cacheValue(String key, dynamic value) async {
+    await _miscStore.record(key).put(db, value);
+  }
+
+  Future<dynamic> fetchCachedValue(String key) async {
+    return await _miscStore.record(key).get(db);
   }
 }

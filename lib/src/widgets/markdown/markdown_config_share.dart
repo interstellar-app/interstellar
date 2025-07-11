@@ -5,7 +5,9 @@ import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/models/config_share.dart';
+import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -67,6 +69,7 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
 
   ProfileOptional? configProfile;
   FilterList? configFilterList;
+  Feed? configFeed;
 
   bool invalid = false;
 
@@ -89,6 +92,8 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
         case ConfigShareType.filterList:
           configFilterList = FilterList.fromJson(config.payload);
           break;
+        case ConfigShareType.feed:
+          configFeed = Feed.fromJson(config.payload);
       }
       setState(() {});
     } catch (_) {
@@ -121,6 +126,7 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                     ConfigShareType.filterList => l(
                       context,
                     ).configShare_filterList_title,
+                    ConfigShareType.feed => l(context).configShare_feed_title,
                   }),
                   Text(
                     l(context).configShare_created(
@@ -136,6 +142,9 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                       l(context).configShare_filterList_info(
                         configFilterList!.phrases.length,
                       ),
+                    ConfigShareType.feed => l(
+                      context,
+                    ).configShare_feed_info(configFeed!.inputs.length),
                   }),
                   const SizedBox(height: 8),
                   LoadingFilledButton(
@@ -166,12 +175,20 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                           ),
                         );
                       },
+                      ConfigShareType.feed => () async {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditFeedScreen(feed: config.name, feedData: configFeed),
+                          ),
+                        );
+                      },
                     },
                     label: Text(switch (config.type) {
                       ConfigShareType.profile => l(context).profile_import,
                       ConfigShareType.filterList => l(
                         context,
                       ).filterList_import,
+                      ConfigShareType.feed => l(context).feeds_import,
                     }),
                   ),
                 ],

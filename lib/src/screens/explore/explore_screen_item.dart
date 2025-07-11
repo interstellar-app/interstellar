@@ -15,14 +15,23 @@ import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class ExploreScreenItem extends StatelessWidget {
   final dynamic item;
   final void Function(dynamic newValue) onUpdate;
+  final void Function()? onTap;
+  final Widget? button;
 
-  const ExploreScreenItem(this.item, this.onUpdate, {super.key});
+  const ExploreScreenItem(
+    this.item,
+    this.onUpdate, {
+    super.key,
+    this.onTap,
+    this.button,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +96,7 @@ class ExploreScreenItem extends StatelessWidget {
         },
         _ => throw 'Unreachable',
       };
-      final onClick = switch (item) {
+      final navigate = switch (item) {
         DetailedCommunityModel i => () => pushRoute(
           context,
           builder: (context) =>
@@ -105,6 +114,7 @@ class ExploreScreenItem extends StatelessWidget {
         ),
         _ => throw 'Unreachable',
       };
+      final onClick = onTap ?? navigate;
 
       return ListTile(
         leading: icon == null
@@ -118,17 +128,23 @@ class ExploreScreenItem extends StatelessWidget {
           ],
         ),
         subtitle: subtitle == null ? null : Text(subtitle),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SubscriptionButton(
-              isSubscribed: isSubscribed,
-              subscriptionCount: subscriptions,
-              onSubscribe: onSubscribe,
-              followMode: item is DetailedUserModel,
-            ),
-          ],
-        ),
+        trailing: button == null
+            ? SubscriptionButton(
+                isSubscribed: isSubscribed,
+                subscriptionCount: subscriptions,
+                onSubscribe: onSubscribe,
+                followMode: item is DetailedUserModel,
+              )
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  button!,
+                  IconButton(
+                    onPressed: navigate,
+                    icon: Icon(Symbols.open_in_new_rounded),
+                  ),
+                ],
+              ),
         onTap: onClick,
       );
     }
