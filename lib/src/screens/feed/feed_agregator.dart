@@ -165,6 +165,7 @@ int commented(PostModel lhs, PostModel rhs) {
         firsts.add((index, input.first));
       }
     }
+    if (firsts.isEmpty) break;
     // Sort by selected sort function
     firsts.sort((lhs, rhs) {
       if (lhs.$2.isPinned) return -1;
