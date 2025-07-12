@@ -264,12 +264,11 @@ class FeedInputState {
             .toList();
         final merged = merge(
           ac.serverSoftware,
-          [...postLists],
-          sort,
-          previousRemainder: [
-            ..._timelineThreadsLeftover,
-            ..._timelineMicroblogsLeftover,
+          [
+            [..._timelineThreadsLeftover, ...postLists[0]],
+            [..._timelineMicroblogsLeftover, ...postLists[1]]
           ],
+          sort,
         );
 
         // get next page if new request was sent
