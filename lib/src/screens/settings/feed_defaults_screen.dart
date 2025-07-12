@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
@@ -29,6 +30,7 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
             onChange: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(feedDefaultView: newValue),
             ),
+            enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
           ListTileSelect(
             title: l(context).settings_feedDefaults_filter,

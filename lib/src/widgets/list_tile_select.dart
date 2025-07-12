@@ -9,6 +9,7 @@ class ListTileSelect<T> extends StatelessWidget {
   final T value;
   final T? oldValue;
   final void Function(T newValue) onChange;
+  final bool enabled;
 
   const ListTileSelect({
     super.key,
@@ -18,6 +19,7 @@ class ListTileSelect<T> extends StatelessWidget {
     required this.value,
     required this.oldValue,
     required this.onChange,
+    this.enabled = true,
   });
 
   @override
@@ -43,6 +45,7 @@ class ListTileSelect<T> extends StatelessWidget {
 
         onChange(newValue);
       },
+      enabled: enabled,
     );
   }
 }

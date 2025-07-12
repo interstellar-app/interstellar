@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -179,6 +180,7 @@ class DisplaySettingsScreen extends StatelessWidget {
                       fullImageSizeMicroblogs: newValue,
                     ),
                   ),
+            enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
         ],
       ),
