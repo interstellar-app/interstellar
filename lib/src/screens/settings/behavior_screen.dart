@@ -49,13 +49,12 @@ class BehaviorSettingsScreen extends StatelessWidget {
             title: Text(l(context).settings_useAccountLanguageFilter),
             subtitle: Text(l(context).settings_useAccountLanguageFilter_help),
             value: ac.profile.useAccountLanguageFilter,
-            onChanged: ac.serverSoftware != ServerSoftware.mbin
-                ? null
-                : (newValue) => ac.updateProfile(
+            onChanged: (newValue) => ac.updateProfile(
                     ac.selectedProfileValue.copyWith(
                       useAccountLanguageFilter: newValue,
                     ),
                   ),
+            enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
           Row(
             children: [
@@ -200,6 +199,7 @@ class BehaviorSettingsScreen extends StatelessWidget {
                 markMicroblogsReadOnScroll: newValue,
               ),
             ),
+            enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
           ListTile(
             title: Column(

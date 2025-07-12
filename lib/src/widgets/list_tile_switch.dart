@@ -6,6 +6,7 @@ class ListTileSwitch extends StatelessWidget {
   final Widget? leading;
   final Widget? title;
   final Widget? subtitle;
+  final bool enabled;
 
   const ListTileSwitch({
     required this.value,
@@ -13,21 +14,19 @@ class ListTileSwitch extends StatelessWidget {
     this.leading,
     this.title,
     this.subtitle,
+    this.enabled = true,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = onChanged == null ? Theme.of(context).disabledColor : null;
-
     return ListTile(
       leading: leading,
       title: title,
       subtitle: subtitle,
       onTap: onChanged == null ? null : () => onChanged!(!value),
-      trailing: Switch(value: value, onChanged: onChanged),
-      textColor: color,
-      iconColor: color,
+      trailing: Switch(value: value, onChanged: enabled ? onChanged : null),
+      enabled: enabled,
     );
   }
 }
