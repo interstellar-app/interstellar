@@ -427,7 +427,7 @@
   "@profile_name": {},
   "profile_setAsMain": "முக்கிய சுயவிவரமாக அமைக்கவும்",
   "@profile_setAsMain": {},
-  "banUser_help": "{சமூகத்திலிருந்து {user} தடை செய்ய உள்ளீர்கள்.",
+  "banUser_help": "{community} இருந்து {user} தடை செய்ய உள்ளீர்கள்.",
   "@banUser_help": {
     "placeholders": {
       "user": {
@@ -618,7 +618,7 @@
       }
     }
   },
-  "editedAt": "தேதிநேரத்தில் திருத்தப்பட்டது",
+  "editedAt": "{datetime} திருத்தப்பட்டது",
   "@editedAt": {
     "placeholders": {
       "datetime": {
@@ -630,7 +630,7 @@
   "@expand": {},
   "collapse": "சரிவு",
   "@collapse": {},
-  "moreFrom": "பெயரில் இருந்து மேலும்",
+  "moreFrom": "{name}இருந்து மேலும்",
   "@moreFrom": {
     "placeholders": {
       "name": {
@@ -740,7 +740,7 @@
   "@sort_commented_all": {},
   "feedView": "உணவுக் காட்சி",
   "@feedView": {},
-  "timeline": "காலவரிசை",
+  "timeline": "இணைக்கப்பட்டது",
   "@timeline": {},
   "subscriptions_community": "சமூக சந்தாக்கள்",
   "@subscriptions_community": {},
@@ -1004,7 +1004,7 @@
   "@bookmark": {},
   "bookmark_addToX": "{name} இல் சேர்க்கவும்",
   "@bookmark_addToX": {},
-  "bookmark_removeFromX": "{பெயரில் இருந்து அகற்று",
+  "bookmark_removeFromX": "{name} இருந்து அகற்று",
   "@bookmark_removeFromX": {},
   "configShare": "பகிர்வு",
   "@configShare": {},
@@ -1046,5 +1046,59 @@
   "errorPage_newPage": "ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்க தட்டவும்.",
   "@errorPage_newPage": {},
   "errorPage_caughtUp": "நீங்கள் அனைவரும் பிடிபட்டீர்கள். \nபழைய உருப்படிகளை ஏற்றவா?",
-  "@errorPage_caughtUp": {}
+  "@errorPage_caughtUp": {},
+  "subscriptions_community_empty": "இது காலியாக உணர்கிறது; இங்கே தோன்றுவதற்கு ஒரு சமூகத்தில் இணையுங்கள்.",
+  "@subscriptions_community_empty": {},
+  "subscriptions_user_empty": "இது காலியாக உணர்கிறது; இங்கே தோன்றுவதற்கு ஒரு பயனருடன் இணையுங்கள்.",
+  "@subscriptions_user_empty": {},
+  "subscriptions_domain_empty": "இது காலியாக உணர்கிறது; இங்கே தோன்றுவதற்கு ஒரு தளத்தில் இணையுங்கள்.",
+  "@subscriptions_domain_empty": {},
+  "feeds": "ஊட்டங்கள்",
+  "@feeds": {},
+  "feeds_empty": "இது காலியாக உணர்கிறது; இங்கே தோன்ற ஒரு ஊட்டத்தை உருவாக்கவும்.",
+  "@feeds_empty": {},
+  "feeds_new": "புதிய ஊட்டம்",
+  "@feeds_new": {},
+  "feeds_edit": "ஊட்டத்தை திருத்து {feed}",
+  "@feeds_edit": {
+    "placeholders": {
+      "feed": {
+        "type": "String"
+      }
+    }
+  },
+  "feeds_delete": "ஊட்டத்தை நீக்கு",
+  "@feeds_delete": {},
+  "feeds_input": "உள்ளீட்டைச் சேர்க்கவும்",
+  "@feeds_input": {},
+  "feeds_import": "இறக்குமதி தீவனம்",
+  "@feeds_import": {},
+  "feeds_selectInputs": "உள்ளீடுகளைத் தேர்ந்தெடுக்கவும்",
+  "@feeds_selectInputs": {},
+  "settings_animationSpeed": "அனிமேசன் விரைவு",
+  "@settings_animationSpeed": {},
+  "settings_animationDisabled": "முடக்கப்பட்டது",
+  "@settings_animationDisabled": {},
+  "settings_feedDefaults_combinedSort": "ஒருங்கிணைந்த வரிசை",
+  "@settings_feedDefaults_combinedSort": {},
+  "bookmarks": "புக்மார்க்குகள்",
+  "@bookmarks": {},
+  "bookmarkLists": "புக்மார்க்கு பட்டியல்கள்",
+  "@bookmarkLists": {},
+  "bookmarkLists_create": "பட்டியலை உருவாக்கு",
+  "@bookmarkLists_create": {},
+  "bookmarkLists_setDefault": "இயல்புநிலையாக அமைக்கவும்",
+  "@bookmarkLists_setDefault": {},
+  "bookmarkLists_createHint": "புதிய பட்டியல் பெயர்",
+  "@bookmarkLists_createHint": {},
+  "configShare_feed_title": "விண்மீன் ஊட்டம்",
+  "@configShare_feed_title": {},
+  "configShare_feed_info": "{count} உள்ளீடுகளைக் கொண்டுள்ளது",
+  "@configShare_feed_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
