@@ -883,7 +883,7 @@
   "@action_setView": {},
   "feedView": "信息流视图",
   "@feedView": {},
-  "timeline": "时间线",
+  "timeline": "混合",
   "@timeline": {},
   "create_text": "文本",
   "@create_text": {},
@@ -1060,5 +1060,45 @@
   "bookmarkLists_setDefault": "设为默认",
   "@bookmarkLists_setDefault": {},
   "bookmarkLists_createHint": "新列表名称",
-  "@bookmarkLists_createHint": {}
+  "@bookmarkLists_createHint": {},
+  "subscriptions_community_empty": "这里空空如也；订阅社区后内容将显示在此。",
+  "@subscriptions_community_empty": {},
+  "subscriptions_user_empty": "这里空空如也；订阅用户后内容将显示在此。",
+  "@subscriptions_user_empty": {},
+  "subscriptions_domain_empty": "这里空空如也；订阅域名后内容将显示在此。",
+  "@subscriptions_domain_empty": {},
+  "feeds": "订阅源",
+  "@feeds": {},
+  "feeds_empty": "这里空空如也；创建订阅源后内容将显示在此。",
+  "@feeds_empty": {},
+  "feeds_new": "新建订阅源",
+  "@feeds_new": {},
+  "feeds_edit": "编辑订阅源 {feed}",
+  "@feeds_edit": {
+    "placeholders": {
+      "feed": {
+        "type": "String"
+      }
+    }
+  },
+  "feeds_delete": "删除订阅源",
+  "@feeds_delete": {},
+  "feeds_input": "添加输入源",
+  "@feeds_input": {},
+  "feeds_import": "导入订阅源",
+  "@feeds_import": {},
+  "feeds_selectInputs": "选择输入源",
+  "@feeds_selectInputs": {},
+  "settings_feedDefaults_combinedSort": "混合排序",
+  "@settings_feedDefaults_combinedSort": {},
+  "configShare_feed_title": "Interstellar 订阅源",
+  "@configShare_feed_title": {},
+  "configShare_feed_info": "包含 {count} 个输入源",
+  "@configShare_feed_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
