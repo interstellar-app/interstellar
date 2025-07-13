@@ -105,6 +105,9 @@ int commented(PostModel lhs, PostModel rhs) {
   if (inputs.length < 2) {
     return (inputs.first, []);
   }
+  if (inputs.every((input) => input.isEmpty)) {
+    return ([], []);
+  }
 
   final sortFunc = switch (sort) {
     FeedSort.active =>
@@ -279,8 +282,8 @@ class FeedInputState {
           _nextPage = results.first?.nextPage;
         }
 
-        _timelineThreadsLeftover = merged.$2.first;
-        _timelineMicroblogsLeftover = merged.$2.last;
+        _timelineThreadsLeftover = merged.$2.isNotEmpty ? merged.$2.first : [];
+        _timelineMicroblogsLeftover = merged.$2.length > 1 ? merged.$2.last : [];
 
         debugPrint(
           '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_timelinePage)',
