@@ -19,13 +19,13 @@ class ExploreScreen extends StatefulWidget {
   final ExploreType? subOnlyMode;
   final FocusNode? focusNode;
   final void Function(bool, dynamic)? onTap;
-  final Set<String> selected;
+  final Set<String>? selected;
 
   const ExploreScreen({
     this.subOnlyMode,
     this.focusNode,
     this.onTap,
-    this.selected = const {},
+    this.selected,
     super.key,
   });
 
@@ -37,7 +37,7 @@ class _ExploreScreenState extends State<ExploreScreen>
     with AutomaticKeepAliveClientMixin<ExploreScreen> {
   String search = '';
   final searchDebounce = Debouncer(duration: const Duration(milliseconds: 500));
-  late Set<String> _selected;
+  Set<String>? _selected;
 
   ExploreType type = ExploreType.communities;
 
@@ -179,9 +179,10 @@ class _ExploreScreenState extends State<ExploreScreen>
           ExploreType.communities => l(context).subscriptions_community,
           ExploreType.people => l(context).subscriptions_user,
           ExploreType.domains => l(context).subscriptions_domain,
-          _ => _selected.isNotEmpty
-              ? l(context).feeds_selectInputs
-              : '${l(context).explore} ${context.watch<AppController>().instanceHost}',
+          _ =>
+            _selected != null
+                ? l(context).feeds_selectInputs
+                : '${l(context).explore} ${context.watch<AppController>().instanceHost}',
         }),
       ),
       body: RefreshIndicator(
@@ -277,7 +278,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                             padding: chipPadding,
                           ),
                           if (context.watch<AppController>().serverSoftware ==
-                              ServerSoftware.mbin && _selected.isEmpty) ...[
+                                  ServerSoftware.mbin &&
+                              _selected == null) ...[
                             const SizedBox(width: 4),
                             ChoiceChip(
                               label: Text(l(context).domains),
@@ -298,7 +300,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                               padding: chipPadding,
                             ),
                           ],
-                          if (_selected.isEmpty) ...[
+                          if (_selected == null) ...[
                             const SizedBox(width: 4),
                             ChoiceChip(
                               label: Text(l(context).filter_all),
@@ -314,7 +316,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                                                     .read<AppController>()
                                                     .serverSoftware !=
                                                 ServerSoftware.mbin &&
-                                            filter == ExploreFilter.subscribed) {
+                                            filter ==
+                                                ExploreFilter.subscribed) {
                                       filter = ExploreFilter.all;
                                     }
 
@@ -326,7 +329,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                               },
                               padding: chipPadding,
                             ),
-                          ]
+                          ],
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -416,7 +419,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                       onTryAgain: _pagingController.retryLastFailedRequest,
                     ),
                 itemBuilder: (context, item, index) {
-                  final selected = _selected.contains(switch (item) {
+                  final selected = _selected?.contains(switch (item) {
                     DetailedCommunityModel i => i.name,
                     DetailedUserModel i => i.name,
                     DomainModel i => i.name,
@@ -434,9 +437,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                     if (name == null) return;
                     setState(() {
                       if (selected) {
-                        _selected.add(name);
+                        _selected!.add(name);
                       } else {
-                        _selected.remove(name);
+                        _selected!.remove(name);
                       }
                     });
                   }
@@ -450,13 +453,13 @@ class _ExploreScreenState extends State<ExploreScreen>
                         _pagingController.itemList = newList;
                       });
                     },
-                    onTap: _selected.isEmpty || widget.onTap == null
+                    onTap: _selected == null || widget.onTap == null
                         ? null
-                        : () => onSelect(!selected),
-                    button: _selected.isEmpty || widget.onTap == null
+                        : () => onSelect(!selected!),
+                    button: _selected == null || widget.onTap == null
                         ? null
                         : Checkbox(
-                            value: selected,
+                            value: selected!,
                             onChanged: (newValue) => onSelect(newValue!),
                           ),
                   );
