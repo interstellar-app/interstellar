@@ -26,6 +26,16 @@ class SearchListModel with _$SearchListModel {
         items.add(DetailedCommunityModel.fromMbin(actor['object'] as JsonMap));
       }
     }
+    for (var item in json['apObjects']) {
+      var itemType = item['itemType'];
+      if (itemType == 'entry') {
+        items.add(PostModel.fromMbinEntry(item as JsonMap));
+      } else if (itemType == 'post') {
+        items.add(PostModel.fromMbinPost(item as JsonMap));
+      } else if (itemType == 'entry_comment' || itemType == 'post_comment') {
+        items.add(CommentModel.fromMbin(item as JsonMap));
+      }
+    }
     for (var item in json['items']) {
       var itemType = item['itemType'];
       if (itemType == 'entry') {
