@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/account_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
@@ -9,6 +11,7 @@ import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/utils/variables.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +31,7 @@ class _AppHomeState extends State<AppHome> {
   Key _accountKey = UniqueKey();
   final ScrollController _feedScrollController = ScrollController();
   final FocusNode _exploreFocusNode = FocusNode();
+  int _exitCounter = 0;
 
   void _changeNav(int newIndex) {
     if (newIndex == _navIndex) {
@@ -51,7 +55,7 @@ class _AppHomeState extends State<AppHome> {
             }
 
             await ac.switchAccounts(newAccount);
-          } ();
+          }();
           return;
         case 3:
           switchProfileSelect(context);
@@ -62,6 +66,26 @@ class _AppHomeState extends State<AppHome> {
       _navIndex = newIndex;
     });
     _pageController.jumpToPage(_navIndex);
+  }
+
+  void _handleExit(bool didPop, result) async {
+    if (didPop) return;
+    if (_navIndex != 0) {
+      _changeNav(0);
+      return;
+    }
+
+    if (_exitCounter == 0) {
+      _exitCounter++;
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text(l(context).exitMessage)),
+      );
+      Timer(const Duration(seconds: 5), () {
+        _exitCounter = 0;
+      });
+    } else if (context.mounted) {
+      SystemNavigator.pop();
+    }
   }
 
   @override
@@ -78,97 +102,104 @@ class _AppHomeState extends State<AppHome> {
 
     final notCompact = !Breakpoints.isCompact(context);
 
-    return Scaffold(
-      bottomNavigationBar: notCompact
-          ? null
-          : NavigationBar(
-              height: 56,
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-              destinations: [
-                NavigationDestination(
-                  label: l(context).feed,
-                  icon: const Icon(Symbols.home_rounded),
-                  selectedIcon: const Icon(Symbols.home_rounded, fill: 1),
-                ),
-                NavigationDestination(
-                  label: l(context).explore,
-                  icon: const Icon(Symbols.explore_rounded),
-                  selectedIcon: const Icon(Symbols.explore_rounded, fill: 1),
-                ),
-                NavigationDestination(
-                  label: l(context).account,
-                  icon: Wrapper(
-                    shouldWrap: context.watch<AppController>().isLoggedIn,
-                    parentBuilder: (child) => NotificationBadge(child: child),
-                    child: const Icon(Symbols.person_rounded),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _handleExit,
+      child: Scaffold(
+        bottomNavigationBar: notCompact
+            ? null
+            : NavigationBar(
+                height: 56,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                destinations: [
+                  NavigationDestination(
+                    label: l(context).feed,
+                    icon: const Icon(Symbols.home_rounded),
+                    selectedIcon: const Icon(Symbols.home_rounded, fill: 1),
                   ),
-                  selectedIcon: Wrapper(
-                    shouldWrap: context.watch<AppController>().isLoggedIn,
-                    parentBuilder: (child) => NotificationBadge(child: child),
-                    child: const Icon(Symbols.person_rounded, fill: 1),
+                  NavigationDestination(
+                    label: l(context).explore,
+                    icon: const Icon(Symbols.explore_rounded),
+                    selectedIcon: const Icon(Symbols.explore_rounded, fill: 1),
                   ),
-                ),
-                NavigationDestination(
-                  label: l(context).settings,
-                  icon: const Icon(Symbols.settings_rounded),
-                  selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
-                ),
-              ],
-              selectedIndex: _navIndex,
-              onDestinationSelected: _changeNav,
+                  NavigationDestination(
+                    label: l(context).account,
+                    icon: Wrapper(
+                      shouldWrap: context.watch<AppController>().isLoggedIn,
+                      parentBuilder: (child) => NotificationBadge(child: child),
+                      child: const Icon(Symbols.person_rounded),
+                    ),
+                    selectedIcon: Wrapper(
+                      shouldWrap: context.watch<AppController>().isLoggedIn,
+                      parentBuilder: (child) => NotificationBadge(child: child),
+                      child: const Icon(Symbols.person_rounded, fill: 1),
+                    ),
+                  ),
+                  NavigationDestination(
+                    label: l(context).settings,
+                    icon: const Icon(Symbols.settings_rounded),
+                    selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
+                  ),
+                ],
+                selectedIndex: _navIndex,
+                onDestinationSelected: _changeNav,
+              ),
+        body: Row(
+          children: [
+            if (notCompact)
+              NavigationRail(
+                selectedIndex: _navIndex,
+                onDestinationSelected: _changeNav,
+                labelType: NavigationRailLabelType.all,
+                destinations: [
+                  NavigationRailDestination(
+                    label: Text(l(context).feed),
+                    icon: const Icon(Symbols.feed_rounded),
+                    selectedIcon: const Icon(Symbols.feed_rounded, fill: 1),
+                  ),
+                  NavigationRailDestination(
+                    label: Text(l(context).explore),
+                    icon: const Icon(Symbols.explore_rounded),
+                    selectedIcon: const Icon(Symbols.explore_rounded, fill: 1),
+                  ),
+                  NavigationRailDestination(
+                    label: Text(l(context).account),
+                    icon: Wrapper(
+                      shouldWrap: context.watch<AppController>().isLoggedIn,
+                      parentBuilder: (child) => NotificationBadge(child: child),
+                      child: const Icon(Symbols.person_rounded),
+                    ),
+                    selectedIcon: Wrapper(
+                      shouldWrap: context.watch<AppController>().isLoggedIn,
+                      parentBuilder: (child) => NotificationBadge(child: child),
+                      child: const Icon(Symbols.person_rounded, fill: 1),
+                    ),
+                  ),
+                  NavigationRailDestination(
+                    label: Text(l(context).settings),
+                    icon: const Icon(Symbols.settings_rounded),
+                    selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
+                  ),
+                ],
+              ),
+            if (notCompact) const VerticalDivider(thickness: 1, width: 1),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  FeedScreen(
+                    key: _feedKey,
+                    scrollController: _feedScrollController,
+                  ),
+                  ExploreScreen(key: _exploreKey, focusNode: _exploreFocusNode),
+                  AccountScreen(key: _accountKey),
+                  SettingsScreen(),
+                ],
+              ),
             ),
-      body: Row(
-        children: [
-          if (notCompact)
-            NavigationRail(
-              selectedIndex: _navIndex,
-              onDestinationSelected: _changeNav,
-              labelType: NavigationRailLabelType.all,
-              destinations: [
-                NavigationRailDestination(
-                  label: Text(l(context).feed),
-                  icon: const Icon(Symbols.feed_rounded),
-                  selectedIcon: const Icon(Symbols.feed_rounded, fill: 1),
-                ),
-                NavigationRailDestination(
-                  label: Text(l(context).explore),
-                  icon: const Icon(Symbols.explore_rounded),
-                  selectedIcon: const Icon(Symbols.explore_rounded, fill: 1),
-                ),
-                NavigationRailDestination(
-                  label: Text(l(context).account),
-                  icon: Wrapper(
-                    shouldWrap: context.watch<AppController>().isLoggedIn,
-                    parentBuilder: (child) => NotificationBadge(child: child),
-                    child: const Icon(Symbols.person_rounded),
-                  ),
-                  selectedIcon: Wrapper(
-                    shouldWrap: context.watch<AppController>().isLoggedIn,
-                    parentBuilder: (child) => NotificationBadge(child: child),
-                    child: const Icon(Symbols.person_rounded, fill: 1),
-                  ),
-                ),
-                NavigationRailDestination(
-                  label: Text(l(context).settings),
-                  icon: const Icon(Symbols.settings_rounded),
-                  selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
-                ),
-              ],
-            ),
-          if (notCompact) const VerticalDivider(thickness: 1, width: 1),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                FeedScreen(key: _feedKey, scrollController: _feedScrollController),
-                ExploreScreen(key: _exploreKey, focusNode: _exploreFocusNode),
-                AccountScreen(key: _accountKey),
-                SettingsScreen(),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
