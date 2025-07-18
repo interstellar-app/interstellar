@@ -24,9 +24,7 @@ import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
-import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
-import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
@@ -49,7 +47,6 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   DetailedUserModel? _data;
-  TextEditingController? _messageController;
   late FeedSort _sort;
 
   @override
@@ -93,10 +90,6 @@ class _UserScreenState extends State<UserScreen> {
     final globalName = user.name.contains('@')
         ? '@${user.name}'
         : '@${user.name}@${ac.instanceHost}';
-
-    final messageDraftController = context.watch<DraftsController>().auto(
-      'message:${ac.instanceHost}:${user.name}',
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -254,10 +247,11 @@ class _UserScreenState extends State<UserScreen> {
                                 if (isLoggedIn && !isMyUser)
                                   IconButton(
                                     onPressed: () {
-                                      setState(() {
-                                        _messageController =
-                                            TextEditingController();
-                                      });
+                                      pushRoute(context, builder: (context) =>
+                                          MessageThreadScreen(
+                                        threadId: null,
+                                        otherUserId: _data!.id,
+                                      ));
                                     },
                                     icon: const Icon(Symbols.mail_rounded),
                                     tooltip: 'Send message',
@@ -342,60 +336,6 @@ class _UserScreenState extends State<UserScreen> {
                             ),
                           ],
                         ),
-                        if (_messageController != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Column(
-                              children: [
-                                MarkdownEditor(
-                                  _messageController!,
-                                  originInstance: null,
-                                  draftController: messageDraftController,
-                                  label: 'Message',
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    OutlinedButton(
-                                      onPressed: () async {
-                                        setState(() {
-                                          _messageController = null;
-                                        });
-                                      },
-                                      child: Text(l(context).cancel),
-                                    ),
-                                    LoadingFilledButton(
-                                      onPressed: () async {
-                                        final newThread = await ac.api.messages
-                                            .create(
-                                              user.id,
-                                              _messageController!.text,
-                                            );
-
-                                        await messageDraftController.discard();
-
-                                        setState(() {
-                                          _messageController = null;
-
-                                          pushRoute(
-                                            context,
-                                            builder: (context) =>
-                                                MessageThreadScreen(
-                                                  threadId: newThread.id,
-                                                  initData: newThread,
-                                                ),
-                                          );
-                                        });
-                                      },
-                                      label: Text(l(context).send),
-                                      uesHaptics: true,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
                         if (user.about != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 16),

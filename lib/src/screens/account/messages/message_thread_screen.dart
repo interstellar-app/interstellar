@@ -15,12 +15,14 @@ import 'package:provider/provider.dart';
 class MessageThreadScreen extends StatefulWidget {
   const MessageThreadScreen({
     required this.threadId,
+    this.otherUserId,
     this.initData,
     this.onUpdate,
     super.key,
   });
 
-  final int threadId;
+  final int? threadId;
+  final int? otherUserId;
   final MessageThreadModel? initData;
   final void Function(MessageThreadModel)? onUpdate;
 
@@ -36,11 +38,19 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       PagingController(firstPageKey: '');
 
   int? _userId;
+  int? _threadId;
+  int? _otherUserId;
 
   @override
   void initState() {
     super.initState();
 
+    _threadId =
+        widget.threadId ??
+        (context.read<AppController>().serverSoftware != ServerSoftware.mbin
+            ? widget.otherUserId
+            : null);
+    _otherUserId = widget.otherUserId;
     _data = widget.initData;
     if (_data != null) {
       _pagingController.appendPage(_data!.messages, '');
@@ -50,6 +60,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   }
 
   Future<void> _fetchPage(String pageKey) async {
+    if (_threadId == null) {
+      _pagingController.appendLastPage([]);
+    }
     try {
       // Need to have user id for Lemmy and PieFed
       if (_userId == null &&
@@ -65,7 +78,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
           .api
           .messages
           .getThreadWithMessages(
-            threadId: widget.threadId,
+            threadId: _threadId!,
             page: nullIfEmpty(pageKey),
             myUserId: _userId,
           );
@@ -128,14 +141,19 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                       children: [
                         LoadingFilledButton(
                           onPressed: () async {
-                            final newThread = await context
-                                .read<AppController>()
-                                .api
-                                .messages
-                                .postThreadReply(
-                                  widget.threadId,
-                                  _controller.text,
-                                );
+                            final ac = context.read<AppController>();
+                            MessageThreadModel newThread;
+                            if (_threadId == null) {
+                              newThread = await ac.api.messages.create(
+                                _otherUserId!,
+                                _controller.text,
+                              );
+                            } else {
+                              newThread = await ac.api.messages.postThreadReply(
+                                _threadId!,
+                                _controller.text,
+                              );
+                            }
 
                             await messageDraftController.discard();
 

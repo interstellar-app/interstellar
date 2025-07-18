@@ -3,10 +3,12 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/message.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
+import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'message_item.dart';
 import 'message_thread_screen.dart';
 
@@ -71,44 +73,75 @@ class _MessagesScreenState extends State<MessagesScreen>
 
     return RefreshIndicator(
       onRefresh: () => Future.sync(() => _pagingController.refresh()),
-      child: CustomScrollView(
-        slivers: [
-          PagedSliverList(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<MessageThreadModel>(
-              firstPageErrorIndicatorBuilder: (context) =>
-                  FirstPageErrorIndicator(
-                    error: _pagingController.error,
-                    onTryAgain: _pagingController.retryLastFailedRequest,
-                  ),
-              newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
-                error: _pagingController.error,
-                onTryAgain: _pagingController.retryLastFailedRequest,
-              ),
-              itemBuilder: (context, item, index) => MessageItem(
-                item,
-                (newValue) {
-                  var newList = _pagingController.itemList;
-                  newList![index] = newValue;
-                  setState(() {
-                    _pagingController.itemList = newList;
-                  });
-                },
-                onClick: () => pushRoute(
-                  context,
-                  builder: (context) => MessageThreadScreen(
-                    threadId: item.id,
-                    initData: item,
-                    onUpdate: (newValue) {
+      child: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              PagedSliverList(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<MessageThreadModel>(
+                  firstPageErrorIndicatorBuilder: (context) =>
+                      FirstPageErrorIndicator(
+                        error: _pagingController.error,
+                        onTryAgain: _pagingController.retryLastFailedRequest,
+                      ),
+                  newPageErrorIndicatorBuilder: (context) =>
+                      NewPageErrorIndicator(
+                        error: _pagingController.error,
+                        onTryAgain: _pagingController.retryLastFailedRequest,
+                      ),
+                  itemBuilder: (context, item, index) => MessageItem(
+                    item,
+                    (newValue) {
                       var newList = _pagingController.itemList;
                       newList![index] = newValue;
                       setState(() {
                         _pagingController.itemList = newList;
                       });
                     },
+                    onClick: () => pushRoute(
+                      context,
+                      builder: (context) => MessageThreadScreen(
+                        threadId: item.id,
+                        initData: item,
+                        onUpdate: (newValue) {
+                          var newList = _pagingController.itemList;
+                          newList![index] = newValue;
+                          setState(() {
+                            _pagingController.itemList = newList;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),
+            ],
+          ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: FloatingActionButton(
+              heroTag: 'new-message',
+              onPressed: () {
+                pushRoute(
+                  context,
+                  builder: (context) => ExploreScreen(
+                    mode: ExploreType.people,
+                    onTap: (selected, item) {
+                      Navigator.of(context).pop();
+                      pushRoute(
+                        context,
+                        builder: (context) => MessageThreadScreen(
+                          threadId: null,
+                          otherUserId: (item as DetailedUserModel).id,
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              child: const Icon(Symbols.add_rounded),
             ),
           ),
         ],

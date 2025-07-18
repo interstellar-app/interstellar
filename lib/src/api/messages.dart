@@ -135,7 +135,21 @@ class APIMessages {
         ).items.first;
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        final path = '/private_message';
+
+        final response = await client.post(
+            path,
+            body: {'recipient_id': userId, 'content': body}
+        );
+
+        final json = response.bodyJson;
+
+        return MessageListModel.fromPiefed(
+          {
+            'private_messages': [json['private_message_view']],
+          },
+          (json as dynamic)['private_message_view']['creator']['id'] as int,
+        ).items.first;
     }
   }
 
@@ -155,7 +169,7 @@ class APIMessages {
         return await create(threadId, body);
 
       case ServerSoftware.piefed:
-        throw UnimplementedError();
+        return await create(threadId, body);
     }
   }
 }

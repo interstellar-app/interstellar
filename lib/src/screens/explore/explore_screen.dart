@@ -16,13 +16,15 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 
 class ExploreScreen extends StatefulWidget {
-  final ExploreType? subOnlyMode;
+  final ExploreType? mode;
+  final bool subOnly;
   final FocusNode? focusNode;
   final void Function(bool, dynamic)? onTap;
   final Set<String>? selected;
 
   const ExploreScreen({
-    this.subOnlyMode,
+    this.mode,
+    this.subOnly = false,
     this.focusNode,
     this.onTap,
     this.selected,
@@ -57,8 +59,10 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     _selected = widget.selected;
 
-    if (widget.subOnlyMode != null) {
-      type = widget.subOnlyMode!;
+    if (widget.mode != null) {
+      type = widget.mode!;
+    }
+    if (widget.subOnly) {
       filter = ExploreFilter.subscribed;
     }
 
@@ -175,7 +179,7 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(switch (widget.subOnlyMode) {
+        title: Text(switch (widget.mode) {
           ExploreType.communities => l(context).subscriptions_community,
           ExploreType.people => l(context).subscriptions_user,
           ExploreType.domains => l(context).subscriptions_domain,
@@ -189,7 +193,7 @@ class _ExploreScreenState extends State<ExploreScreen>
         onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           slivers: [
-            if (widget.subOnlyMode == null)
+            if (!widget.subOnly)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -226,61 +230,70 @@ class _ExploreScreenState extends State<ExploreScreen>
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          ChoiceChip(
-                            label: Text(l(context).communities),
-                            selected: type == ExploreType.communities,
-                            onSelected: (bool selected) {
-                              if (selected) {
-                                setState(() {
-                                  type = ExploreType.communities;
-                                  _pagingController.refresh();
-                                });
-                              }
-                            },
-                            padding: chipPadding,
-                          ),
-                          const SizedBox(width: 4),
-                          ChoiceChip(
-                            label: Text(l(context).people),
-                            selected: type == ExploreType.people,
-                            onSelected: (bool selected) {
-                              if (selected) {
-                                setState(() {
-                                  type = ExploreType.people;
+                          if (widget.mode == null ||
+                              widget.mode == ExploreType.communities) ...[
+                            ChoiceChip(
+                              label: Text(l(context).communities),
+                              selected: type == ExploreType.communities,
+                              onSelected: (bool selected) {
+                                if (selected) {
+                                  setState(() {
+                                    type = ExploreType.communities;
+                                    _pagingController.refresh();
+                                  });
+                                }
+                              },
+                              padding: chipPadding,
+                            ),
+                            const SizedBox(width: 4),
+                          ],
+                          if (widget.mode == null ||
+                              widget.mode == ExploreType.people) ...[
+                            ChoiceChip(
+                              label: Text(l(context).people),
+                              selected: type == ExploreType.people,
+                              onSelected: (bool selected) {
+                                if (selected) {
+                                  setState(() {
+                                    type = ExploreType.people;
 
-                                  // Reset explore filter in the following cases:
-                                  if (
-                                  // Using Mbin and filter is set to local
-                                  context
-                                                  .read<AppController>()
-                                                  .serverSoftware ==
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.local ||
-                                      // Using Lemmy or PieFed and filter is set to subscribed
-                                      context
-                                                  .read<AppController>()
-                                                  .serverSoftware !=
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.subscribed ||
-                                      // Using Lemmy or PieFed and filter is set to moderated
-                                      context
-                                                  .read<AppController>()
-                                                  .serverSoftware !=
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.moderated) {
-                                    filter = ExploreFilter.all;
-                                  }
+                                    // Reset explore filter in the following cases:
+                                    if (
+                                    // Using Mbin and filter is set to local
+                                    context
+                                                    .read<AppController>()
+                                                    .serverSoftware ==
+                                                ServerSoftware.mbin &&
+                                            filter == ExploreFilter.local ||
+                                        // Using Lemmy or PieFed and filter is set to subscribed
+                                        context
+                                                    .read<AppController>()
+                                                    .serverSoftware !=
+                                                ServerSoftware.mbin &&
+                                            filter ==
+                                                ExploreFilter.subscribed ||
+                                        // Using Lemmy or PieFed and filter is set to moderated
+                                        context
+                                                    .read<AppController>()
+                                                    .serverSoftware !=
+                                                ServerSoftware.mbin &&
+                                            filter == ExploreFilter.moderated) {
+                                      filter = ExploreFilter.all;
+                                    }
 
-                                  _pagingController.refresh();
-                                });
-                              }
-                            },
-                            padding: chipPadding,
-                          ),
+                                    _pagingController.refresh();
+                                  });
+                                }
+                              },
+                              padding: chipPadding,
+                            ),
+                            const SizedBox(width: 4),
+                          ],
                           if (context.watch<AppController>().serverSoftware ==
                                   ServerSoftware.mbin &&
-                              _selected == null) ...[
-                            const SizedBox(width: 4),
+                              _selected == null &&
+                              (widget.mode == null ||
+                                  widget.mode == ExploreType.domains)) ...[
                             ChoiceChip(
                               label: Text(l(context).domains),
                               selected: type == ExploreType.domains,
@@ -299,9 +312,11 @@ class _ExploreScreenState extends State<ExploreScreen>
                               },
                               padding: chipPadding,
                             ),
-                          ],
-                          if (_selected == null) ...[
                             const SizedBox(width: 4),
+                          ],
+                          if (_selected == null &&
+                              (widget.mode == null ||
+                                  widget.mode == ExploreType.all)) ...[
                             ChoiceChip(
                               label: Text(l(context).filter_all),
                               selected: type == ExploreType.all,
@@ -453,8 +468,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                         _pagingController.itemList = newList;
                       });
                     },
-                    onTap: _selected == null || widget.onTap == null
-                        ? null
+                    onTap: _selected == null
+                        ? widget.onTap == null
+                              ? null
+                              : () => widget.onTap!(true, item)
                         : () => onSelect(!selected!),
                     button: _selected == null || widget.onTap == null
                         ? null

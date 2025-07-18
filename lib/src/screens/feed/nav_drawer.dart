@@ -331,7 +331,8 @@ class _NavDrawerState extends State<NavDrawer> {
                   onPressed: () => pushRoute(
                     context,
                     builder: (context) => const ExploreScreen(
-                      subOnlyMode: ExploreType.communities,
+                      mode: ExploreType.communities,
+                      subOnly: true,
                     ),
                   ),
                   child: Text(l(context).subscriptions_community_all),
@@ -408,7 +409,10 @@ class _NavDrawerState extends State<NavDrawer> {
                     onPressed: () => pushRoute(
                       context,
                       builder: (context) =>
-                          const ExploreScreen(subOnlyMode: ExploreType.people),
+                          const ExploreScreen(
+                            mode: ExploreType.people,
+                            subOnly: true
+                          ),
                     ),
                     child: Text(l(context).subscriptions_user_all),
                   ),
@@ -472,7 +476,10 @@ class _NavDrawerState extends State<NavDrawer> {
                     onPressed: () => pushRoute(
                       context,
                       builder: (context) =>
-                          const ExploreScreen(subOnlyMode: ExploreType.domains),
+                          const ExploreScreen(
+                            mode: ExploreType.domains,
+                            subOnly: true
+                          ),
                     ),
                     child: Text(l(context).subscriptions_domain_all),
                   ),
