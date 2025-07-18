@@ -3,7 +3,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/message.dart';
-import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -128,13 +127,14 @@ class _MessagesScreenState extends State<MessagesScreen>
                   context,
                   builder: (context) => ExploreScreen(
                     mode: ExploreType.people,
+                    title: 'New chat',
                     onTap: (selected, item) {
                       Navigator.of(context).pop();
                       pushRoute(
                         context,
                         builder: (context) => MessageThreadScreen(
                           threadId: null,
-                          otherUserId: (item as DetailedUserModel).id,
+                          otherUser: item,
                         ),
                       );
                     },

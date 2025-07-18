@@ -250,7 +250,7 @@ class _UserScreenState extends State<UserScreen> {
                                       pushRoute(context, builder: (context) =>
                                           MessageThreadScreen(
                                         threadId: null,
-                                        otherUserId: _data!.id,
+                                        otherUser: _data,
                                       ));
                                     },
                                     icon: const Icon(Symbols.mail_rounded),

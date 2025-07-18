@@ -12,17 +12,19 @@ import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/user.dart';
+
 class MessageThreadScreen extends StatefulWidget {
   const MessageThreadScreen({
     required this.threadId,
-    this.otherUserId,
+    this.otherUser,
     this.initData,
     this.onUpdate,
     super.key,
   });
 
   final int? threadId;
-  final int? otherUserId;
+  final DetailedUserModel? otherUser;
   final MessageThreadModel? initData;
   final void Function(MessageThreadModel)? onUpdate;
 
@@ -48,9 +50,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     _threadId =
         widget.threadId ??
         (context.read<AppController>().serverSoftware != ServerSoftware.mbin
-            ? widget.otherUserId
+            ? widget.otherUser?.id
             : null);
-    _otherUserId = widget.otherUserId;
+    _otherUserId = widget.otherUser?.id;
     _data = widget.initData;
     if (_data != null) {
       _pagingController.appendPage(_data!.messages, '');
@@ -111,7 +113,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     final messageUser = _data?.participants.firstWhere(
       (user) => user.name != myUsername,
       orElse: () => _data!.participants.first,
-    );
+    ) ?? widget.otherUser;
 
     final messageDraftController = context.watch<DraftsController>().auto(
       'message:${context.watch<AppController>().instanceHost}:${messageUser?.name}',
@@ -161,6 +163,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
 
                             setState(() {
                               _data = newThread;
+                              _threadId = newThread.id;
 
                               var newList = _pagingController.itemList;
                               newList?.insert(0, newThread.messages.first);
