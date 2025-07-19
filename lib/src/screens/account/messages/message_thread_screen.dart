@@ -12,15 +12,19 @@ import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/user.dart';
+
 class MessageThreadScreen extends StatefulWidget {
   const MessageThreadScreen({
     required this.threadId,
+    this.otherUser,
     this.initData,
     this.onUpdate,
     super.key,
   });
 
-  final int threadId;
+  final int? threadId;
+  final DetailedUserModel? otherUser;
   final MessageThreadModel? initData;
   final void Function(MessageThreadModel)? onUpdate;
 
@@ -36,11 +40,19 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
       PagingController(firstPageKey: '');
 
   int? _userId;
+  int? _threadId;
+  int? _otherUserId;
 
   @override
   void initState() {
     super.initState();
 
+    _threadId =
+        widget.threadId ??
+        (context.read<AppController>().serverSoftware != ServerSoftware.mbin
+            ? widget.otherUser?.id
+            : null);
+    _otherUserId = widget.otherUser?.id;
     _data = widget.initData;
     if (_data != null) {
       _pagingController.appendPage(_data!.messages, '');
@@ -50,6 +62,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   }
 
   Future<void> _fetchPage(String pageKey) async {
+    if (_threadId == null) {
+      _pagingController.appendLastPage([]);
+    }
     try {
       // Need to have user id for Lemmy and PieFed
       if (_userId == null &&
@@ -65,7 +80,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
           .api
           .messages
           .getThreadWithMessages(
-            threadId: widget.threadId,
+            threadId: _threadId!,
             page: nullIfEmpty(pageKey),
             myUserId: _userId,
           );
@@ -98,7 +113,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     final messageUser = _data?.participants.firstWhere(
       (user) => user.name != myUsername,
       orElse: () => _data!.participants.first,
-    );
+    ) ?? widget.otherUser;
 
     final messageDraftController = context.watch<DraftsController>().auto(
       'message:${context.watch<AppController>().instanceHost}:${messageUser?.name}',
@@ -128,14 +143,19 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                       children: [
                         LoadingFilledButton(
                           onPressed: () async {
-                            final newThread = await context
-                                .read<AppController>()
-                                .api
-                                .messages
-                                .postThreadReply(
-                                  widget.threadId,
-                                  _controller.text,
-                                );
+                            final ac = context.read<AppController>();
+                            MessageThreadModel newThread;
+                            if (_threadId == null) {
+                              newThread = await ac.api.messages.create(
+                                _otherUserId!,
+                                _controller.text,
+                              );
+                            } else {
+                              newThread = await ac.api.messages.postThreadReply(
+                                _threadId!,
+                                _controller.text,
+                              );
+                            }
 
                             await messageDraftController.discard();
 
@@ -143,6 +163,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
 
                             setState(() {
                               _data = newThread;
+                              _threadId = newThread.id;
 
                               var newList = _pagingController.itemList;
                               newList?.insert(0, newThread.messages.first);

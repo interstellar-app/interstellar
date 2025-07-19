@@ -16,16 +16,20 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 
 class ExploreScreen extends StatefulWidget {
-  final ExploreType? subOnlyMode;
+  final ExploreType? mode;
+  final bool subOnly;
   final FocusNode? focusNode;
   final void Function(bool, dynamic)? onTap;
   final Set<String>? selected;
+  final String? title;
 
   const ExploreScreen({
-    this.subOnlyMode,
+    this.mode,
+    this.subOnly = false,
     this.focusNode,
     this.onTap,
     this.selected,
+    this.title,
     super.key,
   });
 
@@ -57,8 +61,10 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     _selected = widget.selected;
 
-    if (widget.subOnlyMode != null) {
-      type = widget.subOnlyMode!;
+    if (widget.mode != null) {
+      type = widget.mode!;
+    }
+    if (widget.subOnly) {
       filter = ExploreFilter.subscribed;
     }
 
@@ -173,23 +179,28 @@ class _ExploreScreenState extends State<ExploreScreen>
       type,
     ).getOption(filter);
 
+    final ac = context.watch<AppController>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(switch (widget.subOnlyMode) {
-          ExploreType.communities => l(context).subscriptions_community,
-          ExploreType.people => l(context).subscriptions_user,
-          ExploreType.domains => l(context).subscriptions_domain,
-          _ =>
-            _selected != null
-                ? l(context).feeds_selectInputs
-                : '${l(context).explore} ${context.watch<AppController>().instanceHost}',
-        }),
+        title: Text(
+          widget.title ??
+              switch (widget.mode) {
+                ExploreType.communities => l(context).subscriptions_community,
+                ExploreType.people => l(context).subscriptions_user,
+                ExploreType.domains => l(context).subscriptions_domain,
+                _ =>
+                  _selected != null
+                      ? l(context).feeds_selectInputs
+                      : '${l(context).explore} ${ac.instanceHost}',
+              },
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           slivers: [
-            if (widget.subOnlyMode == null)
+            if (!widget.subOnly)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -205,8 +216,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           });
                         },
                         enabled:
-                            !(context.watch<AppController>().serverSoftware ==
-                                    ServerSoftware.mbin &&
+                            !(ac.serverSoftware == ServerSoftware.mbin &&
                                 (filter != ExploreFilter.all &&
                                     filter != ExploreFilter.local)),
                         decoration: InputDecoration(
@@ -224,104 +234,47 @@ class _ExploreScreenState extends State<ExploreScreen>
                         },
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          ChoiceChip(
-                            label: Text(l(context).communities),
-                            selected: type == ExploreType.communities,
-                            onSelected: (bool selected) {
-                              if (selected) {
-                                setState(() {
-                                  type = ExploreType.communities;
-                                  _pagingController.refresh();
-                                });
-                              }
-                            },
-                            padding: chipPadding,
-                          ),
-                          const SizedBox(width: 4),
-                          ChoiceChip(
-                            label: Text(l(context).people),
-                            selected: type == ExploreType.people,
-                            onSelected: (bool selected) {
-                              if (selected) {
-                                setState(() {
-                                  type = ExploreType.people;
-
-                                  // Reset explore filter in the following cases:
-                                  if (
-                                  // Using Mbin and filter is set to local
-                                  context
-                                                  .read<AppController>()
-                                                  .serverSoftware ==
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.local ||
-                                      // Using Lemmy or PieFed and filter is set to subscribed
-                                      context
-                                                  .read<AppController>()
-                                                  .serverSoftware !=
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.subscribed ||
-                                      // Using Lemmy or PieFed and filter is set to moderated
-                                      context
-                                                  .read<AppController>()
-                                                  .serverSoftware !=
-                                              ServerSoftware.mbin &&
-                                          filter == ExploreFilter.moderated) {
-                                    filter = ExploreFilter.all;
-                                  }
-
-                                  _pagingController.refresh();
-                                });
-                              }
-                            },
-                            padding: chipPadding,
-                          ),
-                          if (context.watch<AppController>().serverSoftware ==
-                                  ServerSoftware.mbin &&
-                              _selected == null) ...[
-                            const SizedBox(width: 4),
+                      if (widget.mode == null)
+                        Row(
+                          children: [
                             ChoiceChip(
-                              label: Text(l(context).domains),
-                              selected: type == ExploreType.domains,
+                              label: Text(l(context).communities),
+                              selected: type == ExploreType.communities,
                               onSelected: (bool selected) {
                                 if (selected) {
                                   setState(() {
-                                    type = ExploreType.domains;
-
-                                    if (filter == ExploreFilter.local ||
-                                        filter == ExploreFilter.moderated) {
-                                      filter = ExploreFilter.all;
-                                    }
+                                    type = ExploreType.communities;
                                     _pagingController.refresh();
                                   });
                                 }
                               },
                               padding: chipPadding,
                             ),
-                          ],
-                          if (_selected == null) ...[
                             const SizedBox(width: 4),
                             ChoiceChip(
-                              label: Text(l(context).filter_all),
-                              selected: type == ExploreType.all,
+                              label: Text(l(context).people),
+                              selected: type == ExploreType.people,
                               onSelected: (bool selected) {
                                 if (selected) {
                                   setState(() {
-                                    if (context
-                                                .read<AppController>()
-                                                .serverSoftware ==
-                                            ServerSoftware.mbin ||
-                                        context
-                                                    .read<AppController>()
-                                                    .serverSoftware !=
+                                    type = ExploreType.people;
+
+                                    // Reset explore filter in the following cases:
+                                    if (
+                                    // Using Mbin and filter is set to local
+                                    ac.serverSoftware == ServerSoftware.mbin &&
+                                            filter == ExploreFilter.local ||
+                                        // Using Lemmy or PieFed and filter is set to subscribed
+                                        ac.serverSoftware !=
                                                 ServerSoftware.mbin &&
                                             filter ==
-                                                ExploreFilter.subscribed) {
+                                                ExploreFilter.subscribed ||
+                                        // Using Lemmy or PieFed and filter is set to moderated
+                                        ac.serverSoftware !=
+                                                ServerSoftware.mbin &&
+                                            filter == ExploreFilter.moderated) {
                                       filter = ExploreFilter.all;
                                     }
-
-                                    type = ExploreType.all;
 
                                     _pagingController.refresh();
                                   });
@@ -329,9 +282,56 @@ class _ExploreScreenState extends State<ExploreScreen>
                               },
                               padding: chipPadding,
                             ),
+                            const SizedBox(width: 4),
+                            if (ac.serverSoftware == ServerSoftware.mbin &&
+                                _selected == null) ...[
+                              ChoiceChip(
+                                label: Text(l(context).domains),
+                                selected: type == ExploreType.domains,
+                                onSelected: (bool selected) {
+                                  if (selected) {
+                                    setState(() {
+                                      type = ExploreType.domains;
+
+                                      if (filter == ExploreFilter.local ||
+                                          filter == ExploreFilter.moderated) {
+                                        filter = ExploreFilter.all;
+                                      }
+                                      _pagingController.refresh();
+                                    });
+                                  }
+                                },
+                                padding: chipPadding,
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                            if (_selected == null) ...[
+                              ChoiceChip(
+                                label: Text(l(context).filter_all),
+                                selected: type == ExploreType.all,
+                                onSelected: (bool selected) {
+                                  if (selected) {
+                                    setState(() {
+                                      if (ac.serverSoftware ==
+                                              ServerSoftware.mbin ||
+                                          ac.serverSoftware !=
+                                                  ServerSoftware.mbin &&
+                                              filter ==
+                                                  ExploreFilter.subscribed) {
+                                        filter = ExploreFilter.all;
+                                      }
+
+                                      type = ExploreType.all;
+
+                                      _pagingController.refresh();
+                                    });
+                                  }
+                                },
+                                padding: chipPadding,
+                              ),
+                            ],
                           ],
-                        ],
-                      ),
+                        ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -347,8 +347,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                               ],
                             ),
                             onPressed:
-                                context.read<AppController>().serverSoftware ==
-                                        ServerSoftware.mbin &&
+                                ac.serverSoftware == ServerSoftware.mbin &&
                                     type == ExploreType.all
                                 ? null
                                 : () async {
@@ -380,8 +379,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             // For Mbin, sorting only works for communities, and only
                             // when the all or local filters are enabled
                             onPressed:
-                                context.watch<AppController>().serverSoftware ==
-                                        ServerSoftware.mbin &&
+                                ac.serverSoftware == ServerSoftware.mbin &&
                                     ((filter != ExploreFilter.all &&
                                             filter != ExploreFilter.local) ||
                                         type != ExploreType.communities)
@@ -453,8 +451,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                         _pagingController.itemList = newList;
                       });
                     },
-                    onTap: _selected == null || widget.onTap == null
-                        ? null
+                    onTap: _selected == null
+                        ? widget.onTap == null
+                              ? null
+                              : () => widget.onTap!(true, item)
                         : () => onSelect(!selected!),
                     button: _selected == null || widget.onTap == null
                         ? null
