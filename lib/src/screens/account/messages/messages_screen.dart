@@ -128,15 +128,16 @@ class _MessagesScreenState extends State<MessagesScreen>
                   builder: (context) => ExploreScreen(
                     mode: ExploreType.people,
                     title: 'New chat',
-                    onTap: (selected, item) {
+                    onTap: (selected, item) async {
                       Navigator.of(context).pop();
-                      pushRoute(
+                      await pushRoute(
                         context,
                         builder: (context) => MessageThreadScreen(
                           threadId: null,
                           otherUser: item,
                         ),
                       );
+                      _pagingController.refresh();
                     },
                   ),
                 );
