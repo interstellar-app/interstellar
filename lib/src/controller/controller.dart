@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,7 +16,10 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
+import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/constants.dart';
@@ -92,8 +96,23 @@ class AppController with ChangeNotifier {
   late SimplyTranslator _translator;
   SimplyTranslator get translator => _translator;
 
+  late Logger _logger;
+  Logger get logger => _logger;
+
+  Future<File> get logFile async {
+    final logDir = await getApplicationSupportDirectory();
+    final logFile = join(logDir.path, 'log.log');
+    return File(logFile);
+  }
+
   Future<void> init() async {
     refreshState = () {};
+    _logger = Logger(
+      printer: SimplePrinter(printTime: true, colors: false),
+      output: FileOutput(file: await logFile),
+      filter: ProductionFilter()
+    );
+    logger.i('Initializing interstellar');
 
     final mainProfileTemp = await _mainProfileRecord.get(db) as String?;
     if (mainProfileTemp != null) {
@@ -165,6 +184,7 @@ class AppController with ChangeNotifier {
     _translator = SimplyTranslator(EngineType.libre);
 
     await _updateAPI();
+    logger.i('Finished init');
   }
 
   Future<void> _rebuildProfile() async {
@@ -202,6 +222,8 @@ class AppController with ChangeNotifier {
   Future<void> switchProfiles(String? newProfile) async {
     if (newProfile == null) return;
     if (newProfile == _selectedProfile) return;
+
+    logger.i('Switch profiles $_selectedProfile -> $newProfile');
 
     _selectedProfile = newProfile;
     await _selectedProfileRecord.put(db, _selectedProfile);
@@ -391,6 +413,8 @@ class AppController with ChangeNotifier {
   Future<void> switchAccounts(String? newAccount) async {
     if (newAccount == null) return;
     if (newAccount == _selectedAccount) return;
+
+    logger.i('Switch accounts $_selectedAccount -> $newAccount');
 
     _selectedAccount = newAccount;
     await _updateAPI();

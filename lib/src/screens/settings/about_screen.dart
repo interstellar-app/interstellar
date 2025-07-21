@@ -7,6 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+import 'debug/debug_screen.dart';
+
 const _donateLink = 'https://github.com/sponsors/jwr1';
 const _contributeLink = 'https://github.com/interstellar-app/interstellar';
 const _translateLink =
@@ -50,6 +52,14 @@ class _AboutScreenState extends State<AboutScreen> {
       appBar: AppBar(title: Text(l(context).settings_aboutInterstellar)),
       body: ListView(
         children: [
+          ListTile(
+            leading: const Icon(Symbols.bug_report_rounded),
+            title: Text(l(context).settings_debug),
+            onTap: () => pushRoute(
+                context,
+                builder: (context) => const DebugSettingsScreen()
+            ),
+          ),
           ListTile(
             leading: const Icon(Symbols.favorite_rounded),
             title: Text(l(context).settings_donate),

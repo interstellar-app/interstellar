@@ -74,6 +74,7 @@ class ProfileRequired with _$ProfileRequired {
     required double swipeActionThreshold,
     // Filter list activations
     required Map<String, bool> filterLists,
+    required bool showErrors,
   }) = _ProfileRequired;
 
   factory ProfileRequired.fromJson(JsonMap json) =>
@@ -176,6 +177,7 @@ class ProfileRequired with _$ProfileRequired {
     swipeActionThreshold:
         profile?.swipeActionThreshold ?? defaultProfile.swipeActionThreshold,
     filterLists: profile?.filterLists ?? defaultProfile.filterLists,
+    showErrors: profile?.showErrors ?? defaultProfile.showErrors,
   );
 
   static const defaultProfile = ProfileRequired(
@@ -227,6 +229,7 @@ class ProfileRequired with _$ProfileRequired {
     swipeActionRightLong: SwipeAction.reply,
     swipeActionThreshold: 0.20,
     filterLists: {},
+    showErrors: true,
   );
 }
 
@@ -290,6 +293,7 @@ class ProfileOptional with _$ProfileOptional {
     required double? swipeActionThreshold,
     // Filter list activations
     required Map<String, bool>? filterLists,
+    required bool? showErrors,
   }) = _ProfileOptional;
 
   factory ProfileOptional.fromJson(JsonMap json) =>
@@ -344,6 +348,7 @@ class ProfileOptional with _$ProfileOptional {
     swipeActionRightLong: null,
     swipeActionThreshold: null,
     filterLists: null,
+    showErrors: null,
   );
 
   ProfileOptional merge(ProfileOptional? other) {
@@ -422,6 +427,7 @@ class ProfileOptional with _$ProfileOptional {
       filterLists: filterLists != null && other.filterLists != null
           ? {...filterLists!, ...other.filterLists!}
           : other.filterLists ?? filterLists,
+      showErrors: other.showErrors ?? showErrors,
     );
   }
 

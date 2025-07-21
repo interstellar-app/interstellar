@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -285,7 +284,7 @@ class FeedInputState {
         _timelineThreadsLeftover = merged.$2.isNotEmpty ? merged.$2.first : [];
         _timelineMicroblogsLeftover = merged.$2.length > 1 ? merged.$2.last : [];
 
-        debugPrint(
+        ac.logger.i(
           '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_timelinePage)',
         );
 
@@ -377,8 +376,8 @@ class FeedAggregator {
       }
     }
 
-    debugPrint(
-      'Aggregator fetch($pageKey, $view, $sort) -> (${result.length}, ${merged.$2.map((i) => i.length).toList()})\n---------------------------------------------------------------------',
+    ac.logger.i(
+      'Feed fetch($pageKey, $view, $sort) -> (${result.length}, ${merged.$2.map((i) => i.length).toList()})',
     );
 
     // check for read status
