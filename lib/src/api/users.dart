@@ -437,7 +437,7 @@ class APIUsers {
 
         const path = '/user/save_user_settings';
 
-        final response = await client.put(path, body: {'banner': imageUrl});
+        final response = await client.put(path, body: {'cover': imageUrl});
 
         return null;
     }
@@ -461,7 +461,7 @@ class APIUsers {
       case ServerSoftware.piefed:
         const path = '/user/save_user_settings';
 
-        final response = await client.put(path, body: {'banner': ''});
+        final response = await client.put(path, body: {'cover': ''});
 
         return null;
     }
