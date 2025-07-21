@@ -199,6 +199,7 @@
       }
     }
   },
+  "settings_debug": "Debug",
   "settings_about": "About",
   "settings_defaultCreateLanguage": "Default post/comment creation language",
   "settings_useAccountLanguageFilter": "Use account language filter",
@@ -290,6 +291,11 @@
   "settings_swipeActionRightLong": "Right Long",
   "settings_enableSwipeActions": "Enable Swipe Actions",
   "settings_swipeThreshold": "Swipe Action Threshold",
+  "settings_debug_showErrors": "Show Errors",
+  "settings_debug_clearDatabase": "Clear database",
+  "settings_debug_clearAccounts": "Clear accounts",
+  "settings_debug_clearProfiles": "Clear profiles",
+  "settings_debug_log": "Log",
   "profiles": "Profiles",
   "profile_switch": "Switch profiles",
   "profile_main": "Main profile",

@@ -132,6 +132,7 @@ class _CommunityModPanelBansState extends State<CommunityModPanelBans> {
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
+      context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }
   }

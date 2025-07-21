@@ -52,6 +52,7 @@ dependencies:
   any_link_preview: ^3.0.3
   simplytranslate: ^2.2.2
   visibility_detector: ^0.4.0+2
+  logger: ^2.6.1
 
 dev_dependencies:
   flutter_lints: ^5.0.0

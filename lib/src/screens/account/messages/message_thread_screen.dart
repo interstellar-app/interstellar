@@ -102,6 +102,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
+      context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }
   }

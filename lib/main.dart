@@ -32,6 +32,9 @@ void main() async {
     });
   }
 
+  final ac = AppController();
+  await ac.init();
+
   // Show snackbar on error
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
@@ -41,19 +44,22 @@ void main() async {
     // Don't show error for image loading issues
     if (details.library == 'image resource service') return;
 
-    scaffoldMessengerKey.currentState?.showSnackBar(
-      SnackBar(content: Text(details.summary.toString())),
-    );
+    ac.logger.e(details.summary);
+    if (ac.profile.showErrors) {
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text(details.summary.toString())),
+      );
+    }
   };
   PlatformDispatcher.instance.onError = (error, stack) {
-    scaffoldMessengerKey.currentState?.showSnackBar(
-      SnackBar(content: Text(error.toString())),
-    );
+    ac.logger.e(error);
+    if (ac.profile.showErrors) {
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text(error.toString())),
+      );
+    }
     return false;
   };
-
-  final ac = AppController();
-  await ac.init();
 
   if (Platform.isAndroid) {
     await initPushNotifications(ac);

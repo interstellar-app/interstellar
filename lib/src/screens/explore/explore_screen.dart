@@ -164,6 +164,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           break;
       }
     } catch (error) {
+      context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }
   }
