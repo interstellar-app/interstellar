@@ -5,7 +5,6 @@ import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/screens/settings/behavior_screen.dart';
 import 'package:interstellar/src/screens/settings/data_utilities.dart';
-import 'package:interstellar/src/screens/settings/debug/debug_screen.dart';
 import 'package:interstellar/src/screens/settings/display_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_actions_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults_screen.dart';
@@ -100,14 +99,6 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => pushRoute(
               context,
               builder: (context) => const DataUtilitiesScreen(),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Symbols.developer_board_rounded),
-            title: Text(l(context).settings_debug),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const DebugSettingsScreen()
             ),
           ),
           ListTile(

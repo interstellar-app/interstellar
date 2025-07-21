@@ -229,7 +229,7 @@ class ProfileRequired with _$ProfileRequired {
     swipeActionRightLong: SwipeAction.reply,
     swipeActionThreshold: 0.20,
     filterLists: {},
-    showErrors: false,
+    showErrors: true,
   );
 }
 
