@@ -583,27 +583,31 @@ class _UserScreenBodyState extends State<UserScreenBody>
                       vertical: 8,
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: InkWell(
+                    child: PostItem(
+                      item,
+                      (newValue) {
+                        var newList = _pagingController.itemList;
+                        newList![index] = newValue;
+                        setState(() {
+                          _pagingController.itemList = newList;
+                        });
+                      },
                       onTap: () => pushRoute(
                         context,
                         builder: (context) => PostPage(
                           initData: item,
                           onUpdate: (newValue) {
                             var newList = _pagingController.itemList;
-                            newList![index] = newValue;
+                            if (newList == null) return;
+                            newList[index] = newValue;
                             setState(() {
                               _pagingController.itemList = newList;
                             });
                           },
                         ),
                       ),
-                      child: PostItem(item, (newValue) {
-                        var newList = _pagingController.itemList;
-                        newList![index] = newValue;
-                        setState(() {
-                          _pagingController.itemList = newList;
-                        });
-                      }, isPreview: item.type == PostType.thread),
+                      isPreview: item.type == PostType.thread,
+                      isTopLevel: true,
                     ),
                   ),
                   UserFeedType.comment || UserFeedType.reply => Padding(
@@ -612,7 +616,8 @@ class _UserScreenBodyState extends State<UserScreenBody>
                       item,
                       (newValue) {
                         var newList = _pagingController.itemList;
-                        newList![index] = newValue;
+                        if (newList == null) return;
+                        newList[index] = newValue;
                         setState(() {
                           _pagingController.itemList = newList;
                         });
