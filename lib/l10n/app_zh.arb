@@ -1100,5 +1100,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settings_debug": "调试",
+  "@settings_debug": {},
+  "settings_debug_showErrors": "显示错误",
+  "@settings_debug_showErrors": {},
+  "settings_debug_clearDatabase": "清空数据库",
+  "@settings_debug_clearDatabase": {},
+  "settings_debug_clearAccounts": "清空账号",
+  "@settings_debug_clearAccounts": {},
+  "settings_debug_clearProfiles": "清空方案",
+  "@settings_debug_clearProfiles": {},
+  "settings_debug_log": "日志",
+  "@settings_debug_log": {},
+  "exitMessage": "再次按返回键退出。",
+  "@exitMessage": {}
 }
