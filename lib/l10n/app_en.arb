@@ -74,7 +74,7 @@
   "feedView": "Feed View",
   "threads": "Threads",
   "microblog": "Microblog",
-  "timeline": "Combined",
+  "combined": "Combined",
   "stars": "Stars",
   "stars_empty": "This feels empty; star a community or user to appear here.",
   "subscriptions": "Subscriptions",
