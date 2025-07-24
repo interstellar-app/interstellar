@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/models/image.dart';
@@ -11,6 +10,8 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
+import 'package:interstellar/src/controller/controller.dart';
 
 class AdvancedImage extends StatelessWidget {
   final ImageModel image;
@@ -96,7 +97,65 @@ class AdvancedImagePage extends StatefulWidget {
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
 }
 
-class _AdvancedImagePageState extends State<AdvancedImagePage> {
+class _AdvancedImagePageState extends State<AdvancedImagePage>
+    with TickerProviderStateMixin {
+  final TransformationController _transformationController =
+      TransformationController();
+  late final AnimationController _animationController;
+  Animation<Matrix4>? _animation;
+
+  void _returnToCenter() {
+    _animationController.reset();
+    _animation = Matrix4Tween(
+      begin: _transformationController.value,
+      end: Matrix4.identity(),
+    ).animate(_animationController);
+    _animation!.addListener(_onAnimate);
+    _animationController.forward();
+  }
+
+  void _onAnimate() {
+    _transformationController.value = _animation!.value;
+    if (!_animationController.isAnimating) {
+      _animation!.removeListener(_onAnimate);
+      _animation = null;
+      _animationController.reset();
+    }
+  }
+
+  void _handleTransform() {
+    if (!context.mounted) return;
+    final translation = _transformationController.value.getTranslation();
+    if (translation.y > MediaQuery.sizeOf(context).height / 3 ||
+        translation.y < -MediaQuery.sizeOf(context).height / 3) {
+      _transformationController.removeListener(_handleTransform);
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: context.read<AppController>().profile.animationSpeed == 0
+          ? Duration.zero
+          : Duration(
+              milliseconds:
+                  (300 / context.read<AppController>().profile.animationSpeed)
+                      .toInt(),
+            ),
+    );
+    _transformationController.addListener(_handleTransform);
+  }
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     const shadows = <Shadow>[
@@ -137,6 +196,10 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
         children: [
           Positioned.fill(
             child: InteractiveViewer(
+              transformationController: _transformationController,
+              panAxis: PanAxis.vertical,
+              boundaryMargin: const EdgeInsets.all(double.infinity),
+              onInteractionEnd: (ScaleEndDetails details) => _returnToCenter(),
               child: SafeArea(
                 child: Center(
                   child: AdvancedImage(
