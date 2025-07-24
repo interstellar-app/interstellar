@@ -103,6 +103,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage>
       TransformationController();
   late final AnimationController _animationController;
   Animation<Matrix4>? _animation;
+  double _scale = 1.0;
 
   void _returnToCenter() {
     _animationController.reset();
@@ -124,7 +125,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage>
   }
 
   void _handleTransform() {
-    if (!context.mounted) return;
+    if (!context.mounted || _scale != 1) return;
     final translation = _transformationController.value.getTranslation();
     if (translation.y > MediaQuery.sizeOf(context).height / 3 ||
         translation.y < -MediaQuery.sizeOf(context).height / 3) {
@@ -195,17 +196,30 @@ class _AdvancedImagePageState extends State<AdvancedImagePage>
       body: Stack(
         children: [
           Positioned.fill(
-            child: InteractiveViewer(
-              transformationController: _transformationController,
-              panAxis: PanAxis.vertical,
-              boundaryMargin: const EdgeInsets.all(double.infinity),
-              onInteractionEnd: (ScaleEndDetails details) => _returnToCenter(),
-              child: SafeArea(
-                child: Center(
-                  child: AdvancedImage(
-                    widget.image,
-                    hero: widget.hero,
-                    fit: widget.fit,
+            child: GestureDetector(
+              onDoubleTap: () {
+                _transformationController.value = Matrix4.identity();
+                _scale = 1.0;
+              },
+              child: InteractiveViewer(
+                transformationController: _transformationController,
+                panAxis: PanAxis.vertical,
+                boundaryMargin: const EdgeInsets.all(double.infinity),
+                onInteractionUpdate: (ScaleUpdateDetails details) {
+                  _scale *= details.scale;
+                },
+                onInteractionEnd: (ScaleEndDetails details) {
+                  if (_scale == 1.0) {
+                    _returnToCenter();
+                  }
+                },
+                child: SafeArea(
+                  child: Center(
+                    child: AdvancedImage(
+                      widget.image,
+                      hero: widget.hero,
+                      fit: widget.fit,
+                    ),
                   ),
                 ),
               ),
