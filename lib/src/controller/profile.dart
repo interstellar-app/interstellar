@@ -480,8 +480,9 @@ class ProfileOptional with _$ProfileOptional {
 }
 
 Object? _parseFeedDefaultCombinedSort(Map json, String name) {
-  if (name == 'feedDefaultTimelineSort') name = 'feedDefaultCombinedSort';
-  return json[name];
+  final current = json[name];
+  if (current != null) return current;
+  return json['feedDefaultTimelineSort'];
 }
 
 class FeedViewConverter implements JsonConverter<FeedView, String> {
