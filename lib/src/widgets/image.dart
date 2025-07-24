@@ -121,6 +121,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage>
       _animation!.removeListener(_onAnimate);
       _animation = null;
       _animationController.reset();
+      _scale = 1.0;
     }
   }
 
@@ -198,8 +199,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage>
           Positioned.fill(
             child: GestureDetector(
               onDoubleTap: () {
-                _transformationController.value = Matrix4.identity();
-                _scale = 1.0;
+                _returnToCenter();
               },
               child: InteractiveViewer(
                 transformationController: _transformationController,
