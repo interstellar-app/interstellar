@@ -48,11 +48,13 @@ class ProfileRequired with _$ProfileRequired {
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
     // Feed defaults
+    @FeedViewConverter()
     required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
-    required FeedSort feedDefaultTimelineSort,
+    @JsonKey(readValue: _parseFeedDefaultCombinedSort)
+    required FeedSort feedDefaultCombinedSort,
     required FeedSort feedDefaultExploreSort,
     required CommentSort feedDefaultCommentSort,
     required bool feedDefaultHideReadPosts,
@@ -137,7 +139,7 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultMicroblogSort:
         profile?.feedDefaultMicroblogSort ??
         defaultProfile.feedDefaultMicroblogSort,
-    feedDefaultTimelineSort: profile?.feedDefaultTimelineSort ?? defaultProfile.feedDefaultTimelineSort,
+    feedDefaultCombinedSort: profile?.feedDefaultCombinedSort ?? defaultProfile.feedDefaultCombinedSort,
     feedDefaultExploreSort:
         profile?.feedDefaultExploreSort ??
         defaultProfile.feedDefaultExploreSort,
@@ -210,7 +212,7 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
     feedDefaultMicroblogSort: FeedSort.hot,
-    feedDefaultTimelineSort: FeedSort.hot,
+    feedDefaultCombinedSort: FeedSort.hot,
     feedDefaultExploreSort: FeedSort.newest,
     feedDefaultCommentSort: CommentSort.hot,
     feedDefaultHideReadPosts: false,
@@ -268,11 +270,13 @@ class ProfileOptional with _$ProfileOptional {
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
     // Feed defaults
+    @FeedViewConverter()
     required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
-    required FeedSort? feedDefaultTimelineSort,
+    @JsonKey(readValue: _parseFeedDefaultCombinedSort)
+    required FeedSort? feedDefaultCombinedSort,
     required FeedSort? feedDefaultExploreSort,
     required CommentSort? feedDefaultCommentSort,
     required bool? feedDefaultHideReadPosts,
@@ -329,7 +333,7 @@ class ProfileOptional with _$ProfileOptional {
     feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
     feedDefaultMicroblogSort: null,
-    feedDefaultTimelineSort: null,
+    feedDefaultCombinedSort: null,
     feedDefaultExploreSort: null,
     feedDefaultCommentSort: null,
     feedDefaultHideReadPosts: null,
@@ -393,7 +397,7 @@ class ProfileOptional with _$ProfileOptional {
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:
           other.feedDefaultMicroblogSort ?? feedDefaultMicroblogSort,
-      feedDefaultTimelineSort: other.feedDefaultTimelineSort ?? feedDefaultTimelineSort,
+      feedDefaultCombinedSort: other.feedDefaultCombinedSort ?? feedDefaultCombinedSort,
       feedDefaultExploreSort:
           other.feedDefaultExploreSort ?? feedDefaultExploreSort,
       feedDefaultCommentSort:
@@ -473,4 +477,23 @@ class ProfileOptional with _$ProfileOptional {
   ProfileOptional exportReady() {
     return copyWith(autoSwitchAccount: null, filterLists: null);
   }
+}
+
+Object? _parseFeedDefaultCombinedSort(Map json, String name) {
+  final current = json[name];
+  if (current != null) return current;
+  return json['feedDefaultTimelineSort'];
+}
+
+class FeedViewConverter implements JsonConverter<FeedView, String> {
+  const FeedViewConverter();
+
+  @override
+  FeedView fromJson(String json) {
+    if (json == 'timeline') json = 'combined';
+    return FeedView.values.byName(json);
+  }
+
+  @override
+  String toJson(FeedView view) => view.name;
 }
