@@ -13,6 +13,7 @@ import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/report_content.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
+import 'package:interstellar/src/controller/server.dart';
 
 void showContentMenu(
   BuildContext context,
@@ -74,12 +75,22 @@ void showContentMenu(
           ],
         ),
       ),
-      ContextMenuAction(
-        child: NotificationControlSegment(
-          widget.notificationControlStatus!,
-          widget.onNotificationControlStatusChange!,
+      if (widget.notificationControlStatus !=
+          null &&
+          widget.onNotificationControlStatusChange !=
+              null &&
+          ((ac.serverSoftware ==
+              ServerSoftware.mbin &&
+              widget.contentTypeName !=
+                  l(context).comment) ||
+              ac.serverSoftware ==
+                  ServerSoftware.piefed))
+        ContextMenuAction(
+          child: NotificationControlSegment(
+            widget.notificationControlStatus!,
+            widget.onNotificationControlStatusChange!,
+          ),
         ),
-      ),
     ],
     items: [
       ContextMenuItem(
