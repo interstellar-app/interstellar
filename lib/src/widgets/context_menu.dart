@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
@@ -75,7 +76,7 @@ class ContextMenu {
                   .map(
                     (action) =>
                         action.child ??
-                        IconButton(
+                        LoadingIconButton(
                           icon: Icon(action.icon),
                           onPressed: action.onTap,
                         ),

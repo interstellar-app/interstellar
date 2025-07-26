@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
@@ -16,12 +15,8 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
-import 'package:interstellar/src/api/community.dart';
-import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/utils/debouncer.dart';
-import 'package:interstellar/src/widgets/error_page.dart';
-import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 
 class FeedSettingsScreen extends StatefulWidget {
   const FeedSettingsScreen({super.key});
@@ -117,10 +112,9 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
           ListTile(
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).feeds_new),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
+            onTap: () => pushRoute(
+                context,
                 builder: (context) => const EditFeedScreen(feed: null),
-              ),
             ),
           ),
         ],
@@ -289,4 +283,37 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
       ),
     );
   }
+}
+
+void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
+  final ac = context.read<AppController>();
+  ContextMenu(
+    title: l(context).feeds,
+    items: [...ac.feeds.values
+        .map(
+          (feed) => ContextMenuItem(
+            title: feed.name,
+            onTap: () async {
+              final newFeed = feed.copyWith(
+                inputs: {
+                  ...feed.inputs,
+                  FeedInput(name: name, sourceType: source),
+                },
+              );
+              await ac.setFeed(feed.name, newFeed);
+              if (!context.mounted) return;
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ContextMenuItem(
+        title: l(context).feeds_new,
+        icon: Symbols.add_rounded,
+        onTap: () => pushRoute(
+          context,
+          builder: (context) => const EditFeedScreen(feed: null),
+        ),
+      ),
+    ],
+  ).openMenu(context);
 }
