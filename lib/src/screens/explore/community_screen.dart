@@ -270,7 +270,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   onTap: () async => showAddToFeedMenu(
                                     context,
                                     normalizeName(_data!.name, ac.instanceHost),
-                                    FeedSource.user,
+                                    FeedSource.community,
                                   ),
                                 ),
                               ],
