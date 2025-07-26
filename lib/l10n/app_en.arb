@@ -102,6 +102,7 @@
   "feeds_input": "Add input",
   "feeds_import": "Import feed",
   "feeds_selectInputs": "Select inputs",
+  "feeds_addTo": "Add to feed",
   "post": "Post",
   "postDeleted": "Post Deleted",
   "comment": "Comment",

@@ -18,8 +18,10 @@ import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -247,15 +249,110 @@ class _UserScreenState extends State<UserScreen> {
                                 if (isLoggedIn && !isMyUser)
                                   IconButton(
                                     onPressed: () {
-                                      pushRoute(context, builder: (context) =>
-                                          MessageThreadScreen(
-                                        threadId: null,
-                                        otherUser: _data,
-                                      ));
+                                      pushRoute(
+                                        context,
+                                        builder: (context) =>
+                                            MessageThreadScreen(
+                                              threadId: null,
+                                              otherUser: _data,
+                                            ),
+                                      );
                                     },
                                     icon: const Icon(Symbols.mail_rounded),
                                     tooltip: 'Send message',
                                   ),
+                                IconButton(
+                                  onPressed: () => ContextMenu(
+                                    actions: [
+                                      if (!isMyUser &&
+                                          ac.serverSoftware ==
+                                              ServerSoftware.mbin)
+                                        ContextMenuAction(
+                                          child: SubscriptionButton(
+                                            isSubscribed: user.isFollowedByUser,
+                                            subscriptionCount:
+                                                user.followersCount ?? 0,
+                                            onSubscribe: (selected) async {
+                                              var newValue = await ac.api.users
+                                                  .follow(user.id, selected);
+                                              setState(() {
+                                                _data = newValue;
+                                              });
+                                              if (widget.onUpdate != null) {
+                                                widget.onUpdate!(newValue);
+                                              }
+                                            },
+                                            followMode: true,
+                                          ),
+                                        ),
+                                      ContextMenuAction(
+                                        child: StarButton(globalName),
+                                      ),
+                                      if (isLoggedIn && !isMyUser)
+                                        ContextMenuAction(
+                                          child: LoadingIconButton(
+                                            onPressed: () async {
+                                              final newValue = await ac
+                                                  .api
+                                                  .users
+                                                  .putBlock(
+                                                    user.id,
+                                                    !user.isBlockedByUser!,
+                                                  );
+
+                                              setState(() {
+                                                _data = newValue;
+                                              });
+                                              if (widget.onUpdate != null) {
+                                                widget.onUpdate!(newValue);
+                                              }
+                                            },
+                                            icon: const Icon(
+                                              Symbols.block_rounded,
+                                            ),
+                                            style: ButtonStyle(
+                                              foregroundColor:
+                                                  WidgetStatePropertyAll(
+                                                    user.isBlockedByUser == true
+                                                        ? Theme.of(
+                                                            context,
+                                                          ).colorScheme.error
+                                                        : Theme.of(
+                                                            context,
+                                                          ).disabledColor,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      if (isLoggedIn && !isMyUser)
+                                        ContextMenuAction(
+                                          icon: Symbols.mail_rounded,
+                                          onTap: () => pushRoute(
+                                            context,
+                                            builder: (context) =>
+                                                MessageThreadScreen(
+                                                  threadId: null,
+                                                  otherUser: _data,
+                                                ),
+                                          ),
+                                        ),
+                                    ],
+                                    items: [
+                                      ContextMenuItem(
+                                        title: l(context).feeds_addTo,
+                                        onTap: () async => showAddToFeedMenu(
+                                          context,
+                                          normalizeName(
+                                            user.name,
+                                            ac.instanceHost,
+                                          ),
+                                          FeedSource.user,
+                                        ),
+                                      ),
+                                    ],
+                                  ).openMenu(context),
+                                  icon: const Icon(Symbols.more_vert_rounded),
+                                ),
                               ],
                             ),
                             if (!isMyUser &&
