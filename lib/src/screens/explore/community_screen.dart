@@ -9,8 +9,10 @@ import 'package:interstellar/src/screens/explore/community_mod_panel.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
@@ -136,96 +138,144 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 ),
                               ),
                             ),
-                          MenuAnchor(
-                            builder:
-                                (
-                                  BuildContext context,
-                                  MenuController controller,
-                                  Widget? child,
-                                ) {
-                                  return IconButton(
-                                    icon: const Icon(Symbols.more_vert_rounded),
-                                    onPressed: () {
-                                      if (controller.isOpen) {
-                                        controller.close();
-                                      } else {
-                                        controller.open();
+                          IconButton(
+                            onPressed: () => ContextMenu(
+                              actions: [
+                                ContextMenuAction(
+                                  child: SubscriptionButton(
+                                    isSubscribed: _data!.isUserSubscribed,
+                                    subscriptionCount:
+                                        _data!.subscriptionsCount,
+                                    onSubscribe: (selected) async {
+                                      var newValue = await ac.api.community
+                                          .subscribe(_data!.id, selected);
+
+                                      setState(() {
+                                        _data = newValue;
+                                      });
+                                      if (widget.onUpdate != null) {
+                                        widget.onUpdate!(newValue);
                                       }
                                     },
-                                  );
-                                },
-                            menuChildren: [
-                              MenuItemButton(
-                                onPressed: () => openWebpagePrimary(
-                                  context,
-                                  Uri.https(
-                                    ac.instanceHost,
-                                    ac.serverSoftware == ServerSoftware.mbin
-                                        ? '/m/${_data!.name}'
-                                        : '/c/${_data!.name}',
+                                    followMode: false,
                                   ),
                                 ),
-                                child: Text(l(context).openInBrowser),
-                              ),
-                              MenuItemButton(
-                                onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text(l(context).modsOf(_data!.name)),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: _data!.moderators
-                                          .map(
-                                            (mod) => UserItemSimple(
-                                              mod,
-                                              isOwner:
-                                                  mod.id == _data!.owner?.id,
-                                            ),
-                                          )
-                                          .toList(),
+                                ContextMenuAction(
+                                  child: StarButton(globalName),
+                                ),
+                                ContextMenuAction(
+                                  child: LoadingIconButton(
+                                    onPressed: () async {
+                                      final newValue = await ac.api.community
+                                          .block(
+                                            _data!.id,
+                                            !_data!.isBlockedByUser!,
+                                          );
+
+                                      setState(() {
+                                        _data = newValue;
+                                      });
+                                      if (widget.onUpdate != null) {
+                                        widget.onUpdate!(newValue);
+                                      }
+                                    },
+                                    icon: const Icon(Symbols.block_rounded),
+                                    style: ButtonStyle(
+                                      foregroundColor: WidgetStatePropertyAll(
+                                        _data!.isBlockedByUser == true
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.error
+                                            : Theme.of(context).disabledColor,
+                                      ),
                                     ),
                                   ),
                                 ),
-                                child: Text(l(context).viewMods),
-                              ),
-                              if (isModerator)
-                                MenuItemButton(
-                                  onPressed: () => pushRoute(
+                              ],
+                              items: [
+                                ContextMenuItem(
+                                  title: l(context).openInBrowser,
+                                  onTap: () async => openWebpagePrimary(
                                     context,
-                                    builder: (context) => CommunityModPanel(
-                                      initData: _data!,
-                                      onUpdate: (newValue) {
-                                        setState(() {
-                                          _data = newValue;
-                                        });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
-                                      },
+                                    Uri.https(
+                                      ac.instanceHost,
+                                      ac.serverSoftware == ServerSoftware.mbin
+                                          ? '/m/${_data!.name}'
+                                          : '/c/${_data!.name}',
                                     ),
                                   ),
-                                  child: Text(l(context).modPanel),
                                 ),
-                              if (_data!.owner != null &&
-                                  _data!.owner!.name == ac.localName)
-                                MenuItemButton(
-                                  onPressed: () => pushRoute(
+                                ContextMenuItem(
+                                  title: l(context).viewMods,
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(
+                                        l(context).modsOf(_data!.name),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: _data!.moderators
+                                            .map(
+                                              (mod) => UserItemSimple(
+                                                mod,
+                                                isOwner:
+                                                    mod.id == _data!.owner?.id,
+                                              ),
+                                            )
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (isModerator)
+                                  ContextMenuItem(
+                                    title: l(context).modPanel,
+                                    onTap: () => pushRoute(
+                                      context,
+                                      builder: (context) => CommunityModPanel(
+                                        initData: _data!,
+                                        onUpdate: (newValue) {
+                                          setState(() {
+                                            _data = newValue;
+                                          });
+                                          if (widget.onUpdate != null) {
+                                            widget.onUpdate!(newValue);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                if (_data!.owner != null &&
+                                    _data!.owner!.name == ac.localName)
+                                  ContextMenuItem(
+                                    title: l(context).ownerPanel,
+                                    onTap: () => pushRoute(
+                                      context,
+                                      builder: (context) => CommunityOwnerPanel(
+                                        initData: _data!,
+                                        onUpdate: (newValue) {
+                                          setState(() {
+                                            _data = newValue;
+                                          });
+                                          if (widget.onUpdate != null) {
+                                            widget.onUpdate!(newValue);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ContextMenuItem(
+                                  title: l(context).feeds_addTo,
+                                  onTap: () async => showAddToFeedMenu(
                                     context,
-                                    builder: (context) => CommunityOwnerPanel(
-                                      initData: _data!,
-                                      onUpdate: (newValue) {
-                                        setState(() {
-                                          _data = newValue;
-                                        });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
-                                      },
-                                    ),
+                                    normalizeName(_data!.name, ac.instanceHost),
+                                    FeedSource.community,
                                   ),
-                                  child: Text(l(context).ownerPanel),
                                 ),
-                            ],
+                              ],
+                            ).openMenu(context),
+                            icon: Icon(Symbols.more_vert_rounded),
                           ),
                         ],
                       ),
