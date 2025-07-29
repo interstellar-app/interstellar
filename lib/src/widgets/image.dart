@@ -10,8 +10,7 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/controller.dart';
+import 'package:extended_image/extended_image.dart';
 
 class AdvancedImage extends StatelessWidget {
   final ImageModel image;
@@ -35,11 +34,11 @@ class AdvancedImage extends StatelessWidget {
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
-    return SuperHero(
-      tag: image.toString() + (hero ?? ''),
-      child: Wrapper(
-        shouldWrap: openTitle != null,
-        parentBuilder: (child) => GestureDetector(
+    return Wrapper(
+      shouldWrap: openTitle != null,
+      parentBuilder: (child) => SuperHero(
+        tag: image.toString() + (hero ?? ''),
+        child: GestureDetector(
           onTap: () => pushRoute(
             context,
             builder: (context) => AdvancedImagePage(
@@ -51,30 +50,49 @@ class AdvancedImage extends StatelessWidget {
           ),
           child: child,
         ),
-        child: Wrapper(
-          shouldWrap: enableBlur,
-          parentBuilder: (child) => Blur(child),
-          child: Stack(
-            alignment: Alignment.center,
-            fit: StackFit.passthrough,
-            children: [
-              if (image.blurHash != null)
-                Image(
-                  fit: fit,
-                  image: BlurhashFfiImage(
-                    image.blurHash!,
-                    decodingWidth: (blurHashSizeFactor! * image.blurHashWidth!)
-                        .ceil(),
-                    decodingHeight: (blurHashSizeFactor * image.blurHashHeight!)
-                        .ceil(),
-                    scale: blurHashSizeFactor,
-                  ),
-                ),
-              Image.network(image.src, fit: fit),
-            ],
-          ),
+      ),
+      child: Wrapper(
+        shouldWrap: enableBlur,
+        parentBuilder: (child) => Blur(child),
+        child: Stack(
+          alignment: Alignment.center,
+          fit: StackFit.passthrough,
+          children: [
+            ExtendedImage.network(
+              image.src,
+              fit: fit,
+              enableSlideOutPage: true,
+              heroBuilderForSlidingPage: (child) {
+                return SuperHero(
+                  tag: image.toString() + (hero ?? ''),
+                  child: child,
+                );
+              },
+              cache: true,
+              mode: ExtendedImageMode.gesture,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.loading &&
+                    image.blurHash != null) {
+                  return ExtendedImage(
+                    fit: fit,
+                    image: BlurhashFfiImage(
+                      image.blurHash!,
+                      decodingWidth:
+                          (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
+                      decodingHeight:
+                          (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                      scale: blurHashSizeFactor,
+                    ),
+                    enableSlideOutPage: true,
+                  );
+                }
+                return null;
+              },
+            ),
+          ],
         ),
       ),
+      // ),
     );
   }
 }
@@ -97,65 +115,10 @@ class AdvancedImagePage extends StatefulWidget {
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
 }
 
-class _AdvancedImagePageState extends State<AdvancedImagePage>
-    with TickerProviderStateMixin {
-  final TransformationController _transformationController =
-      TransformationController();
-  late final AnimationController _animationController;
-  Animation<Matrix4>? _animation;
-  double _scale = 1.0;
-
-  void _returnToCenter() {
-    _animationController.reset();
-    _animation = Matrix4Tween(
-      begin: _transformationController.value,
-      end: Matrix4.identity(),
-    ).animate(_animationController);
-    _animation!.addListener(_onAnimate);
-    _animationController.forward();
-  }
-
-  void _onAnimate() {
-    _transformationController.value = _animation!.value;
-    if (!_animationController.isAnimating) {
-      _animation!.removeListener(_onAnimate);
-      _animation = null;
-      _animationController.reset();
-      _scale = 1.0;
-    }
-  }
-
-  void _handleTransform() {
-    if (!context.mounted || _scale != 1) return;
-    final translation = _transformationController.value.getTranslation();
-    if (translation.y > MediaQuery.sizeOf(context).height / 3 ||
-        translation.y < -MediaQuery.sizeOf(context).height / 3) {
-      _transformationController.removeListener(_handleTransform);
-      Navigator.pop(context);
-    }
-  }
-
+class _AdvancedImagePageState extends State<AdvancedImagePage> {
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: context.read<AppController>().profile.animationSpeed == 0
-          ? Duration.zero
-          : Duration(
-              milliseconds:
-                  (300 / context.read<AppController>().profile.animationSpeed)
-                      .toInt(),
-            ),
-    );
-    _transformationController.addListener(_handleTransform);
-  }
-
-  @override
-  void dispose() {
-    _transformationController.dispose();
-    _animationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -197,30 +160,13 @@ class _AdvancedImagePageState extends State<AdvancedImagePage>
       body: Stack(
         children: [
           Positioned.fill(
-            child: GestureDetector(
-              onDoubleTap: () {
-                _returnToCenter();
-              },
-              child: InteractiveViewer(
-                transformationController: _transformationController,
-                panAxis: PanAxis.vertical,
-                boundaryMargin: const EdgeInsets.all(double.infinity),
-                onInteractionUpdate: (ScaleUpdateDetails details) {
-                  _scale *= details.scale;
-                },
-                onInteractionEnd: (ScaleEndDetails details) {
-                  if (_scale == 1.0) {
-                    _returnToCenter();
-                  }
-                },
-                child: SafeArea(
-                  child: Center(
-                    child: AdvancedImage(
-                      widget.image,
-                      hero: widget.hero,
-                      fit: widget.fit,
-                    ),
-                  ),
+            child: ExtendedImageSlidePage(
+              slideAxis: SlideAxis.both,
+              child: SafeArea(
+                child: AdvancedImage(
+                  widget.image,
+                  hero: widget.hero,
+                  // fit: widget.fit,
                 ),
               ),
             ),
