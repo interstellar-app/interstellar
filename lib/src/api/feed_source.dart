@@ -7,6 +7,7 @@ enum FeedSource {
   community,
   user,
   domain,
+  feed,
 }
 
 enum FeedSort {

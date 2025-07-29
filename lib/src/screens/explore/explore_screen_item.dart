@@ -8,6 +8,8 @@ import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/domain_screen.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/screens/feed/feed_agregator.dart';
+import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
@@ -18,6 +20,8 @@ import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/api/feed_source.dart';
+import 'package:interstellar/src/models/feed.dart';
 
 class ExploreScreenItem extends StatelessWidget {
   final dynamic item;
@@ -38,33 +42,39 @@ class ExploreScreenItem extends StatelessWidget {
     // ListTile based items
     if (item is DetailedCommunityModel ||
         item is DetailedUserModel ||
-        item is DomainModel) {
+        item is DomainModel ||
+        item is FeedModel) {
       final icon = switch (item) {
         DetailedCommunityModel i => i.icon,
         DetailedUserModel i => i.avatar,
+        FeedModel i => i.icon,
         _ => null,
       };
       final title = switch (item) {
         DetailedCommunityModel i => i.title,
         DetailedUserModel i => i.displayName ?? i.name.split('@').first,
         DomainModel i => i.name,
+        FeedModel i => i.title,
         _ => throw 'Unreachable',
       };
       final subtitle = switch (item) {
         DetailedCommunityModel i => i.name,
         DetailedUserModel i => i.name,
+        FeedModel i => i.description,
         _ => null,
       };
       final isSubscribed = switch (item) {
         DetailedCommunityModel i => i.isUserSubscribed,
         DetailedUserModel i => i.isFollowedByUser,
         DomainModel i => i.isUserSubscribed,
+        FeedModel i => i.subscribed,
         _ => throw 'Unreachable',
       };
       final subscriptions = switch (item) {
         DetailedCommunityModel i => i.subscriptionsCount,
         DetailedUserModel i => i.followersCount ?? 0,
         DomainModel i => i.subscriptionsCount,
+        FeedModel i => i.subscriptionCount,
         _ => throw 'Unreachable',
       };
       final onSubscribe = switch (item) {
@@ -94,6 +104,7 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
+        FeedModel _ => (selected) async {},
         _ => throw 'Unreachable',
       };
       final navigate = switch (item) {
@@ -111,6 +122,16 @@ class ExploreScreenItem extends StatelessWidget {
           context,
           builder: (context) =>
               DomainScreen(i.id, initData: i, onUpdate: onUpdate),
+        ),
+        FeedModel i => () => pushRoute(
+          context,
+          builder: (context) => FeedScreen(feed: FeedAggregator(name: title, inputs: [
+            FeedInputState(
+              title: title,
+              source: FeedSource.feed,
+              sourceId: i.id,
+            )
+          ]),)
         ),
         _ => throw 'Unreachable',
       };

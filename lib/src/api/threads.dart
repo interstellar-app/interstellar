@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,6 +56,9 @@ class APIThreads {
           FeedSource.community => '/magazine/${sourceId!}/entries',
           FeedSource.user => '/users/${sourceId!}/entries',
           FeedSource.domain => '/domain/${sourceId!}/entries',
+          FeedSource.feed => throw Exception(
+            'Feeds source not allowed for mbin'
+          ),
         };
         final query = {
           'p': page,
@@ -109,6 +110,9 @@ class APIThreads {
             FeedSource.domain => throw Exception(
               'Domain source not allowed for lemmy',
             ),
+            FeedSource.feed => throw Exception(
+              'Feeds source not allowed for lemmy'
+            ),
           });
 
         final response = await client.get(path, queryParams: query);
@@ -132,6 +136,7 @@ class APIThreads {
             FeedSource.domain => throw Exception(
               'Domain source not allowed for fromPiefed',
             ),
+            FeedSource.feed => {'feed_id': sourceId.toString()},
           });
 
         final response = await client.get(path, queryParams: query);

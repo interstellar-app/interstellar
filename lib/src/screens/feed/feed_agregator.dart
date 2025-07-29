@@ -329,6 +329,7 @@ class FeedAggregator {
             denormalizeName(input.name, ac.instanceHost),
           )).id,
           FeedSource.domain => throw UnimplementedError(),
+          FeedSource.feed => int.parse(input.name)
         });
       } catch (error) {
         return null;

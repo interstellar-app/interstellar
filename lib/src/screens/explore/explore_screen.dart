@@ -152,6 +152,19 @@ class _ExploreScreenState extends State<ExploreScreen>
           _pagingController.appendPage(newItems, newPage.nextPage);
           break;
 
+        case ExploreType.feeds:
+          final newPage = await context.read<AppController>().api.feed.list();
+
+          if (!mounted) return;
+
+          final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
+          final newItems = newPage.items
+              .where((e) => !currentItemIds.contains(e.id))
+              .toList();
+
+          _pagingController.appendPage(newItems, null);
+          break;
+
         case ExploreType.all:
           final newPage = await context.read<AppController>().api.search.get(
             page: nullIfEmpty(pageKey),
@@ -298,6 +311,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                           filter == ExploreFilter.moderated) {
                                         filter = ExploreFilter.all;
                                       }
+                                      _pagingController.refresh();
+                                    });
+                                  }
+                                },
+                                padding: chipPadding,
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                            if (ac.serverSoftware == ServerSoftware.piefed) ...[
+                              ChoiceChip(
+                                label: Text(l(context).feeds),
+                                selected: type == ExploreType.feeds,
+                                onSelected: (bool selected) {
+                                  if (selected) {
+                                    setState(() {
+                                      type = ExploreType.feeds;
                                       _pagingController.refresh();
                                     });
                                   }
@@ -474,7 +503,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 }
 
-enum ExploreType { communities, people, domains, all }
+enum ExploreType { communities, people, domains, feeds, all }
 
 enum ExploreFilter {
   all,
