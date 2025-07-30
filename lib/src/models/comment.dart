@@ -57,11 +57,17 @@ class CommentListModel with _$CommentListModel {
     nextPage: json['next_page'] as String?,
   );
 
-  factory CommentListModel.fromPiefed(JsonMap json, {
+  factory CommentListModel.fromPiefed(
+    JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
     items: (json['comments'] as List<dynamic>)
-        .map((post) => CommentModel.fromPiefed(post as JsonMap, langCodeIdPairs: langCodeIdPairs))
+        .map(
+          (post) => CommentModel.fromPiefed(
+            post as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
         .toList(),
     nextPage: json['next_page'] as String?,
   );
@@ -264,7 +270,14 @@ class CommentModel with _$CommentModel {
 
     if (children.isEmpty) {
       final replies = (json['replies'] as List<dynamic>?)
-          ?.map((c) => CommentModel.fromPiefed(c as JsonMap, langCodeIdPairs: langCodeIdPairs, community: community, postId: postId))
+          ?.map(
+            (c) => CommentModel.fromPiefed(
+              c as JsonMap,
+              langCodeIdPairs: langCodeIdPairs,
+              community: community,
+              postId: postId,
+            ),
+          )
           .toList();
       if (replies != null) {
         children = replies;

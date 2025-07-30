@@ -106,14 +106,14 @@ class APIComments {
         final query = {
           'post_id': postId.toString(),
           'page': page,
-          'sort': lemmyCommentSortMap[sort]
+          'sort': lemmyCommentSortMap[sort],
         };
 
         final response = await client.get(path, queryParams: query);
 
         return CommentListModel.fromPiefed(
-            response.bodyJson,
-            langCodeIdPairs: await client.languageCodeIdPairs()
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
@@ -204,17 +204,15 @@ class APIComments {
 
       case ServerSoftware.piefed:
         const path = '/post/replies';
-        final query = {
-          'parent_id': commentId.toString(),
-        };
+        final query = {'parent_id': commentId.toString()};
 
         final response = await client.get(path, queryParams: query);
 
         return CommentModel.fromPiefed(
-            (response.bodyJson['comments'] as List<dynamic>).firstWhere(
-                (item) => item['comment']['id'] == commentId,
-            ),
-            langCodeIdPairs: await client.languageCodeIdPairs()
+          (response.bodyJson['comments'] as List<dynamic>).firstWhere(
+            (item) => item['comment']['id'] == commentId,
+          ),
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
