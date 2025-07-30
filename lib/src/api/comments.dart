@@ -102,19 +102,18 @@ class APIComments {
         );
 
       case ServerSoftware.piefed:
-        const path = '/comment/list';
+        const path = '/post/replies';
         final query = {
           'post_id': postId.toString(),
           'page': page,
-          'sort': lemmyCommentSortMap[sort],
-          'max_depth': '8',
+          'sort': lemmyCommentSortMap[sort]
         };
 
         final response = await client.get(path, queryParams: query);
 
-        return CommentListModel.fromPiefedToTree(
-          response.bodyJson,
-          langCodeIdPairs: await client.languageCodeIdPairs(),
+        return CommentListModel.fromPiefed(
+            response.bodyJson,
+            langCodeIdPairs: await client.languageCodeIdPairs()
         );
     }
   }
@@ -204,17 +203,18 @@ class APIComments {
         );
 
       case ServerSoftware.piefed:
-        const path = '/comment/list';
-        final query = {'parent_id': commentId.toString(), 'max_depth': '100'};
+        const path = '/post/replies';
+        final query = {
+          'parent_id': commentId.toString(),
+        };
 
         final response = await client.get(path, queryParams: query);
 
         return CommentModel.fromPiefed(
-          (response.bodyJson['comments'] as List<dynamic>).firstWhere(
-            (item) => item['comment']['id'] == commentId,
-          ),
-          possibleChildrenJson: response.bodyJson['comments'] as List<dynamic>,
-          langCodeIdPairs: await client.languageCodeIdPairs(),
+            (response.bodyJson['comments'] as List<dynamic>).firstWhere(
+                (item) => item['comment']['id'] == commentId,
+            ),
+            langCodeIdPairs: await client.languageCodeIdPairs()
         );
     }
   }
