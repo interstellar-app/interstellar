@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -11,6 +12,7 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:provider/provider.dart';
 
 class AdvancedImage extends StatelessWidget {
   final ImageModel image;
@@ -85,6 +87,8 @@ class AdvancedImage extends StatelessWidget {
                     ),
                     enableSlideOutPage: true,
                   );
+                } else if (state.extendedImageLoadState == LoadState.failed) {
+                  context.read<AppController>().logger.w('Image failed to load: ${image.src}');
                 }
                 return null;
               },
