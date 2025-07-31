@@ -648,6 +648,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
         Object _ => null,
       }));
     } catch (error) {
+      if (!mounted) return;
       context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }
