@@ -883,8 +883,6 @@
   "@action_setView": {},
   "feedView": "信息流视图",
   "@feedView": {},
-  "timeline": "混合",
-  "@timeline": {},
   "create_text": "文本",
   "@create_text": {},
   "create_image": "图像",

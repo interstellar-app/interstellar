@@ -229,8 +229,6 @@
   "@settings_askBeforeDeleting": {},
   "feedView": "Tijdslijn Overzicht",
   "@feedView": {},
-  "timeline": "Tijdlijn",
-  "@timeline": {},
   "account_settings_notifyOnMicroblogReply": "Melden bij opmerkingen in geschreven microblogs",
   "@account_settings_notifyOnMicroblogReply": {},
   "notifications_unregisterPush": "Pushmeldingen afmelden",

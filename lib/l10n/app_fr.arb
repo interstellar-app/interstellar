@@ -300,7 +300,5 @@
   "sort_controversial": "Controversé",
   "@sort_controversial": {},
   "feedView": "Vue du flux",
-  "@feedView": {},
-  "timeline": "Combinés",
-  "@timeline": {}
+  "@feedView": {}
 }
