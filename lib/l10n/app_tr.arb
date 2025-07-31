@@ -109,8 +109,6 @@
   "@threads": {},
   "microblog": "Mikroblog",
   "@microblog": {},
-  "timeline": "Zaman Çizelgesi",
-  "@timeline": {},
   "stars": "Yıldızlar",
   "@stars": {},
   "stars_empty": "Burası boş görünüyor; bir dergiyi veya kullanıcıyı yıldızla burada görünmesini sağlayın.",
