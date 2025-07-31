@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -11,6 +11,8 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:provider/provider.dart';
 
 class AdvancedImage extends StatelessWidget {
   final ImageModel image;
@@ -34,11 +36,11 @@ class AdvancedImage extends StatelessWidget {
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
-    return SuperHero(
-      tag: image.toString() + (hero ?? ''),
-      child: Wrapper(
-        shouldWrap: openTitle != null,
-        parentBuilder: (child) => GestureDetector(
+    return Wrapper(
+      shouldWrap: openTitle != null,
+      parentBuilder: (child) => SuperHero(
+        tag: image.toString() + (hero ?? ''),
+        child: GestureDetector(
           onTap: () => pushRoute(
             context,
             builder: (context) => AdvancedImagePage(
@@ -50,30 +52,51 @@ class AdvancedImage extends StatelessWidget {
           ),
           child: child,
         ),
-        child: Wrapper(
-          shouldWrap: enableBlur,
-          parentBuilder: (child) => Blur(child),
-          child: Stack(
-            alignment: Alignment.center,
-            fit: StackFit.passthrough,
-            children: [
-              if (image.blurHash != null)
-                Image(
-                  fit: fit,
-                  image: BlurhashFfiImage(
-                    image.blurHash!,
-                    decodingWidth: (blurHashSizeFactor! * image.blurHashWidth!)
-                        .ceil(),
-                    decodingHeight: (blurHashSizeFactor * image.blurHashHeight!)
-                        .ceil(),
-                    scale: blurHashSizeFactor,
-                  ),
-                ),
-              Image.network(image.src, fit: fit),
-            ],
-          ),
+      ),
+      child: Wrapper(
+        shouldWrap: enableBlur,
+        parentBuilder: (child) => Blur(child),
+        child: Stack(
+          alignment: Alignment.center,
+          fit: StackFit.passthrough,
+          children: [
+            ExtendedImage.network(
+              image.src,
+              fit: fit,
+              enableSlideOutPage: true,
+              heroBuilderForSlidingPage: (child) {
+                return SuperHero(
+                  tag: image.toString() + (hero ?? ''),
+                  child: child,
+                );
+              },
+              cache: true,
+              mode: ExtendedImageMode.gesture,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.loading &&
+                    image.blurHash != null) {
+                  return ExtendedImage(
+                    fit: fit,
+                    image: BlurhashFfiImage(
+                      image.blurHash!,
+                      decodingWidth:
+                          (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
+                      decodingHeight:
+                          (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                      scale: blurHashSizeFactor,
+                    ),
+                    enableSlideOutPage: true,
+                  );
+                } else if (state.extendedImageLoadState == LoadState.failed) {
+                  context.read<AppController>().logger.w('Image failed to load: ${image.src}');
+                }
+                return null;
+              },
+            ),
+          ],
         ),
       ),
+      // ),
     );
   }
 }
@@ -97,6 +120,11 @@ class AdvancedImagePage extends StatefulWidget {
 }
 
 class _AdvancedImagePageState extends State<AdvancedImagePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     const shadows = <Shadow>[
@@ -136,14 +164,13 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: InteractiveViewer(
+            child: ExtendedImageSlidePage(
+              slideAxis: SlideAxis.both,
               child: SafeArea(
-                child: Center(
-                  child: AdvancedImage(
-                    widget.image,
-                    hero: widget.hero,
-                    fit: widget.fit,
-                  ),
+                child: AdvancedImage(
+                  widget.image,
+                  hero: widget.hero,
+                  // fit: widget.fit,
                 ),
               ),
             ),
