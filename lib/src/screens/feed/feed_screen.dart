@@ -959,6 +959,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         newItems.isEmpty ? null : nextPageKey,
       );
     } catch (error) {
+      if (!mounted) return;
       context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }

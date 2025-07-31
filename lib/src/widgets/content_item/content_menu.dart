@@ -27,54 +27,57 @@ void showContentMenu(
   ContextMenu(
     actionSpacing: 50,
     actions: [
-      ContextMenuAction(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: () {
-                widget.onBoost!();
-                Navigator.pop(context);
-              },
-              icon: const Icon(Symbols.rocket_launch_rounded),
-              color: widget.isBoosted ? Colors.purple.shade400 : null,
-            ),
-            Text(intFormat(widget.boosts!)),
-          ],
+      if (widget.boosts != null)
+        ContextMenuAction(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {
+                  widget.onBoost!();
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Symbols.rocket_launch_rounded),
+                color: widget.isBoosted ? Colors.purple.shade400 : null,
+              ),
+              Text(intFormat(widget.boosts!)),
+            ],
+          ),
         ),
-      ),
-      ContextMenuAction(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: () {
-                widget.onUpVote!();
-                Navigator.pop(context);
-              },
-              icon: const Icon(Symbols.arrow_upward_rounded),
-              color: widget.isUpVoted ? Colors.green.shade400 : null,
-            ),
-            Text(intFormat(widget.upVotes!)),
-          ],
+      if (widget.upVotes != null)
+        ContextMenuAction(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {
+                  widget.onUpVote!();
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Symbols.arrow_upward_rounded),
+                color: widget.isUpVoted ? Colors.green.shade400 : null,
+              ),
+              Text(intFormat(widget.upVotes!)),
+            ],
+          ),
         ),
-      ),
-      ContextMenuAction(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: () {
-                widget.onDownVote!();
-                Navigator.pop(context);
-              },
-              icon: const Icon(Symbols.arrow_downward_rounded),
-              color: widget.isDownVoted ? Colors.red.shade400 : null,
-            ),
-            Text(intFormat(widget.downVotes!)),
-          ],
+      if (widget.downVotes != null)
+        ContextMenuAction(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () {
+                  widget.onDownVote!();
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Symbols.arrow_downward_rounded),
+                color: widget.isDownVoted ? Colors.red.shade400 : null,
+              ),
+              Text(intFormat(widget.downVotes!)),
+            ],
+          ),
         ),
-      ),
       if (widget.notificationControlStatus !=
           null &&
           widget.onNotificationControlStatusChange !=
