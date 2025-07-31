@@ -29,7 +29,7 @@ jobs:
           draft: true
 
   create-build:
-    needs: draft-release
+    needs: prepare-release
     environment: production
     name: Create ${{ matrix.target }} build
     runs-on: ${{ matrix.runner }}
