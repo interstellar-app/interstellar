@@ -53,6 +53,7 @@ dependencies:
   simplytranslate: ^2.2.2
   visibility_detector: ^0.4.0+2
   logger: ^2.6.1
+  extended_image: ^10.0.1
 
 dev_dependencies:
   flutter_lints: ^5.0.0

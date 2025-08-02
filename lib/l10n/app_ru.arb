@@ -19,8 +19,6 @@
   "@tags_hint": {},
   "feedView": "Просмотр ленты",
   "@feedView": {},
-  "timeline": "График",
-  "@timeline": {},
   "subscriptions_domain_all": "Все доменные подписки",
   "@subscriptions_domain_all": {},
   "subscriptions_domain": "доменные подписки",
@@ -109,7 +107,7 @@
   "@filterLists": {},
   "filterList_delete": "Удалить лист фильтрования",
   "@filterList_delete": {},
-  "interstellar": "межзвёздный",
+  "interstellar": "Интерстелар",
   "@interstellar": {},
   "feed": "лента",
   "@feed": {},
@@ -131,7 +129,7 @@
   "@password": {},
   "login": "Логин",
   "@login": {},
-  "totpToken": "Жетон TOTP",
+  "totpToken": "Токен TOTP (если нужно)",
   "@totpToken": {},
   "cancel": "Отменить",
   "@cancel": {},
@@ -217,7 +215,7 @@
   "@sort_topNineMonths": {},
   "subscriptions": "Подписки",
   "@subscriptions": {},
-  "stars_empty": "Тут пусто; поставь звезду на журнал или пользоавтеля чтобы тут что-то появилось.",
+  "stars_empty": "Тут пусто; поставьте звездочку на группу или пользователя чтобы тут что-то появилось.",
   "@stars_empty": {},
   "postDeleted": "Обнаруженно сообщение",
   "@postDeleted": {},
@@ -263,9 +261,9 @@
   "@account_settings_blurNSFW": {},
   "account_settings_showProfileFollowings": "Показать профили на кого вы подписаны публично",
   "@account_settings_showProfileFollowings": {},
-  "account_settings_notifyOnThread": "Уведомить на новых потоках сообщений в подписанных журналах",
+  "account_settings_notifyOnThread": "Уведомить о новых обсуждениях в подписанных группах",
   "@account_settings_notifyOnThread": {},
-  "account_settings_notifyOnMicroblog": "Уведомить на новых микроблогах в подписанных журналах",
+  "account_settings_notifyOnMicroblog": "Уведомить о новых микроблогах в подписанных группах",
   "@account_settings_notifyOnMicroblog": {},
   "account_settings_notifyOnThreadReply": "Сообщить на кокоментариях в авторской ленте",
   "@account_settings_notifyOnThreadReply": {},
@@ -295,7 +293,7 @@
   "@settings_themeMode_dark": {},
   "settings_alwaysShowInstance": "Всегда показывать инстанцию",
   "@settings_alwaysShowInstance": {},
-  "settings_alwaysShowInstance_help": "Когда включено, инстанция аользователя/журнала всегда будет показывать после мх имени пользователя",
+  "settings_alwaysShowInstance_help": "Когда включено, то сервер пользователя или группы всегда будет показываться после их имени пользователя",
   "@settings_alwaysShowInstance_help": {},
   "settings_translate": "Перевод",
   "@settings_translate": {},
@@ -741,5 +739,378 @@
   "create_link_invalid": "Недоступный Url",
   "@create_link_invalid": {},
   "create_microblog": "Микроблог",
-  "@create_microblog": {}
+  "@create_microblog": {},
+  "subscriptions_community": "Подписки на сообщества",
+  "@subscriptions_community": {},
+  "subscriptions_community_all": "Все подписки на сообщества",
+  "@subscriptions_community_all": {},
+  "subscriptions_community_empty": "Здесь пусто; подпишитесь на сообщество, чтобы оно появилось здесь.",
+  "@subscriptions_community_empty": {},
+  "subscriptions_user": "Подписки пользователей",
+  "@subscriptions_user": {},
+  "subscriptions_user_all": "Все подписки пользователей",
+  "@subscriptions_user_all": {},
+  "subscriptions_user_empty": "Здесь пусто; подпишитесь на пользователя, чтобы он появился здесь.",
+  "@subscriptions_user_empty": {},
+  "subscriptions_domain_empty": "Здесь пусто; подпишитесь на домен, чтобы он появился здесь.",
+  "@subscriptions_domain_empty": {},
+  "feeds": "Ленты",
+  "@feeds": {},
+  "feeds_empty": "Здесь пусто; создайте ленту, чтобы она появилась здесь.",
+  "@feeds_empty": {},
+  "feeds_new": "Новая лента",
+  "@feeds_new": {},
+  "feeds_edit": "Изменить ленту {feed}",
+  "@feeds_edit": {
+    "placeholders": {
+      "feed": {
+        "type": "String"
+      }
+    }
+  },
+  "feeds_delete": "Удалить ленту",
+  "@feeds_delete": {},
+  "feeds_input": "Добавить входные данные",
+  "@feeds_input": {},
+  "feeds_import": "Импортировать ленту",
+  "@feeds_import": {},
+  "feeds_selectInputs": "Выбрать входные данные",
+  "@feeds_selectInputs": {},
+  "comment_openOriginalPost": "Открыть оригинальную запись",
+  "@comment_openOriginalPost": {},
+  "comment_openRoot": "Открыть корневой",
+  "@comment_openRoot": {},
+  "comment_openParent": "Открыть родительский",
+  "@comment_openParent": {},
+  "communities": "Сообщества",
+  "@communities": {},
+  "reportStatus_any": "Все",
+  "@reportStatus_any": {},
+  "reportStatus_appeal": "Апелляция",
+  "@reportStatus_appeal": {},
+  "reportStatus_approved": "Одобрено",
+  "@reportStatus_approved": {},
+  "reportStatus_closed": "Закрыто",
+  "@reportStatus_closed": {},
+  "reportStatus_pending": "В ожидании",
+  "@reportStatus_pending": {},
+  "reportStatus_rejected": "Отклонено",
+  "@reportStatus_rejected": {},
+  "report_accept": "Принять",
+  "@report_accept": {},
+  "report_reject": "Отклонить",
+  "@report_reject": {},
+  "reportedUser": "Жалоба на: ",
+  "@reportedUser": {},
+  "reportedBy": "Пожаловался: ",
+  "@reportedBy": {},
+  "account_settings_showSubscribedCommunities": "Показать подписанные сообщества",
+  "@account_settings_showSubscribedCommunities": {},
+  "settings_defaultCreateLanguage": "Язык создания сообщений и комментариев по умолчанию",
+  "@settings_defaultCreateLanguage": {},
+  "settings_askBeforeUnsubscribing": "Спрашивать перед отпиской",
+  "@settings_askBeforeUnsubscribing": {},
+  "settings_autoTranslate": "Авто перевод сообщений и комментариев",
+  "@settings_autoTranslate": {},
+  "settings_markThreadsReadOnScroll": "Отметить темы как прочитанные при прокрутке",
+  "@settings_markThreadsReadOnScroll": {},
+  "settings_markMicroblogsReadOnScroll": "Отметить микроблоги как прочитанные при прокрутке",
+  "@settings_markMicroblogsReadOnScroll": {},
+  "settings_animationSpeed": "Скорость анимации",
+  "@settings_animationSpeed": {},
+  "settings_animationDisabled": "Отключена",
+  "@settings_animationDisabled": {},
+  "settings_hideActionButtons": "Скрыть кнопки действий",
+  "@settings_hideActionButtons": {},
+  "settings_hideActionButtons_help": "Скрывает кнопки действий (голосовать, повысить рейтинг, ответить и т. д.) под каждой публикацией и комментарием. Элементы управления по-прежнему доступны в дополнительном меню. Рекомендуется включить жесты смахивания одновременно с этой настройкой.",
+  "@settings_hideActionButtons_help": {},
+  "settings_hideFeedUIOnScroll": "Скрыть интерфейс ленты при прокрутке",
+  "@settings_hideFeedUIOnScroll": {},
+  "settings_globalTextScale": "Глобальный масштаб текста",
+  "@settings_globalTextScale": {},
+  "settings_mbinCommunity": "Сообщество Mbin",
+  "@settings_mbinCommunity": {},
+  "settings_mbinConfigsCommunity": "Конфигурации Поделиться сообществом",
+  "@settings_mbinConfigsCommunity": {},
+  "settings_colorScheme_brandBlue": "Синий",
+  "@settings_colorScheme_brandBlue": {},
+  "settings_colorScheme_bahamaBlue": "Багамский синий",
+  "@settings_colorScheme_bahamaBlue": {},
+  "settings_feedDefaults_combinedSort": "Составная сортировка",
+  "@settings_feedDefaults_combinedSort": {},
+  "settings_feedDefaults_hideReadPosts": "Скрыть прочитанные записи",
+  "@settings_feedDefaults_hideReadPosts": {},
+  "pinnedInCommunity": "Закреплёно в сообществе",
+  "@pinnedInCommunity": {},
+  "status": "Состояние",
+  "@status": {},
+  "markdownEditor_subscript": "Подстрочный",
+  "@markdownEditor_subscript": {},
+  "markdownEditor_superscript": "Надстрочный",
+  "@markdownEditor_superscript": {},
+  "create_community": "Сообщество",
+  "@create_community": {},
+  "microblog_communityHelperText": "По умолчанию используется «случайное» сообщество для микроблогов, поскольку именно там Mbin хранит некатегоризированные микроблоги.",
+  "@microblog_communityHelperText": {},
+  "selectCommunity": "Выбрать сообщество...",
+  "@selectCommunity": {},
+  "community": "Сообщество",
+  "@community": {},
+  "action_fabTap": "Нажатие FAB",
+  "@action_fabTap": {},
+  "action_fabHold": "Зажатие FAB",
+  "@action_fabHold": {},
+  "action_fabMenu": "Меню FAB",
+  "@action_fabMenu": {},
+  "action_expandFABMenu": "Развернуть меню FAB",
+  "@action_expandFABMenu": {},
+  "action_showReadPosts": "Показать прочитанные записи",
+  "@action_showReadPosts": {},
+  "action_downvote": "Голосовать против",
+  "@action_downvote": {},
+  "action_markRead": "Отметить как прочитанное",
+  "@action_markRead": {},
+  "action_markUnread": "Отметить как непрочитанное",
+  "@action_markUnread": {},
+  "pointsX": "{num} баллов",
+  "@pointsX": {
+    "placeholders": {
+      "num": {
+        "type": "int"
+      }
+    }
+  },
+  "filterList_matchMode": "Режим соответствия",
+  "@filterList_matchMode": {},
+  "filterList_matchMode_simple_help": "Будет соответствовать буквально любому вхождению фразы. Например, фраза «app» будет соответствовать «app», а также «apps», «application», «yapp» и т. д.",
+  "@filterList_matchMode_simple_help": {},
+  "filterList_matchMode_wholeWords": "Целые слова",
+  "@filterList_matchMode_wholeWords": {},
+  "filterList_matchMode_wholeWords_help": "Совпадение будет найдено только при наличии разделителей слов с обоих концов проверяемого текста, другими словами, фраза должна быть целым словом и не может находиться в середине слова. Например, фраза «app» будет соответствовать «app», но не «apps», «application», «yapp» и т. д.",
+  "@filterList_matchMode_wholeWords_help": {},
+  "filterList_matchMode_regex": "Регулярное выражение",
+  "@filterList_matchMode_regex": {},
+  "filterList_matchMode_regex_help": "Будет соответствовать содержимому, найденному с помощью указанного регулярного выражения, полученного из фразы.",
+  "@filterList_matchMode_regex_help": {},
+  "filterList_caseSensitive": "Учитывая регистр",
+  "@filterList_caseSensitive": {},
+  "filterList_caseSensitive_help": "Если включено, будет соответствовать только содержимому с таким же регистром, как у фразы.",
+  "@filterList_caseSensitive_help": {},
+  "filterListWarningX": "Список фильтров соответствует: {lists}",
+  "@filterListWarningX": {
+    "placeholders": {
+      "lists": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmUnfollow": "Вы собираетесь отписаться. Продолжить?",
+  "@confirmUnfollow": {},
+  "altText": "Альтернативный текст",
+  "@altText": {},
+  "settings_dataUtilities": "БЕТА: Утилиты данных",
+  "@settings_dataUtilities": {},
+  "settings_accountMigration": "Миграция профилей",
+  "@settings_accountMigration": {},
+  "settings_accountMigration_help": "Миграция подписок, подписок и блокировок между профилями",
+  "@settings_accountMigration_help": {},
+  "settings_accountMigration_step1": "Выбор исходного и целевого профилей",
+  "@settings_accountMigration_step1": {},
+  "settings_accountMigration_step1_source": "Исходный аккаунт",
+  "@settings_accountMigration_step1_source": {},
+  "settings_accountMigration_step1_destination": "Целевой профиль",
+  "@settings_accountMigration_step1_destination": {},
+  "settings_accountMigration_step2": "Включить/отключить миграцию категорий",
+  "@settings_accountMigration_step2": {},
+  "settings_accountMigration_step2_migrateCommunitySubscriptions": "Миграция подписок сообщества",
+  "@settings_accountMigration_step2_migrateCommunitySubscriptions": {},
+  "settings_accountMigration_step2_migrateCommunityBlocks": "Миграция блокировок сообщества",
+  "@settings_accountMigration_step2_migrateCommunityBlocks": {},
+  "settings_accountMigration_step2_migrateUserFollows": "Миграция подписок пользователей",
+  "@settings_accountMigration_step2_migrateUserFollows": {},
+  "settings_accountMigration_step2_migrateUserBlocks": "Миграция блокировок пользователей",
+  "@settings_accountMigration_step2_migrateUserBlocks": {},
+  "settings_accountMigration_step3": "Подтверждение миграции данных",
+  "@settings_accountMigration_step3": {},
+  "settings_accountMigration_readingFromSource": "Чтение из исходного профиля",
+  "@settings_accountMigration_readingFromSource": {},
+  "settings_accountMigration_writingFromSource": "Запись в целевой профиль",
+  "@settings_accountMigration_writingFromSource": {},
+  "settings_accountMigration_complete": "Миграция профиля завершена!",
+  "@settings_accountMigration_complete": {},
+  "settings_accountMigration_failed": "Перенос профиля не удалась из-за ошибки",
+  "@settings_accountMigration_failed": {},
+  "settings_accountMigration_foundXItems": "Найдено {count} элементов",
+  "@settings_accountMigration_foundXItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountMigration_completeXItems": "Выполнено {current}/{total} элементов",
+  "@settings_accountMigration_completeXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountMigration_failedXItems": "Не удалось {current}/{total} элементов",
+  "@settings_accountMigration_failedXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset": "Сброс профиля",
+  "@settings_accountReset": {},
+  "settings_accountReset_help": "Удаление подписок, подписок и блокировок из профиля",
+  "@settings_accountReset_help": {},
+  "settings_accountReset_step1": "Выберите профиль",
+  "@settings_accountReset_step1": {},
+  "settings_accountReset_step2": "Включить/отключить сброс категорий",
+  "@settings_accountReset_step2": {},
+  "settings_accountReset_step2_resetCommunitySubscriptions": "Сброс подписок в сообществе",
+  "@settings_accountReset_step2_resetCommunitySubscriptions": {},
+  "settings_accountReset_step2_resetCommunityBlocks": "Сброс блокировок в сообществе",
+  "@settings_accountReset_step2_resetCommunityBlocks": {},
+  "settings_accountReset_step2_resetUserFollows": "Сброс подписок пользователя",
+  "@settings_accountReset_step2_resetUserFollows": {},
+  "settings_accountReset_step2_resetUserBlocks": "Сброс блокировок пользователя",
+  "@settings_accountReset_step2_resetUserBlocks": {},
+  "settings_accountReset_step3": "Подтверждение сброса данных",
+  "@settings_accountReset_step3": {},
+  "settings_accountReset_readingFromAccount": "Чтение из профиля",
+  "@settings_accountReset_readingFromAccount": {},
+  "settings_accountReset_removingItems": "Удаление элементов",
+  "@settings_accountReset_removingItems": {},
+  "settings_accountReset_complete": "Сброс профиля завершён!",
+  "@settings_accountReset_complete": {},
+  "settings_accountReset_failed": "Сброс профиля не удался из-за ошибки",
+  "@settings_accountReset_failed": {},
+  "settings_accountReset_foundXItems": "Найдено {count} элементов",
+  "@settings_accountReset_foundXItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset_completeXItems": "Завершено {current}/{total} элементов",
+  "@settings_accountReset_completeXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_accountReset_failedXItems": "Не удались {current}/{total} элементов",
+  "@settings_accountReset_failedXItems": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationControlStatus_default": "Уведомления по умолчанию",
+  "@notificationControlStatus_default": {},
+  "notificationControlStatus_muted": "Беззвучные уведомления",
+  "@notificationControlStatus_muted": {},
+  "notificationControlStatus_loud": "Громкие уведомления",
+  "@notificationControlStatus_loud": {},
+  "bookmark": "Закладка",
+  "@bookmark": {},
+  "bookmark_addToX": "Добавить в {name}",
+  "@bookmark_addToX": {},
+  "bookmark_removeFromX": "Удалить из {name}",
+  "@bookmark_removeFromX": {},
+  "bookmarks": "Закладки",
+  "@bookmarks": {},
+  "bookmarkLists": "Списки закладок",
+  "@bookmarkLists": {},
+  "bookmarkLists_create": "Создать список",
+  "@bookmarkLists_create": {},
+  "bookmarkLists_setDefault": "Установить по умолчанию",
+  "@bookmarkLists_setDefault": {},
+  "bookmarkLists_createHint": "Новое название списка",
+  "@bookmarkLists_createHint": {},
+  "configShare": "Поделиться конфигурацией",
+  "@configShare": {},
+  "configShare_profile_title": "Профиль Интерстелар",
+  "@configShare_profile_title": {},
+  "configShare_profile_info": "Изменяет настройки {count}",
+  "@configShare_profile_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_filterList_title": "Список фильтров Интерстелар",
+  "@configShare_filterList_title": {},
+  "configShare_filterList_info": "Содержит {count} фраз",
+  "@configShare_filterList_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_feed_title": "Лента Интерстелар",
+  "@configShare_feed_title": {},
+  "configShare_feed_info": "Содержит {count} входных данных",
+  "@configShare_feed_info": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "configShare_created": "Создано {date} с {version}",
+  "@configShare_created": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "errorPage_firstPage": "Что-то пошло не так",
+  "@errorPage_firstPage": {},
+  "errorPage_firstPage_button": "Повторить попытку",
+  "@errorPage_firstPage_button": {},
+  "errorPage_newPage": "Что-то пошло не так. Нажмите, чтобы повторить попытку.",
+  "@errorPage_newPage": {},
+  "errorPage_caughtUp": "Вы теперь в курсе.\nЗагрузить старые элементы?",
+  "@errorPage_caughtUp": {},
+  "exitMessage": "Снова нажмите кнопку «Назад», чтобы выйти.",
+  "@exitMessage": {},
+  "settings_debug": "Отладка",
+  "@settings_debug": {},
+  "settings_debug_showErrors": "Показать ошибки",
+  "@settings_debug_showErrors": {},
+  "settings_debug_clearDatabase": "Очистить базу данных",
+  "@settings_debug_clearDatabase": {},
+  "settings_debug_clearAccounts": "Очистить учётные записи",
+  "@settings_debug_clearAccounts": {},
+  "settings_debug_clearProfiles": "Очистить профили",
+  "@settings_debug_clearProfiles": {},
+  "settings_debug_log": "Журнал",
+  "@settings_debug_log": {}
 }

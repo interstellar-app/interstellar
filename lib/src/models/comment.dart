@@ -57,6 +57,21 @@ class CommentListModel with _$CommentListModel {
     nextPage: json['next_page'] as String?,
   );
 
+  factory CommentListModel.fromPiefed(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => CommentListModel(
+    items: (json['comments'] as List<dynamic>)
+        .map(
+          (post) => CommentModel.fromPiefed(
+            post as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
+
   // Piefed comment list that needs to be converted to tree format. Used for post comments and comment replies.
   factory CommentListModel.fromPiefedToTree(
     JsonMap json, {
@@ -222,6 +237,8 @@ class CommentModel with _$CommentModel {
     JsonMap json, {
     List<dynamic> possibleChildrenJson = const [],
     required List<(String, int)> langCodeIdPairs,
+    CommunityModel? community,
+    int? postId,
   }) {
     final piefedComment = json['comment'] as JsonMap;
     final piefedCounts = json['counts'] as JsonMap;
@@ -232,7 +249,7 @@ class CommentModel with _$CommentModel {
         .map((e) => int.parse(e))
         .toList();
 
-    final children = possibleChildrenJson
+    var children = possibleChildrenJson
         .where((c) {
           String childPath = c['comment']['path'];
 
@@ -248,12 +265,31 @@ class CommentModel with _$CommentModel {
         )
         .toList();
 
+    postId ??= (json['post'] as JsonMap)['id'] as int;
+    community ??= CommunityModel.fromPiefed(json['community'] as JsonMap);
+
+    if (children.isEmpty) {
+      final replies = (json['replies'] as List<dynamic>?)
+          ?.map(
+            (c) => CommentModel.fromPiefed(
+              c as JsonMap,
+              langCodeIdPairs: langCodeIdPairs,
+              community: community,
+              postId: postId,
+            ),
+          )
+          .toList();
+      if (replies != null) {
+        children = replies;
+      }
+    }
+
     return CommentModel(
       id: piefedComment['id'] as int,
       user: UserModel.fromPiefed(json['creator'] as JsonMap),
-      community: CommunityModel.fromPiefed(json['community'] as JsonMap),
+      community: community,
       postType: PostType.thread,
-      postId: (json['post'] as JsonMap)['id'] as int,
+      postId: postId,
       rootId: piefedPathSegments.length > 2 ? piefedPathSegments[1] : null,
       parentId: piefedPathSegments.length > 2
           ? piefedPathSegments[piefedPathSegments.length - 2]
@@ -278,7 +314,7 @@ class CommentModel with _$CommentModel {
       children: children,
       childCount: piefedCounts['child_count'] as int,
       visibility: 'visible',
-      canAuthUserModerate: json['canAuthUserModerate'] as bool?,
+      canAuthUserModerate: json['can_auth_user_moderate'] as bool?,
       notificationControlStatus: json['activity_alert'] == null
           ? null
           : json['activity_alert'] as bool

@@ -181,6 +181,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
       );
       _pagingController.appendPage(bookmarks.$1, bookmarks.$2);
     } catch (e) {
+      if (!mounted) return;
+      ac.logger.e(e);
       _pagingController.error = e;
     }
   }

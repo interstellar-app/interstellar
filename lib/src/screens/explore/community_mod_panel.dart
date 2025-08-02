@@ -132,6 +132,7 @@ class _CommunityModPanelBansState extends State<CommunityModPanelBans> {
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
+      if (!mounted) return;
       context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }
@@ -240,6 +241,8 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
 
       _pagingController.appendPage(newItems, newPage.nextPage);
     } catch (error) {
+      if (!mounted) return;
+      context.read<AppController>().logger.e(error);
       _pagingController.error = error;
     }
   }
