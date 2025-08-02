@@ -23,6 +23,7 @@ class LoadingListTile extends StatefulWidget {
   final Widget? title;
   final Widget? subtitle;
   final Widget? trailing;
+  final bool enabled;
 
   const LoadingListTile({
     required this.onTap,
@@ -30,6 +31,7 @@ class LoadingListTile extends StatefulWidget {
     this.title,
     this.subtitle,
     this.trailing,
+    this.enabled = true,
     super.key,
   });
 
@@ -42,7 +44,6 @@ class _LoadingListTileState extends State<LoadingListTile> {
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.onTap == null ? Theme.of(context).disabledColor : null;
 
     return ListTile(
       leading: widget.leading,
@@ -61,8 +62,7 @@ class _LoadingListTileState extends State<LoadingListTile> {
               }
             },
       trailing: _isLoading ? _LoadingTileIndicator() : widget.trailing,
-      textColor: color,
-      iconColor: color,
+      enabled: widget.enabled,
     );
   }
 }

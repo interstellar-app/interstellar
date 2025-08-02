@@ -99,6 +99,14 @@ class _FeedScreenState extends State<FeedScreen>
         .read<AppController>()
         .profile
         .feedDefaultHideReadPosts;
+
+    () async {
+      final drawerState = await fetchNavDrawerState(context.read<AppController>());
+      if (!mounted) return;
+      setState(() {
+        _navDrawPersistentState = drawerState;
+      });
+    } ();
   }
 
   @override

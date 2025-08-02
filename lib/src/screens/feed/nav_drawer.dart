@@ -246,6 +246,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ...ac.feeds.entries.map(
               (feed) => LoadingListTile(
                 title: Text(feed.value.name),
+                enabled: !(feed.value.serverFeed && ac.serverSoftware != ServerSoftware.piefed),
                 onTap: () async {
                   final aggregator = await FeedAggregator.create(
                     ac,
