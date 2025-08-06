@@ -161,7 +161,7 @@ void newFeed(BuildContext context) {
                   name: item.title,
                   inputs: {
                     FeedInput(
-                        name: item.id.toString(), sourceType: FeedSource.feed)
+                        name: '${item.id}:${getNameHost(context, item.name)}', sourceType: FeedSource.feed) // tmp until proper getByName method can be made
                   }
                 );
 
