@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,6 +13,7 @@ import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
@@ -59,6 +61,9 @@ class _FeedScreenState extends State<FeedScreen>
   late bool _hideReadPosts;
   bool _isHidden = false;
 
+  final ExpandableController _drawerController = ExpandableController(
+      initialExpanded: true
+  );
   NavDrawPersistentState? _navDrawPersistentState;
 
   @override
@@ -315,6 +320,7 @@ class _FeedScreenState extends State<FeedScreen>
         ),
       ),
       child: AdvancedScaffold(
+        controller: _drawerController,
         body: NotificationListener<UserScrollNotification>(
           onNotification: (scroll) {
             if (scroll.direction == ScrollDirection.forward) {
@@ -337,6 +343,17 @@ class _FeedScreenState extends State<FeedScreen>
 
                 return [
                   SliverAppBar(
+                    leading: widget.sourceId == null && widget.feed == null
+                        && Breakpoints.isExpanded(context)
+                        ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _drawerController.toggle();
+                            });
+                          },
+                          icon: const Icon(Symbols.menu_rounded)
+                        )
+                        : null,
                     floating: ac.profile.hideFeedUIOnScroll,
                     pinned: !ac.profile.hideFeedUIOnScroll,
                     snap: ac.profile.hideFeedUIOnScroll,
