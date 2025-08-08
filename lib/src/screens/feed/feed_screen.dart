@@ -87,6 +87,17 @@ class _FeedScreenState extends State<FeedScreen>
             context.read<AppController>().profile.feedDefaultCombinedSort,
         };
 
+  void _initNavExpanded() async {
+    final initExpanded = (await context.read<AppController>()
+        .fetchCachedValue('nav-widescreen')) ?? true;
+    if (initExpanded != _drawerController.expanded) {
+      if (!mounted) return;
+      setState(() {
+        _drawerController.toggle();
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +115,8 @@ class _FeedScreenState extends State<FeedScreen>
         .read<AppController>()
         .profile
         .feedDefaultHideReadPosts;
+
+    _initNavExpanded();
   }
 
   @override
@@ -350,6 +363,7 @@ class _FeedScreenState extends State<FeedScreen>
                             setState(() {
                               _drawerController.toggle();
                             });
+                            ac.cacheValue('nav-widescreen', _drawerController.expanded);
                           },
                           icon: const Icon(Symbols.menu_rounded)
                         )
