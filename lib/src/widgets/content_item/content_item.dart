@@ -366,7 +366,8 @@ class _ContentItemState extends State<ContentItem> {
     return LayoutBuilder(
       builder: (context, constrains) {
         final hasWideSize = constrains.maxWidth > 800;
-        final isRightImage = hasWideSize;
+        final isRightImage = hasWideSize &&
+            !widget.fullImageSize;
 
         final double rightImageSize = hasWideSize ? 128 : 64;
 

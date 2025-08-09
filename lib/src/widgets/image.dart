@@ -71,7 +71,9 @@ class AdvancedImage extends StatelessWidget {
                 );
               },
               cache: true,
-              mode: ExtendedImageMode.gesture,
+              mode: openTitle != null
+                  ? ExtendedImageMode.none
+                  : ExtendedImageMode.gesture,
               loadStateChanged: (state) {
                 if (state.extendedImageLoadState == LoadState.loading &&
                     image.blurHash != null) {

@@ -207,7 +207,7 @@ class ProfileRequired with _$ProfileRequired {
     alwaysShowInstance: false,
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
-    fullImageSizeMicroblogs: true,
+    fullImageSizeMicroblogs: false,
     feedDefaultView: FeedView.threads,
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
