@@ -57,34 +57,36 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
               widget.software == ServerSoftware.piefed)
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  TextEditor(
-                    _usernameEmailTextController,
-                    label: l(context).usernameOrEmail,
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (_) => setState(() {}),
-                    autofillHints: [
-                      AutofillHints.username,
-                      AutofillHints.email,
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  PasswordEditor(
-                    _passwordTextController,
-                    onChanged: (_) => setState(() {}),
-                  ),
-                  if (widget.software == ServerSoftware.lemmy) ...[
-                    const SizedBox(height: 12),
+              child: AutofillGroup(
+                child: Column(
+                  children: [
                     TextEditor(
-                      _totpTokenTextController,
-                      label: l(context).totpToken,
-                      keyboardType: TextInputType.number,
-                      maxLength: 6,
+                      _usernameEmailTextController,
+                      label: l(context).usernameOrEmail,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (_) => setState(() {}),
+                      autofillHints: [
+                        AutofillHints.username,
+                        AutofillHints.email,
+                      ],
                     ),
+                    const SizedBox(height: 12),
+                    PasswordEditor(
+                      _passwordTextController,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    if (widget.software == ServerSoftware.lemmy) ...[
+                      const SizedBox(height: 12),
+                      TextEditor(
+                        _totpTokenTextController,
+                        label: l(context).totpToken,
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+                      ),
+                    ],
                   ],
-                ],
-              ),
+                ),
+              )
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
