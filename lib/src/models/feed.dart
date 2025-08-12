@@ -7,12 +7,14 @@ part 'feed.freezed.dart';
 
 @freezed
 class FeedListModel with _$FeedListModel {
-  const factory FeedListModel({
-    required List<FeedModel> items,
-  }) = _FeedListModel;
-  
+  const factory FeedListModel({required List<FeedModel> items}) =
+      _FeedListModel;
+
   factory FeedListModel.fromPiefed(JsonMap json) {
-    final items = ((json['feeds'] as List<dynamic>?)?? (json['topics'] as List<dynamic>)).map((feed) => FeedModel.fromPiefed(feed)).toList();
+    final items =
+        ((json['feeds'] as List<dynamic>?) ?? (json['topics'] as List<dynamic>))
+            .map((feed) => FeedModel.fromPiefed(feed))
+            .toList();
 
     var children = items.fold(<FeedModel>[], (item, element) {
       item.addAll(element.children);
@@ -66,15 +68,23 @@ class FeedModel with _$FeedModel {
       subscriptionCount: json['subscriptions_count'] as int?,
       communityCount: json['num_communities'] as int,
       public: json['public'] as bool?,
-      parentId: (json['parent_feed_id'] as int?)?? (json['parent_id'] as int?),
+      parentId: (json['parent_feed_id'] as int?) ?? (json['parent_id'] as int?),
       isInstanceFeed: json['is_instance_feed'] as bool?,
       icon: lemmyGetOptionalImage(json['icon'] as String?),
       banner: lemmyGetOptionalImage(json['banner'] as String?),
       subscribed: json['subscribed'] as bool?,
       owner: json['owner'] as bool?,
-      published: json['published'] == null ? null : DateTime.parse(json['published'] as String),
-      updated: json['updated'] == null ? null : DateTime.parse(json['updated'] as String),
-      children: json['children'] == null ? [] : (json['children'] as List<dynamic>).map((child) => FeedModel.fromPiefed(child)).toList()
+      published: json['published'] == null
+          ? null
+          : DateTime.parse(json['published'] as String),
+      updated: json['updated'] == null
+          ? null
+          : DateTime.parse(json['updated'] as String),
+      children: json['children'] == null
+          ? []
+          : (json['children'] as List<dynamic>)
+                .map((child) => FeedModel.fromPiefed(child))
+                .toList(),
     );
   }
 }

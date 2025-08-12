@@ -154,11 +154,14 @@ class _ExploreScreenState extends State<ExploreScreen>
 
         case ExploreType.feeds:
         case ExploreType.topics:
-          final newPage = await context.read<AppController>().api.feed.list(topics: type == ExploreType.topics);
+          final newPage = await context.read<AppController>().api.feed.list(
+            topics: type == ExploreType.topics,
+          );
 
           if (!mounted) return;
 
-          final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
+          final currentItemIds =
+              _pagingController.itemList?.map((e) => e.id) ?? [];
           final newItems = newPage.items
               .where((e) => !currentItemIds.contains(e.id))
               .toList();
