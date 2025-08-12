@@ -153,7 +153,8 @@ class _ExploreScreenState extends State<ExploreScreen>
           break;
 
         case ExploreType.feeds:
-          final newPage = await context.read<AppController>().api.feed.list();
+        case ExploreType.topics:
+          final newPage = await context.read<AppController>().api.feed.list(topics: type == ExploreType.topics);
 
           if (!mounted) return;
 
@@ -335,6 +336,20 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 padding: chipPadding,
                               ),
                               const SizedBox(width: 4),
+                              ChoiceChip(
+                                label: Text(l(context).topics),
+                                selected: type == ExploreType.topics,
+                                onSelected: (bool selected) {
+                                  if (selected) {
+                                    setState(() {
+                                      type = ExploreType.topics;
+                                      _pagingController.refresh();
+                                    });
+                                  }
+                                },
+                                padding: chipPadding,
+                              ),
+                              const SizedBox(width: 4),
                             ],
                             if (_selected == null) ...[
                               ChoiceChip(
@@ -504,7 +519,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 }
 
-enum ExploreType { communities, people, domains, feeds, all }
+enum ExploreType { communities, people, domains, feeds, topics, all }
 
 enum ExploreFilter {
   all,

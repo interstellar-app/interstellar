@@ -54,7 +54,7 @@ class ExploreScreenItem extends StatelessWidget {
         DetailedCommunityModel i => i.title,
         DetailedUserModel i => i.displayName ?? i.name.split('@').first,
         DomainModel i => i.name,
-        FeedModel i => i.title,
+        FeedModel i => i.title ?? i.name,
         _ => throw 'Unreachable',
       };
       final subtitle = switch (item) {
@@ -74,7 +74,7 @@ class ExploreScreenItem extends StatelessWidget {
         DetailedCommunityModel i => i.subscriptionsCount,
         DetailedUserModel i => i.followersCount ?? 0,
         DomainModel i => i.subscriptionsCount,
-        FeedModel i => i.subscriptionCount,
+        FeedModel i => i.subscriptionCount?? 0,
         _ => throw 'Unreachable',
       };
       final onSubscribe = switch (item) {

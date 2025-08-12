@@ -8,6 +8,7 @@ enum FeedSource {
   user,
   domain,
   feed,
+  topic,
 }
 
 enum FeedSort {

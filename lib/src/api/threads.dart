@@ -59,6 +59,9 @@ class APIThreads {
           FeedSource.feed => throw Exception(
             'Feeds source not allowed for mbin'
           ),
+          FeedSource.topic => throw Exception(
+              'Topics source not allowed for mbin'
+          ),
         };
         final query = {
           'p': page,
@@ -113,6 +116,9 @@ class APIThreads {
             FeedSource.feed => throw Exception(
               'Feeds source not allowed for lemmy'
             ),
+            FeedSource.topic => throw Exception(
+                'Topics source not allowed for lemmy'
+            ),
           });
 
         final response = await client.get(path, queryParams: query);
@@ -137,6 +143,7 @@ class APIThreads {
               'Domain source not allowed for fromPiefed',
             ),
             FeedSource.feed => {'feed_id': sourceId.toString()},
+            FeedSource.topic => {'topic_id': sourceId.toString()},
           });
 
         final response = await client.get(path, queryParams: query);

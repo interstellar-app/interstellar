@@ -331,6 +331,9 @@ class FeedAggregator {
           FeedSource.domain => throw UnimplementedError(),
           FeedSource.feed => input.name.split(':').last != ac.instanceHost // tmp until proper getByName method can be made
               ? throw Exception('Wrong instance')
+              : int.parse(input.name.split(':').first),
+          FeedSource.topic => input.name.split(':').last != ac.instanceHost // tmp until proper getByName method can be made
+              ? throw Exception('Wrong instance')
               : int.parse(input.name.split(':').first)
         });
       } catch (error) {

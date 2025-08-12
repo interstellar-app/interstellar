@@ -45,13 +45,16 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
             (entry) => ListTile(
               title: Text(entry.key),
               subtitle: Text(
-                entry.value.serverFeed
-                    ? 'Server'
-                    : 'Client'
+                entry.value.serverFeed ? l(context).server : l(context).client,
               ),
-              enabled: !(entry.value.serverFeed && ac.serverSoftware != ServerSoftware.piefed),
+              enabled:
+                  !(entry.value.serverFeed &&
+                      ac.serverSoftware != ServerSoftware.piefed),
               onTap: () async {
-                final feed = await FeedAggregator.create(ac, ac.feeds[entry.key]!);
+                final feed = await FeedAggregator.create(
+                  ac,
+                  ac.feeds[entry.key]!,
+                );
                 if (!context.mounted) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -130,15 +133,12 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
 
 void newFeed(BuildContext context) {
   if (context.read<AppController>().serverSoftware != ServerSoftware.piefed) {
-    pushRoute(
-      context,
-      builder: (context) => const EditFeedScreen(feed: null),
-    );
+    pushRoute(context, builder: (context) => const EditFeedScreen(feed: null));
   } else {
     ContextMenu(
       items: [
         ContextMenuItem(
-          title: 'Client feed',
+          title: '${l(context).client} ${l(context).feed}',
           onTap: () async {
             await pushRoute(
               context,
@@ -146,10 +146,10 @@ void newFeed(BuildContext context) {
             );
             if (!context.mounted) return;
             Navigator.pop(context);
-          }
+          },
         ),
         ContextMenuItem(
-          title: 'Server feed',
+          title: '${l(context).server} ${l(context).feed}',
           onTap: () => pushRoute(
             context,
             builder: (context) => ExploreScreen(
@@ -158,48 +158,53 @@ void newFeed(BuildContext context) {
                 if (item is! FeedModel) return;
 
                 final feed = Feed(
-                  name: item.title,
+                  name: item.title!,
                   inputs: {
                     FeedInput(
-                        name: '${item.id}:${getNameHost(context, item.name)}', sourceType: FeedSource.feed) // tmp until proper getByName method can be made
-                  }
+                      name: '${item.id}:${getNameHost(context, item.name)}',
+                      sourceType: FeedSource.feed,
+                    ), // tmp until proper getByName method can be made
+                  },
                 );
 
-                String title = item.title;
+                String title = item.title!;
                 if (context.read<AppController>().feeds[title] != null) {
                   await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Existing feed'),
-                          actions: [
-                            OutlinedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              child: Text(l(context).cancel),
-                            ),
-                            LoadingFilledButton(
-                              onPressed: () async {
-                                int num = 0;
-                                while (context.read<AppController>().feeds[title] != null) {
-                                  title = '${item.title}${num++}';
-                                }
-                                Navigator.pop(context);
-                              },
-                              label: Text('Rename'),
-                            ),
-                            LoadingFilledButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                              },
-                              label: Text('Replace'),
-                            ),
-                          ],
-                        );
-                      }
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(l(context).feeds_exist),
+                        actions: [
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: Text(l(context).cancel),
+                          ),
+                          LoadingFilledButton(
+                            onPressed: () async {
+                              int num = 0;
+                              while (context
+                                      .read<AppController>()
+                                      .feeds[title] !=
+                                  null) {
+                                title = '${item.title}${num++}';
+                              }
+                              Navigator.pop(context);
+                            },
+                            label: Text(l(context).rename),
+                          ),
+                          LoadingFilledButton(
+                            onPressed: () async {
+                              Navigator.pop(context);
+                            },
+                            label: Text(l(context).replace),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 }
 
@@ -208,10 +213,78 @@ void newFeed(BuildContext context) {
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
-            )
-          )
+            ),
+          ),
         ),
-      ]
+        ContextMenuItem(
+          title: '${l(context).server} ${l(context).topic}',
+          onTap: () => pushRoute(
+            context,
+            builder: (context) => ExploreScreen(
+              mode: ExploreType.topics,
+              onTap: (selected, item) async {
+                if (item is! FeedModel) return;
+
+                final feed = Feed(
+                  name: item.name,
+                  inputs: {
+                    FeedInput(
+                      name: '${item.id}:${getNameHost(context, item.name)}',
+                      sourceType: FeedSource.topic,
+                    ), // tmp until proper getByName method can be made
+                  },
+                );
+
+                String title = item.name;
+                if (context.read<AppController>().feeds[title] != null) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(l(context).feeds_exist),
+                        actions: [
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: Text(l(context).cancel),
+                          ),
+                          LoadingFilledButton(
+                            onPressed: () async {
+                              int num = 0;
+                              while (context
+                                      .read<AppController>()
+                                      .feeds[title] !=
+                                  null) {
+                                title = '${item.name}${num++}';
+                              }
+                              Navigator.pop(context);
+                            },
+                            label: Text(l(context).rename),
+                          ),
+                          LoadingFilledButton(
+                            onPressed: () async {
+                              Navigator.pop(context);
+                            },
+                            label: Text(l(context).replace),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+
+                if (!context.mounted) return;
+                context.read<AppController>().setFeed(title, feed);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
+      ],
     ).openMenu(context);
   }
 }
@@ -261,7 +334,9 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
     return Scaffold(
-      appBar: AppBar(title: Text(l(context).feeds_edit(widget.feed?? nameController.text))),
+      appBar: AppBar(
+        title: Text(l(context).feeds_edit(widget.feed ?? nameController.text)),
+      ),
       body: ListView(
         children: [
           Padding(
@@ -316,7 +391,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     removeInput(FeedInput(name: name, sourceType: source));
                   }
                 },
-              )
+              ),
             ),
           ),
           Padding(
@@ -384,23 +459,23 @@ void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
   final ac = context.read<AppController>();
   ContextMenu(
     title: l(context).feeds,
-    items: [...ac.feeds.values
-        .map(
-          (feed) => ContextMenuItem(
-            title: feed.name,
-            onTap: () async {
-              final newFeed = feed.copyWith(
-                inputs: {
-                  ...feed.inputs,
-                  FeedInput(name: name, sourceType: source),
-                },
-              );
-              await ac.setFeed(feed.name, newFeed);
-              if (!context.mounted) return;
-              Navigator.pop(context);
-            },
-          ),
+    items: [
+      ...ac.feeds.values.map(
+        (feed) => ContextMenuItem(
+          title: feed.name,
+          onTap: () async {
+            final newFeed = feed.copyWith(
+              inputs: {
+                ...feed.inputs,
+                FeedInput(name: name, sourceType: source),
+              },
+            );
+            await ac.setFeed(feed.name, newFeed);
+            if (!context.mounted) return;
+            Navigator.pop(context);
+          },
         ),
+      ),
       ContextMenuItem(
         title: l(context).feeds_new,
         icon: Symbols.add_rounded,

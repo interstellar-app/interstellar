@@ -35,6 +35,9 @@ class MbinAPIMicroblogs {
       FeedSource.feed => throw Exception(
           'Feeds source not allowed for mbin'
       ),
+      FeedSource.topic => throw Exception(
+          'Topics source not allowed for mbin'
+      ),
     };
 
     final query = {

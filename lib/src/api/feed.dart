@@ -10,6 +10,7 @@ class APIFeed {
   Future<FeedListModel> list({
     bool? mineOnly,
     bool excludeCommunities = true,
+    bool topics = false,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
@@ -19,6 +20,15 @@ class APIFeed {
         throw Exception('Feeds not available on lemmy');
 
       case ServerSoftware.piefed:
+        if (topics) {
+          const path = '/topic/list';
+
+          final response = await client.get(path);
+
+          final json = response.bodyJson;
+
+          return FeedListModel.fromPiefed(json);
+        }
         const path = '/feed/list';
         final query = {
           'mine_only': mineOnly.toString(),
