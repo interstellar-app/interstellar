@@ -107,11 +107,7 @@ Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
 }
 
 class NavDrawer extends StatefulWidget {
-  const NavDrawer({
-    super.key,
-    this.drawerState,
-    this.updateState,
-  });
+  const NavDrawer({super.key, this.drawerState, this.updateState});
 
   final NavDrawPersistentState? drawerState;
   final Future<void> Function(NavDrawPersistentState?)? updateState;
@@ -130,8 +126,11 @@ class _NavDrawerState extends State<NavDrawer> {
     super.initState();
 
     // if state older than 15 minus refresh
-    if (widget.drawerState == null || widget.drawerState!.fetchTime <
-        DateTime.now().subtract(Duration(minutes: 15)).millisecondsSinceEpoch) {
+    if (widget.drawerState == null ||
+        widget.drawerState!.fetchTime <
+            DateTime.now()
+                .subtract(Duration(minutes: 15))
+                .millisecondsSinceEpoch) {
       widget.updateState!(null);
     }
     subbedCommunities = widget.drawerState?.subbedCommunities;
@@ -155,12 +154,11 @@ class _NavDrawerState extends State<NavDrawer> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
     if (widget.drawerState == null) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+      return Center(child: CircularProgressIndicator());
     }
 
     return ListView(
+      shrinkWrap: true,
       padding: EdgeInsets.zero,
       children: [
         ExpansionTile(
@@ -409,11 +407,10 @@ class _NavDrawerState extends State<NavDrawer> {
                   child: TextButton(
                     onPressed: () => pushRoute(
                       context,
-                      builder: (context) =>
-                          const ExploreScreen(
-                            mode: ExploreType.people,
-                            subOnly: true
-                          ),
+                      builder: (context) => const ExploreScreen(
+                        mode: ExploreType.people,
+                        subOnly: true,
+                      ),
                     ),
                     child: Text(l(context).subscriptions_user_all),
                   ),
@@ -476,11 +473,10 @@ class _NavDrawerState extends State<NavDrawer> {
                   child: TextButton(
                     onPressed: () => pushRoute(
                       context,
-                      builder: (context) =>
-                          const ExploreScreen(
-                            mode: ExploreType.domains,
-                            subOnly: true
-                          ),
+                      builder: (context) => const ExploreScreen(
+                        mode: ExploreType.domains,
+                        subOnly: true,
+                      ),
                     ),
                     child: Text(l(context).subscriptions_domain_all),
                   ),

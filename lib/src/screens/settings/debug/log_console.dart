@@ -99,7 +99,9 @@ class _LogConsoleState extends State<LogConsole> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ..._logLines.asMap().entries.map((line) {
-                  final level = switch (line.value.substring(1, 2)) {
+                  final level = switch (line.value.isEmpty
+                      ? ''
+                      : line.value.substring(1, 2)) {
                     'T' => Level.trace,
                     'D' => Level.debug,
                     'I' => Level.info,
