@@ -128,7 +128,7 @@ class ExploreScreenItem extends StatelessWidget {
           builder: (context) => FeedScreen(feed: FeedAggregator(name: title, inputs: [
             FeedInputState(
               title: title,
-              source: FeedSource.feed,
+              source: i.owner == null ? FeedSource.topic : FeedSource.feed, // owner exists for feeds but not for topics so is used to differentiate
               sourceId: i.id,
             )
           ]),)
