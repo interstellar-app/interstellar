@@ -224,6 +224,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
@@ -254,84 +255,19 @@ class _ExploreScreenState extends State<ExploreScreen>
                       ),
                       const SizedBox(height: 12),
                       if (widget.mode == null)
-                        Row(
-                          children: [
-                            ChoiceChip(
-                              label: Text(l(context).communities),
-                              selected: type == ExploreType.communities,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    type = ExploreType.communities;
-                                    _pagingController.refresh();
-                                  });
-                                }
-                              },
-                              padding: chipPadding,
-                            ),
-                            const SizedBox(width: 4),
-                            ChoiceChip(
-                              label: Text(l(context).people),
-                              selected: type == ExploreType.people,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    type = ExploreType.people;
-
-                                    // Reset explore filter in the following cases:
-                                    if (
-                                    // Using Mbin and filter is set to local
-                                    ac.serverSoftware == ServerSoftware.mbin &&
-                                            filter == ExploreFilter.local ||
-                                        // Using Lemmy or PieFed and filter is set to subscribed
-                                        ac.serverSoftware !=
-                                                ServerSoftware.mbin &&
-                                            filter ==
-                                                ExploreFilter.subscribed ||
-                                        // Using Lemmy or PieFed and filter is set to moderated
-                                        ac.serverSoftware !=
-                                                ServerSoftware.mbin &&
-                                            filter == ExploreFilter.moderated) {
-                                      filter = ExploreFilter.all;
-                                    }
-
-                                    _pagingController.refresh();
-                                  });
-                                }
-                              },
-                              padding: chipPadding,
-                            ),
-                            const SizedBox(width: 4),
-                            if (ac.serverSoftware == ServerSoftware.mbin &&
-                                _selected == null) ...[
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
                               ChoiceChip(
-                                label: Text(l(context).domains),
-                                selected: type == ExploreType.domains,
+                                label: Text(l(context).communities),
+                                selected: type == ExploreType.communities,
                                 onSelected: (bool selected) {
                                   if (selected) {
                                     setState(() {
-                                      type = ExploreType.domains;
-
-                                      if (filter == ExploreFilter.local ||
-                                          filter == ExploreFilter.moderated) {
-                                        filter = ExploreFilter.all;
-                                      }
-                                      _pagingController.refresh();
-                                    });
-                                  }
-                                },
-                                padding: chipPadding,
-                              ),
-                              const SizedBox(width: 4),
-                            ],
-                            if (ac.serverSoftware == ServerSoftware.piefed) ...[
-                              ChoiceChip(
-                                label: Text(l(context).feeds),
-                                selected: type == ExploreType.feeds,
-                                onSelected: (bool selected) {
-                                  if (selected) {
-                                    setState(() {
-                                      type = ExploreType.feeds;
+                                      type = ExploreType.communities;
                                       _pagingController.refresh();
                                     });
                                   }
@@ -340,37 +276,31 @@ class _ExploreScreenState extends State<ExploreScreen>
                               ),
                               const SizedBox(width: 4),
                               ChoiceChip(
-                                label: Text(l(context).topics),
-                                selected: type == ExploreType.topics,
+                                label: Text(l(context).people),
+                                selected: type == ExploreType.people,
                                 onSelected: (bool selected) {
                                   if (selected) {
                                     setState(() {
-                                      type = ExploreType.topics;
-                                      _pagingController.refresh();
-                                    });
-                                  }
-                                },
-                                padding: chipPadding,
-                              ),
-                              const SizedBox(width: 4),
-                            ],
-                            if (_selected == null) ...[
-                              ChoiceChip(
-                                label: Text(l(context).filter_all),
-                                selected: type == ExploreType.all,
-                                onSelected: (bool selected) {
-                                  if (selected) {
-                                    setState(() {
-                                      if (ac.serverSoftware ==
-                                              ServerSoftware.mbin ||
+                                      type = ExploreType.people;
+
+                                      // Reset explore filter in the following cases:
+                                      if (
+                                      // Using Mbin and filter is set to local
+                                      ac.serverSoftware ==
+                                                  ServerSoftware.mbin &&
+                                              filter == ExploreFilter.local ||
+                                          // Using Lemmy or PieFed and filter is set to subscribed
                                           ac.serverSoftware !=
                                                   ServerSoftware.mbin &&
                                               filter ==
-                                                  ExploreFilter.subscribed) {
+                                                  ExploreFilter.subscribed ||
+                                          // Using Lemmy or PieFed and filter is set to moderated
+                                          ac.serverSoftware !=
+                                                  ServerSoftware.mbin &&
+                                              filter ==
+                                                  ExploreFilter.moderated) {
                                         filter = ExploreFilter.all;
                                       }
-
-                                      type = ExploreType.all;
 
                                       _pagingController.refresh();
                                     });
@@ -378,8 +308,87 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 },
                                 padding: chipPadding,
                               ),
+                              const SizedBox(width: 4),
+                              if (ac.serverSoftware == ServerSoftware.mbin &&
+                                  _selected == null) ...[
+                                ChoiceChip(
+                                  label: Text(l(context).domains),
+                                  selected: type == ExploreType.domains,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        type = ExploreType.domains;
+
+                                        if (filter == ExploreFilter.local ||
+                                            filter == ExploreFilter.moderated) {
+                                          filter = ExploreFilter.all;
+                                        }
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                                const SizedBox(width: 4),
+                              ],
+                              if (ac.serverSoftware ==
+                                  ServerSoftware.piefed) ...[
+                                ChoiceChip(
+                                  label: Text(l(context).feeds),
+                                  selected: type == ExploreType.feeds,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        type = ExploreType.feeds;
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                                const SizedBox(width: 4),
+                                ChoiceChip(
+                                  label: Text(l(context).topics),
+                                  selected: type == ExploreType.topics,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        type = ExploreType.topics;
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                                const SizedBox(width: 4),
+                              ],
+                              if (_selected == null) ...[
+                                ChoiceChip(
+                                  label: Text(l(context).filter_all),
+                                  selected: type == ExploreType.all,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        if (ac.serverSoftware ==
+                                                ServerSoftware.mbin ||
+                                            ac.serverSoftware !=
+                                                    ServerSoftware.mbin &&
+                                                filter ==
+                                                    ExploreFilter.subscribed) {
+                                          filter = ExploreFilter.all;
+                                        }
+
+                                        type = ExploreType.all;
+
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       const SizedBox(height: 8),
                       Row(
