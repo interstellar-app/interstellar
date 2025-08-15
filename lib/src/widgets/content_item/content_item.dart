@@ -7,6 +7,7 @@ import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_menu.dart';
+import 'package:interstellar/src/widgets/content_item/content_reply.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/image.dart';
@@ -177,18 +178,28 @@ class ContentItem extends StatefulWidget {
 }
 
 class _ContentItemState extends State<ContentItem> {
-  TextEditingController? _replyTextController;
-  late String _replyLanguage;
+  bool _isReplying = false;
   TextEditingController? _editTextController;
 
-  @override
-  void initState() {
-    super.initState();
+  void _reply() {
+    if (widget.onReply == null) return;
 
-    _replyLanguage = context
-        .read<AppController>()
-        .profile
-        .defaultCreateLanguage;
+    if (context.read<AppController>().profile.inlineReplies) {
+      setState(() {
+        _isReplying = true;
+      });
+    } else {
+      pushRoute(
+        context,
+        builder: (context) => ContentReply(
+          inline: false,
+          content: widget,
+          onReply: widget.onReply!,
+          onComplete: () => Navigator.pop(context),
+          draftResourceId: widget.replyDraftResourceId,
+        ),
+      );
+    }
   }
 
   @override
@@ -203,27 +214,19 @@ class _ContentItemState extends State<ContentItem> {
               context,
               widget,
               onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
-                      _replyTextController = TextEditingController();
-                    })
-                  : () {},
+              onReply: _reply,
             ),
             onSecondaryTap: () => showContentMenu(
               context,
               widget,
               onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
-                      _replyTextController = TextEditingController();
-                    })
-                  : () {},
+              onReply: _reply,
             ),
             child: child,
           );
         },
         child: widget.isCompact ? compact() : full(),
-      )
+      ),
     );
   }
 
@@ -359,15 +362,11 @@ class _ContentItemState extends State<ContentItem> {
     final editDraftController = context.watch<DraftsController>().auto(
       widget.editDraftResourceId,
     );
-    final replyDraftController = context.watch<DraftsController>().auto(
-      widget.replyDraftResourceId,
-    );
 
     return LayoutBuilder(
       builder: (context, constrains) {
         final hasWideSize = constrains.maxWidth > 800;
-        final isRightImage = hasWideSize &&
-            !widget.fullImageSize;
+        final isRightImage = hasWideSize && !widget.fullImageSize;
 
         final double rightImageSize = hasWideSize ? 128 : 64;
 
@@ -437,11 +436,7 @@ class _ContentItemState extends State<ContentItem> {
                 _editTextController = TextEditingController(text: widget.body);
               }),
               onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
-                      _replyTextController = TextEditingController();
-                    })
-                  : () {},
+              onReply: _reply,
             );
           },
         );
@@ -461,11 +456,7 @@ class _ContentItemState extends State<ContentItem> {
                     : widget.onRemoveBookmark!();
               }
             },
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                    _replyTextController = TextEditingController();
-                  })
-                : () {},
+            onReply: _reply,
             onMarkAsRead: widget.onMarkAsRead,
             onModeratePin: widget.onModeratePin,
             onModerateMarkNSFW: widget.onModerateMarkNSFW,
@@ -696,10 +687,7 @@ class _ContentItemState extends State<ContentItem> {
                                           icon: const Icon(
                                             Symbols.reply_rounded,
                                           ),
-                                          onPressed: () => setState(() {
-                                            _replyTextController =
-                                                TextEditingController();
-                                          }),
+                                          onPressed: _reply,
                                         ),
                                     ],
                                     const Spacer(),
@@ -798,74 +786,14 @@ class _ContentItemState extends State<ContentItem> {
                                 ],
                               ),
                             ),
-                          if (widget.onReply != null &&
-                              _replyTextController != null)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  MarkdownEditor(
-                                    _replyTextController!,
-                                    originInstance: null,
-                                    draftController: replyDraftController,
-                                    autoFocus: true,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () async {
-                                          final newLang =
-                                              await languageSelectionMenu(
-                                                context,
-                                              ).askSelection(
-                                                context,
-                                                _replyLanguage,
-                                              );
-
-                                          if (newLang != null) {
-                                            setState(() {
-                                              _replyLanguage = newLang;
-                                            });
-                                          }
-                                        },
-                                        icon: Icon(Symbols.globe_rounded),
-                                        tooltip: getLanguageName(
-                                          context,
-                                          _replyLanguage,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      OutlinedButton(
-                                        onPressed: () => setState(() {
-                                          _replyTextController!.dispose();
-                                          _replyTextController = null;
-                                        }),
-                                        child: Text(l(context).cancel),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      LoadingFilledButton(
-                                        onPressed: () async {
-                                          await widget.onReply!(
-                                            _replyTextController!.text,
-                                            _replyLanguage,
-                                          );
-
-                                          await replyDraftController.discard();
-
-                                          setState(() {
-                                            _replyTextController!.dispose();
-                                            _replyTextController = null;
-                                          });
-                                        },
-                                        label: Text(l(context).submit),
-                                        uesHaptics: true,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                          if (widget.onReply != null && _isReplying)
+                            ContentReply(
+                              content: widget,
+                              onReply: widget.onReply!,
+                              onComplete: () => setState(() {
+                                _isReplying = false;
+                              }),
+                              draftResourceId: widget.replyDraftResourceId,
                             ),
                           if (widget.onEdit != null &&
                               _editTextController != null)
@@ -1018,11 +946,7 @@ class _ContentItemState extends State<ContentItem> {
                 : widget.onRemoveBookmark!();
           }
         },
-        onReply: widget.onReply != null
-            ? () => setState(() {
-                _replyTextController = TextEditingController();
-              })
-            : () {},
+        onReply: _reply,
         onModeratePin: widget.onModeratePin,
         onModerateMarkNSFW: widget.onModerateMarkNSFW,
         onModerateDelete: widget.onModerateDelete,
@@ -1163,69 +1087,14 @@ class _ContentItemState extends State<ContentItem> {
                       Text(l(context).commentsX(widget.numComments ?? 0)),
                     ],
                   ),
-                  if (widget.onReply != null && _replyTextController != null)
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          MarkdownEditor(
-                            _replyTextController!,
-                            originInstance: null,
-                            draftController: replyDraftController,
-                            autoFocus: true,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  final newLang = await languageSelectionMenu(
-                                    context,
-                                  ).askSelection(context, _replyLanguage);
-
-                                  if (newLang != null) {
-                                    setState(() {
-                                      _replyLanguage = newLang;
-                                    });
-                                  }
-                                },
-                                icon: Icon(Symbols.globe_rounded),
-                                tooltip: getLanguageName(
-                                  context,
-                                  _replyLanguage,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              OutlinedButton(
-                                onPressed: () => setState(() {
-                                  _replyTextController!.dispose();
-                                  _replyTextController = null;
-                                }),
-                                child: Text(l(context).cancel),
-                              ),
-                              const SizedBox(width: 8),
-                              LoadingFilledButton(
-                                onPressed: () async {
-                                  await widget.onReply!(
-                                    _replyTextController!.text,
-                                    _replyLanguage,
-                                  );
-
-                                  await replyDraftController.discard();
-
-                                  setState(() {
-                                    _replyTextController!.dispose();
-                                    _replyTextController = null;
-                                  });
-                                },
-                                label: Text(l(context).submit),
-                                uesHaptics: true,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  if (widget.onReply != null && _isReplying)
+                    ContentReply(
+                      content: widget,
+                      onReply: widget.onReply!,
+                      onComplete: () => setState(() {
+                        _isReplying = false;
+                      }),
+                      draftResourceId: widget.replyDraftResourceId,
                     ),
                 ],
               ),
