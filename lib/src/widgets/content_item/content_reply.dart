@@ -54,7 +54,7 @@ class _ContentReplyState extends State<ContentReply> {
       child: Column(
         children: [
           MarkdownEditor(
-            _textController!,
+            _textController,
             originInstance: null,
             draftController: replyDraftController,
             autoFocus: true,

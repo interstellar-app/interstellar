@@ -926,10 +926,6 @@ class _ContentItemState extends State<ContentItem> {
           )
         : null;
 
-    final replyDraftController = context.watch<DraftsController>().auto(
-      widget.replyDraftResourceId,
-    );
-
     return Wrapper(
       shouldWrap: context.watch<AppController>().profile.enableSwipeActions,
       parentBuilder: (child) => SwipeItem(
