@@ -22,7 +22,6 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
 import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 

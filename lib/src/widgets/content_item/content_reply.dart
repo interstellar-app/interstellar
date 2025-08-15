@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/app.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import '../../models/comment.dart';
-import '../../utils/language.dart';
-import '../../utils/utils.dart';
-import '../loading_button.dart';
-import '../markdown/drafts_controller.dart';
-import '../markdown/markdown_editor.dart';
-import 'content_item.dart';
+import 'package:interstellar/src/utils/language.dart';
+import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
 
 class ContentReply extends StatefulWidget {
   const ContentReply({
