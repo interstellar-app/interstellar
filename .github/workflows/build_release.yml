@@ -88,15 +88,15 @@ jobs:
         if: matrix.target_os == 'windows'
         uses: ilammy/setup-nasm@v1
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           # Use master until Flutter action is fixed for arm (https://github.com/subosito/flutter-action/issues/345)
           channel: ${{ matrix.target == 'linux-aarch64' && 'master' || 'stable' }}
           flutter-version-file: pubspec.yaml
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       # Needed to fix "detected dubious ownership in repository" error caused by Linux containerization
       - name: git-config add safe directory
