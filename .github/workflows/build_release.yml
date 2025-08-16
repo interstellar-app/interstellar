@@ -13,7 +13,6 @@ jobs:
     outputs:
       upload_url: ${{ steps.draft_release.outputs.upload_url }}
       interstellar_version: ${{ steps.build_info.outputs.INTERSTELLAR_VERSION }}
-      flutter_version: ${{ steps.build_info.outputs.FLUTTER_VERSION }}
 
     steps:
       - name: Checkout code
@@ -23,7 +22,6 @@ jobs:
         id: build_info
         run: |
           echo "INTERSTELLAR_VERSION=$(sed -nr 's/version: ([0-9.]+)\+[0-9]+/\1/p' pubspec.yaml)" >> "$GITHUB_OUTPUT"
-          echo "FLUTTER_VERSION=$(sed -nE 's/  flutter: ([0-9.]+)/\1/p' pubspec.yaml)" >> "$GITHUB_OUTPUT"
 
       - name: Draft v${{ steps.build_info.outputs.INTERSTELLAR_VERSION }} release
         id: draft_release
@@ -90,15 +88,15 @@ jobs:
         if: matrix.target_os == 'windows'
         uses: ilammy/setup-nasm@v1
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           # Use master until Flutter action is fixed for arm (https://github.com/subosito/flutter-action/issues/345)
           channel: ${{ matrix.target == 'linux-aarch64' && 'master' || 'stable' }}
-          flutter-version: ${{ needs.prepare-release.outputs.flutter_version }}
-
-      - name: Checkout code
-        uses: actions/checkout@v4
+          flutter-version-file: pubspec.yaml
 
       # Needed to fix "detected dubious ownership in repository" error caused by Linux containerization
       - name: git-config add safe directory
