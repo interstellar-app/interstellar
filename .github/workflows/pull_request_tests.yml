@@ -6,23 +6,7 @@ permissions:
 on: pull_request
 
 jobs:
-  prepare-tests:
-    name: Prepare tests
-    runs-on: ubuntu-latest
-    outputs:
-      flutter_version: ${{ steps.build_info.outputs.FLUTTER_VERSION }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Gather build info
-        id: build_info
-        run: |
-          echo "FLUTTER_VERSION=$(sed -nE 's/  flutter: ([0-9.]+)/\1/p' pubspec.yaml)" >> "$GITHUB_OUTPUT"
-
   test-android-build:
-    needs: prepare-tests
     name: Test android build
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +20,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ needs.prepare-release.outputs.flutter_version }}
+          flutter-version-file: pubspec.yaml
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,7 +31,6 @@ jobs:
           flutter build -v apk --split-per-abi
 
   test-linux-build:
-    needs: prepare-tests
     name: Test linux build
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +42,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ needs.prepare-release.outputs.flutter_version }}
+          flutter-version-file: pubspec.yaml
 
       - name: Checkout code
         uses: actions/checkout@v3
