@@ -223,6 +223,16 @@ class BehaviorSettingsScreen extends StatelessWidget {
               ],
             ),
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.subdirectory_arrow_right_rounded),
+            title: Text(l(context).settings_inlineReplies),
+            value: ac.profile.inlineReplies,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                inlineReplies: newValue,
+              ),
+            ),
+          ),
         ],
       ),
     );

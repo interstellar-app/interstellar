@@ -34,6 +34,7 @@ class ProfileRequired with _$ProfileRequired {
     required bool markThreadsReadOnScroll,
     required bool markMicroblogsReadOnScroll,
     required double animationSpeed,
+    required bool inlineReplies,
     // Display settings
     required String appLanguage,
     required ThemeMode themeMode,
@@ -110,6 +111,7 @@ class ProfileRequired with _$ProfileRequired {
         profile?.markMicroblogsReadOnScroll ??
         defaultProfile.markMicroblogsReadOnScroll,
     animationSpeed: profile?.animationSpeed ?? defaultProfile.animationSpeed,
+    inlineReplies: profile?.inlineReplies ?? defaultProfile.inlineReplies,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
     themeMode: profile?.themeMode ?? defaultProfile.themeMode,
     colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -196,6 +198,7 @@ class ProfileRequired with _$ProfileRequired {
     markThreadsReadOnScroll: false,
     markMicroblogsReadOnScroll: false,
     animationSpeed: 1.0,
+    inlineReplies: true,
     appLanguage: '',
     themeMode: ThemeMode.system,
     colorScheme: FlexScheme.custom,
@@ -256,6 +259,7 @@ class ProfileOptional with _$ProfileOptional {
     required bool? markThreadsReadOnScroll,
     required bool? markMicroblogsReadOnScroll,
     required double? animationSpeed,
+    required bool? inlineReplies,
     // Display settings
     required String? appLanguage,
     required ThemeMode? themeMode,
@@ -317,6 +321,7 @@ class ProfileOptional with _$ProfileOptional {
     markThreadsReadOnScroll: null,
     markMicroblogsReadOnScroll: null,
     animationSpeed: null,
+    inlineReplies: null,
     appLanguage: null,
     themeMode: null,
     colorScheme: null,
@@ -377,6 +382,7 @@ class ProfileOptional with _$ProfileOptional {
       markMicroblogsReadOnScroll:
           other.markMicroblogsReadOnScroll ?? markMicroblogsReadOnScroll,
       animationSpeed: other.animationSpeed ?? animationSpeed,
+      inlineReplies: other.inlineReplies ?? inlineReplies,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
       colorScheme: other.colorScheme ?? colorScheme,
