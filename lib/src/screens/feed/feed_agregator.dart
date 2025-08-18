@@ -284,10 +284,6 @@ class FeedInputState {
         _combinedThreadsLeftover = merged.$2.isNotEmpty ? merged.$2.first : [];
         _combinedMicroblogsLeftover = merged.$2.length > 1 ? merged.$2.last : [];
 
-        ac.logger.i(
-          '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_combinedPage)',
-        );
-
         // if final page of input also return leftover posts
         var result = [..._leftover, ...merged.$1];
         if (_nextPage == null) {
@@ -314,25 +310,9 @@ class FeedAggregator {
 
   static Future<FeedAggregator> create(AppController ac, Feed feed) async {
     final inputs = await feed.inputs.map((input) async {
-      int? source;
-      try {
-        source = (switch (input.sourceType) {
-          FeedSource.all => null,
-          FeedSource.local => null,
-          FeedSource.subscribed => null,
-          FeedSource.moderated => null,
-          FeedSource.favorited => null,
-          FeedSource.community => (await ac.api.community.getByName(
-            denormalizeName(input.name, ac.instanceHost),
-          )).id,
-          FeedSource.user => (await ac.api.users.getByName(
-            denormalizeName(input.name, ac.instanceHost),
-          )).id,
-          FeedSource.domain => throw UnimplementedError(),
-        });
-      } catch (error) {
-        return null;
-      }
+      final name = denormalizeName(input.name, ac.instanceHost);
+      final source = await ac.fetchCachedFeedInput(name, input.sourceType);
+      if (source == null) return null;
       return FeedInputState(
         title: input.name,
         source: input.sourceType,
@@ -375,10 +355,6 @@ class FeedAggregator {
         result.addAll(input._leftover);
       }
     }
-
-    ac.logger.i(
-      'Feed fetch($pageKey, $view, $sort) -> (${result.length}, ${merged.$2.map((i) => i.length).toList()})',
-    );
 
     // check for read status
     final newItems = ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
