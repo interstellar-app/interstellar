@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
+import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/oauth.dart';
 import 'package:interstellar/src/controller/account.dart';
 import 'package:interstellar/src/controller/database.dart';
@@ -32,6 +33,7 @@ class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
   final _accountStore = StoreRef<String, JsonMap>('account');
   final _feedStore = StoreRef<String, JsonMap>('feeds');
+  final _feedCacheStore = StoreRef<String, JsonMap>('feedCache');
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
@@ -384,6 +386,11 @@ class AppController with ChangeNotifier {
       finder: Finder(filter: Filter.equals('account', key)),
     );
 
+    _feedCacheStore.delete(
+      db,
+      finder: Finder(filter: Filter.equals('account', key)),
+    );
+
     _rebuildProfile();
 
     _accounts.remove(key);
@@ -712,6 +719,38 @@ class AppController with ChangeNotifier {
           finder: _readStoreFinder(post),
         )).firstOrNull !=
         null;
+  }
+
+  Finder _feedCacheStoreFinder(String name) => Finder(
+    filter: Filter.and([
+      Filter.equals('account', _selectedAccount),
+      Filter.equals('name', name),
+    ]),
+  );
+
+  Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
+    final cachedValue = (await _feedCacheStore.find(db, finder: _feedCacheStoreFinder(name))).firstOrNull;
+    if (cachedValue != null) return cachedValue.value['id'] as int;
+
+    try {
+      final newValue = switch (source) {
+        FeedSource.community => (await api.community.getByName(name)).id,
+        FeedSource.user => (await api.users.getByName(name)).id,
+        _ => null,
+      };
+
+      if (newValue != null) {
+        await _feedCacheStore.add(db, {
+          'account': _selectedAccount,
+          'name': name,
+          'id': newValue
+        });
+      }
+
+      return newValue;
+    } catch (error) {
+      return null;
+    }
   }
 
   Future<void> cacheValue(String key, dynamic value) async {
