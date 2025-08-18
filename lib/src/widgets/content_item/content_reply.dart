@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/utils/language.dart';
@@ -52,12 +53,17 @@ class _ContentReplyState extends State<ContentReply> {
     final reply = Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          MarkdownEditor(
-            _textController,
-            originInstance: null,
-            draftController: replyDraftController,
-            autoFocus: true,
+          Flexible(
+            fit: FlexFit.loose,
+            child: MarkdownEditor(
+              _textController,
+              originInstance: null,
+              draftController: replyDraftController,
+              autoFocus: true,
+              inline: widget.inline,
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -103,7 +109,11 @@ class _ContentReplyState extends State<ContentReply> {
     if (!widget.inline) {
       final parent = Padding(
         padding: const EdgeInsets.all(8),
-        child: Text(widget.content.title ?? widget.content.body!),
+        child: Markdown(
+          widget.content.title ?? widget.content.body!,
+          widget.content.originInstance,
+          nsfw: widget.content.isNSFW,
+        ),
       );
 
       return Scaffold(
@@ -114,9 +124,11 @@ class _ContentReplyState extends State<ContentReply> {
             ),
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [parent, reply],
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: parent),
+            SliverFillRemaining(child: reply),
+          ],
         ),
       );
     } else {
