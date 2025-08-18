@@ -386,11 +386,6 @@ class AppController with ChangeNotifier {
       finder: Finder(filter: Filter.equals('account', key)),
     );
 
-    _feedCacheStore.delete(
-      db,
-      finder: Finder(filter: Filter.equals('account', key)),
-    );
-
     _rebuildProfile();
 
     _accounts.remove(key);
@@ -404,6 +399,11 @@ class AppController with ChangeNotifier {
           orElse: () => '',
         )
         .isEmpty) {
+      _feedCacheStore.delete(
+        db,
+        finder: Finder(filter: Filter.equals('server', keyAccountServer)),
+      );
+
       _servers.remove(keyAccountServer);
 
       await _serverStore.record(keyAccountServer).delete(db);
@@ -721,15 +721,19 @@ class AppController with ChangeNotifier {
         null;
   }
 
-  Finder _feedCacheStoreFinder(String name) => Finder(
+  Finder _feedCacheStoreFinder(String name, FeedSource source) => Finder(
     filter: Filter.and([
-      Filter.equals('account', _selectedAccount),
+      Filter.equals('server', instanceHost),
       Filter.equals('name', name),
+      Filter.equals('source', source.index),
     ]),
   );
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
-    final cachedValue = (await _feedCacheStore.find(db, finder: _feedCacheStoreFinder(name))).firstOrNull;
+    final cachedValue = (await _feedCacheStore.find(
+        db,
+        finder: _feedCacheStoreFinder(name, source))
+    ).firstOrNull;
     if (cachedValue != null) return cachedValue.value['id'] as int;
 
     try {
@@ -741,9 +745,10 @@ class AppController with ChangeNotifier {
 
       if (newValue != null) {
         await _feedCacheStore.add(db, {
-          'account': _selectedAccount,
+          'server': instanceHost,
           'name': name,
-          'id': newValue
+          'id': newValue,
+          'source': source.index
         });
       }
 
