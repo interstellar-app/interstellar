@@ -63,6 +63,8 @@ class AdvancedImage extends StatelessWidget {
             ExtendedImage.network(
               image.src,
               fit: fit,
+              width: image.blurHashWidth?.toDouble(),
+              height: image.blurHashHeight?.toDouble(),
               enableSlideOutPage: true,
               heroBuilderForSlidingPage: (child) {
                 return SuperHero(
