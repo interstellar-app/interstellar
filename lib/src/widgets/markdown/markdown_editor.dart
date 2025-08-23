@@ -78,24 +78,26 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.label != null)
           Padding(
             padding: const EdgeInsets.only(left: 8, bottom: 2),
             child: Text(widget.label!),
           ),
-        Wrapper(
-          shouldWrap: !widget.inline,
-          parentBuilder: (child) => Expanded(child: child),
-          child: Card.outlined(
-            clipBehavior: Clip.antiAlias,
-            margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              side: BorderSide(color: Theme.of(context).colorScheme.outline),
-            ),
-            child: DefaultTabController(
-              length: 3,
+        Card.outlined(
+          clipBehavior: Clip.antiAlias,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+          ),
+          child: DefaultTabController(
+            length: 3,
+            child: DefaultTabControllerListener(
+              onTabSelected: (newIndex) {
+                setState(() {});
+              },
               child: Column(
                 children: [
                   TabBar(
@@ -136,245 +138,259 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                     shouldWrap: widget.inline,
                     parentBuilder: (child) =>
                         SizedBox(height: 200, child: child),
-                    child: Wrapper(
-                      shouldWrap: !widget.inline,
-                      parentBuilder: (child) => Expanded(child: child),
-                      child: TabBarView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                height: 40,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    ..._actions(context).map(
-                                      (action) => DecoratedBox(
+                    child: Builder(
+                      // physics: const NeverScrollableScrollPhysics(),
+                      builder: (context) {
+                        final controller = DefaultTabController.of(context);
+                        switch (controller.index) {
+                          case 0:
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 40,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      ..._actions(context).map(
+                                        (action) => DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            border: action.showDivider
+                                                ? Border(
+                                                    right: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .outlineVariant,
+                                                    ),
+                                                  )
+                                                : null,
+                                          ),
+                                          child: SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                _focusNodeTextField
+                                                    .requestFocus();
+
+                                                execAction(action.action);
+                                              },
+                                              icon: Icon(action.icon),
+                                              tooltip:
+                                                  action.tooltip +
+                                                  (action.shortcut == null
+                                                      ? ''
+                                                      : ' (${readableShortcut(action.shortcut!)})'),
+                                              style: TextButton.styleFrom(
+                                                shape: const LinearBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      DecoratedBox(
                                         decoration: BoxDecoration(
-                                          border: action.showDivider
-                                              ? Border(
-                                                  right: BorderSide(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outlineVariant,
-                                                  ),
-                                                )
-                                              : null,
+                                          border: Border(
+                                            right: BorderSide(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.outlineVariant,
+                                            ),
+                                          ),
                                         ),
                                         child: SizedBox(
                                           width: 40,
                                           height: 40,
                                           child: IconButton(
-                                            onPressed: () {
+                                            onPressed: () async {
+                                              final config = await showDialog<String?>(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return const _MarkdownEditorConfigShareDialog();
+                                                },
+                                              );
+
                                               _focusNodeTextField
                                                   .requestFocus();
 
-                                              execAction(action.action);
+                                              if (config == null) return;
+
+                                              execAction(
+                                                _MarkdownEditorActionInsertSection(
+                                                  config,
+                                                ),
+                                              );
                                             },
-                                            icon: Icon(action.icon),
-                                            tooltip:
-                                                action.tooltip +
-                                                (action.shortcut == null
-                                                    ? ''
-                                                    : ' (${readableShortcut(action.shortcut!)})'),
+                                            icon: const Icon(
+                                              Symbols.share_rounded,
+                                            ),
                                             style: TextButton.styleFrom(
                                               shape: const LinearBorder(),
                                             ),
+                                            tooltip: l(context).configShare,
                                           ),
                                         ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(height: 1, thickness: 1),
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: CallbackShortcuts(
+                                    bindings: <ShortcutActivator, VoidCallback>{
+                                      const SingleActivator(
+                                        LogicalKeyboardKey.enter,
+                                      ): () => execAction(
+                                        const _MarkdownEditorActionEnter(),
+                                      ),
+                                      for (var action
+                                          in _actions(context).where(
+                                            (action) => action.shortcut != null,
+                                          ))
+                                        action.shortcut!: () =>
+                                            execAction(action.action),
+                                    },
+                                    child: TextField(
+                                      controller: widget.controller,
+                                      keyboardType: TextInputType.multiline,
+                                      minLines: 2,
+                                      maxLines: null,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.all(12),
+                                      ),
+                                      onChanged: (String value) {
+                                        widget.onChanged?.call(value);
+
+                                        draftDebounce.run(() async {
+                                          if (value.isNotEmpty) {
+                                            await widget.draftController.save(
+                                              value,
+                                            );
+                                          } else {
+                                            await widget.draftController
+                                                .discard();
+                                          }
+                                        });
+                                      },
+                                      enabled: widget.enabled,
+                                      focusNode: _focusNodeTextField,
+                                      autofocus: widget.autoFocus,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          case 1:
+                            return SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Markdown(
+                                  widget.controller.text,
+                                  widget.originInstance ??
+                                      context
+                                          .watch<AppController>()
+                                          .instanceHost,
+                                ),
+                              ),
+                            );
+                          case 2:
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: LoadingFilledButton(
+                                        onPressed:
+                                            widget.controller.text.isEmpty
+                                            ? null
+                                            : () async {
+                                                await context
+                                                    .read<DraftsController>()
+                                                    .manualSave(
+                                                      widget.controller.text,
+                                                    );
+                                              },
+                                        label: Text(
+                                          l(
+                                            context,
+                                          ).markdownEditor_drafts_manuallySave,
+                                        ),
+                                        icon: const Icon(Symbols.save_rounded),
                                       ),
                                     ),
-                                    DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          right: BorderSide(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.outlineVariant,
-                                          ),
-                                        ),
-                                      ),
-                                      child: SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: IconButton(
-                                          onPressed: () async {
-                                            final config = await showDialog<String?>(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return const _MarkdownEditorConfigShareDialog();
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: LoadingOutlinedButton(
+                                        onPressed:
+                                            context
+                                                .watch<DraftsController>()
+                                                .drafts
+                                                .isEmpty
+                                            ? null
+                                            : () async {
+                                                await context
+                                                    .read<DraftsController>()
+                                                    .removeAll();
                                               },
-                                            );
-
-                                            _focusNodeTextField.requestFocus();
-
-                                            if (config == null) return;
-
-                                            execAction(
-                                              _MarkdownEditorActionInsertSection(
-                                                config,
-                                              ),
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Symbols.share_rounded,
-                                          ),
-                                          style: TextButton.styleFrom(
-                                            shape: const LinearBorder(),
-                                          ),
-                                          tooltip: l(context).configShare,
+                                        label: Text(
+                                          l(
+                                            context,
+                                          ).markdownEditor_drafts_discardAll,
+                                        ),
+                                        icon: const Icon(
+                                          Symbols.delete_forever_rounded,
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const Divider(height: 1, thickness: 1),
-                              Expanded(
-                                child: CallbackShortcuts(
-                                  bindings: <ShortcutActivator, VoidCallback>{
-                                    const SingleActivator(
-                                      LogicalKeyboardKey.enter,
-                                    ): () => execAction(
-                                      const _MarkdownEditorActionEnter(),
-                                    ),
-                                    for (var action in _actions(context).where(
-                                      (action) => action.shortcut != null,
-                                    ))
-                                      action.shortcut!: () =>
-                                          execAction(action.action),
-                                  },
-                                  child: TextField(
-                                    controller: widget.controller,
-                                    keyboardType: TextInputType.multiline,
-                                    minLines: 2,
-                                    maxLines: null,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.all(12),
-                                    ),
-                                    onChanged: (String value) {
-                                      widget.onChanged?.call(value);
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Builder(
+                                    builder: (context) {
+                                      return ListView(
+                                        shrinkWrap: true,
+                                        children: context
+                                            .watch<DraftsController>()
+                                            .drafts
+                                            .reversed
+                                            .map(
+                                              (
+                                                draft,
+                                              ) => _MarkdownEditorDraftItem(
+                                                draft: draft,
+                                                onApply: () {
+                                                  widget.controller.text =
+                                                      draft.body;
 
-                                      draftDebounce.run(() async {
-                                        if (value.isNotEmpty) {
-                                          await widget.draftController.save(
-                                            value,
-                                          );
-                                        } else {
-                                          await widget.draftController
-                                              .discard();
-                                        }
-                                      });
+                                                  DefaultTabController.of(
+                                                    context,
+                                                  ).animateTo(0);
+                                                },
+                                                originInstance:
+                                                    widget.originInstance ??
+                                                    context
+                                                        .watch<AppController>()
+                                                        .instanceHost,
+                                              ),
+                                            )
+                                            .toList(),
+                                      );
                                     },
-                                    enabled: widget.enabled,
-                                    focusNode: _focusNodeTextField,
-                                    autofocus: widget.autoFocus,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Markdown(
-                                widget.controller.text,
-                                widget.originInstance ??
-                                    context.watch<AppController>().instanceHost,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: LoadingFilledButton(
-                                      onPressed: widget.controller.text.isEmpty
-                                          ? null
-                                          : () async {
-                                              await context
-                                                  .read<DraftsController>()
-                                                  .manualSave(
-                                                    widget.controller.text,
-                                                  );
-                                            },
-                                      label: Text(
-                                        l(
-                                          context,
-                                        ).markdownEditor_drafts_manuallySave,
-                                      ),
-                                      icon: const Icon(Symbols.save_rounded),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: LoadingOutlinedButton(
-                                      onPressed:
-                                          context
-                                              .watch<DraftsController>()
-                                              .drafts
-                                              .isEmpty
-                                          ? null
-                                          : () async {
-                                              await context
-                                                  .read<DraftsController>()
-                                                  .removeAll();
-                                            },
-                                      label: Text(
-                                        l(
-                                          context,
-                                        ).markdownEditor_drafts_discardAll,
-                                      ),
-                                      icon: const Icon(
-                                        Symbols.delete_forever_rounded,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Expanded(
-                                child: Builder(
-                                  builder: (context) {
-                                    return ListView(
-                                      children: context
-                                          .watch<DraftsController>()
-                                          .drafts
-                                          .reversed
-                                          .map(
-                                            (draft) => _MarkdownEditorDraftItem(
-                                              draft: draft,
-                                              onApply: () {
-                                                widget.controller.text =
-                                                    draft.body;
-
-                                                DefaultTabController.of(
-                                                  context,
-                                                ).animateTo(0);
-                                              },
-                                              originInstance:
-                                                  widget.originInstance ??
-                                                  context
-                                                      .watch<AppController>()
-                                                      .instanceHost,
-                                            ),
-                                          )
-                                          .toList(),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      // );
-                      // },
+                              ],
+                            );
+                          case _:
+                            return Container();
+                        }
+                      },
                     ),
                   ),
                 ],

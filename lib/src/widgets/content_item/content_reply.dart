@@ -127,7 +127,8 @@ class _ContentReplyState extends State<ContentReply> {
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(child: parent),
-            SliverFillRemaining(child: reply),
+            // SliverFillRemaining(child: reply),
+            SliverToBoxAdapter(child: reply),
           ],
         ),
       );
