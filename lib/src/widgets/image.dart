@@ -63,8 +63,6 @@ class AdvancedImage extends StatelessWidget {
             ExtendedImage.network(
               image.src,
               fit: fit,
-              width: image.blurHashWidth?.toDouble(),
-              height: image.blurHashHeight?.toDouble(),
               enableSlideOutPage: true,
               heroBuilderForSlidingPage: (child) {
                 return SuperHero(
@@ -77,20 +75,30 @@ class AdvancedImage extends StatelessWidget {
                   ? ExtendedImageMode.none
                   : ExtendedImageMode.gesture,
               loadStateChanged: (state) {
-                if (state.extendedImageLoadState == LoadState.loading &&
-                    image.blurHash != null) {
-                  return ExtendedImage(
-                    fit: fit,
-                    image: BlurhashFfiImage(
-                      image.blurHash!,
-                      decodingWidth:
-                          (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
-                      decodingHeight:
-                          (blurHashSizeFactor * image.blurHashHeight!).ceil(),
-                      scale: blurHashSizeFactor,
-                    ),
-                    enableSlideOutPage: true,
-                  );
+                if (state.extendedImageLoadState == LoadState.loading) {
+                  if (image.blurHash != null) {
+                    return ExtendedImage(
+                      fit: fit,
+                      image: BlurhashFfiImage(
+                        image.blurHash!,
+                        decodingWidth:
+                        (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
+                        decodingHeight:
+                        (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                        scale: blurHashSizeFactor,
+                      ),
+                      enableSlideOutPage: true,
+                    );
+                  } else if (image.blurHashWidth != null
+                      && image.blurHashHeight != null) {
+                    return SizedBox(
+                      height: image.blurHashHeight?.toDouble(),
+                      width: image.blurHashWidth?.toDouble(),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
                 } else if (state.extendedImageLoadState == LoadState.failed) {
                   context.read<AppController>().logger.w('Image failed to load: ${image.src}');
                 }
