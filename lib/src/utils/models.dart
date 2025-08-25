@@ -19,8 +19,8 @@ ImageModel? mbinGetOptionalImage(JsonMap? json) {
       : ImageModel.fromMbin(json);
 }
 
-ImageModel? lemmyGetOptionalImage(String? src, [String? altText]) {
-  return src == null ? null : ImageModel.fromLemmy(src, altText);
+ImageModel? lemmyGetOptionalImage(String? src, [String? altText, JsonMap? details]) {
+  return src == null ? null : ImageModel.fromLemmy(src, altText, details);
 }
 
 String mbinNormalizeUsername(String username) {

@@ -136,6 +136,7 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
           TextEditor(
             _instanceHostController,
             label: l(context).instanceHost,
+            keyboardType: TextInputType.url,
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 12),

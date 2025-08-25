@@ -187,6 +187,8 @@ class PostModel with _$PostModel {
             (lookupMimeType(lemmyPost['url'] as String)?.startsWith('image/') ??
                 false)));
 
+    final imageDetails = json['image_details'] as JsonMap?;
+
     return PostModel(
       type: PostType.thread,
       id: lemmyPost['id'] as int,
@@ -201,6 +203,7 @@ class PostModel with _$PostModel {
             ? lemmyPost['url'] as String?
             : lemmyPost['thumbnail_url'] as String?,
         lemmyPost['alt_text'] as String?,
+        imageDetails
       ),
       body: lemmyPost['body'] as String?,
       lang: langCodeIdPairs
@@ -248,6 +251,8 @@ class PostModel with _$PostModel {
                 )?.startsWith('image/') ??
                 false)));
 
+    final imageDetails = piefedPost['image_details'] as JsonMap?;
+
     return PostModel(
       type: PostType.thread,
       id: piefedPost['id'] as int,
@@ -262,6 +267,7 @@ class PostModel with _$PostModel {
             ? piefedPost['url'] as String?
             : piefedPost['thumbnail_url'] as String?,
         piefedPost['alt_text'] as String?,
+        imageDetails,
       ),
       body: piefedPost['body'] as String?,
       lang: langCodeIdPairs
