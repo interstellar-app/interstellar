@@ -46,6 +46,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   final _focusNodeTextField = FocusNode();
 
   final draftDebounce = Debouncer(duration: const Duration(milliseconds: 1000));
+  final ScrollController _scrollController = ScrollController();
 
   void execAction(_MarkdownEditorActionBase action) {
     final input = _MarkdownEditorData(
@@ -355,6 +356,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   child: Builder(
                                     builder: (context) {
                                       return ListView(
+                                        controller: _scrollController,
                                         shrinkWrap: true,
                                         children: context
                                             .watch<DraftsController>()
