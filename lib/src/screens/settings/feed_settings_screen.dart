@@ -460,7 +460,7 @@ void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
   ContextMenu(
     title: l(context).feeds,
     items: [
-      ...ac.feeds.values.map(
+      ...ac.feeds.values.where((feed) => feed.clientFeed).map(
         (feed) => ContextMenuItem(
           title: feed.name,
           onTap: () async {

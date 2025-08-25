@@ -35,6 +35,8 @@ class Feed with _$Feed {
   }
 
   bool get serverFeed {
-    return inputs.length == 1 && inputs.firstOrNull?.sourceType == FeedSource.feed;
+    return inputs.length == 1 &&
+        (inputs.firstOrNull?.sourceType == FeedSource.feed ||
+            inputs.firstOrNull?.sourceType == FeedSource.topic);
   }
 }
