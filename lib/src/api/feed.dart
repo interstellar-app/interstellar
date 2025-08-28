@@ -8,7 +8,7 @@ class APIFeed {
   APIFeed(this.client);
 
   Future<FeedListModel> list({
-    bool? mineOnly,
+    bool mineOnly = false,
     bool excludeCommunities = true,
     bool topics = false,
   }) async {

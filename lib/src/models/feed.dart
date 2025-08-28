@@ -66,7 +66,7 @@ class FeedModel with _$FeedModel {
       isNSFW: json['nsfw'] as bool?,
       isNSFL: json['nsfl'] as bool?,
       subscriptionCount: json['subscriptions_count'] as int?,
-      communityCount: json['num_communities'] as int,
+      communityCount: (json['num_communities'] as int?)?? json['communities_count'] as int, //TODO remove num_communities when major instances are updated to 1.2
       public: json['public'] as bool?,
       parentId: (json['parent_feed_id'] as int?) ?? (json['parent_id'] as int?),
       isInstanceFeed: json['is_instance_feed'] as bool?,
