@@ -962,7 +962,7 @@ class _MarkdownEditorConfigShareDialog extends StatefulWidget {
 class _MarkdownEditorConfigShareDialogState
     extends State<_MarkdownEditorConfigShareDialog> {
   List<String>? _profiles;
-  List<String>? _filterLists;
+  List<String>? _rules;
 
   @override
   void initState() {
@@ -974,7 +974,7 @@ class _MarkdownEditorConfigShareDialogState
   void loadNames() async {
     final ac = context.read<AppController>();
     _profiles = await ac.getProfileNames();
-    _filterLists = ac.filterLists.keys.toList();
+    _rules = ac.rules.keys.toList();
     setState(() {});
   }
 
@@ -1006,23 +1006,18 @@ class _MarkdownEditorConfigShareDialogState
             ),
           ),
         ],
-        if (_filterLists != null && _filterLists!.isNotEmpty) ...[
-          Padding(
-            padding: headerEdgeInserts,
-            child: Text(l(context).filterLists),
-          ),
-          ..._filterLists!.map(
-            (filterListName) => SimpleDialogOption(
-              child: Text(filterListName),
+        if (_rules != null && _rules!.isNotEmpty) ...[
+          Padding(padding: headerEdgeInserts, child: Text(l(context).rules)),
+          ..._rules!.map(
+            (ruleName) => SimpleDialogOption(
+              child: Text(ruleName),
               onPressed: () async {
-                final filterList = context
-                    .read<AppController>()
-                    .filterLists[filterListName]!;
+                final rule = context.read<AppController>().rules[ruleName]!;
 
                 final config = await ConfigShare.create(
-                  type: ConfigShareType.filterList,
-                  name: filterListName,
-                  payload: filterList.toJson(),
+                  type: ConfigShareType.rule,
+                  name: ruleName,
+                  payload: rule.toJson(),
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;

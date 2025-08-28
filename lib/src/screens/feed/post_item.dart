@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/rule.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -21,7 +22,7 @@ class PostItem extends StatefulWidget {
     this.onEdit,
     this.onDelete,
     this.onTap,
-    this.filterListWarnings,
+    this.modifier,
     this.userCanModerate = false,
     this.isTopLevel = false,
     this.isCompact = false,
@@ -34,7 +35,7 @@ class PostItem extends StatefulWidget {
   final Future<void> Function()? onDelete;
   final void Function()? onTap;
   final bool isPreview;
-  final Set<String>? filterListWarnings;
+  final RuleContentModifier? modifier;
   final bool userCanModerate;
   final bool isTopLevel;
   final bool isCompact;
@@ -248,7 +249,7 @@ class _PostItemState extends State<PostItem> {
               'edit:${widget.item.type.name}:${ac.instanceHost}:${widget.item.id}',
           replyDraftResourceId:
               'reply:${widget.item.type.name}:${ac.instanceHost}:${widget.item.id}',
-          filterListWarnings: widget.filterListWarnings,
+          modifier: widget.modifier,
           activeBookmarkLists: widget.item.bookmarks,
           loadPossibleBookmarkLists: whenLoggedIn(
             context,

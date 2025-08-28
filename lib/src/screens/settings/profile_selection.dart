@@ -262,7 +262,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           TextEditor(
             nameController,
-            label: l(context).profile_name,
+            label: l(context).name,
             onChanged: (_) => setState(() {}),
           ),
           ListTileSwitch(

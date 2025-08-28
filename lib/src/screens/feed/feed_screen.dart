@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/rule.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
@@ -62,7 +63,7 @@ class _FeedScreenState extends State<FeedScreen>
   bool _isHidden = false;
 
   final ExpandableController _drawerController = ExpandableController(
-      initialExpanded: true
+    initialExpanded: true,
   );
   NavDrawPersistentState? _navDrawPersistentState;
 
@@ -88,8 +89,11 @@ class _FeedScreenState extends State<FeedScreen>
         };
 
   void _initNavExpanded() async {
-    final initExpanded = (await context.read<AppController>()
-        .fetchCachedValue('nav-widescreen')) ?? true;
+    final initExpanded =
+        (await context.read<AppController>().fetchCachedValue(
+          'nav-widescreen',
+        )) ??
+        true;
     if (initExpanded != _drawerController.expanded) {
       if (!mounted) return;
       setState(() {
@@ -356,17 +360,22 @@ class _FeedScreenState extends State<FeedScreen>
 
                 return [
                   SliverAppBar(
-                    leading: widget.sourceId == null && widget.feed == null
-                        && Breakpoints.isExpanded(context)
+                    leading:
+                        widget.sourceId == null &&
+                            widget.feed == null &&
+                            Breakpoints.isExpanded(context)
                         ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _drawerController.toggle();
-                            });
-                            ac.cacheValue('nav-widescreen', _drawerController.expanded);
-                          },
-                          icon: const Icon(Symbols.menu_rounded)
-                        )
+                            onPressed: () {
+                              setState(() {
+                                _drawerController.toggle();
+                              });
+                              ac.cacheValue(
+                                'nav-widescreen',
+                                _drawerController.expanded,
+                              );
+                            },
+                            icon: const Icon(Symbols.menu_rounded),
+                          )
                         : null,
                     floating: ac.profile.hideFeedUIOnScroll,
                     pinned: !ac.profile.hideFeedUIOnScroll,
@@ -377,10 +386,12 @@ class _FeedScreenState extends State<FeedScreen>
                         widget.feed != null
                             ? widget.feed!.name
                             : widget.title ??
-                            context.watch<AppController>().selectedAccount +
-                                (context.watch<AppController>().isLoggedIn
-                                    ? ''
-                                    : ' (${l(context).guest})'),
+                                  context
+                                          .watch<AppController>()
+                                          .selectedAccount +
+                                      (context.watch<AppController>().isLoggedIn
+                                          ? ''
+                                          : ' (${l(context).guest})'),
                         softWrap: false,
                         overflow: TextOverflow.fade,
                       ),
@@ -615,16 +626,18 @@ class _FeedScreenState extends State<FeedScreen>
         drawer: (widget.sourceId != null || widget.feed != null)
             ? null
             : NavDrawer(
-              drawerState: _navDrawPersistentState,
-              updateState: (NavDrawPersistentState? drawerState) async {
-                drawerState ??= await fetchNavDrawerState(context.read<AppController>());
+                drawerState: _navDrawPersistentState,
+                updateState: (NavDrawPersistentState? drawerState) async {
+                  drawerState ??= await fetchNavDrawerState(
+                    context.read<AppController>(),
+                  );
 
-                if (!mounted) return;
-                setState(() {
-                  _navDrawPersistentState = drawerState!;
-                });
-              },
-            ),
+                  if (!mounted) return;
+                  setState(() {
+                    _navDrawPersistentState = drawerState!;
+                  });
+                },
+              ),
       ),
     );
   }
@@ -873,9 +886,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   SubordinateScrollController? _scrollController;
   ScrollDirection _scrollDirection = ScrollDirection.idle;
 
-  // Map of postId to FilterList names for posts that match lists that are marked as warnings.
-  // If a post matches any FilterList that is not shown with warning, then the post is not shown at all.
-  final Map<(PostType, int), Set<String>> _filterListWarnings = {};
+  // Map of post type and id to rule content modifiers.
+  final Map<(PostType, int), RuleContentModifier> _modifiers = {};
 
   int _lastVisibleIndex = 0;
   final _markAsReadDebounce = Debouncer(duration: Duration(milliseconds: 500));
@@ -918,10 +930,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   bool get wantKeepAlive => true;
 
   Future<(List<PostModel>, String?)> _tryFetchPage(String pageKey) async {
-    final ac = context.read<AppController>();
-
     final page = await _aggregator.fetchPage(
-      ac,
+      context,
       pageKey,
       widget.view,
       widget.sort,
@@ -932,35 +942,15 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     // Prevent duplicates
     final currentItemIds =
         _pagingController.itemList?.map((post) => (post.type, post.id)) ?? [];
-    final filterListActivations = ac.profile.filterLists;
+
     final items = newItems
         .where((post) => !currentItemIds.contains((post.type, post.id)))
         .where((post) {
-          // Skip feed filters if it's an explore page
-          if (widget.sourceId != null) return true;
+          final contentModifier = rulePostOrCommentEncountered(context, post);
 
-          for (var filterListEntry in ac.filterLists.entries) {
-            if (filterListActivations[filterListEntry.key] == true) {
-              final filterList = filterListEntry.value;
+          _modifiers[(post.type, post.id)] = contentModifier;
 
-              if ((post.title != null && filterList.hasMatch(post.title!)) ||
-                  (post.body != null && filterList.hasMatch(post.body!))) {
-                if (filterList.showWithWarning) {
-                  if (!_filterListWarnings.containsKey((post.type, post.id))) {
-                    _filterListWarnings[(post.type, post.id)] = {};
-                  }
-
-                  _filterListWarnings[(post.type, post.id)]!.add(
-                    filterListEntry.key,
-                  );
-                } else {
-                  return false;
-                }
-              }
-            }
-          }
-
-          return true;
+          return contentModifier.hide != true;
         })
         .toList();
 
@@ -971,7 +961,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   }
 
   Future<void> _fetchPage(String pageKey, {bool toEnd = false}) async {
-    if (pageKey.isEmpty) _filterListWarnings.clear();
+    if (pageKey.isEmpty) _modifiers.clear();
     try {
       var (newItems, nextPageKey) = await _tryFetchPage(pageKey);
       int emptyPageCount = 0;
@@ -1196,8 +1186,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                       );
                                 }),
                                 onTap: onPostTap,
-                                filterListWarnings:
-                                    _filterListWarnings[(item.type, item.id)],
+                                modifier: _modifiers[(item.type, item.id)],
                                 userCanModerate: widget.userCanModerate,
                                 isTopLevel: true,
                                 isCompact: true,
@@ -1234,8 +1223,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                   .comments
                                   .create(item.type, item.id, body, lang: lang);
                             }),
-                            filterListWarnings:
-                                _filterListWarnings[(item.type, item.id)],
+                            modifier: _modifiers[(item.type, item.id)],
                             userCanModerate: widget.userCanModerate,
                             isTopLevel: true,
                           ),

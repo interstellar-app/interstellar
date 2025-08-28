@@ -38,7 +38,7 @@ dependencies:
   unifiedpush: ^5.0.2
   webpush_encryption: 1.0.0-rc1
   flutter_local_notifications: ^19.2.1
-  flex_color_scheme: ^8.2.0
+  flex_color_scheme: ^8.3.0
   share_plus: ^10.1.4
   path_provider: ^2.1.5
   window_manager: ^0.4.3

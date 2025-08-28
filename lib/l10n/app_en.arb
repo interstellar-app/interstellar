@@ -304,7 +304,6 @@
   "profile_edit": "Edit profile",
   "profile_import": "Import profile",
   "profile_delete": "Delete profile",
-  "profile_name": "Name",
   "profile_setAsMain": "Set as main profile",
   "profile_setAsMain_help": "The main profile serves as the foundation for all other profiles. Changes made to it will apply to all profiles unless a specific setting has been overridden.",
   "profile_autoSelect": "Automatically select on app start",
@@ -497,33 +496,12 @@
       }
     }
   },
-  "filterLists": "Filter lists",
-  "filterList_activateFilter": "Activate Filter",
-  "filterList_new": "New filter list",
-  "filterList_edit": "Edit filter list",
-  "filterList_import": "Import filter list",
-  "filterList_delete": "Delete filter list",
-  "filterList_name": "Name",
-  "filterList_phrases": "Phrases",
-  "filterList_addPhrase": "Add phrase",
-  "filterList_showWithContentWarning": "Show with content warning",
-  "filterList_matchMode": "Match mode",
-  "filterList_matchMode_simple": "Simple",
-  "filterList_matchMode_simple_help": "Will literally match any occurrence of the phrase. For example, the phrase \"app\" will match \"app\", and also \"apps\", \"application\", \"yapp\", etc.",
-  "filterList_matchMode_wholeWords": "Whole words",
-  "filterList_matchMode_wholeWords_help": "Will only match if there is a word boundary at both ends of the checked text, in other words, the phrase must be the whole word and cannot be in the middle of a word. For example, the phrase \"app\" will match \"app\", but not \"apps\", \"application\", \"yapp\", etc.",
-  "filterList_matchMode_regex": "Regular expression",
-  "filterList_matchMode_regex_help": "Will match content that is found by the specified regular expression, which is derived from the phrase.",
-  "filterList_caseSensitive": "Case sensitive",
-  "filterList_caseSensitive_help": "When enabled, will only match content with the same casing as the phrase.",
-  "filterListWarningX": "Filter list matches: {lists}",
-  "@filterListWarningX": {
-    "placeholders": {
-      "lists": {
-        "type": "String"
-      }
-    }
-  },
+  "rules": "Rules",
+  "rule_activate": "Activate rule",
+  "rule_new": "New rule",
+  "rule_edit": "Edit rule",
+  "rule_import": "Import rule",
+  "rule_delete": "Delete rule",
   "confirmUnsubscribe": "You are about to unsubscribe. Continue?",
   "confirmUnfollow": "You are about to unfollow. Continue?",
   "altText": "Alt text",
@@ -637,9 +615,9 @@
       }
     }
   },
-  "configShare_filterList_title": "Interstellar filter list",
-  "configShare_filterList_info": "Contains {count} phrases",
-  "@configShare_filterList_info": {
+  "configShare_rule_title": "Interstellar rule",
+  "configShare_rule_info": "Contains {count} actions",
+  "@configShare_rule_info": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -670,5 +648,6 @@
   "errorPage_firstPage_button": "Try Again",
   "errorPage_newPage": "Something went wrong. Tap to try again.",
   "errorPage_caughtUp": "You're all caught up.\nLoad older items?",
-  "exitMessage": "Press BACK again to exit."
+  "exitMessage": "Press BACK again to exit.",
+  "name": "Name"
 }

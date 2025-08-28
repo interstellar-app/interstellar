@@ -48,8 +48,7 @@ class ProfileRequired with _$ProfileRequired {
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
     // Feed defaults
-    @FeedViewConverter()
-    required FeedView feedDefaultView,
+    @FeedViewConverter() required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
@@ -75,7 +74,7 @@ class ProfileRequired with _$ProfileRequired {
     required SwipeAction swipeActionRightLong,
     required double swipeActionThreshold,
     // Filter list activations
-    required Map<String, bool> filterLists,
+    required Map<String, bool> rules,
     required bool showErrors,
   }) = _ProfileRequired;
 
@@ -139,7 +138,9 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultMicroblogSort:
         profile?.feedDefaultMicroblogSort ??
         defaultProfile.feedDefaultMicroblogSort,
-    feedDefaultCombinedSort: profile?.feedDefaultCombinedSort ?? defaultProfile.feedDefaultCombinedSort,
+    feedDefaultCombinedSort:
+        profile?.feedDefaultCombinedSort ??
+        defaultProfile.feedDefaultCombinedSort,
     feedDefaultExploreSort:
         profile?.feedDefaultExploreSort ??
         defaultProfile.feedDefaultExploreSort,
@@ -178,7 +179,7 @@ class ProfileRequired with _$ProfileRequired {
         profile?.swipeActionRightLong ?? defaultProfile.swipeActionRightLong,
     swipeActionThreshold:
         profile?.swipeActionThreshold ?? defaultProfile.swipeActionThreshold,
-    filterLists: profile?.filterLists ?? defaultProfile.filterLists,
+    rules: profile?.rules ?? defaultProfile.rules,
     showErrors: profile?.showErrors ?? defaultProfile.showErrors,
   );
 
@@ -230,7 +231,7 @@ class ProfileRequired with _$ProfileRequired {
     swipeActionRightShort: SwipeAction.bookmark,
     swipeActionRightLong: SwipeAction.reply,
     swipeActionThreshold: 0.20,
-    filterLists: {},
+    rules: {},
     showErrors: true,
   );
 }
@@ -270,8 +271,7 @@ class ProfileOptional with _$ProfileOptional {
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
     // Feed defaults
-    @FeedViewConverter()
-    required FeedView? feedDefaultView,
+    @FeedViewConverter() required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
@@ -296,7 +296,7 @@ class ProfileOptional with _$ProfileOptional {
     required SwipeAction? swipeActionRightLong,
     required double? swipeActionThreshold,
     // Filter list activations
-    required Map<String, bool>? filterLists,
+    required Map<String, bool>? rules,
     required bool? showErrors,
   }) = _ProfileOptional;
 
@@ -351,7 +351,7 @@ class ProfileOptional with _$ProfileOptional {
     swipeActionRightShort: null,
     swipeActionRightLong: null,
     swipeActionThreshold: null,
-    filterLists: null,
+    rules: null,
     showErrors: null,
   );
 
@@ -397,7 +397,8 @@ class ProfileOptional with _$ProfileOptional {
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:
           other.feedDefaultMicroblogSort ?? feedDefaultMicroblogSort,
-      feedDefaultCombinedSort: other.feedDefaultCombinedSort ?? feedDefaultCombinedSort,
+      feedDefaultCombinedSort:
+          other.feedDefaultCombinedSort ?? feedDefaultCombinedSort,
       feedDefaultExploreSort:
           other.feedDefaultExploreSort ?? feedDefaultExploreSort,
       feedDefaultCommentSort:
@@ -428,9 +429,9 @@ class ProfileOptional with _$ProfileOptional {
           other.swipeActionRightLong ?? this.swipeActionRightLong,
       swipeActionThreshold:
           other.swipeActionThreshold ?? this.swipeActionThreshold,
-      filterLists: filterLists != null && other.filterLists != null
-          ? {...filterLists!, ...other.filterLists!}
-          : other.filterLists ?? filterLists,
+      rules: rules != null && other.rules != null
+          ? {...rules!, ...other.rules!}
+          : other.rules ?? rules,
       showErrors: other.showErrors ?? showErrors,
     );
   }
@@ -475,7 +476,7 @@ class ProfileOptional with _$ProfileOptional {
 
   // Remove fields that depend on a certain setup
   ProfileOptional exportReady() {
-    return copyWith(autoSwitchAccount: null, filterLists: null);
+    return copyWith(autoSwitchAccount: null, rules: null);
   }
 }
 

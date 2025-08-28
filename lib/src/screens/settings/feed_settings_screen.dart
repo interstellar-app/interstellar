@@ -113,8 +113,8 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).feeds_new),
             onTap: () => pushRoute(
-                context,
-                builder: (context) => const EditFeedScreen(feed: null),
+              context,
+              builder: (context) => const EditFeedScreen(feed: null),
             ),
           ),
         ],
@@ -168,14 +168,16 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
     return Scaffold(
-      appBar: AppBar(title: Text(l(context).feeds_edit(widget.feed?? nameController.text))),
+      appBar: AppBar(
+        title: Text(l(context).feeds_edit(widget.feed ?? nameController.text)),
+      ),
       body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextEditor(
               nameController,
-              label: l(context).filterList_name,
+              label: l(context).name,
               onChanged: (_) => setState(() {}),
             ),
           ),
@@ -221,7 +223,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     removeInput(FeedInput(name: name, sourceType: source));
                   }
                 },
-              )
+              ),
             ),
           ),
           Padding(
@@ -231,7 +233,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               onPressed:
                   nameController.text.isEmpty ||
                       (nameController.text != widget.feed &&
-                          ac.filterLists.containsKey(nameController.text))
+                          ac.feeds.containsKey(nameController.text))
                   ? null
                   : () async {
                       final name = nameController.text;
@@ -289,23 +291,23 @@ void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
   final ac = context.read<AppController>();
   ContextMenu(
     title: l(context).feeds,
-    items: [...ac.feeds.values
-        .map(
-          (feed) => ContextMenuItem(
-            title: feed.name,
-            onTap: () async {
-              final newFeed = feed.copyWith(
-                inputs: {
-                  ...feed.inputs,
-                  FeedInput(name: name, sourceType: source),
-                },
-              );
-              await ac.setFeed(feed.name, newFeed);
-              if (!context.mounted) return;
-              Navigator.pop(context);
-            },
-          ),
+    items: [
+      ...ac.feeds.values.map(
+        (feed) => ContextMenuItem(
+          title: feed.name,
+          onTap: () async {
+            final newFeed = feed.copyWith(
+              inputs: {
+                ...feed.inputs,
+                FeedInput(name: name, sourceType: source),
+              },
+            );
+            await ac.setFeed(feed.name, newFeed);
+            if (!context.mounted) return;
+            Navigator.pop(context);
+          },
         ),
+      ),
       ContextMenuItem(
         title: l(context).feeds_new,
         icon: Symbols.add_rounded,

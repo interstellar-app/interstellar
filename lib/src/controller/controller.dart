@@ -11,6 +11,7 @@ import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/controller/rule.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
@@ -32,7 +33,7 @@ class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
   final _accountStore = StoreRef<String, JsonMap>('account');
   final _feedStore = StoreRef<String, JsonMap>('feeds');
-  final _filterListStore = StoreRef<String, JsonMap>('filterList');
+  final _ruleStore = StoreRef<String, JsonMap>('rules');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
   final _readStore = StoreRef<String, JsonMap>('read');
@@ -88,8 +89,8 @@ class AppController with ChangeNotifier {
   late Map<String, Feed> _feeds;
   Map<String, Feed> get feeds => _feeds;
 
-  late Map<String, FilterList> _filterLists;
-  Map<String, FilterList> get filterLists => _filterLists;
+  late Map<String, Rule> _rules;
+  Map<String, Rule> get rules => _rules;
 
   late Function refreshState;
 
@@ -110,7 +111,7 @@ class AppController with ChangeNotifier {
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
       output: FileOutput(file: await logFile),
-      filter: ProductionFilter()
+      filter: ProductionFilter(),
     );
     logger.i('Initializing interstellar');
 
@@ -175,10 +176,10 @@ class AppController with ChangeNotifier {
       )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
     );
 
-    _filterLists = Map.fromEntries(
-      (await _filterListStore.find(db)).map(
-        (record) => MapEntry(record.key, FilterList.fromJson(record.value)),
-      ),
+    _rules = Map.fromEntries(
+      (await _ruleStore.find(
+        db,
+      )).map((record) => MapEntry(record.key, Rule.fromJson(record.value))),
     );
 
     _translator = SimplyTranslator(EngineType.libre);
@@ -581,29 +582,26 @@ class AppController with ChangeNotifier {
     await _feedStore.record(FieldKey.escape(oldName)).delete(db);
   }
 
-  Future<void> setFilterList(String name, FilterList value) async {
-    _filterLists[name] = value;
+  Future<void> setRule(String name, Rule value) async {
+    _rules[name] = value;
 
     notifyListeners();
 
-    await _filterListStore
-        .record(FieldKey.escape(name))
-        .put(db, value.toJson());
+    await _ruleStore.record(FieldKey.escape(name)).put(db, value.toJson());
   }
 
-  Future<void> removeFilterList(String name) async {
-    _filterLists.remove(name);
+  Future<void> removeRule(String name) async {
+    _rules.remove(name);
 
-    // Remove a profile's activation value if it is for this filter list
+    // Remove a profile's activation value if it is for this rule
     for (var record in await _profileStore.find(db)) {
       final profile = ProfileOptional.fromJson(record.value);
-      if (profile.filterLists?.containsKey(name) == true) {
-        final newProfileFilterLists = {...profile.filterLists!};
+      if (profile.rules?.containsKey(name) == true) {
+        final newProfileFilterLists = {...profile.rules!};
         newProfileFilterLists.remove(name);
-        await _profileRecord(record.key).put(
-          db,
-          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
-        );
+        await _profileRecord(
+          record.key,
+        ).put(db, profile.copyWith(rules: newProfileFilterLists).toJson());
       }
     }
 
@@ -611,26 +609,25 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _filterListStore.record(FieldKey.escape(name)).delete(db);
+    await _ruleStore.record(FieldKey.escape(name)).delete(db);
   }
 
-  Future<void> renameFilterList(String oldName, String newName) async {
-    _filterLists[newName] = _filterLists[oldName]!;
-    _filterLists.remove(oldName);
+  Future<void> renameRule(String oldName, String newName) async {
+    _rules[newName] = _rules[oldName]!;
+    _rules.remove(oldName);
 
     // Update a profile's activation value if it is for this filter list
     for (var record in await _profileStore.find(db)) {
       final profile = ProfileOptional.fromJson(record.value);
-      if (profile.filterLists?.containsKey(oldName) == true) {
+      if (profile.rules?.containsKey(oldName) == true) {
         final newProfileFilterLists = {
-          ...profile.filterLists!,
-          newName: profile.filterLists![oldName]!,
+          ...profile.rules!,
+          newName: profile.rules![oldName]!,
         };
         newProfileFilterLists.remove(oldName);
-        await _profileRecord(record.key).put(
-          db,
-          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
-        );
+        await _profileRecord(
+          record.key,
+        ).put(db, profile.copyWith(rules: newProfileFilterLists).toJson());
       }
     }
 
@@ -638,10 +635,10 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _filterListStore
+    await _ruleStore
         .record(FieldKey.escape(newName))
-        .put(db, _filterLists[newName]!.toJson());
-    await _filterListStore.record(FieldKey.escape(oldName)).delete(db);
+        .put(db, _rules[newName]!.toJson());
+    await _ruleStore.record(FieldKey.escape(oldName)).delete(db);
   }
 
   Future<void> vibrate(HapticsType type) async {

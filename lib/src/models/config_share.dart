@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 part 'config_share.freezed.dart';
 part 'config_share.g.dart';
 
-enum ConfigShareType { profile, filterList, feed }
+enum ConfigShareType { profile, rule, feed }
 
 @freezed
 class ConfigShare with _$ConfigShare {

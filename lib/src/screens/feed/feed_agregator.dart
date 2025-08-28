@@ -1,10 +1,12 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:provider/provider.dart';
 import 'feed_screen.dart';
 
 double calcLemmyRanking(PostModel post, DateTime time) {
@@ -44,7 +46,8 @@ double calcMbinRanking(PostModel post) {
   final maxAdvantage = 86400;
   final maxPenalty = 43200;
 
-  final score = (post.boosts ?? 0) + (post.upvotes ?? 0) - (post.downvotes ?? 0);
+  final score =
+      (post.boosts ?? 0) + (post.upvotes ?? 0) - (post.downvotes ?? 0);
   final scoreAdvantage = score * netscoreMultiplier;
 
   var commentAdvantage = 0;
@@ -204,7 +207,7 @@ class FeedInputState {
   });
 
   Future<(List<PostModel>, String?)> fetchPage(
-    AppController ac,
+    BuildContext context,
     String pageKey,
     FeedView view,
     FeedSort sort,
@@ -212,6 +215,8 @@ class FeedInputState {
     if (_nextPage == null || _leftover.length > 25) {
       return (_leftover, _nextPage);
     }
+
+    final ac = context.read<AppController>();
 
     switch (view) {
       case FeedView.threads:
@@ -249,7 +254,7 @@ class FeedInputState {
               )
             : Future.value();
         final microblogFuture =
-        _combinedPage != null && _combinedMicroblogsLeftover.length < 25
+            _combinedPage != null && _combinedMicroblogsLeftover.length < 25
             ? ac.api.microblogs.list(
                 source,
                 sourceId: sourceId,
@@ -264,14 +269,10 @@ class FeedInputState {
         final postLists = results
             .map((postListModel) => postListModel?.items ?? <PostModel>[])
             .toList();
-        final merged = merge(
-          ac.serverSoftware,
-          [
-            [..._combinedThreadsLeftover, ...postLists[0]],
-            [..._combinedMicroblogsLeftover, ...postLists[1]]
-          ],
-          sort,
-        );
+        final merged = merge(ac.serverSoftware, [
+          [..._combinedThreadsLeftover, ...postLists[0]],
+          [..._combinedMicroblogsLeftover, ...postLists[1]],
+        ], sort);
 
         // get next page if new request was sent
         if (_combinedMicroblogsLeftover.length < 25) {
@@ -282,7 +283,9 @@ class FeedInputState {
         }
 
         _combinedThreadsLeftover = merged.$2.isNotEmpty ? merged.$2.first : [];
-        _combinedMicroblogsLeftover = merged.$2.length > 1 ? merged.$2.last : [];
+        _combinedMicroblogsLeftover = merged.$2.length > 1
+            ? merged.$2.last
+            : [];
 
         ac.logger.i(
           '$title input fetch($pageKey, $view, $sort) -> (${merged.$1.length}, ${merged.$2.map((i) => i.length).toList()}, $_nextPage, $_combinedPage)',
@@ -343,15 +346,17 @@ class FeedAggregator {
   }
 
   Future<(List<PostModel>, String?)> fetchPage(
-    AppController ac,
+    BuildContext context,
     String pageKey,
     FeedView view,
     FeedSort sort,
   ) async {
     if (inputs.isEmpty) return (<PostModel>[], null);
 
+    final ac = context.read<AppController>();
+
     final futures = inputs.map(
-      (input) => input.fetchPage(ac, pageKey, view, sort),
+      (input) => input.fetchPage(context, pageKey, view, sort),
     );
     final results = await Future.wait(futures);
 

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/feed.dart';
+import 'package:interstellar/src/controller/rule.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
-import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
+import 'package:interstellar/src/screens/settings/rules_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -68,7 +68,7 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
   late ConfigShare config;
 
   ProfileOptional? configProfile;
-  FilterList? configFilterList;
+  Rule? configRule;
   Feed? configFeed;
 
   bool invalid = false;
@@ -89,8 +89,8 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
         case ConfigShareType.profile:
           configProfile = ProfileOptional.fromJson(config.payload);
           break;
-        case ConfigShareType.filterList:
-          configFilterList = FilterList.fromJson(config.payload);
+        case ConfigShareType.rule:
+          configRule = Rule.fromJson(config.payload);
           break;
         case ConfigShareType.feed:
           configFeed = Feed.fromJson(config.payload);
@@ -123,9 +123,7 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                     ConfigShareType.profile => l(
                       context,
                     ).configShare_profile_title,
-                    ConfigShareType.filterList => l(
-                      context,
-                    ).configShare_filterList_title,
+                    ConfigShareType.rule => l(context).configShare_rule_title,
                     ConfigShareType.feed => l(context).configShare_feed_title,
                   }),
                   Text(
@@ -138,10 +136,9 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                     ConfigShareType.profile => l(
                       context,
                     ).configShare_profile_info(config.payload.length),
-                    ConfigShareType.filterList =>
-                      l(context).configShare_filterList_info(
-                        configFilterList!.phrases.length,
-                      ),
+                    ConfigShareType.rule => l(
+                      context,
+                    ).configShare_rule_info(configRule!.actions.length),
                     ConfigShareType.feed => l(
                       context,
                     ).configShare_feed_info(configFeed!.inputs.length),
@@ -166,28 +163,29 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                           ),
                         );
                       },
-                      ConfigShareType.filterList => () async {
+                      ConfigShareType.rule => () async {
                         await pushRoute(
                           context,
-                          builder: (context) => EditFilterListScreen(
-                            filterList: config.name,
-                            importFilterList: configFilterList!,
+                          builder: (context) => EditRuleScreen(
+                            rule: config.name,
+                            importRule: configRule!,
                           ),
                         );
                       },
                       ConfigShareType.feed => () async {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => EditFeedScreen(feed: config.name, feedData: configFeed),
+                            builder: (context) => EditFeedScreen(
+                              feed: config.name,
+                              feedData: configFeed,
+                            ),
                           ),
                         );
                       },
                     },
                     label: Text(switch (config.type) {
                       ConfigShareType.profile => l(context).profile_import,
-                      ConfigShareType.filterList => l(
-                        context,
-                      ).filterList_import,
+                      ConfigShareType.rule => l(context).rule_import,
                       ConfigShareType.feed => l(context).feeds_import,
                     }),
                   ),

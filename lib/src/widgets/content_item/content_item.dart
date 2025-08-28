@@ -1,5 +1,7 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/rule.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
@@ -90,7 +92,7 @@ class ContentItem extends StatefulWidget {
   final String editDraftResourceId;
   final String replyDraftResourceId;
 
-  final Set<String>? filterListWarnings;
+  final RuleContentModifier? modifier;
 
   final List<String>? activeBookmarkLists;
   final Future<List<String>> Function()? loadPossibleBookmarkLists;
@@ -158,7 +160,7 @@ class ContentItem extends StatefulWidget {
     this.onModerateBan,
     required this.editDraftResourceId,
     required this.replyDraftResourceId,
-    this.filterListWarnings,
+    this.modifier,
     this.activeBookmarkLists,
     this.loadPossibleBookmarkLists,
     this.onAddBookmark,
@@ -191,6 +193,12 @@ class _ContentItemState extends State<ContentItem> {
         .defaultCreateLanguage;
   }
 
+  void initReplyController() => setState(() {
+    _replyTextController = TextEditingController(
+      text: widget.modifier?.replyTemplate,
+    );
+  });
+
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
@@ -203,27 +211,19 @@ class _ContentItemState extends State<ContentItem> {
               context,
               widget,
               onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
-                      _replyTextController = TextEditingController();
-                    })
-                  : () {},
+              onReply: widget.onReply != null ? initReplyController : () {},
             ),
             onSecondaryTap: () => showContentMenu(
               context,
               widget,
               onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
-                      _replyTextController = TextEditingController();
-                    })
-                  : () {},
+              onReply: widget.onReply != null ? initReplyController : () {},
             ),
             child: child,
           );
         },
         child: widget.isCompact ? compact() : full(),
-      )
+      ),
     );
   }
 
@@ -366,8 +366,7 @@ class _ContentItemState extends State<ContentItem> {
     return LayoutBuilder(
       builder: (context, constrains) {
         final hasWideSize = constrains.maxWidth > 800;
-        final isRightImage = hasWideSize &&
-            !widget.fullImageSize;
+        final isRightImage = hasWideSize && !widget.fullImageSize;
 
         final double rightImageSize = hasWideSize ? 128 : 64;
 
@@ -437,11 +436,7 @@ class _ContentItemState extends State<ContentItem> {
                 _editTextController = TextEditingController(text: widget.body);
               }),
               onTranslate: widget.onTranslate,
-              onReply: widget.onReply != null
-                  ? () => setState(() {
-                      _replyTextController = TextEditingController();
-                    })
-                  : () {},
+              onReply: widget.onReply != null ? initReplyController : () {},
             );
           },
         );
@@ -461,11 +456,7 @@ class _ContentItemState extends State<ContentItem> {
                     : widget.onRemoveBookmark!();
               }
             },
-            onReply: widget.onReply != null
-                ? () => setState(() {
-                    _replyTextController = TextEditingController();
-                  })
-                : () {},
+            onReply: widget.onReply != null ? initReplyController : () {},
             onMarkAsRead: widget.onMarkAsRead,
             onModeratePin: widget.onModeratePin,
             onModerateMarkNSFW: widget.onModerateMarkNSFW,
@@ -523,103 +514,7 @@ class _ContentItemState extends State<ContentItem> {
                               Expanded(
                                 child: Row(
                                   children: [
-                                    if (widget.filterListWarnings?.isNotEmpty ==
-                                        true)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Tooltip(
-                                          message: l(context)
-                                              .filterListWarningX(
-                                                widget.filterListWarnings!.join(
-                                                  ', ',
-                                                ),
-                                              ),
-                                          triggerMode: TooltipTriggerMode.tap,
-                                          child: const Icon(
-                                            Symbols.warning_amber_rounded,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ),
-                                    if (widget.isPinned)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Tooltip(
-                                          message: l(context).pinnedInCommunity,
-                                          triggerMode: TooltipTriggerMode.tap,
-                                          child: const Icon(
-                                            Symbols.push_pin_rounded,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    if (widget.isNSFW)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Tooltip(
-                                          message: l(
-                                            context,
-                                          ).notSafeForWork_long,
-                                          triggerMode: TooltipTriggerMode.tap,
-                                          child: Text(
-                                            l(context).notSafeForWork_short,
-                                            style: const TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    if (widget.isOC)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Tooltip(
-                                          message: l(
-                                            context,
-                                          ).originalContent_long,
-                                          triggerMode: TooltipTriggerMode.tap,
-                                          child: Text(
-                                            l(context).originalContent_short,
-                                            style: const TextStyle(
-                                              color: Colors.lightGreen,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    if (widget.lang != null &&
-                                        widget.lang !=
-                                            context
-                                                .read<AppController>()
-                                                .profile
-                                                .defaultCreateLanguage)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Tooltip(
-                                          message: getLanguageName(
-                                            context,
-                                            widget.lang!,
-                                          ),
-                                          triggerMode: TooltipTriggerMode.tap,
-                                          child: Text(
-                                            widget.lang!,
-                                            style: const TextStyle(
-                                              color: Colors.purple,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                    ...contentIndicators(),
                                     if (!widget.showCommunityFirst) ?userWidget,
                                     if (widget.showCommunityFirst)
                                       ?communityWidget,
@@ -1018,11 +913,7 @@ class _ContentItemState extends State<ContentItem> {
                 : widget.onRemoveBookmark!();
           }
         },
-        onReply: widget.onReply != null
-            ? () => setState(() {
-                _replyTextController = TextEditingController();
-              })
-            : () {},
+        onReply: widget.onReply != null ? initReplyController : () {},
         onModeratePin: widget.onModeratePin,
         onModerateMarkNSFW: widget.onModerateMarkNSFW,
         onModerateDelete: widget.onModerateDelete,
@@ -1049,82 +940,7 @@ class _ContentItemState extends State<ContentItem> {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      if (widget.filterListWarnings?.isNotEmpty == true)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Tooltip(
-                            message: l(context).filterListWarningX(
-                              widget.filterListWarnings!.join(', '),
-                            ),
-                            triggerMode: TooltipTriggerMode.tap,
-                            child: const Icon(
-                              Symbols.warning_amber_rounded,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      if (widget.isPinned)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Tooltip(
-                            message: l(context).pinnedInCommunity,
-                            triggerMode: TooltipTriggerMode.tap,
-                            child: const Icon(
-                              Symbols.push_pin_rounded,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      if (widget.isNSFW)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Tooltip(
-                            message: l(context).notSafeForWork_long,
-                            triggerMode: TooltipTriggerMode.tap,
-                            child: Text(
-                              l(context).notSafeForWork_short,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      if (widget.isOC)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Tooltip(
-                            message: l(context).originalContent_long,
-                            triggerMode: TooltipTriggerMode.tap,
-                            child: Text(
-                              l(context).originalContent_short,
-                              style: const TextStyle(
-                                color: Colors.lightGreen,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      if (widget.lang != null &&
-                          widget.lang !=
-                              context
-                                  .read<AppController>()
-                                  .profile
-                                  .defaultCreateLanguage)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Tooltip(
-                            message: getLanguageName(context, widget.lang!),
-                            triggerMode: TooltipTriggerMode.tap,
-                            child: Text(
-                              widget.lang!,
-                              style: const TextStyle(
-                                color: Colors.purple,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
+                      ...contentIndicators(),
                       if (!widget.showCommunityFirst) ?userWidget,
                       if (widget.showCommunityFirst) ?communityWidget,
                       if (widget.createdAt != null)
@@ -1236,4 +1052,95 @@ class _ContentItemState extends State<ContentItem> {
       ),
     );
   }
+
+  List<Widget> contentIndicators() => [
+    if (widget.modifier?.indicators != null)
+      ...widget.modifier!.indicators!.map(
+        (indicator) => Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Tooltip(
+            message: indicator.tooltip,
+            triggerMode: TooltipTriggerMode.tap,
+            child: indicator.icon != null
+                ? Icon(
+                    switch (indicator.icon!) {
+                      ContentIndicatorIcon.info => Symbols.info_rounded,
+                      ContentIndicatorIcon.success =>
+                        Symbols.check_circle_rounded,
+                      ContentIndicatorIcon.warning => Symbols.warning_rounded,
+                      ContentIndicatorIcon.error => Symbols.error_rounded,
+                    },
+                    color: indicator.color != null
+                        ? Color(indicator.color!)
+                        : null,
+                  )
+                : Text(
+                    indicator.text ?? '',
+                    style: TextStyle(
+                      color: indicator.color != null
+                          ? Color(indicator.color!)
+                          : null,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    if (widget.isPinned)
+      Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Tooltip(
+          message: l(context).pinnedInCommunity,
+          triggerMode: TooltipTriggerMode.tap,
+          child: const Icon(Symbols.push_pin_rounded, size: 20),
+        ),
+      ),
+    if (widget.isNSFW)
+      Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Tooltip(
+          message: l(context).notSafeForWork_long,
+          triggerMode: TooltipTriggerMode.tap,
+          child: Text(
+            l(context).notSafeForWork_short,
+            style: const TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    if (widget.isOC)
+      Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Tooltip(
+          message: l(context).originalContent_long,
+          triggerMode: TooltipTriggerMode.tap,
+          child: Text(
+            l(context).originalContent_short,
+            style: const TextStyle(
+              color: Colors.lightGreen,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    if (widget.lang != null &&
+        widget.lang !=
+            context.read<AppController>().profile.defaultCreateLanguage)
+      Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Tooltip(
+          message: getLanguageName(context, widget.lang!),
+          triggerMode: TooltipTriggerMode.tap,
+          child: Text(
+            widget.lang!,
+            style: const TextStyle(
+              color: Colors.purple,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+  ];
 }
