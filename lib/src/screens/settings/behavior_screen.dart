@@ -231,6 +231,16 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
               ],
             ),
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.subdirectory_arrow_right_rounded),
+            title: Text(l(context).settings_inlineReplies),
+            value: ac.profile.inlineReplies,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                inlineReplies: newValue,
+              ),
+            ),
+          ),
           ListTile(
             title: Text(l(context).settings_defaultDownloadDir),
             subtitle: ac.defaultDownloadDir != null ? Text(ac.defaultDownloadDir!.path) : null,

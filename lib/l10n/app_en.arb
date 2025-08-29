@@ -184,6 +184,14 @@
   "notifications_unregisterPush": "Unregister push notifications",
   "messages": "Messages",
   "reply": "Reply",
+  "replying_toX": "Replying to {user}",
+  "@replying_toX": {
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
   "send": "Send",
   "notLoggedIn": "Not logged in",
   "settings": "Settings",
@@ -216,6 +224,7 @@
   "settings_markMicroblogsReadOnScroll": "Mark microblogs read on scroll",
   "settings_animationSpeed": "Animation speed",
   "settings_animationDisabled": "Disabled",
+  "settings_inlineReplies": "Reply inline",
   "settings_defaultDownloadDir": "Default download directory",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
