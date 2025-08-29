@@ -201,12 +201,14 @@ class _LoadingTextButtonState extends State<LoadingTextButton> {
 
 class LoadingIconButton extends StatefulWidget {
   final Future<void> Function()? onPressed;
+  final Future<void> Function()? onLongPress;
   final Widget icon;
   final ButtonStyle? style;
   final String? tooltip;
 
   const LoadingIconButton({
     required this.onPressed,
+    this.onLongPress,
     required this.icon,
     this.style,
     this.tooltip,
@@ -235,6 +237,18 @@ class _LoadingIconButtonState extends State<LoadingIconButton> {
                 if (mounted) setState(() => _isLoading = false);
               }
             },
+      onLongPress: _isLoading || widget.onLongPress == null
+          ? null
+          : () async {
+        setState(() => _isLoading = true);
+        try {
+          await widget.onLongPress!();
+        } catch (e) {
+          rethrow;
+        } finally {
+          if (mounted) setState(() => _isLoading = false);
+        }
+      },
       icon: _isLoading ? const _LoadingButtonIndicator() : widget.icon,
       style: widget.style,
       tooltip: widget.tooltip,
