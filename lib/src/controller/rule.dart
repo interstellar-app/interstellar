@@ -250,7 +250,7 @@ class RuleFieldRoot extends RuleField<RuleFieldRootContext> {
 // }
 
 @freezed
-class RuleCondition with _$Rule {
+class RuleCondition with _$RuleCondition {
   const RuleCondition._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
@@ -301,19 +301,16 @@ class ContentIndicator with _$ContentIndicator {
   }) = _ContentIndicator;
 }
 
-@freezed
-class RuleContentModifier with _$RuleContentModifier {
-  const factory RuleContentModifier({
-    required bool? hide,
-    required String? title,
-    required String? body,
-    required String? replyTemplate,
-    required String? backgroundHighlight,
-    required bool? collapse,
-    required List<ContentIndicator>? indicators,
-    required List<String>? alternateLinks,
-    required bool? treatNsfw,
-  }) = _RuleContentModifier;
+class RuleContentModifier {
+  bool? hide;
+  String? title;
+  String? body;
+  String? replyTemplate;
+  String? backgroundHighlight;
+  bool? collapse;
+  List<ContentIndicator>? indicators;
+  List<String>? alternateLinks;
+  bool? treatNsfw;
 }
 
 RuleContentModifier rulePostOrCommentEncountered(
@@ -322,24 +319,44 @@ RuleContentModifier rulePostOrCommentEncountered(
 ) {
   final ac = context.read<AppController>();
 
+  RuleContentModifier modifier;
   final ruleActivations = ac.profile.rules;
 
   for (var ruleEntry in ac.rules.entries) {
     if (ruleActivations[ruleEntry.key] == true) {
       final rule = ruleEntry.value;
 
-      if ((post.title != null && rule.hasMatch(post.title!)) ||
-          (post.body != null && rule.hasMatch(post.body!))) {
-        if (rule.showWithWarning) {
-          if (!_filterListWarnings.containsKey((post.type, post.id))) {
-            _filterListWarnings[(post.type, post.id)] = {};
-          }
-
-          _filterListWarnings[(post.type, post.id)]!.add(ruleEntry.key);
-        } else {
-          return false;
-        }
+      if (evaluateCondition(rule.condition)) {
+        // Trigger here
       }
     }
   }
+}
+
+bool evaluateCondition(RuleCondition? condition) {
+  if (condition == null) return true;
+
+  bool output = false;
+
+  if (condition.and != null) {
+    for (var subCondition in condition.and!) {
+      if (!evaluateCondition(subCondition)) {
+        output = false;
+        break;
+      }
+    }
+    output = true;
+  } else if (condition.or != null) {
+    for (var subCondition in condition.and!) {
+      if (evaluateCondition(subCondition)) {
+        output = true;
+        break;
+      }
+    }
+    output = false;
+  } else if (condition.field != null) {
+    final fieldSegments = condition.field!.split('.');
+  }
+
+  return condition.not == true ? !output : output;
 }
