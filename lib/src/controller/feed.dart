@@ -29,4 +29,14 @@ class Feed with _$Feed {
   }) = _Feed;
 
   factory Feed.fromJson(JsonMap json) => _$FeedFromJson(json);
+
+  bool get clientFeed {
+    return !serverFeed;
+  }
+
+  bool get serverFeed {
+    return inputs.length == 1 &&
+        (inputs.firstOrNull?.sourceType == FeedSource.feed ||
+            inputs.firstOrNull?.sourceType == FeedSource.topic);
+  }
 }

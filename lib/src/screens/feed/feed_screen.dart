@@ -117,6 +117,14 @@ class _FeedScreenState extends State<FeedScreen>
         .feedDefaultHideReadPosts;
 
     _initNavExpanded();
+
+    () async {
+      final drawerState = await fetchNavDrawerState(context.read<AppController>());
+      if (!mounted) return;
+      setState(() {
+        _navDrawPersistentState = drawerState;
+      });
+    } ();
   }
 
   @override
