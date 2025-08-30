@@ -9,7 +9,7 @@ class APIFeed {
 
   Future<FeedListModel> list({
     bool mineOnly = false,
-    bool excludeCommunities = true,
+    bool includeCommunities = false,
     bool topics = false,
   }) async {
     switch (client.software) {
@@ -20,19 +20,10 @@ class APIFeed {
         throw Exception('Feeds not available on lemmy');
 
       case ServerSoftware.piefed:
-        if (topics) {
-          const path = '/topic/list';
-
-          final response = await client.get(path);
-
-          final json = response.bodyJson;
-
-          return FeedListModel.fromPiefed(json);
-        }
-        const path = '/feed/list';
+        final path = '/${topics ? 'topic' : 'feed'}/list';
         final query = {
-          'mine_only': mineOnly.toString(),
-          'exclude_communities': excludeCommunities.toString()
+          if (!topics) 'mine_only': mineOnly.toString(),
+          'include_communities': includeCommunities.toString()
         };
 
         final response = await client.get(path, queryParams: query);
