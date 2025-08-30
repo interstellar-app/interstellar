@@ -48,6 +48,11 @@ class AppController with ChangeNotifier {
   late final _starsRecord = _mainStore.record('stars');
   late final _webPushKeysRecord = _mainStore.record('webPushKeys');
 
+  String? _defaultDownloadsDir;
+  Directory? get defaultDownloadDir => _defaultDownloadsDir == null
+      ? null
+      : Directory(_defaultDownloadsDir!);
+
   RecordRef<String, JsonMap> _profileRecord(String name) =>
       _profileStore.record(FieldKey.escape(name));
 
@@ -184,6 +189,8 @@ class AppController with ChangeNotifier {
     );
 
     _translator = SimplyTranslator(EngineType.libre);
+
+    _defaultDownloadsDir = await getDefaultDownloadDir();
 
     await _updateAPI();
     logger.i('Finished init');
@@ -770,5 +777,20 @@ class AppController with ChangeNotifier {
 
   Future<dynamic> fetchCachedValue(String key) async {
     return await _miscStore.record(key).get(db);
+  }
+
+  Future<String?> getDefaultDownloadDir() async {
+    return _defaultDownloadsDir??
+        await _mainStore.record('defaultDownloadDir').get(db) as String?;
+  }
+
+  Future<void> setDefaultDownloadDir(String? path) async {
+    if (path == null) {
+      await _mainStore.record('defaultDownloadDir').delete(db);
+      _defaultDownloadsDir = path;
+      return;
+    }
+    await _mainStore.record('defaultDownloadDir').put(db, path);
+    _defaultDownloadsDir = path;
   }
 }

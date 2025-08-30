@@ -159,6 +159,13 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
               await downloadFile(
                 Uri.parse(widget.image.src),
                 widget.image.src.split('/').last,
+                defaultDir: context.read<AppController>().defaultDownloadDir
+              );
+            },
+            onLongPress: () async {
+              await downloadFile(
+                  Uri.parse(widget.image.src),
+                  widget.image.src.split('/').last,
               );
             },
             icon: const Icon(Symbols.download_rounded),

@@ -1,14 +1,22 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class BehaviorSettingsScreen extends StatelessWidget {
+class BehaviorSettingsScreen extends StatefulWidget {
   const BehaviorSettingsScreen({super.key});
+
+  @override
+  State<BehaviorSettingsScreen> createState() => _BehaviorSettingsScreenState();
+}
+
+class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -222,6 +230,37 @@ class BehaviorSettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.subdirectory_arrow_right_rounded),
+            title: Text(l(context).settings_inlineReplies),
+            value: ac.profile.inlineReplies,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                inlineReplies: newValue,
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(l(context).settings_defaultDownloadDir),
+            subtitle: ac.defaultDownloadDir != null ? Text(ac.defaultDownloadDir!.path) : null,
+            trailing: ac.defaultDownloadDir != null ? LoadingIconButton(
+                onPressed: () async {
+                  ac.setDefaultDownloadDir(null);
+                  setState(() {});
+                },
+                icon: Icon(Symbols.clear_rounded)
+            ) : null,
+            onTap: () async {
+              try {
+                final path = await FilePicker.platform.getDirectoryPath();
+                if (path == null) return;
+                ac.setDefaultDownloadDir(path);
+                setState(() {});
+              } catch (e) {
+                //
+              }
+            },
           ),
         ],
       ),

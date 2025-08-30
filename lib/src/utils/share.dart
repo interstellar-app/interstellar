@@ -27,26 +27,30 @@ Future<ShareResult> shareFile(Uri uri, String filename) async {
   return result;
 }
 
-Future<void> downloadFile(Uri uri, String filename) async {
+Future<void> downloadFile(Uri uri, String filename, {Directory? defaultDir}) async {
   final response = await http.get(uri);
 
   // Whether to use bytes property or need to manually write file
   final useBytes = Platform.isAndroid || Platform.isIOS;
 
   String? filePath;
-  try {
-    filePath = await FilePicker.platform.saveFile(
-      fileName: filename,
-      bytes: useBytes ? response.bodyBytes : null,
-    );
+  if (defaultDir == null) {
+    try {
+      filePath = await FilePicker.platform.saveFile(
+        fileName: filename,
+        bytes: useBytes ? response.bodyBytes : null,
+      );
 
-    if (filePath == null) return;
-  } catch (e) {
-    // If file saver fails, then try to download to downloads directory
-    final dir = await getDownloadsDirectory();
-    if (dir == null) throw Exception('Downloads directory not found');
+      if (filePath == null) return;
+    } catch (e) {
+      // If file saver fails, then try to download to downloads directory
+      final dir = await getDownloadsDirectory();
+      if (dir == null) throw Exception('Downloads directory not found');
 
-    filePath = '${dir.path}/$filename';
+      filePath = '${dir.path}/$filename';
+    }
+  } else {
+    filePath = '${defaultDir.path}/$filename';
   }
 
   if (!useBytes) {
