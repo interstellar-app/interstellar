@@ -32,7 +32,7 @@ class _RulesScreenState extends State<RulesScreen> {
     final ac = context.watch<AppController>();
 
     return Scaffold(
-      appBar: AppBar(title: Text(l(context).filterLists)),
+      appBar: AppBar(title: Text(l(context).rules)),
       body: ListView(
         children: [
           ...ac.rules.keys.map(
@@ -47,14 +47,12 @@ class _RulesScreenState extends State<RulesScreen> {
                     ),
                     trailing: IconButton(
                       onPressed: () async {
-                        final filterList = context
-                            .read<AppController>()
-                            .rules[name]!;
+                        final rule = context.read<AppController>().rules[name]!;
 
                         final config = await ConfigShare.create(
-                          type: ConfigShareType.filterList,
+                          type: ConfigShareType.rule,
                           name: name,
-                          payload: filterList.toJson(),
+                          payload: rule.toJson(),
                         );
 
                         if (!context.mounted) return;
@@ -108,7 +106,7 @@ class _RulesScreenState extends State<RulesScreen> {
           ),
           ListTile(
             leading: const Icon(Symbols.add_rounded),
-            title: Text(l(context).filterList_new),
+            title: Text(l(context).rule_new),
             onTap: () => pushRoute(
               context,
               builder: (context) => const EditRuleScreen(rule: null),
@@ -153,14 +151,16 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
+    print(ruleData.toJson());
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.importRule != null
-              ? l(context).filterList_import
+              ? l(context).rule_import
               : widget.rule == null
-              ? l(context).filterList_new
-              : l(context).filterList_edit,
+              ? l(context).rule_new
+              : l(context).rule_edit,
         ),
       ),
       body: ListView(
@@ -168,7 +168,7 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
         children: [
           if (widget.rule != null && widget.importRule == null) ...[
             ListTileSwitch(
-              title: Text(l(context).filterList_activateFilter),
+              title: Text(l(context).rule_activate),
               value: ac.profile.rules[widget.rule] == true,
               onChanged: (value) {
                 ac.updateProfile(
@@ -190,6 +190,55 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
           ),
           Text('Trigger', style: Theme.of(context).textTheme.titleMedium),
           Text('Conditions', style: Theme.of(context).textTheme.titleMedium),
+          ruleData.condition == null
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Add a condition that needs to be satisfied for the rule to run.',
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              ruleData = ruleData.copyWith(
+                                condition: RuleCondition(and: []),
+                              );
+                            });
+                          },
+                          child: Text('AND'),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              ruleData = ruleData.copyWith(
+                                condition: RuleCondition(or: []),
+                              );
+                            });
+                          },
+                          child: Text('OR'),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              ruleData = ruleData.copyWith(
+                                condition: RuleCondition(field: ''),
+                              );
+                            });
+                          },
+                          child: Text('FIELD'),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : RuleConditionItem(ruleData.condition!, (newValue) {
+                  setState(() {
+                    ruleData = ruleData.copyWith(condition: newValue);
+                  });
+                }),
           Text('Actions', style: Theme.of(context).textTheme.titleMedium),
           Padding(
             padding: const EdgeInsets.only(top: 16),
@@ -227,7 +276,7 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
                   showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      title: Text(l(context).filterList_delete),
+                      title: Text(l(context).rule_delete),
                       content: Text(widget.rule!),
                       actions: <Widget>[
                         OutlinedButton(
@@ -248,11 +297,192 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
                     ),
                   );
                 },
-                label: Text(l(context).filterList_delete),
+                label: Text(l(context).rule_delete),
               ),
             ),
         ],
       ),
+    );
+  }
+}
+
+class RuleConditionItem extends StatelessWidget {
+  final RuleCondition condition;
+  final void Function(RuleCondition? newValue) onChange;
+
+  const RuleConditionItem(this.condition, this.onChange, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final fieldSegments = (condition.field ?? '').split('.');
+
+    List<Widget> widgets = [];
+
+    RuleField currentField = RuleFieldRoot();
+
+    for (var i = 0; i < fieldSegments.length; i++) {
+      if (currentField.subfields != null) {
+        widgets.add(
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                isSelected: condition.not == true,
+                color: condition.not == true ? Colors.red : null,
+                onPressed: () {
+                  onChange(
+                    condition.copyWith(
+                      not: condition.not == true ? null : true,
+                    ),
+                  );
+                },
+                icon: Icon(Symbols.swap_horiz_rounded),
+                tooltip: condition.not == true ? 'Uninvert' : 'Invert',
+              ),
+              IconButton(
+                onPressed: () {
+                  onChange(null);
+                },
+                icon: Icon(Symbols.close_rounded),
+                tooltip: 'Remove',
+              ),
+              DropdownMenu(
+                initialSelection: condition.and != null
+                    ? 'AND'
+                    : condition.or != null
+                    ? 'OR'
+                    : fieldSegments[i],
+                onSelected: (newValue) {
+                  if (newValue == 'AND') {
+                    onChange(
+                      RuleCondition(
+                        and: condition.and ?? condition.or ?? [],
+                        not: condition.not,
+                      ),
+                    );
+                  } else if (newValue == 'OR') {
+                    onChange(
+                      RuleCondition(
+                        or: condition.or ?? condition.and ?? [],
+                        not: condition.not,
+                      ),
+                    );
+                  } else {
+                    onChange(
+                      RuleCondition(
+                        field: [...fieldSegments.take(i), newValue].join('.'),
+                        not: condition.not,
+                      ),
+                    );
+                  }
+                },
+                dropdownMenuEntries: [
+                  if (i == 0) ...[
+                    DropdownMenuEntry(value: 'AND', label: 'AND'),
+                    DropdownMenuEntry(value: 'OR', label: 'OR'),
+                  ],
+                  ...currentField.subfields!.map(
+                    (subfield) => DropdownMenuEntry(
+                      value: subfield.id,
+                      label: subfield.getName(context),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+
+        // final nextField = currentField.getSubfield(fieldId);
+        // if (nextField == null) break;
+        // currentField = nextField;
+      }
+    }
+
+    if (condition.and != null || condition.or != null) {
+      final isAnd = condition.and != null;
+      final subConditions = (isAnd ? condition.and : condition.or)!;
+
+      widgets.add(
+        Container(
+          margin: EdgeInsets.only(left: 8),
+          padding: EdgeInsets.only(left: 8),
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: Colors.grey)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...subConditions
+                  .asMap()
+                  .map(
+                    (i, subCondition) => MapEntry(
+                      i,
+                      RuleConditionItem(subCondition, (newValue) {
+                        final newList = [...subConditions];
+                        if (newValue != null) {
+                          newList[i] = newValue;
+                        } else {
+                          newList.removeAt(i);
+                        }
+                        onChange(
+                          isAnd
+                              ? RuleCondition(and: newList, not: condition.not)
+                              : RuleCondition(or: newList, not: condition.not),
+                        );
+                      }),
+                    ),
+                  )
+                  .values,
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      final newList = [...subConditions];
+                      newList.add(RuleCondition(and: []));
+                      onChange(
+                        isAnd
+                            ? RuleCondition(and: newList, not: condition.not)
+                            : RuleCondition(or: newList, not: condition.not),
+                      );
+                    },
+                    child: Text('AND'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      final newList = [...subConditions];
+                      newList.add(RuleCondition(or: []));
+                      onChange(
+                        isAnd
+                            ? RuleCondition(and: newList, not: condition.not)
+                            : RuleCondition(or: newList, not: condition.not),
+                      );
+                    },
+                    child: Text('OR'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      final newList = [...subConditions];
+                      newList.add(RuleCondition(field: ''));
+                      onChange(
+                        isAnd
+                            ? RuleCondition(and: newList, not: condition.not)
+                            : RuleCondition(or: newList, not: condition.not),
+                      );
+                    },
+                    child: Text('FIELD'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
     );
   }
 }

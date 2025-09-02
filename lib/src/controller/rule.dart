@@ -18,19 +18,22 @@ enum RuleTrigger {
   pushNotificationReceived,
 }
 
-@freezed
-class RuleFieldOperator<T> with _$RuleFieldOperator {
-  const factory RuleFieldOperator({
-    required String id,
-    required String Function(BuildContext context) getName,
-    required bool Function(T field, T operand) compare,
-  }) = _RuleFieldOperator;
+class RuleFieldOperator<T> {
+  final String id;
+  final String Function(BuildContext context) getName;
+  final bool Function(T field, T operand) compare;
+
+  const RuleFieldOperator({
+    required this.id,
+    required this.getName,
+    required this.compare,
+  });
 }
 
 class RuleField<T> {
   String id;
   String Function(BuildContext context) getName;
-  T Function() getter;
+  T Function()? getter;
 
   /// Set of triggers field is accessible under. Defaults to all.
   List<RuleTrigger>? triggers;
@@ -44,112 +47,126 @@ class RuleField<T> {
   RuleField({
     required this.id,
     required this.getName,
-    required this.getter,
+    this.getter,
     this.triggers,
     this.subfields,
     this.operators,
   });
+
+  RuleField? getSubfield(String id) {
+    if (subfields == null) return null;
+
+    for (var subfield in subfields!) {
+      if (subfield.id == id) return subfield;
+    }
+
+    return null;
+  }
+
+  RuleFieldOperator? getOperator(String id) {
+    if (operators == null) return null;
+
+    for (var operator in operators!) {
+      if (operator.id == id) return operator;
+    }
+
+    return null;
+  }
 }
 
 class RuleFieldNumber extends RuleField<double> {
-  RuleFieldNumber({
-    required super.id,
-    required super.getName,
-    required super.getter,
-  }) : super(
-         operators: [
-           RuleFieldOperator(
-             id: 'equalTo',
-             getName: (context) => 'Equal to',
-             compare: (field, operand) => field == operand,
-           ),
-           RuleFieldOperator(
-             id: 'lessThan',
-             getName: (context) => 'Less than',
-             compare: (field, operand) => field < operand,
-           ),
-           RuleFieldOperator(
-             id: 'lessThanOrEqualTo',
-             getName: (context) => 'Less than or equal to',
-             compare: (field, operand) => field <= operand,
-           ),
-           RuleFieldOperator(
-             id: 'greaterThan',
-             getName: (context) => 'Greater than',
-             compare: (field, operand) => field > operand,
-           ),
-           RuleFieldOperator(
-             id: 'greaterThanOrEqualTo',
-             getName: (context) => 'Greater than or equal to',
-             compare: (field, operand) => field >= operand,
-           ),
-           RuleFieldOperator(
-             id: 'divisibleBy',
-             getName: (context) => 'Divisible by',
-             compare: (field, operand) => field % operand == 0,
-           ),
-         ],
-       );
+  RuleFieldNumber({required super.id, required super.getName, super.getter})
+    : super(
+        operators: [
+          RuleFieldOperator(
+            id: 'equalTo',
+            getName: (context) => 'Equal to',
+            compare: (field, operand) => field == operand,
+          ),
+          RuleFieldOperator(
+            id: 'lessThan',
+            getName: (context) => 'Less than',
+            compare: (field, operand) => field < operand,
+          ),
+          RuleFieldOperator(
+            id: 'lessThanOrEqualTo',
+            getName: (context) => 'Less than or equal to',
+            compare: (field, operand) => field <= operand,
+          ),
+          RuleFieldOperator(
+            id: 'greaterThan',
+            getName: (context) => 'Greater than',
+            compare: (field, operand) => field > operand,
+          ),
+          RuleFieldOperator(
+            id: 'greaterThanOrEqualTo',
+            getName: (context) => 'Greater than or equal to',
+            compare: (field, operand) => field >= operand,
+          ),
+          RuleFieldOperator(
+            id: 'divisibleBy',
+            getName: (context) => 'Divisible by',
+            compare: (field, operand) => field % operand == 0,
+          ),
+        ],
+      );
 }
 
 class RuleFieldText extends RuleField<String> {
-  RuleFieldText({
-    required super.id,
-    required super.getName,
-    required super.getter,
-  }) : super(
-         subfields: [
-           RuleFieldNumber(
-             id: 'charCount',
-             getName: (context) => 'Character count',
-             getter: () => getter().length.toDouble(),
-           ),
-           RuleFieldNumber(
-             id: 'wordCount',
-             getName: (context) => 'Word count',
-             getter: () =>
-                 RegExp(r'[\w-]+').allMatches(getter()).length.toDouble(),
-           ),
-           RuleFieldNumber(
-             id: 'lineCount',
-             getName: (context) => 'Line count',
-             getter: () =>
-                 getter()
-                     .trim()
-                     .split('\n')
-                     .where((line) => line.trim().isNotEmpty)
-                     .length +
-                 1,
-           ),
-         ],
-         operators: [
-           RuleFieldOperator(
-             id: 'equalTo',
-             getName: (context) => 'Equal to',
-             compare: (field, operand) => field == operand,
-           ),
-           RuleFieldOperator(
-             id: 'contains',
-             getName: (context) => 'Less than',
-             compare: (field, operand) => field.contains(operand),
-           ),
-           RuleFieldOperator(
-             id: 'startsWith',
-             getName: (context) => 'Starts with',
-             compare: (field, operand) => field.startsWith(operand),
-           ),
-           RuleFieldOperator(
-             id: 'endsWith',
-             getName: (context) => 'Ends with',
-             compare: (field, operand) => field.endsWith(operand),
-           ),
-           RuleFieldOperator(
-             id: 'matchesRegex',
-             getName: (context) => 'Matches RegEx',
-             compare: (field, operand) => RegExp(operand).hasMatch(field),
-           ),
-         ],
-       );
+  RuleFieldText({required super.id, required super.getName, super.getter})
+    : super(
+        subfields: [
+          RuleFieldNumber(
+            id: 'charCount',
+            getName: (context) => 'Character count',
+            getter: () => getter!().length.toDouble(),
+          ),
+          RuleFieldNumber(
+            id: 'wordCount',
+            getName: (context) => 'Word count',
+            getter: () =>
+                RegExp(r'[\w-]+').allMatches(getter!()).length.toDouble(),
+          ),
+          RuleFieldNumber(
+            id: 'lineCount',
+            getName: (context) => 'Line count',
+            getter: () =>
+                getter!()
+                    .trim()
+                    .split('\n')
+                    .where((line) => line.trim().isNotEmpty)
+                    .length +
+                1,
+          ),
+        ],
+        operators: [
+          RuleFieldOperator(
+            id: 'equalTo',
+            getName: (context) => 'Equal to',
+            compare: (field, operand) => field == operand,
+          ),
+          RuleFieldOperator(
+            id: 'contains',
+            getName: (context) => 'Less than',
+            compare: (field, operand) => field.contains(operand),
+          ),
+          RuleFieldOperator(
+            id: 'startsWith',
+            getName: (context) => 'Starts with',
+            compare: (field, operand) => field.startsWith(operand),
+          ),
+          RuleFieldOperator(
+            id: 'endsWith',
+            getName: (context) => 'Ends with',
+            compare: (field, operand) => field.endsWith(operand),
+          ),
+          RuleFieldOperator(
+            id: 'matchesRegex',
+            getName: (context) => 'Matches RegEx',
+            compare: (field, operand) => RegExp(operand).hasMatch(field),
+          ),
+        ],
+      );
 }
 
 @freezed
@@ -161,7 +178,7 @@ class RuleFieldRootContext with _$RuleFieldRootContext {
 }
 
 class RuleFieldRoot extends RuleField<RuleFieldRootContext> {
-  RuleFieldRoot({required super.getter})
+  RuleFieldRoot({super.getter})
     : super(
         id: '',
         getName: (context) => '',
@@ -169,22 +186,22 @@ class RuleFieldRoot extends RuleField<RuleFieldRootContext> {
           RuleFieldText(
             id: 'body',
             getName: (context) => 'Body',
-            getter: () => getter().post.body ?? '',
+            getter: () => getter!().post.body ?? '',
           ),
           RuleFieldNumber(
             id: 'upvotes',
             getName: (context) => 'Upvotes',
-            getter: () => getter().post.upvotes?.toDouble() ?? 0,
+            getter: () => getter!().post.upvotes?.toDouble() ?? 0,
           ),
           RuleField<UserModel>(
             id: 'user',
             getName: (context) => 'User',
-            getter: () => getter().user,
+            getter: () => getter!().user,
             subfields: [
               RuleFieldText(
                 id: 'name',
                 getName: (context) => 'Name',
-                getter: () => getter().user.name,
+                getter: () => getter!().user.name,
               ),
             ],
           ),
@@ -255,15 +272,15 @@ class RuleCondition with _$RuleCondition {
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory RuleCondition({
-    required bool? not,
+    bool? not,
 
-    required List<RuleCondition>? and,
+    List<RuleCondition>? and,
 
-    required List<RuleCondition>? or,
+    List<RuleCondition>? or,
 
-    required String? field,
-    required String? operator,
-    required Object? operand,
+    String? field,
+    String? operator,
+    Object? operand,
   }) = _RuleCondition;
 
   factory RuleCondition.fromJson(JsonMap json) => _$RuleConditionFromJson(json);
@@ -279,6 +296,7 @@ class Rule with _$Rule {
   const factory Rule({
     required RuleTrigger trigger,
     required RuleCondition? condition,
+    required List<dynamic> actions,
   }) = _Rule;
 
   factory Rule.fromJson(JsonMap json) => _$RuleFromJson(json);
@@ -286,6 +304,7 @@ class Rule with _$Rule {
   static const nullRule = Rule(
     trigger: RuleTrigger.postOrCommentEncountered,
     condition: null,
+    actions: [],
   );
 }
 
@@ -319,7 +338,8 @@ RuleContentModifier rulePostOrCommentEncountered(
 ) {
   final ac = context.read<AppController>();
 
-  RuleContentModifier modifier;
+  RuleContentModifier modifier = RuleContentModifier();
+  return modifier;
   final ruleActivations = ac.profile.rules;
 
   for (var ruleEntry in ac.rules.entries) {

@@ -70,8 +70,8 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Symbols.filter_1_rounded),
-            title: Text(l(context).filterLists),
+            leading: const Icon(Symbols.search_gear_rounded),
+            title: Text(l(context).rules),
             onTap: () =>
                 pushRoute(context, builder: (context) => const RulesScreen()),
           ),
