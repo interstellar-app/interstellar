@@ -53,8 +53,8 @@ class RuleField<T> {
     this.operators,
   });
 
-  RuleField? getSubfield(String id) {
-    if (subfields == null) return null;
+  RuleField? getSubfield(String? id) {
+    if (id == null || subfields == null) return null;
 
     for (var subfield in subfields!) {
       if (subfield.id == id) return subfield;

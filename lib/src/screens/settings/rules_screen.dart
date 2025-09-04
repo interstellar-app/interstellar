@@ -314,175 +314,192 @@ class RuleConditionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fieldSegments = (condition.field ?? '').split('.');
+    final fieldSegments = (condition.field ?? '').isEmpty
+        ? []
+        : condition.field!.split('.');
 
-    List<Widget> widgets = [];
+    List<Widget> dropdownWidgets = [];
 
-    RuleField currentField = RuleFieldRoot();
+    RuleField? currentField = RuleFieldRoot();
+    int fieldSegmentIndex = 0;
 
-    for (var i = 0; i < fieldSegments.length; i++) {
+    while (currentField != null) {
+      print(fieldSegmentIndex);
+      print(fieldSegments.take(fieldSegmentIndex).toList());
+      print(currentField.subfields);
+
       if (currentField.subfields != null) {
-        widgets.add(
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                isSelected: condition.not == true,
-                color: condition.not == true ? Colors.red : null,
-                onPressed: () {
-                  onChange(
-                    condition.copyWith(
-                      not: condition.not == true ? null : true,
-                    ),
-                  );
-                },
-                icon: Icon(Symbols.swap_horiz_rounded),
-                tooltip: condition.not == true ? 'Uninvert' : 'Invert',
-              ),
-              IconButton(
-                onPressed: () {
-                  onChange(null);
-                },
-                icon: Icon(Symbols.close_rounded),
-                tooltip: 'Remove',
-              ),
-              DropdownMenu(
-                initialSelection: condition.and != null
-                    ? 'AND'
-                    : condition.or != null
-                    ? 'OR'
-                    : fieldSegments[i],
-                onSelected: (newValue) {
-                  if (newValue == 'AND') {
-                    onChange(
-                      RuleCondition(
-                        and: condition.and ?? condition.or ?? [],
-                        not: condition.not,
-                      ),
-                    );
-                  } else if (newValue == 'OR') {
-                    onChange(
-                      RuleCondition(
-                        or: condition.or ?? condition.and ?? [],
-                        not: condition.not,
-                      ),
-                    );
-                  } else {
-                    onChange(
-                      RuleCondition(
-                        field: [...fieldSegments.take(i), newValue].join('.'),
-                        not: condition.not,
-                      ),
-                    );
-                  }
-                },
-                dropdownMenuEntries: [
-                  if (i == 0) ...[
-                    DropdownMenuEntry(value: 'AND', label: 'AND'),
-                    DropdownMenuEntry(value: 'OR', label: 'OR'),
-                  ],
-                  ...currentField.subfields!.map(
-                    (subfield) => DropdownMenuEntry(
-                      value: subfield.id,
-                      label: subfield.getName(context),
-                    ),
+        final parentFieldSegments = fieldSegments.take(fieldSegmentIndex);
+
+        dropdownWidgets.add(
+          DropdownMenu(
+            initialSelection: condition.and != null
+                ? 'AND'
+                : condition.or != null
+                ? 'OR'
+                : fieldSegments.elementAtOrNull(fieldSegmentIndex),
+            onSelected: (newValue) {
+              if (newValue == 'AND') {
+                onChange(
+                  RuleCondition(
+                    and: condition.and ?? condition.or ?? [],
+                    not: condition.not,
                   ),
-                ],
+                );
+              } else if (newValue == 'OR') {
+                onChange(
+                  RuleCondition(
+                    or: condition.or ?? condition.and ?? [],
+                    not: condition.not,
+                  ),
+                );
+              } else {
+                onChange(
+                  RuleCondition(
+                    field: [...parentFieldSegments, newValue].join('.'),
+                    not: condition.not,
+                  ),
+                );
+              }
+            },
+            dropdownMenuEntries: [
+              if (fieldSegmentIndex == 0) ...[
+                DropdownMenuEntry(value: 'AND', label: 'AND'),
+                DropdownMenuEntry(value: 'OR', label: 'OR'),
+              ],
+              ...currentField.subfields!.map(
+                (subfield) => DropdownMenuEntry(
+                  value: subfield.id,
+                  label: subfield.getName(context),
+                ),
               ),
             ],
           ),
         );
-
-        // final nextField = currentField.getSubfield(fieldId);
-        // if (nextField == null) break;
-        // currentField = nextField;
       }
+
+      currentField = currentField.getSubfield(
+        fieldSegments.elementAtOrNull(fieldSegmentIndex),
+      );
+      fieldSegmentIndex++;
     }
+
+    final mainWidget = Row(
+      children: [
+        IconButton(
+          isSelected: condition.not == true,
+          color: condition.not == true ? Colors.red : null,
+          onPressed: () {
+            onChange(
+              condition.copyWith(not: condition.not == true ? null : true),
+            );
+          },
+          icon: Icon(Symbols.swap_horiz_rounded),
+          tooltip: condition.not == true ? 'Uninvert' : 'Invert',
+        ),
+        IconButton(
+          onPressed: () {
+            onChange(null);
+          },
+          icon: Icon(Symbols.close_rounded),
+          tooltip: 'Remove',
+        ),
+        ...dropdownWidgets,
+      ],
+    );
 
     if (condition.and != null || condition.or != null) {
       final isAnd = condition.and != null;
       final subConditions = (isAnd ? condition.and : condition.or)!;
 
-      widgets.add(
-        Container(
-          margin: EdgeInsets.only(left: 8),
-          padding: EdgeInsets.only(left: 8),
-          decoration: BoxDecoration(
-            border: Border(left: BorderSide(color: Colors.grey)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...subConditions
-                  .asMap()
-                  .map(
-                    (i, subCondition) => MapEntry(
-                      i,
-                      RuleConditionItem(subCondition, (newValue) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          mainWidget,
+          Container(
+            margin: EdgeInsets.only(left: 8),
+            padding: EdgeInsets.only(left: 8),
+            decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: Colors.grey)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...subConditions
+                    .asMap()
+                    .map(
+                      (i, subCondition) => MapEntry(
+                        i,
+                        RuleConditionItem(subCondition, (newValue) {
+                          final newList = [...subConditions];
+                          if (newValue != null) {
+                            newList[i] = newValue;
+                          } else {
+                            newList.removeAt(i);
+                          }
+                          onChange(
+                            isAnd
+                                ? RuleCondition(
+                                    and: newList,
+                                    not: condition.not,
+                                  )
+                                : RuleCondition(
+                                    or: newList,
+                                    not: condition.not,
+                                  ),
+                          );
+                        }),
+                      ),
+                    )
+                    .values,
+                Row(
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
                         final newList = [...subConditions];
-                        if (newValue != null) {
-                          newList[i] = newValue;
-                        } else {
-                          newList.removeAt(i);
-                        }
+                        newList.add(RuleCondition(and: []));
                         onChange(
                           isAnd
                               ? RuleCondition(and: newList, not: condition.not)
                               : RuleCondition(or: newList, not: condition.not),
                         );
-                      }),
+                      },
+                      child: Text('AND'),
                     ),
-                  )
-                  .values,
-              Row(
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      final newList = [...subConditions];
-                      newList.add(RuleCondition(and: []));
-                      onChange(
-                        isAnd
-                            ? RuleCondition(and: newList, not: condition.not)
-                            : RuleCondition(or: newList, not: condition.not),
-                      );
-                    },
-                    child: Text('AND'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      final newList = [...subConditions];
-                      newList.add(RuleCondition(or: []));
-                      onChange(
-                        isAnd
-                            ? RuleCondition(and: newList, not: condition.not)
-                            : RuleCondition(or: newList, not: condition.not),
-                      );
-                    },
-                    child: Text('OR'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      final newList = [...subConditions];
-                      newList.add(RuleCondition(field: ''));
-                      onChange(
-                        isAnd
-                            ? RuleCondition(and: newList, not: condition.not)
-                            : RuleCondition(or: newList, not: condition.not),
-                      );
-                    },
-                    child: Text('FIELD'),
-                  ),
-                ],
-              ),
-            ],
+                    OutlinedButton(
+                      onPressed: () {
+                        final newList = [...subConditions];
+                        newList.add(RuleCondition(or: []));
+                        onChange(
+                          isAnd
+                              ? RuleCondition(and: newList, not: condition.not)
+                              : RuleCondition(or: newList, not: condition.not),
+                        );
+                      },
+                      child: Text('OR'),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        final newList = [...subConditions];
+                        newList.add(RuleCondition(field: ''));
+                        onChange(
+                          isAnd
+                              ? RuleCondition(and: newList, not: condition.not)
+                              : RuleCondition(or: newList, not: condition.not),
+                        );
+                      },
+                      child: Text('FIELD'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
-    );
+    return mainWidget;
   }
 }
