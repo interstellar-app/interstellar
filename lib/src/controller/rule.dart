@@ -80,32 +80,32 @@ class RuleFieldNumber extends RuleField<double> {
         operators: [
           RuleFieldOperator(
             id: 'equalTo',
-            getName: (context) => 'Equal to',
+            getName: (context) => 'equal to',
             compare: (field, operand) => field == operand,
           ),
           RuleFieldOperator(
             id: 'lessThan',
-            getName: (context) => 'Less than',
+            getName: (context) => 'less than',
             compare: (field, operand) => field < operand,
           ),
           RuleFieldOperator(
             id: 'lessThanOrEqualTo',
-            getName: (context) => 'Less than or equal to',
+            getName: (context) => 'less than or equal to',
             compare: (field, operand) => field <= operand,
           ),
           RuleFieldOperator(
             id: 'greaterThan',
-            getName: (context) => 'Greater than',
+            getName: (context) => 'greater than',
             compare: (field, operand) => field > operand,
           ),
           RuleFieldOperator(
             id: 'greaterThanOrEqualTo',
-            getName: (context) => 'Greater than or equal to',
+            getName: (context) => 'greater than or equal to',
             compare: (field, operand) => field >= operand,
           ),
           RuleFieldOperator(
             id: 'divisibleBy',
-            getName: (context) => 'Divisible by',
+            getName: (context) => 'divisible by',
             compare: (field, operand) => field % operand == 0,
           ),
         ],
@@ -142,27 +142,27 @@ class RuleFieldText extends RuleField<String> {
         operators: [
           RuleFieldOperator(
             id: 'equalTo',
-            getName: (context) => 'Equal to',
+            getName: (context) => 'equal to',
             compare: (field, operand) => field == operand,
           ),
           RuleFieldOperator(
             id: 'contains',
-            getName: (context) => 'Less than',
+            getName: (context) => 'contains',
             compare: (field, operand) => field.contains(operand),
           ),
           RuleFieldOperator(
             id: 'startsWith',
-            getName: (context) => 'Starts with',
+            getName: (context) => 'starts with',
             compare: (field, operand) => field.startsWith(operand),
           ),
           RuleFieldOperator(
             id: 'endsWith',
-            getName: (context) => 'Ends with',
+            getName: (context) => 'ends with',
             compare: (field, operand) => field.endsWith(operand),
           ),
           RuleFieldOperator(
             id: 'matchesRegex',
-            getName: (context) => 'Matches RegEx',
+            getName: (context) => 'matches regex',
             compare: (field, operand) => RegExp(operand).hasMatch(field),
           ),
         ],
@@ -272,7 +272,7 @@ class RuleCondition with _$RuleCondition {
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory RuleCondition({
-    bool? not,
+    bool? invert,
 
     List<RuleCondition>? and,
 
@@ -378,5 +378,5 @@ bool evaluateCondition(RuleCondition? condition) {
     final fieldSegments = condition.field!.split('.');
   }
 
-  return condition.not == true ? !output : output;
+  return condition.invert == true ? !output : output;
 }

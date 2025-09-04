@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/rule.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -200,7 +197,7 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        OutlinedButton(
+                        FilledButton(
                           onPressed: () {
                             setState(() {
                               ruleData = ruleData.copyWith(
@@ -208,9 +205,9 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
                               );
                             });
                           },
-                          child: Text('AND'),
+                          child: Text('All of'),
                         ),
-                        OutlinedButton(
+                        FilledButton(
                           onPressed: () {
                             setState(() {
                               ruleData = ruleData.copyWith(
@@ -218,7 +215,7 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
                               );
                             });
                           },
-                          child: Text('OR'),
+                          child: Text('Any of'),
                         ),
                         OutlinedButton(
                           onPressed: () {
@@ -228,7 +225,7 @@ class _EditRuleScreenState extends State<EditRuleScreen> {
                               );
                             });
                           },
-                          child: Text('FIELD'),
+                          child: Text('Single field'),
                         ),
                       ],
                     ),
@@ -320,50 +317,46 @@ class RuleConditionItem extends StatelessWidget {
 
     List<Widget> dropdownWidgets = [];
 
-    RuleField? currentField = RuleFieldRoot();
-    int fieldSegmentIndex = 0;
+    RuleField currentField = RuleFieldRoot();
 
-    while (currentField != null) {
-      print(fieldSegmentIndex);
-      print(fieldSegments.take(fieldSegmentIndex).toList());
-      print(currentField.subfields);
-
+    for (var i = 0; i < fieldSegments.length + 1; i++) {
       if (currentField.subfields != null) {
-        final parentFieldSegments = fieldSegments.take(fieldSegmentIndex);
+        final parentFieldSegments = fieldSegments.take(i);
 
         dropdownWidgets.add(
           DropdownMenu(
+            label: i == 0 ? Text('Field') : null,
             initialSelection: condition.and != null
                 ? 'AND'
                 : condition.or != null
                 ? 'OR'
-                : fieldSegments.elementAtOrNull(fieldSegmentIndex),
+                : fieldSegments.elementAtOrNull(i),
             onSelected: (newValue) {
               if (newValue == 'AND') {
                 onChange(
                   RuleCondition(
                     and: condition.and ?? condition.or ?? [],
-                    not: condition.not,
+                    invert: condition.invert,
                   ),
                 );
               } else if (newValue == 'OR') {
                 onChange(
                   RuleCondition(
                     or: condition.or ?? condition.and ?? [],
-                    not: condition.not,
+                    invert: condition.invert,
                   ),
                 );
               } else {
                 onChange(
                   RuleCondition(
                     field: [...parentFieldSegments, newValue].join('.'),
-                    not: condition.not,
+                    invert: condition.invert,
                   ),
                 );
               }
             },
             dropdownMenuEntries: [
-              if (fieldSegmentIndex == 0) ...[
+              if (i == 0) ...[
                 DropdownMenuEntry(value: 'AND', label: 'AND'),
                 DropdownMenuEntry(value: 'OR', label: 'OR'),
               ],
@@ -376,26 +369,28 @@ class RuleConditionItem extends StatelessWidget {
             ],
           ),
         );
-      }
 
-      currentField = currentField.getSubfield(
-        fieldSegments.elementAtOrNull(fieldSegmentIndex),
-      );
-      fieldSegmentIndex++;
+        final nextField = currentField.getSubfield(
+          fieldSegments.elementAtOrNull(i),
+        );
+        if (nextField != null) currentField = nextField;
+      }
     }
 
     final mainWidget = Row(
       children: [
         IconButton(
-          isSelected: condition.not == true,
-          color: condition.not == true ? Colors.red : null,
+          isSelected: condition.invert == true,
+          color: condition.invert == true ? Colors.red : null,
           onPressed: () {
             onChange(
-              condition.copyWith(not: condition.not == true ? null : true),
+              condition.copyWith(
+                invert: condition.invert == true ? null : true,
+              ),
             );
           },
           icon: Icon(Symbols.swap_horiz_rounded),
-          tooltip: condition.not == true ? 'Uninvert' : 'Invert',
+          tooltip: condition.invert == true ? 'Uninvert' : 'Invert',
         ),
         IconButton(
           onPressed: () {
@@ -405,6 +400,92 @@ class RuleConditionItem extends StatelessWidget {
           tooltip: 'Remove',
         ),
         ...dropdownWidgets,
+        if (currentField.operators != null) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: DropdownMenu(
+              label: Text('Operator'),
+              initialSelection: condition.operator,
+              onSelected: (newValue) {
+                onChange(
+                  RuleCondition(
+                    field: condition.field,
+                    invert: condition.invert,
+                    operator: newValue,
+                  ),
+                );
+              },
+              dropdownMenuEntries: [
+                ...currentField.operators!.map(
+                  (operator) => DropdownMenuEntry(
+                    value: operator.id,
+                    label: operator.getName(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          switch (currentField) {
+            RuleField<String>() => SizedBox(
+              width: 200,
+              child: TextFormField(
+                initialValue: condition.operand is String
+                    ? condition.operand as String
+                    : '',
+                onChanged: (newValue) {
+                  onChange(
+                    RuleCondition(
+                      field: condition.field,
+                      invert: condition.invert,
+                      operator: condition.operator,
+                      operand: newValue,
+                    ),
+                  );
+                },
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  label: Text('Value'),
+                ),
+              ),
+            ),
+            RuleField<double>() => SizedBox(
+              width: 200,
+              child: TextFormField(
+                initialValue: condition.operand is double
+                    ? (condition.operand as double).toString()
+                    : '0',
+                onChanged: (newValue) {
+                  final parsedValue = double.tryParse(newValue);
+
+                  if (parsedValue != null) {
+                    onChange(
+                      RuleCondition(
+                        field: condition.field,
+                        invert: condition.invert,
+                        operator: condition.operator,
+                        operand: parsedValue,
+                      ),
+                    );
+                  }
+                },
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  label: Text('Value'),
+                ),
+                keyboardType: TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
+                validator: (value) =>
+                    value == null || double.tryParse(value) != null
+                    ? null
+                    : 'Invalid number',
+                autovalidateMode: AutovalidateMode.always,
+              ),
+            ),
+            _ => Text('INVALID OPERAND TYPE'),
+          },
+        ],
       ],
     );
 
@@ -418,8 +499,8 @@ class RuleConditionItem extends StatelessWidget {
         children: [
           mainWidget,
           Container(
-            margin: EdgeInsets.only(left: 8),
-            padding: EdgeInsets.only(left: 8),
+            margin: EdgeInsets.only(left: 12, bottom: 8),
+            padding: EdgeInsets.only(left: 12),
             decoration: BoxDecoration(
               border: Border(left: BorderSide(color: Colors.grey)),
             ),
@@ -442,56 +523,37 @@ class RuleConditionItem extends StatelessWidget {
                             isAnd
                                 ? RuleCondition(
                                     and: newList,
-                                    not: condition.not,
+                                    invert: condition.invert,
                                   )
                                 : RuleCondition(
                                     or: newList,
-                                    not: condition.not,
+                                    invert: condition.invert,
                                   ),
                           );
                         }),
                       ),
                     )
                     .values,
-                Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        final newList = [...subConditions];
-                        newList.add(RuleCondition(and: []));
-                        onChange(
-                          isAnd
-                              ? RuleCondition(and: newList, not: condition.not)
-                              : RuleCondition(or: newList, not: condition.not),
-                        );
-                      },
-                      child: Text('AND'),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        final newList = [...subConditions];
-                        newList.add(RuleCondition(or: []));
-                        onChange(
-                          isAnd
-                              ? RuleCondition(and: newList, not: condition.not)
-                              : RuleCondition(or: newList, not: condition.not),
-                        );
-                      },
-                      child: Text('OR'),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        final newList = [...subConditions];
-                        newList.add(RuleCondition(field: ''));
-                        onChange(
-                          isAnd
-                              ? RuleCondition(and: newList, not: condition.not)
-                              : RuleCondition(or: newList, not: condition.not),
-                        );
-                      },
-                      child: Text('FIELD'),
-                    ),
-                  ],
+                OutlinedButton.icon(
+                  onPressed: () {
+                    final newList = [
+                      ...subConditions,
+                      RuleCondition(field: ''),
+                    ];
+                    onChange(
+                      isAnd
+                          ? RuleCondition(
+                              and: newList,
+                              invert: condition.invert,
+                            )
+                          : RuleCondition(
+                              or: newList,
+                              invert: condition.invert,
+                            ),
+                    );
+                  },
+                  label: Text('New field'),
+                  icon: Icon(Symbols.add_rounded),
                 ),
               ],
             ),
