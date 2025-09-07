@@ -12,6 +12,9 @@ Interstellar supports Android, Linux, and Windows, with more to come.
 
 Available for Arch Linux via the AUR: [interstellar-bin](https://aur.archlinux.org/packages/interstellar-bin).
 
+Available for NixOS in `nixos-unstable`: [interstellar](https://search.nixos.org/packages?channel=unstable&show=interstellar&query=interstellar)
+
+
 See the [latest release](https://github.com/interstellar-app/interstellar/releases/latest) for more downloads (.APK, .AppImage, .exe, etc.).
 
 ## Discussion
