@@ -1116,5 +1116,17 @@
     "errorPage_caughtUp": "Ви все переглянули.\nЗавантажити старіші записи?",
     "@errorPage_caughtUp": {},
     "exitMessage": "Натисніть кнопку НАЗАД ще раз, щоб вийти.",
-    "@exitMessage": {}
+    "@exitMessage": {},
+    "replying_toX": "Відповідь на {user}",
+    "@replying_toX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_inlineReplies": "Відповісти в тексті",
+    "@settings_inlineReplies": {},
+    "settings_defaultDownloadDir": "Каталог завантажень за замовчуванням",
+    "@settings_defaultDownloadDir": {}
 }
