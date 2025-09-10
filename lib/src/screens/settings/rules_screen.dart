@@ -377,116 +377,119 @@ class RuleConditionItem extends StatelessWidget {
       }
     }
 
-    final mainWidget = Row(
-      children: [
-        IconButton(
-          isSelected: condition.invert == true,
-          color: condition.invert == true ? Colors.red : null,
-          onPressed: () {
-            onChange(
-              condition.copyWith(
-                invert: condition.invert == true ? null : true,
-              ),
-            );
-          },
-          icon: Icon(Symbols.swap_horiz_rounded),
-          tooltip: condition.invert == true ? 'Uninvert' : 'Invert',
-        ),
-        IconButton(
-          onPressed: () {
-            onChange(null);
-          },
-          icon: Icon(Symbols.close_rounded),
-          tooltip: 'Remove',
-        ),
-        ...dropdownWidgets,
-        if (currentField.operators != null) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: DropdownMenu(
-              label: Text('Operator'),
-              initialSelection: condition.operator,
-              onSelected: (newValue) {
-                onChange(
-                  RuleCondition(
-                    field: condition.field,
-                    invert: condition.invert,
-                    operator: newValue,
-                  ),
-                );
-              },
-              dropdownMenuEntries: [
-                ...currentField.operators!.map(
-                  (operator) => DropdownMenuEntry(
-                    value: operator.id,
-                    label: operator.getName(context),
-                  ),
+    final mainWidget = Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          IconButton(
+            isSelected: condition.invert == true,
+            color: condition.invert == true ? Colors.red : null,
+            onPressed: () {
+              onChange(
+                condition.copyWith(
+                  invert: condition.invert == true ? null : true,
                 ),
-              ],
-            ),
+              );
+            },
+            icon: Icon(Symbols.swap_horiz_rounded),
+            tooltip: condition.invert == true ? 'Uninvert' : 'Invert',
           ),
-          switch (currentField) {
-            RuleField<String>() => SizedBox(
-              width: 200,
-              child: TextFormField(
-                initialValue: condition.operand is String
-                    ? condition.operand as String
-                    : '',
-                onChanged: (newValue) {
+          IconButton(
+            onPressed: () {
+              onChange(null);
+            },
+            icon: Icon(Symbols.close_rounded),
+            tooltip: 'Remove',
+          ),
+          ...dropdownWidgets,
+          if (currentField.operators != null) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: DropdownMenu(
+                label: Text('Operator'),
+                initialSelection: condition.operator,
+                onSelected: (newValue) {
                   onChange(
                     RuleCondition(
                       field: condition.field,
                       invert: condition.invert,
-                      operator: condition.operator,
-                      operand: newValue,
+                      operator: newValue,
                     ),
                   );
                 },
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  label: Text('Value'),
-                ),
+                dropdownMenuEntries: [
+                  ...currentField.operators!.map(
+                    (operator) => DropdownMenuEntry(
+                      value: operator.id,
+                      label: operator.getName(context),
+                    ),
+                  ),
+                ],
               ),
             ),
-            RuleField<double>() => SizedBox(
-              width: 200,
-              child: TextFormField(
-                initialValue: condition.operand is double
-                    ? (condition.operand as double).toString()
-                    : '0',
-                onChanged: (newValue) {
-                  final parsedValue = double.tryParse(newValue);
-
-                  if (parsedValue != null) {
+            switch (currentField) {
+              RuleField<String>() => SizedBox(
+                width: 200,
+                child: TextFormField(
+                  initialValue: condition.operand is String
+                      ? condition.operand as String
+                      : '',
+                  onChanged: (newValue) {
                     onChange(
                       RuleCondition(
                         field: condition.field,
                         invert: condition.invert,
                         operator: condition.operator,
-                        operand: parsedValue,
+                        operand: newValue,
                       ),
                     );
-                  }
-                },
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  label: Text('Value'),
+                  },
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    label: Text('Value'),
+                  ),
                 ),
-                keyboardType: TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-                validator: (value) =>
-                    value == null || double.tryParse(value) != null
-                    ? null
-                    : 'Invalid number',
-                autovalidateMode: AutovalidateMode.always,
               ),
-            ),
-            _ => Text('INVALID OPERAND TYPE'),
-          },
+              RuleField<double>() => SizedBox(
+                width: 200,
+                child: TextFormField(
+                  initialValue: condition.operand is double
+                      ? (condition.operand as double).toString()
+                      : '0',
+                  onChanged: (newValue) {
+                    final parsedValue = double.tryParse(newValue);
+
+                    if (parsedValue != null) {
+                      onChange(
+                        RuleCondition(
+                          field: condition.field,
+                          invert: condition.invert,
+                          operator: condition.operator,
+                          operand: parsedValue,
+                        ),
+                      );
+                    }
+                  },
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    label: Text('Value'),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  validator: (value) =>
+                      value == null || double.tryParse(value) != null
+                      ? null
+                      : 'Invalid number',
+                  autovalidateMode: AutovalidateMode.always,
+                ),
+              ),
+              _ => Text('INVALID OPERAND TYPE'),
+            },
+          ],
         ],
-      ],
+      ),
     );
 
     if (condition.and != null || condition.or != null) {
@@ -534,26 +537,29 @@ class RuleConditionItem extends StatelessWidget {
                       ),
                     )
                     .values,
-                OutlinedButton.icon(
-                  onPressed: () {
-                    final newList = [
-                      ...subConditions,
-                      RuleCondition(field: ''),
-                    ];
-                    onChange(
-                      isAnd
-                          ? RuleCondition(
-                              and: newList,
-                              invert: condition.invert,
-                            )
-                          : RuleCondition(
-                              or: newList,
-                              invert: condition.invert,
-                            ),
-                    );
-                  },
-                  label: Text('New field'),
-                  icon: Icon(Symbols.add_rounded),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      final newList = [
+                        ...subConditions,
+                        RuleCondition(field: ''),
+                      ];
+                      onChange(
+                        isAnd
+                            ? RuleCondition(
+                                and: newList,
+                                invert: condition.invert,
+                              )
+                            : RuleCondition(
+                                or: newList,
+                                invert: condition.invert,
+                              ),
+                      );
+                    },
+                    label: Text('New field'),
+                    icon: Icon(Symbols.add_rounded),
+                  ),
                 ),
               ],
             ),
