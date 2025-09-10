@@ -7,10 +7,13 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
+
+import '../../controller/server.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({
@@ -52,23 +55,22 @@ class _PostPageState extends State<PostPage> {
   void _initData() async {
     if (widget.initData != null) {
       _data = widget.initData!;
-    } else if (widget.postType != null && widget.postId != null) {
-      final newPost = await switch (widget.postType!) {
+    }
+    if (widget.postType != null && widget.postId != null || _data != null || _data != null && context.read<AppController>().serverSoftware != ServerSoftware.mbin) {
+      final newPost = await switch (widget.postType?? _data!.type) {
         PostType.thread => context.read<AppController>().api.threads.get(
-          widget.postId!,
+          widget.postId?? _data!.id,
         ),
         PostType.microblog => context.read<AppController>().api.microblogs.get(
-          widget.postId!,
+          widget.postId?? _data!.id,
         ),
       };
       setState(() {
         _data = newPost;
       });
-    } else {
+    } else if (_data == null) {
       throw Exception('Post data was uninitialized');
     }
-
-    _pagingController.addPageRequestListener(_fetchPage);
 
     if (!mounted) return;
     _onUpdate(
@@ -82,41 +84,6 @@ class _PostPageState extends State<PostPage> {
       _data = newValue;
     });
     widget.onUpdate?.call(newValue);
-  }
-
-  Future<void> _fetchPage(String pageKey) async {
-    try {
-      final newPage = await context.read<AppController>().api.comments.list(
-        _data!.type,
-        _data!.id,
-        page: nullIfEmpty(pageKey),
-        sort: commentSort,
-        usePreferredLangs: whenLoggedIn(
-          context,
-          context.read<AppController>().profile.useAccountLanguageFilter,
-        ),
-        langs: context
-            .read<AppController>()
-            .profile
-            .customLanguageFilter
-            .toList(),
-      );
-
-      // Check BuildContext
-      if (!mounted) return;
-
-      // Prevent duplicates
-      final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems = newPage.items
-          .where((e) => !currentItemIds.contains(e.id))
-          .toList();
-
-      _pagingController.appendPage(newItems, newPage.nextPage);
-    } catch (error) {
-      if (!mounted) return;
-      context.read<AppController>().logger.e(error);
-      _pagingController.error = error;
-    }
   }
 
   @override
@@ -240,39 +207,45 @@ class _PostPageState extends State<PostPage> {
                 userCanModerate: widget.userCanModerate,
               ),
             ),
-            PagedSliverList(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<CommentModel>(
-                firstPageErrorIndicatorBuilder: (context) =>
-                    FirstPageErrorIndicator(
-                      error: _pagingController.error,
-                      onTryAgain: _pagingController.retryLastFailedRequest,
+            if (_data != null && _data!.crossPosts.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ElevatedButton(
+                    onPressed: () => ContextMenu(
+                      items: _data!.crossPosts.map((crossPost) => ContextMenuItem(
+                        title: crossPost.community.name,
+                        onTap: () => pushRoute(
+                            context,
+                            builder: (context) => PostPage(
+                              postType: PostType.thread,
+                              postId: crossPost.id,
+                              initData: crossPost,
+                            )
+                        )
+                      )).toList()
+                    ).openMenu(context),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text('${_data?.crossPosts.length?? 0} cross post${_data?.crossPosts.length == 1 ? '' : 's'}'),
                     ),
-                newPageErrorIndicatorBuilder: (context) =>
-                    NewPageErrorIndicator(
-                      error: _pagingController.error,
-                      onTryAgain: _pagingController.retryLastFailedRequest,
-                    ),
-                itemBuilder: (context, item, index) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
                   ),
-                  child: PostComment(
-                    item,
-                    (newValue) {
-                      var newList = _pagingController.itemList;
-                      newList![index] = newValue;
-                      setState(() {
-                        _pagingController.itemList = newList;
-                      });
-                    },
-                    opUserId: post.user.id,
-                    userCanModerate: widget.userCanModerate,
+                )
+              ),
+            if (_data != null)
+              CommentSection(id: _data!.id, postType: _data!.type, sort: commentSort, opUserId: _data!.id),
+            ...?_data?.crossPosts.map((post) => SliverMainAxisGroup(slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    post.community.name,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
               ),
-            ),
+              CommentSection(id: post.id, postType: post.type, sort: commentSort, opUserId: post.user.id)
+            ]))
           ],
         ),
       ),
@@ -284,4 +257,108 @@ class _PostPageState extends State<PostPage> {
     _pagingController.dispose();
     super.dispose();
   }
+}
+
+class CommentSection extends StatefulWidget {
+  const CommentSection({
+    super.key,
+    required this.id,
+    required this.postType,
+    required this.sort,
+    required this.opUserId,
+    this.canModerate = false,
+  });
+
+  final int id;
+  final PostType postType;
+  final CommentSort sort;
+  final int opUserId;
+  final bool canModerate;
+
+  @override
+  State<CommentSection> createState() => _CommentSectionState();
+}
+
+class _CommentSectionState extends State<CommentSection> {
+  final PagingController<String, CommentModel> _pagingController =
+      PagingController(firstPageKey: '');
+
+  Future<void> _fetchPage(String pageKey) async {
+    try {
+      final newPage = await context.read<AppController>().api.comments.list(
+        widget.postType,
+        widget.id,
+        page: nullIfEmpty(pageKey),
+        sort: widget.sort,
+        usePreferredLangs: whenLoggedIn(
+          context,
+          context.read<AppController>().profile.useAccountLanguageFilter,
+        ),
+        langs: context
+            .read<AppController>()
+            .profile
+            .customLanguageFilter
+            .toList(),
+      );
+
+      // Check BuildContext
+      if (!mounted) return;
+
+      // Prevent duplicates
+      final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
+      final newItems = newPage.items
+          .where((e) => !currentItemIds.contains(e.id))
+          .toList();
+
+      _pagingController.appendPage(newItems, newPage.nextPage);
+    } catch (error) {
+      if (!mounted) return;
+      context.read<AppController>().logger.e(error);
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addPageRequestListener(_fetchPage);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PagedSliverList(
+      pagingController: _pagingController,
+      builderDelegate: PagedChildBuilderDelegate<CommentModel>(
+        firstPageErrorIndicatorBuilder: (context) =>
+            FirstPageErrorIndicator(
+              error: _pagingController.error,
+              onTryAgain: _pagingController.retryLastFailedRequest,
+            ),
+        newPageErrorIndicatorBuilder: (context) =>
+            NewPageErrorIndicator(
+              error: _pagingController.error,
+              onTryAgain: _pagingController.retryLastFailedRequest,
+            ),
+        itemBuilder: (context, item, index) => Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 4,
+          ),
+          child: PostComment(
+            item,
+                (newValue) {
+              var newList = _pagingController.itemList;
+              newList![index] = newValue;
+              setState(() {
+                _pagingController.itemList = newList;
+              });
+            },
+            opUserId: widget.opUserId,
+            userCanModerate: widget.canModerate,
+          ),
+        ),
+      ),
+    );
+  }
+
 }

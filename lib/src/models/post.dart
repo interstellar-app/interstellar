@@ -38,6 +38,7 @@ class PostListModel with _$PostListModel {
     required List<(String, int)> langCodeIdPairs,
   }) => PostListModel(
     items: (json['posts'] as List<dynamic>)
+        .map((post) => {'post_view': post})
         .map(
           (post) => PostModel.fromLemmy(
             post as JsonMap,
@@ -53,6 +54,7 @@ class PostListModel with _$PostListModel {
     required List<(String, int)> langCodeIdPairs,
   }) => PostListModel(
     items: (json['posts'] as List<dynamic>)
+        .map((post) => {'post_view': post})
         .map(
           (post) => PostModel.fromPiefed(
             post as JsonMap,
@@ -94,6 +96,7 @@ class PostModel with _$PostModel {
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
     required bool read,
+    required List<PostModel> crossPosts
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -135,6 +138,7 @@ class PostModel with _$PostModel {
           ),
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
+    crossPosts: (json['crosspostedEntries'] as List<dynamic>?)?.map((post) => PostModel.fromMbinEntry(post)).toList()?? []
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -171,14 +175,16 @@ class PostModel with _$PostModel {
           ),
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
+    crossPosts: []
   );
 
   factory PostModel.fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    final lemmyPost = json['post'] as JsonMap;
-    final lemmyCounts = json['counts'] as JsonMap;
+    final postView = json['post_view'] as JsonMap;
+    final lemmyPost = postView['post'] as JsonMap;
+    final lemmyCounts = postView['counts'] as JsonMap;
 
     final isImagePost =
         ((lemmyPost['url_content_type'] != null &&
@@ -192,8 +198,8 @@ class PostModel with _$PostModel {
     return PostModel(
       type: PostType.thread,
       id: lemmyPost['id'] as int,
-      user: UserModel.fromLemmy(json['creator'] as JsonMap),
-      community: CommunityModel.fromLemmy(json['community'] as JsonMap),
+      user: UserModel.fromLemmy(postView['creator'] as JsonMap),
+      community: CommunityModel.fromLemmy(postView['community'] as JsonMap),
       domain: null,
       title: lemmyPost['name'] as String,
       // Only include link if it's not an Image post
@@ -214,7 +220,7 @@ class PostModel with _$PostModel {
       upvotes: lemmyCounts['upvotes'] as int,
       downvotes: lemmyCounts['downvotes'] as int,
       boosts: null,
-      myVote: json['my_vote'] as int?,
+      myVote: postView['my_vote'] as int?,
       myBoost: null,
       isOC: null,
       isNSFW: lemmyPost['nsfw'] as bool,
@@ -229,9 +235,10 @@ class PostModel with _$PostModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (json['saved'] as bool) '',
+        if (postView['saved'] as bool) '',
       ],
-      read: json['read'] as bool? ?? false,
+      read: postView['read'] as bool? ?? false,
+      crossPosts: (json['cross_posts'] as List<dynamic>?)?.map((crossPost) => {'post_view': crossPost}).map((crossPost) => PostModel.fromLemmy(crossPost, langCodeIdPairs: langCodeIdPairs)).toList() ??[]
     );
   }
 
@@ -239,8 +246,9 @@ class PostModel with _$PostModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    final piefedPost = json['post'] as JsonMap;
-    final piefedCounts = json['counts'] as JsonMap;
+    final postView = json['post_view'] as JsonMap;
+    final piefedPost = postView['post'] as JsonMap;
+    final piefedCounts = postView['counts'] as JsonMap;
 
     final isImagePost =
         ((piefedPost['url_content_type'] != null &&
@@ -256,8 +264,8 @@ class PostModel with _$PostModel {
     return PostModel(
       type: PostType.thread,
       id: piefedPost['id'] as int,
-      user: UserModel.fromPiefed(json['creator'] as JsonMap),
-      community: CommunityModel.fromPiefed(json['community'] as JsonMap),
+      user: UserModel.fromPiefed(postView['creator'] as JsonMap),
+      community: CommunityModel.fromPiefed(postView['community'] as JsonMap),
       domain: null,
       title: piefedPost['title'] as String,
       // Only include link if it's not an Image post
@@ -278,7 +286,7 @@ class PostModel with _$PostModel {
       upvotes: piefedCounts['upvotes'] as int,
       downvotes: piefedCounts['downvotes'] as int,
       boosts: null,
-      myVote: json['my_vote'] as int?,
+      myVote: postView['my_vote'] as int?,
       myBoost: null,
       isOC: null,
       isNSFW: piefedPost['nsfw'] as bool,
@@ -287,17 +295,18 @@ class PostModel with _$PostModel {
       editedAt: optionalDateTime(piefedPost['updated'] as String?),
       lastActive: DateTime.parse(piefedCounts['newest_comment_time'] as String),
       visibility: 'visible',
-      canAuthUserModerate: json['canAuthUserModerate'] as bool?,
-      notificationControlStatus: json['activity_alert'] == null
+      canAuthUserModerate: postView['canAuthUserModerate'] as bool?,
+      notificationControlStatus: postView['activity_alert'] == null
           ? null
-          : json['activity_alert'] as bool
+          : postView['activity_alert'] as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (json['saved'] as bool) '',
+        if (postView['saved'] as bool) '',
       ],
-      read: json['read'] as bool? ?? false,
+      read: postView['read'] as bool? ?? false,
+      crossPosts: (json['cross_posts'] as List<dynamic>?)?.map((crossPost) => {'post_view': crossPost}).map((crossPost) => PostModel.fromPiefed(crossPost, langCodeIdPairs: langCodeIdPairs)).toList() ?? [],
     );
   }
 }
