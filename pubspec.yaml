@@ -3,11 +3,11 @@ name: interstellar
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.9.3+19
+version: 0.10.0+20
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
-  flutter: 3.32.0
+  sdk: '>=3.9.0 <4.0.0'
+  flutter: 3.35.1
 
 dependencies:
   flutter:
@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_markdown: ^0.7.7
-  http: ^1.4.0
+  http: ^1.5.0
   http_parser: ^4.1.2
   path: ^1.9.1
   mime: ^2.0.0
@@ -26,29 +26,29 @@ dependencies:
   media_kit_libs_video: ^1.0.6
   oauth2: ^2.0.3
   provider: ^6.1.5
-  url_launcher: ^6.3.1
-  webview_flutter: ^4.12.0
-  youtube_explode_dart: ^2.4.0
+  url_launcher: ^6.3.2
+  webview_flutter: ^4.13.0
+  youtube_explode_dart: ^2.5.2
   freezed_annotation: ^2.4.4
-  image_picker: ^1.1.2
-  dynamic_color: ^1.7.0
+  image_picker: ^1.2.0
+  dynamic_color: ^1.8.1
   markdown: ^7.3.0
   expandable: ^5.0.1
   blurhash_ffi: ^1.2.7
   unifiedpush: ^5.0.2
   webpush_encryption: 1.0.0-rc1
-  flutter_local_notifications: ^19.2.1
-  flex_color_scheme: ^8.2.0
-  share_plus: ^10.1.4
+  flutter_local_notifications: ^19.4.1
+  flex_color_scheme: ^8.3.0
+  share_plus: ^12.0.0
   path_provider: ^2.1.5
-  window_manager: ^0.4.3
-  material_symbols_icons: ^4.2815.0
+  window_manager: ^0.5.1
+  material_symbols_icons: ^4.2872.1
   json_annotation: ^4.9.0
   sembast: ^3.8.5
   package_info_plus: ^8.3.0
   flutter_localized_locales: ^2.0.5
   crypto: ^3.0.6
-  file_picker: ^10.1.9
+  file_picker: ^10.3.3
   any_link_preview: ^3.0.3
   simplytranslate: ^2.2.2
   visibility_detector: ^0.4.0+2
@@ -56,8 +56,8 @@ dependencies:
   extended_image: ^10.0.1
 
 dev_dependencies:
-  flutter_lints: ^5.0.0
-  flutter_launcher_icons: ^0.14.3
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
   build_runner: ^2.4.15
   freezed: ^2.5.8
   json_serializable: ^6.9.5
