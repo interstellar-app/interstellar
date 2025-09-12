@@ -664,7 +664,7 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
       icon: Symbols.local_fire_department_rounded,
     ),
     SelectionMenuItem(
-      value: isPiefed ? FeedSort.topMonth : FeedSort.top,
+      value: FeedSort.top,
       title: l(context).sort_top,
       icon: Symbols.trending_up_rounded,
       subItems: [
@@ -698,7 +698,7 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
           value: FeedSort.topMonth,
           title: l(context).sort_top_1m,
         ),
-        if (isLemmy) ...[
+        if (isLemmy || isPiefed) ...[
           SelectionMenuItem(
             value: FeedSort.topThreeMonths,
             title: l(context).sort_top_3m,
@@ -712,16 +712,14 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
             title: l(context).sort_top_9m,
           ),
         ],
-        if (!isPiefed)
-          SelectionMenuItem(
-            value: FeedSort.topYear,
-            title: l(context).sort_top_1y,
-          ),
-        if (!isPiefed)
-          SelectionMenuItem(
-            value: FeedSort.top,
-            title: l(context).sort_top_all,
-          ),
+        SelectionMenuItem(
+          value: FeedSort.topYear,
+          title: l(context).sort_top_1y,
+        ),
+        SelectionMenuItem(
+          value: FeedSort.top,
+          title: l(context).sort_top_all,
+        ),
       ],
     ),
     SelectionMenuItem(
