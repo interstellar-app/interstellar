@@ -56,7 +56,9 @@ class _PostPageState extends State<PostPage> {
     if (widget.initData != null) {
       _data = widget.initData!;
     }
-    if (widget.postType != null && widget.postId != null || _data != null || _data != null && context.read<AppController>().serverSoftware != ServerSoftware.mbin) {
+    // Lemmy and PieFed only return crossposts on fetching single post not on list
+    // so need to fetch full post info. Can skip on mbin.
+    if (widget.postType != null && widget.postId != null || _data != null && context.read<AppController>().serverSoftware != ServerSoftware.mbin) {
       final newPost = await switch (widget.postType?? _data!.type) {
         PostType.thread => context.read<AppController>().api.threads.get(
           widget.postId?? _data!.id,
@@ -74,7 +76,12 @@ class _PostPageState extends State<PostPage> {
 
     if (!mounted) return;
     _onUpdate(
-      (await context.read<AppController>().markAsRead([_data!], true)).first,
+      (await context.read<AppController>().markAsRead([
+        _data!,
+        ...?(context.read<AppController>().profile.markCrosspostsAsRead
+          ? _data!.crossPosts
+          : null)
+      ], true)).first,
     );
   }
 
@@ -213,6 +220,7 @@ class _PostPageState extends State<PostPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: ElevatedButton(
                     onPressed: () => ContextMenu(
+                      title: 'Crossposts',
                       items: _data!.crossPosts.map((crossPost) => ContextMenuItem(
                         title: crossPost.community.name,
                         onTap: () => pushRoute(
@@ -234,18 +242,26 @@ class _PostPageState extends State<PostPage> {
               ),
             if (_data != null)
               CommentSection(id: _data!.id, postType: _data!.type, sort: commentSort, opUserId: _data!.id),
-            ...?_data?.crossPosts.map((post) => SliverMainAxisGroup(slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    post.community.name,
-                    style: Theme.of(context).textTheme.titleLarge,
+            if (context.read<AppController>().profile.showCrosspostComments)
+              ...?_data?.crossPosts.map((post) => SliverMainAxisGroup(slivers: [
+                SliverToBoxAdapter(
+                  child: ListTile(
+                    title: Text(
+                      'Comments from ${post.community.name}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    onTap: () => pushRoute(
+                      context,
+                      builder: (context) => PostPage(
+                        postType: post.type,
+                        postId: post.id,
+                        initData: post,
+                      )
+                    ),
                   ),
                 ),
-              ),
-              CommentSection(id: post.id, postType: post.type, sort: commentSort, opUserId: post.user.id)
-            ]))
+                CommentSection(id: post.id, postType: post.type, sort: commentSort, opUserId: post.user.id)
+              ]))
           ],
         ),
       ),
