@@ -48,8 +48,10 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                 entry.value.serverFeed ? l(context).server : l(context).client,
               ),
               enabled:
-                  !(entry.value.serverFeed &&
-                      ac.serverSoftware != ServerSoftware.piefed),
+                  entry.value.clientFeed ||
+                  (ac.serverSoftware == ServerSoftware.piefed &&
+                      entry.value.inputs.first.name.split(':').last ==
+                          ac.instanceHost),
               onTap: () async {
                 final feed = await FeedAggregator.create(
                   ac,
