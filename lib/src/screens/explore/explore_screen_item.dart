@@ -153,8 +153,8 @@ class ExploreScreenItem extends StatelessWidget {
             ? subscriptions != null && onSubscribe != null
               ? SubscriptionButton(
                 isSubscribed: isSubscribed,
-                subscriptionCount: subscriptions!,
-                onSubscribe: onSubscribe!,
+                subscriptionCount: subscriptions,
+                onSubscribe: onSubscribe,
                 followMode: item is DetailedUserModel,
               )
               : null

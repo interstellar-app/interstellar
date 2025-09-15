@@ -13,6 +13,7 @@ class ContextMenuAction {
 
 class ContextMenuItem {
   final String? title;
+  final String? subtitle;
   final Widget? child;
   final IconData? icon;
   final double iconFill;
@@ -22,6 +23,7 @@ class ContextMenuItem {
 
   const ContextMenuItem({
     this.title,
+    this.subtitle,
     this.child,
     this.icon,
     this.iconFill = 0,
@@ -93,6 +95,9 @@ class ContextMenu {
                     .map(
                       (item) => LoadingListTile(
                         title: Text(item.title!),
+                        subtitle: item.subtitle != null
+                            ? Text(item.subtitle!)
+                            : null,
                         leading: Icon(item.icon, fill: item.iconFill),
                         onTap:
                             item.onTap ??

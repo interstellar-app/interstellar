@@ -141,6 +141,7 @@ void newFeed(BuildContext context) {
       items: [
         ContextMenuItem(
           title: l(context).clientFeed,
+          subtitle: l(context).clientFeedSubtitle,
           onTap: () async {
             await pushRoute(
               context,
@@ -152,6 +153,7 @@ void newFeed(BuildContext context) {
         ),
         ContextMenuItem(
           title: l(context).serverFeed,
+          subtitle: l(context).serverFeedSubtitle,
           onTap: () => pushRoute(
             context,
             builder: (context) => ExploreScreen(
@@ -220,6 +222,7 @@ void newFeed(BuildContext context) {
         ),
         ContextMenuItem(
           title: l(context).serverTopic,
+          subtitle: l(context).serverTopicSubtitle,
           onTap: () => pushRoute(
             context,
             builder: (context) => ExploreScreen(
