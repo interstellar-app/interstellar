@@ -261,6 +261,7 @@ class LoadingChip extends StatefulWidget {
   final Widget label;
   final bool selected;
   final Future<void> Function(bool)? onSelected;
+  final bool enabled;
 
   final String? tooltip;
 
@@ -270,6 +271,7 @@ class LoadingChip extends StatefulWidget {
     this.onSelected,
     this.icon,
     this.tooltip,
+    this.enabled = true,
     super.key,
   });
 

@@ -219,7 +219,9 @@ class _ExploreScreenState extends State<ExploreScreen>
         onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           slivers: [
-            if (!widget.subOnly)
+            if (!widget.subOnly &&
+                widget.mode != ExploreType.feeds &&
+                widget.mode != ExploreType.topics)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -238,7 +240,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                         enabled:
                             !(ac.serverSoftware == ServerSoftware.mbin &&
                                 (filter != ExploreFilter.all &&
-                                    filter != ExploreFilter.local)),
+                                    filter != ExploreFilter.local)) &&
+                                (type != ExploreType.feeds &&
+                                    type != ExploreType.topics),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Symbols.search_rounded),
                           border: const OutlineInputBorder(
@@ -406,7 +410,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                             ),
                             onPressed:
                                 ac.serverSoftware == ServerSoftware.mbin &&
-                                    type == ExploreType.all
+                                    type == ExploreType.all ||
+                                    type == ExploreType.feeds ||
+                                    type == ExploreType.topics
                                 ? null
                                 : () async {
                                     final result = await exploreFilterSelection(
@@ -440,7 +446,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 ac.serverSoftware == ServerSoftware.mbin &&
                                     ((filter != ExploreFilter.all &&
                                             filter != ExploreFilter.local) ||
-                                        type != ExploreType.communities)
+                                        type != ExploreType.communities) ||
+                                  type == ExploreType.feeds ||
+                                  type == ExploreType.topics
                                 ? null
                                 : () async {
                                     final result = await exploreSortSelection(

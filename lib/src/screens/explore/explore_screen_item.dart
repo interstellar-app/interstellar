@@ -72,9 +72,9 @@ class ExploreScreenItem extends StatelessWidget {
       };
       final subscriptions = switch (item) {
         DetailedCommunityModel i => i.subscriptionsCount,
-        DetailedUserModel i => i.followersCount ?? 0,
+        DetailedUserModel i => i.followersCount,
         DomainModel i => i.subscriptionsCount,
-        FeedModel i => i.subscriptionCount?? 0,
+        FeedModel i => i.subscriptionCount,
         _ => throw 'Unreachable',
       };
       final onSubscribe = switch (item) {
@@ -104,7 +104,7 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
-        FeedModel _ => (selected) async {},
+        FeedModel _ => null,
         _ => throw 'Unreachable',
       };
       final navigate = switch (item) {
@@ -150,12 +150,14 @@ class ExploreScreenItem extends StatelessWidget {
         ),
         subtitle: subtitle == null ? null : Text(subtitle),
         trailing: button == null
-            ? SubscriptionButton(
+            ? subscriptions != null && onSubscribe != null
+              ? SubscriptionButton(
                 isSubscribed: isSubscribed,
-                subscriptionCount: subscriptions,
-                onSubscribe: onSubscribe,
+                subscriptionCount: subscriptions!,
+                onSubscribe: onSubscribe!,
                 followMode: item is DetailedUserModel,
               )
+              : null
             : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
