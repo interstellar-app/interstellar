@@ -13,6 +13,7 @@ class FeedInput with _$FeedInput {
   const factory FeedInput({
     required String name,
     required FeedSource sourceType,
+    int? serverId,
   }) = _FeedInput;
 
   factory FeedInput.fromJson(JsonMap json) => _$FeedInputFromJson(json);

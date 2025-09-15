@@ -15,6 +15,8 @@ import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 
+import '../../models/feed.dart';
+
 class ExploreScreen extends StatefulWidget {
   final ExploreType? mode;
   final bool subOnly;
@@ -487,6 +489,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                     DetailedCommunityModel i => i.name,
                     DetailedUserModel i => i.name,
                     DomainModel i => i.name,
+                    FeedModel i => i.name,
                     _ => '',
                   });
 
@@ -496,6 +499,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                       DetailedCommunityModel i => i.name,
                       DetailedUserModel i => i.name,
                       DomainModel i => i.name,
+                      FeedModel i => i.name,
                       _ => null,
                     };
                     if (name == null) return;

@@ -247,7 +247,7 @@ class _NavDrawerState extends State<NavDrawer> {
                 enabled:
                     feed.value.clientFeed ||
                     (ac.serverSoftware == ServerSoftware.piefed &&
-                        feed.value.inputs.first.name.split(':').last ==
+                        feed.value.inputs.first.name.split('@').last ==
                             ac.instanceHost),
                 onTap: () async {
                   final aggregator = await FeedAggregator.create(

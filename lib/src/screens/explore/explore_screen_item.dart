@@ -60,7 +60,7 @@ class ExploreScreenItem extends StatelessWidget {
       final subtitle = switch (item) {
         DetailedCommunityModel i => i.name,
         DetailedUserModel i => i.name,
-        FeedModel i => i.description,
+        FeedModel i => normalizeName(i.name, context.read<AppController>().instanceHost),
         _ => null,
       };
       final isSubscribed = switch (item) {

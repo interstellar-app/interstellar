@@ -311,7 +311,7 @@ class FeedAggregator {
   static Future<FeedAggregator> create(AppController ac, Feed feed) async {
     final inputs = await feed.inputs.map((input) async {
       final name = denormalizeName(input.name, ac.instanceHost);
-      final source = await ac.fetchCachedFeedInput(name, input.sourceType);
+      final source = input.serverId?? await ac.fetchCachedFeedInput(name, input.sourceType);
       if (source == null) return null;
       return FeedInputState(
         title: input.name,

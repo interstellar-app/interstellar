@@ -50,7 +50,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
               enabled:
                   entry.value.clientFeed ||
                   (ac.serverSoftware == ServerSoftware.piefed &&
-                      entry.value.inputs.first.name.split(':').last ==
+                      entry.value.inputs.first.name.split('@').last ==
                           ac.instanceHost),
               onTap: () async {
                 final feed = await FeedAggregator.create(
@@ -134,7 +134,8 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
 }
 
 void newFeed(BuildContext context) {
-  if (context.read<AppController>().serverSoftware != ServerSoftware.piefed) {
+  final ac = context.read<AppController>();
+  if (ac.serverSoftware != ServerSoftware.piefed) {
     pushRoute(context, builder: (context) => const EditFeedScreen(feed: null));
   } else {
     ContextMenu(
@@ -165,14 +166,15 @@ void newFeed(BuildContext context) {
                   name: item.title!,
                   inputs: {
                     FeedInput(
-                      name: '${item.id}:${getNameHost(context, item.name)}',
+                      name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.feed,
+                      serverId: item.id
                     ), // tmp until proper getByName method can be made
                   },
                 );
 
                 String title = item.title!;
-                if (context.read<AppController>().feeds[title] != null) {
+                if (ac.feeds[title] != null) {
                   await showDialog(
                     context: context,
                     builder: (context) {
@@ -190,9 +192,7 @@ void newFeed(BuildContext context) {
                           LoadingFilledButton(
                             onPressed: () async {
                               int num = 0;
-                              while (context
-                                      .read<AppController>()
-                                      .feeds[title] !=
+                              while (ac.feeds[title] !=
                                   null) {
                                 title = '${item.title}${num++}';
                               }
@@ -213,7 +213,7 @@ void newFeed(BuildContext context) {
                 }
 
                 if (!context.mounted) return;
-                context.read<AppController>().setFeed(title, feed);
+                ac.setFeed(title, feed);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -234,14 +234,15 @@ void newFeed(BuildContext context) {
                   name: item.name,
                   inputs: {
                     FeedInput(
-                      name: '${item.id}:${getNameHost(context, item.name)}',
+                      name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.topic,
+                      serverId: item.id
                     ), // tmp until proper getByName method can be made
                   },
                 );
 
                 String title = item.name;
-                if (context.read<AppController>().feeds[title] != null) {
+                if (ac.feeds[title] != null) {
                   await showDialog(
                     context: context,
                     builder: (context) {
@@ -259,9 +260,7 @@ void newFeed(BuildContext context) {
                           LoadingFilledButton(
                             onPressed: () async {
                               int num = 0;
-                              while (context
-                                      .read<AppController>()
-                                      .feeds[title] !=
+                              while (ac.feeds[title] !=
                                   null) {
                                 title = '${item.name}${num++}';
                               }
@@ -282,7 +281,7 @@ void newFeed(BuildContext context) {
                 }
 
                 if (!context.mounted) return;
-                context.read<AppController>().setFeed(title, feed);
+                ac.setFeed(title, feed);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
@@ -369,13 +368,13 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             onTap: () async => pushRoute(
               context,
               builder: (context) => ExploreScreen(
-                selected: feedData.inputs.map((input) => input.name).toSet(),
+                selected: feedData.inputs.map((input) => denormalizeName(input.name, ac.instanceHost)).toSet(),
                 onTap: (selected, item) {
                   var name = switch (item) {
                     DetailedCommunityModel i => i.name,
                     DetailedUserModel i => i.name,
                     DomainModel i => i.name,
-                    FeedModel i => i.id.toString(),
+                    FeedModel i => i.name,
                     _ => null,
                   };
                   final source = switch (item) {
@@ -385,15 +384,19 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     FeedModel _ => FeedSource.feed,
                     _ => null,
                   };
+                  final id = switch (item) {
+                    FeedModel i => i.id,
+                    _ => null,
+                  };
 
                   if (name == null || source == null) return;
 
                   name = normalizeName(name, ac.instanceHost);
 
                   if (selected) {
-                    addInput(FeedInput(name: name, sourceType: source));
+                    addInput(FeedInput(name: name, sourceType: source, serverId: id));
                   } else {
-                    removeInput(FeedInput(name: name, sourceType: source));
+                    removeInput(FeedInput(name: name, sourceType: source, serverId: id));
                   }
                 },
               ),
