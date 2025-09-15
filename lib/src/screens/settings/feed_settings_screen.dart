@@ -108,7 +108,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                       await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => CreateScreen(
-                            initTitle: '[Feed] $entry.key',
+                            initTitle: '[Feed] ${entry.key}',
                             initBody:
                                 'Short description here...\n\n${config.toMarkdown()}',
                             initCommunity: community,

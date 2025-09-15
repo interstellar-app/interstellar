@@ -1004,6 +1004,7 @@ class _MarkdownEditorConfigShareDialogState
     extends State<_MarkdownEditorConfigShareDialog> {
   List<String>? _profiles;
   List<String>? _filterLists;
+  List<String>? _feeds;
 
   @override
   void initState() {
@@ -1016,6 +1017,7 @@ class _MarkdownEditorConfigShareDialogState
     final ac = context.read<AppController>();
     _profiles = await ac.getProfileNames();
     _filterLists = ac.filterLists.keys.toList();
+    _feeds = ac.feeds.keys.toList();
     setState(() {});
   }
 
@@ -1064,6 +1066,31 @@ class _MarkdownEditorConfigShareDialogState
                   type: ConfigShareType.filterList,
                   name: filterListName,
                   payload: filterList.toJson(),
+                );
+                final configStr = jsonEncode(config.toJson());
+                if (!context.mounted) return;
+                Navigator.pop(context, configStr);
+              },
+            ),
+          ),
+        ],
+        if (_feeds != null && _feeds!.isNotEmpty) ...[
+          Padding(
+            padding: headerEdgeInserts,
+            child: Text(l(context).filterLists),
+          ),
+          ..._feeds!.map(
+                (feedName) => SimpleDialogOption(
+              child: Text(feedName),
+              onPressed: () async {
+                final feed = context
+                    .read<AppController>()
+                    .feeds[feedName]!;
+
+                final config = await ConfigShare.create(
+                  type: ConfigShareType.feed,
+                  name: feedName,
+                  payload: feed.toJson(),
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
