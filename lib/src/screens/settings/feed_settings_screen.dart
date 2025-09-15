@@ -140,7 +140,7 @@ void newFeed(BuildContext context) {
     ContextMenu(
       items: [
         ContextMenuItem(
-          title: '${l(context).client} ${l(context).feed}',
+          title: l(context).clientFeed,
           onTap: () async {
             await pushRoute(
               context,
@@ -151,7 +151,7 @@ void newFeed(BuildContext context) {
           },
         ),
         ContextMenuItem(
-          title: '${l(context).server} ${l(context).feed}',
+          title: l(context).serverFeed,
           onTap: () => pushRoute(
             context,
             builder: (context) => ExploreScreen(
@@ -219,7 +219,7 @@ void newFeed(BuildContext context) {
           ),
         ),
         ContextMenuItem(
-          title: '${l(context).server} ${l(context).topic}',
+          title: l(context).serverTopic,
           onTap: () => pushRoute(
             context,
             builder: (context) => ExploreScreen(
