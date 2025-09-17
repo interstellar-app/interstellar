@@ -105,6 +105,23 @@
   "feeds_addTo": "Add to feed",
   "post": "Post",
   "postDeleted": "Post Deleted",
+  "crossPosts": "Crossposts",
+  "crossPostCount": "{count} cross {count, plural, =1{post} other{posts}}",
+  "@crossPostCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crossPostComments": "Comments from {community}",
+  "@crossPostComments": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
   "comment": "Comment",
   "comments": "Comments",
   "commentDeleted": "Comment Deleted",

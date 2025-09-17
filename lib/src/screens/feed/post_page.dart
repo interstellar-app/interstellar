@@ -58,13 +58,16 @@ class _PostPageState extends State<PostPage> {
     }
     // Lemmy and PieFed only return crossposts on fetching single post not on list
     // so need to fetch full post info. Can skip on mbin.
-    if (widget.postType != null && widget.postId != null || _data != null && context.read<AppController>().serverSoftware != ServerSoftware.mbin) {
-      final newPost = await switch (widget.postType?? _data!.type) {
+    if (widget.postType != null && widget.postId != null ||
+        _data != null &&
+            context.read<AppController>().serverSoftware !=
+                ServerSoftware.mbin) {
+      final newPost = await switch (widget.postType ?? _data!.type) {
         PostType.thread => context.read<AppController>().api.threads.get(
-          widget.postId?? _data!.id,
+          widget.postId ?? _data!.id,
         ),
         PostType.microblog => context.read<AppController>().api.microblogs.get(
-          widget.postId?? _data!.id,
+          widget.postId ?? _data!.id,
         ),
       };
       setState(() {
@@ -79,8 +82,8 @@ class _PostPageState extends State<PostPage> {
       (await context.read<AppController>().markAsRead([
         _data!,
         ...?(context.read<AppController>().profile.markCrosspostsAsRead
-          ? _data!.crossPosts
-          : null)
+            ? _data!.crossPosts
+            : null),
       ], true)).first,
     );
   }
@@ -220,48 +223,69 @@ class _PostPageState extends State<PostPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: ElevatedButton(
                     onPressed: () => ContextMenu(
-                      title: 'Crossposts',
-                      items: _data!.crossPosts.map((crossPost) => ContextMenuItem(
-                        title: crossPost.community.name,
-                        onTap: () => pushRoute(
-                            context,
-                            builder: (context) => PostPage(
-                              postType: PostType.thread,
-                              postId: crossPost.id,
-                              initData: crossPost,
-                            )
-                        )
-                      )).toList()
+                      title: l(context).crossPosts,
+                      items: _data!.crossPosts
+                          .map(
+                            (crossPost) => ContextMenuItem(
+                              title: crossPost.community.name,
+                              onTap: () => pushRoute(
+                                context,
+                                builder: (context) => PostPage(
+                                  postType: PostType.thread,
+                                  postId: crossPost.id,
+                                  initData: crossPost,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
                     ).openMenu(context),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
-                      child: Text('${_data?.crossPosts.length?? 0} cross post${_data?.crossPosts.length == 1 ? '' : 's'}'),
-                    ),
-                  ),
-                )
-              ),
-            if (_data != null)
-              CommentSection(id: _data!.id, postType: _data!.type, sort: commentSort, opUserId: _data!.id),
-            if (context.read<AppController>().profile.showCrosspostComments)
-              ...?_data?.crossPosts.map((post) => SliverMainAxisGroup(slivers: [
-                SliverToBoxAdapter(
-                  child: ListTile(
-                    title: Text(
-                      'Comments from ${post.community.name}',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    onTap: () => pushRoute(
-                      context,
-                      builder: (context) => PostPage(
-                        postType: post.type,
-                        postId: post.id,
-                        initData: post,
-                      )
+                      child: Text(
+                        l(context).crossPostCount(post.crossPosts.length),
+                      ),
                     ),
                   ),
                 ),
-                CommentSection(id: post.id, postType: post.type, sort: commentSort, opUserId: post.user.id)
-              ]))
+              ),
+            CommentSection(
+              id: post.id,
+              postType: post.type,
+              sort: commentSort,
+              opUserId: post.user.id,
+            ),
+            if (context.read<AppController>().profile.showCrosspostComments)
+              ...post.crossPosts.map(
+                (crossPost) => SliverMainAxisGroup(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: ListTile(
+                        title: Text(
+                          l(
+                            context,
+                          ).crossPostComments(crossPost.community.name),
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        onTap: () => pushRoute(
+                          context,
+                          builder: (context) => PostPage(
+                            postType: crossPost.type,
+                            postId: crossPost.id,
+                            initData: crossPost,
+                          ),
+                        ),
+                      ),
+                    ),
+                    CommentSection(
+                      id: crossPost.id,
+                      postType: crossPost.type,
+                      sort: commentSort,
+                      opUserId: crossPost.user.id,
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -345,24 +369,19 @@ class _CommentSectionState extends State<CommentSection> {
     return PagedSliverList(
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<CommentModel>(
-        firstPageErrorIndicatorBuilder: (context) =>
-            FirstPageErrorIndicator(
-              error: _pagingController.error,
-              onTryAgain: _pagingController.retryLastFailedRequest,
-            ),
-        newPageErrorIndicatorBuilder: (context) =>
-            NewPageErrorIndicator(
-              error: _pagingController.error,
-              onTryAgain: _pagingController.retryLastFailedRequest,
-            ),
+        firstPageErrorIndicatorBuilder: (context) => FirstPageErrorIndicator(
+          error: _pagingController.error,
+          onTryAgain: _pagingController.retryLastFailedRequest,
+        ),
+        newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
+          error: _pagingController.error,
+          onTryAgain: _pagingController.retryLastFailedRequest,
+        ),
         itemBuilder: (context, item, index) => Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 4,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           child: PostComment(
             item,
-                (newValue) {
+            (newValue) {
               var newList = _pagingController.itemList;
               newList![index] = newValue;
               setState(() {
@@ -376,5 +395,4 @@ class _CommentSectionState extends State<CommentSection> {
       ),
     );
   }
-
 }
