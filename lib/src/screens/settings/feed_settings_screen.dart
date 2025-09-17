@@ -163,17 +163,17 @@ void newFeed(BuildContext context) {
                 if (item is! FeedModel) return;
 
                 final feed = Feed(
-                  name: item.title!,
+                  name: item.title,
                   inputs: {
                     FeedInput(
                       name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.feed,
-                      serverId: item.id
-                    ), // tmp until proper getByName method can be made
+                      serverId: item.id,
+                    ), // TODO: tmp until proper getByName method can be made
                   },
                 );
 
-                String title = item.title!;
+                String title = item.title;
                 if (ac.feeds[title] != null) {
                   await showDialog(
                     context: context,
@@ -192,9 +192,8 @@ void newFeed(BuildContext context) {
                           LoadingFilledButton(
                             onPressed: () async {
                               int num = 0;
-                              while (ac.feeds[title] !=
-                                  null) {
-                                title = '${item.title}${num++}';
+                              while (ac.feeds[title] != null) {
+                                title = '${item.title} ${num++}';
                               }
                               Navigator.pop(context);
                             },
@@ -231,17 +230,17 @@ void newFeed(BuildContext context) {
                 if (item is! FeedModel) return;
 
                 final feed = Feed(
-                  name: item.name,
+                  name: item.title,
                   inputs: {
                     FeedInput(
                       name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.topic,
-                      serverId: item.id
-                    ), // tmp until proper getByName method can be made
+                      serverId: item.id,
+                    ), // TODO: tmp until proper getByName method can be made
                   },
                 );
 
-                String title = item.name;
+                String title = item.title;
                 if (ac.feeds[title] != null) {
                   await showDialog(
                     context: context,
@@ -260,9 +259,8 @@ void newFeed(BuildContext context) {
                           LoadingFilledButton(
                             onPressed: () async {
                               int num = 0;
-                              while (ac.feeds[title] !=
-                                  null) {
-                                title = '${item.name}${num++}';
+                              while (ac.feeds[title] != null) {
+                                title = '${item.title} ${num++}';
                               }
                               Navigator.pop(context);
                             },
@@ -368,7 +366,11 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             onTap: () async => pushRoute(
               context,
               builder: (context) => ExploreScreen(
-                selected: feedData.inputs.map((input) => denormalizeName(input.name, ac.instanceHost)).toSet(),
+                selected: feedData.inputs
+                    .map(
+                      (input) => denormalizeName(input.name, ac.instanceHost),
+                    )
+                    .toSet(),
                 onTap: (selected, item) {
                   var name = switch (item) {
                     DetailedCommunityModel i => i.name,
@@ -394,9 +396,13 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                   name = normalizeName(name, ac.instanceHost);
 
                   if (selected) {
-                    addInput(FeedInput(name: name, sourceType: source, serverId: id));
+                    addInput(
+                      FeedInput(name: name, sourceType: source, serverId: id),
+                    );
                   } else {
-                    removeInput(FeedInput(name: name, sourceType: source, serverId: id));
+                    removeInput(
+                      FeedInput(name: name, sourceType: source, serverId: id),
+                    );
                   }
                 },
               ),
@@ -468,22 +474,24 @@ void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
   ContextMenu(
     title: l(context).feeds,
     items: [
-      ...ac.feeds.values.where((feed) => feed.clientFeed).map(
-        (feed) => ContextMenuItem(
-          title: feed.name,
-          onTap: () async {
-            final newFeed = feed.copyWith(
-              inputs: {
-                ...feed.inputs,
-                FeedInput(name: name, sourceType: source),
+      ...ac.feeds.values
+          .where((feed) => feed.clientFeed)
+          .map(
+            (feed) => ContextMenuItem(
+              title: feed.name,
+              onTap: () async {
+                final newFeed = feed.copyWith(
+                  inputs: {
+                    ...feed.inputs,
+                    FeedInput(name: name, sourceType: source),
+                  },
+                );
+                await ac.setFeed(feed.name, newFeed);
+                if (!context.mounted) return;
+                Navigator.pop(context);
               },
-            );
-            await ac.setFeed(feed.name, newFeed);
-            if (!context.mounted) return;
-            Navigator.pop(context);
-          },
-        ),
-      ),
+            ),
+          ),
       ContextMenuItem(
         title: l(context).feeds_new,
         icon: Symbols.add_rounded,

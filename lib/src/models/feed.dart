@@ -37,7 +37,7 @@ class FeedModel with _$FeedModel {
   const factory FeedModel({
     required int id,
     required int? userId,
-    required String? title,
+    required String title,
     required String name,
     required String? description,
     required bool? isNSFW,
@@ -60,13 +60,16 @@ class FeedModel with _$FeedModel {
     return FeedModel(
       id: json['id'] as int,
       userId: json['user_id'] as int?,
-      title: json['title'] as String?,
+      title: json['title'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
       isNSFW: json['nsfw'] as bool?,
       isNSFL: json['nsfl'] as bool?,
       subscriptionCount: json['subscriptions_count'] as int?,
-      communityCount: (json['num_communities'] as int?)?? json['communities_count'] as int, //TODO remove num_communities when major instances are updated to 1.2
+      communityCount:
+          (json['num_communities'] as int?) ??
+          json['communities_count']
+              as int, //TODO remove num_communities when major instances are updated to 1.2
       public: json['public'] as bool?,
       parentId: (json['parent_feed_id'] as int?) ?? (json['parent_id'] as int?),
       isInstanceFeed: json['is_instance_feed'] as bool?,
