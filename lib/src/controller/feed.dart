@@ -36,8 +36,9 @@ class Feed with _$Feed {
   }
 
   bool get serverFeed {
-    return inputs.length == 1 &&
-        (inputs.firstOrNull?.sourceType == FeedSource.feed ||
-            inputs.firstOrNull?.sourceType == FeedSource.topic);
+    return inputs.every((input) =>
+        input.sourceType == FeedSource.feed ||
+        input.sourceType == FeedSource.topic
+    );
   }
 }
