@@ -584,7 +584,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> renameFeed(String oldName, String newName) async {
-    _feeds[newName] = _feeds[oldName]!.copyWith(name: newName);
+    _feeds[newName] = _feeds[oldName]!;
     _feeds.remove(oldName);
 
     notifyListeners();
@@ -747,6 +747,12 @@ class AppController with ChangeNotifier {
       final newValue = switch (source) {
         FeedSource.community => (await api.community.getByName(name)).id,
         FeedSource.user => (await api.users.getByName(name)).id,
+        FeedSource.feed => name.split(':').last != instanceHost // tmp until proper getByName method can be made
+            ? throw Exception('Wrong instance')
+            : int.parse(name.split(':').first),
+        FeedSource.topic => name.split(':').last != instanceHost // tmp until proper getByName method can be made
+            ? throw Exception('Wrong instance')
+            : int.parse(name.split(':').first),
         _ => null,
       };
 

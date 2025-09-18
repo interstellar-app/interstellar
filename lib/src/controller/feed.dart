@@ -13,6 +13,7 @@ class FeedInput with _$FeedInput {
   const factory FeedInput({
     required String name,
     required FeedSource sourceType,
+    int? serverId,
   }) = _FeedInput;
 
   factory FeedInput.fromJson(JsonMap json) => _$FeedInputFromJson(json);
@@ -24,9 +25,19 @@ class Feed with _$Feed {
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory Feed({
-    required String name,
     required Set<FeedInput> inputs,
   }) = _Feed;
 
   factory Feed.fromJson(JsonMap json) => _$FeedFromJson(json);
+
+  bool get clientFeed {
+    return !serverFeed;
+  }
+
+  bool get serverFeed {
+    return inputs.every((input) =>
+        input.sourceType == FeedSource.feed ||
+        input.sourceType == FeedSource.topic
+    );
+  }
 }

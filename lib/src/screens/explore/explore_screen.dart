@@ -15,6 +15,8 @@ import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 
+import '../../models/feed.dart';
+
 class ExploreScreen extends StatefulWidget {
   final ExploreType? mode;
   final bool subOnly;
@@ -152,6 +154,23 @@ class _ExploreScreenState extends State<ExploreScreen>
           _pagingController.appendPage(newItems, newPage.nextPage);
           break;
 
+        case ExploreType.feeds:
+        case ExploreType.topics:
+          final newPage = await context.read<AppController>().api.feed.list(
+            topics: type == ExploreType.topics,
+          );
+
+          if (!mounted) return;
+
+          final currentItemIds =
+              _pagingController.itemList?.map((e) => e.id) ?? [];
+          final newItems = newPage.items
+              .where((e) => !currentItemIds.contains(e.id))
+              .toList();
+
+          _pagingController.appendPage(newItems, null);
+          break;
+
         case ExploreType.all:
           final newPage = await context.read<AppController>().api.search.get(
             page: nullIfEmpty(pageKey),
@@ -202,11 +221,14 @@ class _ExploreScreenState extends State<ExploreScreen>
         onRefresh: () => Future.sync(() => _pagingController.refresh()),
         child: CustomScrollView(
           slivers: [
-            if (!widget.subOnly)
+            if (!widget.subOnly &&
+                widget.mode != ExploreType.feeds &&
+                widget.mode != ExploreType.topics)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
@@ -220,7 +242,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                         enabled:
                             !(ac.serverSoftware == ServerSoftware.mbin &&
                                 (filter != ExploreFilter.all &&
-                                    filter != ExploreFilter.local)),
+                                    filter != ExploreFilter.local)) &&
+                                (type != ExploreType.feeds &&
+                                    type != ExploreType.topics),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Symbols.search_rounded),
                           border: const OutlineInputBorder(
@@ -237,68 +261,19 @@ class _ExploreScreenState extends State<ExploreScreen>
                       ),
                       const SizedBox(height: 12),
                       if (widget.mode == null)
-                        Row(
-                          children: [
-                            ChoiceChip(
-                              label: Text(l(context).communities),
-                              selected: type == ExploreType.communities,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    type = ExploreType.communities;
-                                    _pagingController.refresh();
-                                  });
-                                }
-                              },
-                              padding: chipPadding,
-                            ),
-                            const SizedBox(width: 4),
-                            ChoiceChip(
-                              label: Text(l(context).people),
-                              selected: type == ExploreType.people,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    type = ExploreType.people;
-
-                                    // Reset explore filter in the following cases:
-                                    if (
-                                    // Using Mbin and filter is set to local
-                                    ac.serverSoftware == ServerSoftware.mbin &&
-                                            filter == ExploreFilter.local ||
-                                        // Using Lemmy or PieFed and filter is set to subscribed
-                                        ac.serverSoftware !=
-                                                ServerSoftware.mbin &&
-                                            filter ==
-                                                ExploreFilter.subscribed ||
-                                        // Using Lemmy or PieFed and filter is set to moderated
-                                        ac.serverSoftware !=
-                                                ServerSoftware.mbin &&
-                                            filter == ExploreFilter.moderated) {
-                                      filter = ExploreFilter.all;
-                                    }
-
-                                    _pagingController.refresh();
-                                  });
-                                }
-                              },
-                              padding: chipPadding,
-                            ),
-                            const SizedBox(width: 4),
-                            if (ac.serverSoftware == ServerSoftware.mbin &&
-                                _selected == null) ...[
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
                               ChoiceChip(
-                                label: Text(l(context).domains),
-                                selected: type == ExploreType.domains,
+                                label: Text(l(context).communities),
+                                selected: type == ExploreType.communities,
                                 onSelected: (bool selected) {
                                   if (selected) {
                                     setState(() {
-                                      type = ExploreType.domains;
-
-                                      if (filter == ExploreFilter.local ||
-                                          filter == ExploreFilter.moderated) {
-                                        filter = ExploreFilter.all;
-                                      }
+                                      type = ExploreType.communities;
                                       _pagingController.refresh();
                                     });
                                   }
@@ -306,24 +281,32 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 padding: chipPadding,
                               ),
                               const SizedBox(width: 4),
-                            ],
-                            if (_selected == null) ...[
                               ChoiceChip(
-                                label: Text(l(context).filter_all),
-                                selected: type == ExploreType.all,
+                                label: Text(l(context).people),
+                                selected: type == ExploreType.people,
                                 onSelected: (bool selected) {
                                   if (selected) {
                                     setState(() {
-                                      if (ac.serverSoftware ==
-                                              ServerSoftware.mbin ||
+                                      type = ExploreType.people;
+
+                                      // Reset explore filter in the following cases:
+                                      if (
+                                      // Using Mbin and filter is set to local
+                                      ac.serverSoftware ==
+                                                  ServerSoftware.mbin &&
+                                              filter == ExploreFilter.local ||
+                                          // Using Lemmy or PieFed and filter is set to subscribed
                                           ac.serverSoftware !=
                                                   ServerSoftware.mbin &&
                                               filter ==
-                                                  ExploreFilter.subscribed) {
+                                                  ExploreFilter.subscribed ||
+                                          // Using Lemmy or PieFed and filter is set to moderated
+                                          ac.serverSoftware !=
+                                                  ServerSoftware.mbin &&
+                                              filter ==
+                                                  ExploreFilter.moderated) {
                                         filter = ExploreFilter.all;
                                       }
-
-                                      type = ExploreType.all;
 
                                       _pagingController.refresh();
                                     });
@@ -331,8 +314,87 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 },
                                 padding: chipPadding,
                               ),
+                              const SizedBox(width: 4),
+                              if (ac.serverSoftware == ServerSoftware.mbin &&
+                                  _selected == null) ...[
+                                ChoiceChip(
+                                  label: Text(l(context).domains),
+                                  selected: type == ExploreType.domains,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        type = ExploreType.domains;
+
+                                        if (filter == ExploreFilter.local ||
+                                            filter == ExploreFilter.moderated) {
+                                          filter = ExploreFilter.all;
+                                        }
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                                const SizedBox(width: 4),
+                              ],
+                              if (ac.serverSoftware ==
+                                  ServerSoftware.piefed) ...[
+                                ChoiceChip(
+                                  label: Text(l(context).feeds),
+                                  selected: type == ExploreType.feeds,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        type = ExploreType.feeds;
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                                const SizedBox(width: 4),
+                                ChoiceChip(
+                                  label: Text(l(context).topics),
+                                  selected: type == ExploreType.topics,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        type = ExploreType.topics;
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                                const SizedBox(width: 4),
+                              ],
+                              if (_selected == null) ...[
+                                ChoiceChip(
+                                  label: Text(l(context).filter_all),
+                                  selected: type == ExploreType.all,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        if (ac.serverSoftware ==
+                                                ServerSoftware.mbin ||
+                                            ac.serverSoftware !=
+                                                    ServerSoftware.mbin &&
+                                                filter ==
+                                                    ExploreFilter.subscribed) {
+                                          filter = ExploreFilter.all;
+                                        }
+
+                                        type = ExploreType.all;
+
+                                        _pagingController.refresh();
+                                      });
+                                    }
+                                  },
+                                  padding: chipPadding,
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       const SizedBox(height: 8),
                       Row(
@@ -350,7 +412,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                             ),
                             onPressed:
                                 ac.serverSoftware == ServerSoftware.mbin &&
-                                    type == ExploreType.all
+                                    type == ExploreType.all ||
+                                    type == ExploreType.feeds ||
+                                    type == ExploreType.topics
                                 ? null
                                 : () async {
                                     final result = await exploreFilterSelection(
@@ -384,7 +448,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                                 ac.serverSoftware == ServerSoftware.mbin &&
                                     ((filter != ExploreFilter.all &&
                                             filter != ExploreFilter.local) ||
-                                        type != ExploreType.communities)
+                                        type != ExploreType.communities) ||
+                                  type == ExploreType.feeds ||
+                                  type == ExploreType.topics
                                 ? null
                                 : () async {
                                     final result = await exploreSortSelection(
@@ -423,6 +489,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                     DetailedCommunityModel i => i.name,
                     DetailedUserModel i => i.name,
                     DomainModel i => i.name,
+                    FeedModel i => i.name,
                     _ => '',
                   });
 
@@ -432,6 +499,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                       DetailedCommunityModel i => i.name,
                       DetailedUserModel i => i.name,
                       DomainModel i => i.name,
+                      FeedModel i => i.name,
                       _ => null,
                     };
                     if (name == null) return;
@@ -475,7 +543,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 }
 
-enum ExploreType { communities, people, domains, all }
+enum ExploreType { communities, people, domains, feeds, topics, all }
 
 enum ExploreFilter {
   all,
