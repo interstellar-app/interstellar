@@ -262,6 +262,26 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
               }
             },
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.web_stories_rounded),
+            title: Text(l(context).settings_crosspostComments),
+            value: ac.profile.showCrosspostComments,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                showCrosspostComments: newValue,
+              ),
+            ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.subdirectory_arrow_right_rounded),
+            title: Text(l(context).settings_crossPostMarkAsRead),
+            value: ac.profile.markCrosspostsAsRead,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(
+                markCrosspostsAsRead: newValue,
+              ),
+            ),
+          ),
         ],
       ),
     );

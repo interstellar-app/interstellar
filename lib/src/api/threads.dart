@@ -159,7 +159,7 @@ class APIThreads {
         final response = await client.get(path, queryParams: query);
 
         return PostModel.fromLemmy(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -170,7 +170,7 @@ class APIThreads {
         final response = await client.get(path, queryParams: query);
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }

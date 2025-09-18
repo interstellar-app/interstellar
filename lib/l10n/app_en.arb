@@ -105,6 +105,23 @@
   "feeds_addTo": "Add to feed",
   "post": "Post",
   "postDeleted": "Post Deleted",
+  "crossPosts": "Crossposts",
+  "crossPostCount": "{count} cross {count, plural, =1{post} other{posts}}",
+  "@crossPostCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crossPostComments": "Comments from {community}",
+  "@crossPostComments": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
   "comment": "Comment",
   "comments": "Comments",
   "commentDeleted": "Comment Deleted",
@@ -225,6 +242,8 @@
   "settings_animationSpeed": "Animation speed",
   "settings_animationDisabled": "Disabled",
   "settings_inlineReplies": "Reply inline",
+  "settings_crosspostComments": "Show crosspost comment sections",
+  "settings_crossPostMarkAsRead": "Mark crossposts as read",
   "settings_defaultDownloadDir": "Default download directory",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
