@@ -308,7 +308,7 @@ class FeedAggregator {
 
   const FeedAggregator({required this.name, required this.inputs});
 
-  static Future<FeedAggregator> create(AppController ac, Feed feed) async {
+  static Future<FeedAggregator> create(AppController ac, String name, Feed feed) async {
     final inputs = await feed.inputs.map((input) async {
       final name = denormalizeName(input.name, ac.instanceHost);
       final source = input.serverId?? await ac.fetchCachedFeedInput(name, input.sourceType);
@@ -319,7 +319,7 @@ class FeedAggregator {
         sourceId: source,
       );
     }).wait;
-    return FeedAggregator(name: feed.name, inputs: inputs.nonNulls.toList());
+    return FeedAggregator(name: name, inputs: inputs.nonNulls.toList());
   }
 
   Future<(List<PostModel>, String?)> fetchPage(

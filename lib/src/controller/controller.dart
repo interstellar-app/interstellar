@@ -584,7 +584,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> renameFeed(String oldName, String newName) async {
-    _feeds[newName] = _feeds[oldName]!.copyWith(name: newName);
+    _feeds[newName] = _feeds[oldName]!;
     _feeds.remove(oldName);
 
     notifyListeners();

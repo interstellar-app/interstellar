@@ -55,6 +55,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
               onTap: () async {
                 final feed = await FeedAggregator.create(
                   ac,
+                  entry.key,
                   ac.feeds[entry.key]!,
                 );
                 if (!context.mounted) return;
@@ -163,7 +164,6 @@ void newFeed(BuildContext context) {
                 if (item is! FeedModel) return;
 
                 final feed = Feed(
-                  name: item.title,
                   inputs: {
                     FeedInput(
                       name: normalizeName(item.name, ac.instanceHost),
@@ -230,7 +230,6 @@ void newFeed(BuildContext context) {
                 if (item is! FeedModel) return;
 
                 final feed = Feed(
-                  name: item.title,
                   inputs: {
                     FeedInput(
                       name: normalizeName(item.name, ac.instanceHost),
@@ -314,7 +313,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     }
 
     feedData = widget.feedData == null
-        ? Feed(name: '', inputs: {})
+        ? Feed(inputs: {})
         : widget.feedData!;
   }
 
@@ -423,7 +422,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                         await ac.renameFeed(widget.feed!, name);
                       }
 
-                      await ac.setFeed(name, feedData.copyWith(name: name));
+                      await ac.setFeed(name, feedData);
                       if (!context.mounted) return;
                       Navigator.pop(context);
                     },
@@ -474,19 +473,19 @@ void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
   ContextMenu(
     title: l(context).feeds,
     items: [
-      ...ac.feeds.values
-          .where((feed) => feed.clientFeed)
+      ...ac.feeds.entries
+          .where((feed) => feed.value.clientFeed)
           .map(
             (feed) => ContextMenuItem(
-              title: feed.name,
+              title: feed.key,
               onTap: () async {
-                final newFeed = feed.copyWith(
+                final newFeed = feed.value.copyWith(
                   inputs: {
-                    ...feed.inputs,
+                    ...feed.value.inputs,
                     FeedInput(name: name, sourceType: source),
                   },
                 );
-                await ac.setFeed(feed.name, newFeed);
+                await ac.setFeed(feed.key, newFeed);
                 if (!context.mounted) return;
                 Navigator.pop(context);
               },

@@ -25,7 +25,6 @@ class Feed with _$Feed {
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory Feed({
-    required String name,
     required Set<FeedInput> inputs,
   }) = _Feed;
 
