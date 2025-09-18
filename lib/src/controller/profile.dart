@@ -203,7 +203,7 @@ class ProfileRequired with _$ProfileRequired {
     markMicroblogsReadOnScroll: false,
     animationSpeed: 1.0,
     inlineReplies: true,
-    showCrosspostComments: false,
+    showCrosspostComments: true,
     markCrosspostsAsRead: false,
     appLanguage: '',
     themeMode: ThemeMode.system,
