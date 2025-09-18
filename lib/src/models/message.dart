@@ -6,7 +6,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'message.freezed.dart';
 
 @freezed
-class MessageListModel with _$MessageListModel {
+abstract class MessageListModel with _$MessageListModel {
   const factory MessageListModel({
     required List<MessageThreadModel> items,
     required String? nextPage,
@@ -97,7 +97,7 @@ class MessageListModel with _$MessageListModel {
 }
 
 @freezed
-class MessageThreadModel with _$MessageThreadModel {
+abstract class MessageThreadModel with _$MessageThreadModel {
   const factory MessageThreadModel({
     required int id,
     required List<DetailedUserModel> participants,
@@ -150,7 +150,7 @@ class MessageThreadModel with _$MessageThreadModel {
 }
 
 @freezed
-class MessageThreadItemModel with _$MessageThreadItemModel {
+abstract class MessageThreadItemModel with _$MessageThreadItemModel {
   const factory MessageThreadItemModel({
     required int id,
     required UserModel sender,

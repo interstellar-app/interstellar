@@ -14,7 +14,7 @@ enum OpenLinksIn { inAppBrowser, externalBrowser }
 
 /// Profile class where all fields are required.
 @freezed
-class ProfileRequired with _$ProfileRequired {
+abstract class ProfileRequired with _$ProfileRequired {
   const ProfileRequired._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
@@ -51,8 +51,7 @@ class ProfileRequired with _$ProfileRequired {
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
     // Feed defaults
-    @FeedViewConverter()
-    required FeedView feedDefaultView,
+    @FeedViewConverter() required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
@@ -114,8 +113,10 @@ class ProfileRequired with _$ProfileRequired {
         defaultProfile.markMicroblogsReadOnScroll,
     animationSpeed: profile?.animationSpeed ?? defaultProfile.animationSpeed,
     inlineReplies: profile?.inlineReplies ?? defaultProfile.inlineReplies,
-    showCrosspostComments: profile?.showCrosspostComments ?? defaultProfile.showCrosspostComments,
-    markCrosspostsAsRead: profile?.markCrosspostsAsRead ?? defaultProfile.markCrosspostsAsRead,
+    showCrosspostComments:
+        profile?.showCrosspostComments ?? defaultProfile.showCrosspostComments,
+    markCrosspostsAsRead:
+        profile?.markCrosspostsAsRead ?? defaultProfile.markCrosspostsAsRead,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
     themeMode: profile?.themeMode ?? defaultProfile.themeMode,
     colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -145,7 +146,9 @@ class ProfileRequired with _$ProfileRequired {
     feedDefaultMicroblogSort:
         profile?.feedDefaultMicroblogSort ??
         defaultProfile.feedDefaultMicroblogSort,
-    feedDefaultCombinedSort: profile?.feedDefaultCombinedSort ?? defaultProfile.feedDefaultCombinedSort,
+    feedDefaultCombinedSort:
+        profile?.feedDefaultCombinedSort ??
+        defaultProfile.feedDefaultCombinedSort,
     feedDefaultExploreSort:
         profile?.feedDefaultExploreSort ??
         defaultProfile.feedDefaultExploreSort,
@@ -246,7 +249,7 @@ class ProfileRequired with _$ProfileRequired {
 
 /// Profile class where all fields are optional.
 @freezed
-class ProfileOptional with _$ProfileOptional {
+abstract class ProfileOptional with _$ProfileOptional {
   const ProfileOptional._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
@@ -282,8 +285,7 @@ class ProfileOptional with _$ProfileOptional {
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
     // Feed defaults
-    @FeedViewConverter()
-    required FeedView? feedDefaultView,
+    @FeedViewConverter() required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
@@ -393,7 +395,8 @@ class ProfileOptional with _$ProfileOptional {
           other.markMicroblogsReadOnScroll ?? markMicroblogsReadOnScroll,
       animationSpeed: other.animationSpeed ?? animationSpeed,
       inlineReplies: other.inlineReplies ?? inlineReplies,
-      showCrosspostComments: other.showCrosspostComments ?? showCrosspostComments,
+      showCrosspostComments:
+          other.showCrosspostComments ?? showCrosspostComments,
       markCrosspostsAsRead: other.markCrosspostsAsRead ?? markCrosspostsAsRead,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
@@ -415,7 +418,8 @@ class ProfileOptional with _$ProfileOptional {
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:
           other.feedDefaultMicroblogSort ?? feedDefaultMicroblogSort,
-      feedDefaultCombinedSort: other.feedDefaultCombinedSort ?? feedDefaultCombinedSort,
+      feedDefaultCombinedSort:
+          other.feedDefaultCombinedSort ?? feedDefaultCombinedSort,
       feedDefaultExploreSort:
           other.feedDefaultExploreSort ?? feedDefaultExploreSort,
       feedDefaultCommentSort:

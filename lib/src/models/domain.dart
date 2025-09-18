@@ -5,7 +5,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'domain.freezed.dart';
 
 @freezed
-class DomainListModel with _$DomainListModel {
+abstract class DomainListModel with _$DomainListModel {
   const factory DomainListModel({
     required List<DomainModel> items,
     required String? nextPage,
@@ -20,7 +20,7 @@ class DomainListModel with _$DomainListModel {
 }
 
 @freezed
-class DomainModel with _$DomainModel {
+abstract class DomainModel with _$DomainModel {
   const factory DomainModel({
     required int id,
     required String name,

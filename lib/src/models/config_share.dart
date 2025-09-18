@@ -10,7 +10,7 @@ part 'config_share.g.dart';
 enum ConfigShareType { profile, filterList, feed }
 
 @freezed
-class ConfigShare with _$ConfigShare {
+abstract class ConfigShare with _$ConfigShare {
   const ConfigShare._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)

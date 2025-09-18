@@ -10,7 +10,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'comment.freezed.dart';
 
 @freezed
-class CommentListModel with _$CommentListModel {
+abstract class CommentListModel with _$CommentListModel {
   const factory CommentListModel({
     required List<CommentModel> items,
     required String? nextPage,
@@ -108,7 +108,7 @@ class CommentListModel with _$CommentListModel {
 }
 
 @freezed
-class CommentModel with _$CommentModel {
+abstract class CommentModel with _$CommentModel {
   const factory CommentModel({
     required int id,
     required UserModel user,

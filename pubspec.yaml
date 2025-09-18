@@ -29,7 +29,7 @@ dependencies:
   url_launcher: ^6.3.2
   webview_flutter: ^4.13.0
   youtube_explode_dart: ^2.5.2
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.1.0
   image_picker: ^1.2.0
   dynamic_color: ^1.8.1
   markdown: ^7.3.0
@@ -58,9 +58,9 @@ dependencies:
 dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
-  build_runner: ^2.4.15
-  freezed: ^2.5.8
-  json_serializable: ^6.9.5
+  build_runner: ^2.8.0
+  freezed: ^3.2.3
+  json_serializable: ^6.11.1
 
 flutter:
   uses-material-design: true

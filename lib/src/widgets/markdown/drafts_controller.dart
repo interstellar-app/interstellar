@@ -8,7 +8,7 @@ part 'drafts_controller.freezed.dart';
 part 'drafts_controller.g.dart';
 
 @freezed
-class Draft with _$Draft {
+abstract class Draft with _$Draft {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory Draft({
     required DateTime at,
