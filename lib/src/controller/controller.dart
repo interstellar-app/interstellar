@@ -13,6 +13,7 @@ import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -23,7 +24,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:simplytranslate/simplytranslate.dart';
-import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
 
@@ -49,9 +49,8 @@ class AppController with ChangeNotifier {
   late final _webPushKeysRecord = _mainStore.record('webPushKeys');
 
   String? _defaultDownloadsDir;
-  Directory? get defaultDownloadDir => _defaultDownloadsDir == null
-      ? null
-      : Directory(_defaultDownloadsDir!);
+  Directory? get defaultDownloadDir =>
+      _defaultDownloadsDir == null ? null : Directory(_defaultDownloadsDir!);
 
   RecordRef<String, JsonMap> _profileRecord(String name) =>
       _profileStore.record(FieldKey.escape(name));
@@ -117,7 +116,7 @@ class AppController with ChangeNotifier {
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
       output: FileOutput(file: await logFile),
-      filter: ProductionFilter()
+      filter: ProductionFilter(),
     );
     logger.i('Initializing interstellar');
 
@@ -526,9 +525,12 @@ class AppController with ChangeNotifier {
     }
 
     if (!context.mounted) return;
-    await UnifiedPush.registerAppWithDialog(context, _selectedAccount, [
-      featureAndroidBytesMessage,
-    ]);
+
+    final distributor = await getUnifiedPushDistributor(context);
+    if (distributor == null) return;
+
+    UnifiedPush.saveDistributor(distributor);
+    UnifiedPush.register(instance: _selectedAccount);
 
     await addPushRegistrationStatus(_selectedAccount);
   }
@@ -544,9 +546,15 @@ class AppController with ChangeNotifier {
 
     // When unregistering a non selected account, make sure the api uses the correct
     // authentication for the target account, instead of the currently selected account.
-    await (account == _selectedAccount ? api : await getApiForAccount(account))
-        .notifications
-        .pushDelete();
+    try {
+      await (account == _selectedAccount
+              ? api
+              : await getApiForAccount(account))
+          .notifications
+          .pushDelete();
+    } catch (e) {
+      // Remove push registration status even if API request fails
+    }
 
     removePushRegistrationStatus(account);
   }
@@ -738,21 +746,25 @@ class AppController with ChangeNotifier {
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
     final cachedValue = (await _feedCacheStore.find(
-        db,
-        finder: _feedCacheStoreFinder(name, source))
-    ).firstOrNull;
+      db,
+      finder: _feedCacheStoreFinder(name, source),
+    )).firstOrNull;
     if (cachedValue != null) return cachedValue.value['id'] as int;
 
     try {
       final newValue = switch (source) {
         FeedSource.community => (await api.community.getByName(name)).id,
         FeedSource.user => (await api.users.getByName(name)).id,
-        FeedSource.feed => name.split(':').last != instanceHost // tmp until proper getByName method can be made
-            ? throw Exception('Wrong instance')
-            : int.parse(name.split(':').first),
-        FeedSource.topic => name.split(':').last != instanceHost // tmp until proper getByName method can be made
-            ? throw Exception('Wrong instance')
-            : int.parse(name.split(':').first),
+        FeedSource.feed =>
+          name.split(':').last !=
+                  instanceHost // tmp until proper getByName method can be made
+              ? throw Exception('Wrong instance')
+              : int.parse(name.split(':').first),
+        FeedSource.topic =>
+          name.split(':').last !=
+                  instanceHost // tmp until proper getByName method can be made
+              ? throw Exception('Wrong instance')
+              : int.parse(name.split(':').first),
         _ => null,
       };
 
@@ -761,7 +773,7 @@ class AppController with ChangeNotifier {
           'server': instanceHost,
           'name': name,
           'id': newValue,
-          'source': source.index
+          'source': source.index,
         });
       }
 
@@ -780,7 +792,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<String?> getDefaultDownloadDir() async {
-    return _defaultDownloadsDir??
+    return _defaultDownloadsDir ??
         await _mainStore.record('defaultDownloadDir').get(db) as String?;
   }
 

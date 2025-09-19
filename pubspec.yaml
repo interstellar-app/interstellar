@@ -35,14 +35,14 @@ dependencies:
   markdown: ^7.3.0
   expandable: ^5.0.1
   blurhash_ffi: ^1.2.7
-  unifiedpush: ^5.0.2
+  unifiedpush: ^6.0.2
   webpush_encryption: 1.0.0-rc1
-  flutter_local_notifications: ^19.4.1
+  flutter_local_notifications: ^19.4.2
   flex_color_scheme: ^8.3.0
   share_plus: ^12.0.0
   path_provider: ^2.1.5
   window_manager: ^0.5.1
-  material_symbols_icons: ^4.2872.1
+  material_symbols_icons: ^4.2873.0
   json_annotation: ^4.9.0
   sembast: ^3.8.5
   package_info_plus: ^8.3.0

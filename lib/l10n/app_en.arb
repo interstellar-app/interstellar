@@ -712,5 +712,15 @@
   "errorPage_firstPage_button": "Try Again",
   "errorPage_newPage": "Something went wrong. Tap to try again.",
   "errorPage_caughtUp": "You're all caught up.\nLoad older items?",
-  "exitMessage": "Press BACK again to exit."
+  "exitMessage": "Press BACK again to exit.",
+  "pushNotificationsDialog_title": "Push Notifications",
+  "pushNotificationsDialog_noDistributor": "You need to install a UnifiedPush distributor for push notifications to work.\nYou can find more information at: {url}",
+  "@pushNotificationsDialog_noDistributor": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "pushNotificationsDialog_selectDistributor": "Select push distributor"
 }
