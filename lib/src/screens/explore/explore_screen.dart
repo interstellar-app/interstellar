@@ -108,8 +108,8 @@ class _ExploreScreenState extends State<ExploreScreen>
 
         case ExploreType.people:
           // Lemmy cannot search with an empty query
-          if (context.read<AppController>().serverSoftware ==
-                  ServerSoftware.lemmy &&
+          if ((context.read<AppController>().serverSoftware !=
+                  ServerSoftware.mbin) &&
               search.isEmpty) {
             _pagingController.appendLastPage([]);
             return;
