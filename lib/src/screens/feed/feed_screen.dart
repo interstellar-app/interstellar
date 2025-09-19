@@ -19,6 +19,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/floating_menu.dart';
+import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
@@ -62,7 +63,7 @@ class _FeedScreenState extends State<FeedScreen>
   bool _isHidden = false;
 
   final ExpandableController _drawerController = ExpandableController(
-      initialExpanded: true
+    initialExpanded: true,
   );
   NavDrawPersistentState? _navDrawPersistentState;
 
@@ -88,8 +89,11 @@ class _FeedScreenState extends State<FeedScreen>
         };
 
   void _initNavExpanded() async {
-    final initExpanded = (await context.read<AppController>()
-        .fetchCachedValue('nav-widescreen')) ?? true;
+    final initExpanded =
+        (await context.read<AppController>().fetchCachedValue(
+          'nav-widescreen',
+        )) ??
+        true;
     if (initExpanded != _drawerController.expanded) {
       if (!mounted) return;
       setState(() {
@@ -119,12 +123,14 @@ class _FeedScreenState extends State<FeedScreen>
     _initNavExpanded();
 
     () async {
-      final drawerState = await fetchNavDrawerState(context.read<AppController>());
+      final drawerState = await fetchNavDrawerState(
+        context.read<AppController>(),
+      );
       if (!mounted) return;
       setState(() {
         _navDrawPersistentState = drawerState;
       });
-    } ();
+    }();
   }
 
   @override
@@ -364,17 +370,22 @@ class _FeedScreenState extends State<FeedScreen>
 
                 return [
                   SliverAppBar(
-                    leading: widget.sourceId == null && widget.feed == null
-                        && Breakpoints.isExpanded(context)
+                    leading:
+                        widget.sourceId == null &&
+                            widget.feed == null &&
+                            Breakpoints.isExpanded(context)
                         ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _drawerController.toggle();
-                            });
-                            ac.cacheValue('nav-widescreen', _drawerController.expanded);
-                          },
-                          icon: const Icon(Symbols.menu_rounded)
-                        )
+                            onPressed: () {
+                              setState(() {
+                                _drawerController.toggle();
+                              });
+                              ac.cacheValue(
+                                'nav-widescreen',
+                                _drawerController.expanded,
+                              );
+                            },
+                            icon: const Icon(Symbols.menu_rounded),
+                          )
                         : null,
                     floating: ac.profile.hideFeedUIOnScroll,
                     pinned: !ac.profile.hideFeedUIOnScroll,
@@ -385,10 +396,12 @@ class _FeedScreenState extends State<FeedScreen>
                         widget.feed != null
                             ? widget.feed!.name
                             : widget.title ??
-                            context.watch<AppController>().selectedAccount +
-                                (context.watch<AppController>().isLoggedIn
-                                    ? ''
-                                    : ' (${l(context).guest})'),
+                                  context
+                                          .watch<AppController>()
+                                          .selectedAccount +
+                                      (context.watch<AppController>().isLoggedIn
+                                          ? ''
+                                          : ' (${l(context).guest})'),
                         softWrap: false,
                         overflow: TextOverflow.fade,
                       ),
@@ -623,16 +636,18 @@ class _FeedScreenState extends State<FeedScreen>
         drawer: (widget.sourceId != null || widget.feed != null)
             ? null
             : NavDrawer(
-              drawerState: _navDrawPersistentState,
-              updateState: (NavDrawPersistentState? drawerState) async {
-                drawerState ??= await fetchNavDrawerState(context.read<AppController>());
+                drawerState: _navDrawPersistentState,
+                updateState: (NavDrawPersistentState? drawerState) async {
+                  drawerState ??= await fetchNavDrawerState(
+                    context.read<AppController>(),
+                  );
 
-                if (!mounted) return;
-                setState(() {
-                  _navDrawPersistentState = drawerState!;
-                });
-              },
-            ),
+                  if (!mounted) return;
+                  setState(() {
+                    _navDrawPersistentState = drawerState!;
+                  });
+                },
+              ),
       ),
     );
   }
@@ -724,10 +739,7 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
           value: FeedSort.topYear,
           title: l(context).sort_top_1y,
         ),
-        SelectionMenuItem(
-          value: FeedSort.top,
-          title: l(context).sort_top_all,
-        ),
+        SelectionMenuItem(value: FeedSort.top, title: l(context).sort_top_all),
       ],
     ),
     SelectionMenuItem(
@@ -873,9 +885,29 @@ class FeedScreenBody extends StatefulWidget {
 
 class _FeedScreenBodyState extends State<FeedScreenBody>
     with AutomaticKeepAliveClientMixin<FeedScreenBody> {
-  final _pagingController = PagingController<String, PostModel>(
-    firstPageKey: '',
-  );
+  late final _pagingController =
+      AdvancedPagingController<String, PostModel, (PostType, int)>(
+        logger: context.read<AppController>().logger,
+        firstPageKey: '',
+        getItemId: (item) => (item.type, item.id),
+        fetchPage: (pageKey) async {
+          if (pageKey.isEmpty) _filterListWarnings.clear();
+
+          var (newItems, nextPageKey) = await _tryFetchPage(pageKey);
+          int emptyPageCount = 0;
+          while ((emptyPageCount < 2) &&
+              newItems.isEmpty &&
+              nextPageKey != null &&
+              nextPageKey.isNotEmpty) {
+            (newItems, nextPageKey) = await _tryFetchPage(nextPageKey);
+            emptyPageCount++;
+          }
+          setState(() {
+            _lastPageFilteredOut = newItems.isEmpty && nextPageKey != null;
+          });
+          return (newItems, newItems.isEmpty ? null : nextPageKey);
+        },
+      );
   SubordinateScrollController? _scrollController;
   ScrollDirection _scrollDirection = ScrollDirection.idle;
 
@@ -906,7 +938,6 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
           ],
         );
 
-    _pagingController.addPageRequestListener(_fetchPage);
     _scrollController?.addListener(getScrollDirection);
   }
 
@@ -935,71 +966,39 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     final newItems = page.$1;
     final nextPageKey = page.$2;
 
-    // Prevent duplicates
-    final currentItemIds =
-        _pagingController.itemList?.map((post) => (post.type, post.id)) ?? [];
     final filterListActivations = ac.profile.filterLists;
-    final items = newItems
-        .where((post) => !currentItemIds.contains((post.type, post.id)))
-        .where((post) {
-          // Skip feed filters if it's an explore page
-          if (widget.sourceId != null) return true;
+    final items = newItems.where((post) {
+      // Skip feed filters if it's an explore page
+      if (widget.sourceId != null) return true;
 
-          for (var filterListEntry in ac.filterLists.entries) {
-            if (filterListActivations[filterListEntry.key] == true) {
-              final filterList = filterListEntry.value;
+      for (var filterListEntry in ac.filterLists.entries) {
+        if (filterListActivations[filterListEntry.key] == true) {
+          final filterList = filterListEntry.value;
 
-              if ((post.title != null && filterList.hasMatch(post.title!)) ||
-                  (post.body != null && filterList.hasMatch(post.body!))) {
-                if (filterList.showWithWarning) {
-                  if (!_filterListWarnings.containsKey((post.type, post.id))) {
-                    _filterListWarnings[(post.type, post.id)] = {};
-                  }
-
-                  _filterListWarnings[(post.type, post.id)]!.add(
-                    filterListEntry.key,
-                  );
-                } else {
-                  return false;
-                }
+          if ((post.title != null && filterList.hasMatch(post.title!)) ||
+              (post.body != null && filterList.hasMatch(post.body!))) {
+            if (filterList.showWithWarning) {
+              if (!_filterListWarnings.containsKey((post.type, post.id))) {
+                _filterListWarnings[(post.type, post.id)] = {};
               }
+
+              _filterListWarnings[(post.type, post.id)]!.add(
+                filterListEntry.key,
+              );
+            } else {
+              return false;
             }
           }
+        }
+      }
 
-          return true;
-        })
-        .toList();
+      return true;
+    }).toList();
 
     return (
       items.where((item) => !(widget.hideReadPosts && item.read)).toList(),
       nextPageKey,
     );
-  }
-
-  Future<void> _fetchPage(String pageKey, {bool toEnd = false}) async {
-    if (pageKey.isEmpty) _filterListWarnings.clear();
-    try {
-      var (newItems, nextPageKey) = await _tryFetchPage(pageKey);
-      int emptyPageCount = 0;
-      while ((emptyPageCount < 2 || toEnd) &&
-          newItems.isEmpty &&
-          nextPageKey != null &&
-          nextPageKey.isNotEmpty) {
-        (newItems, nextPageKey) = await _tryFetchPage(nextPageKey);
-        emptyPageCount++;
-      }
-      setState(() {
-        _lastPageFilteredOut = newItems.isEmpty && nextPageKey != null;
-      });
-      _pagingController.appendPage(
-        newItems,
-        newItems.isEmpty ? null : nextPageKey,
-      );
-    } catch (error) {
-      if (!mounted) return;
-      context.read<AppController>().logger.e(error);
-      _pagingController.error = error;
-    }
   }
 
   void backToTop() {
@@ -1061,193 +1060,181 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
         controller: _scrollController,
         slivers: [
           if (widget.details != null) SliverToBoxAdapter(child: widget.details),
-          PagedSliverList(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<PostModel>(
-              firstPageErrorIndicatorBuilder: (context) =>
-                  FirstPageErrorIndicator(
-                    error: _pagingController.error,
-                    onTryAgain: _pagingController.retryLastFailedRequest,
-                  ),
-              newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
-                error: _pagingController.error,
-                onTryAgain: _pagingController.retryLastFailedRequest,
-              ),
-              noItemsFoundIndicatorBuilder: _lastPageFilteredOut
-                  ? (context) => NoItemsFoundIndicator(
-                      nextPageKey: _pagingController.nextPageKey,
-                      onTryAgain: _fetchPage,
-                    )
-                  : null,
-              noMoreItemsIndicatorBuilder: _lastPageFilteredOut
-                  ? (context) => NoItemsFoundIndicator(
-                      nextPageKey: _pagingController.nextPageKey,
-                      onTryAgain: _fetchPage,
-                    )
-                  : null,
-              itemBuilder: (context, item, index) {
-                void onPostTap() {
-                  pushRoute(
-                    context,
-                    builder: (context) => PostPage(
-                      initData: item,
-                      onUpdate: (newValue) {
-                        var newList = _pagingController.itemList;
-                        if (newList == null) return;
-                        newList[index] = newValue;
-                        setState(() {
-                          _pagingController.itemList = newList;
-                        });
-                      },
-                      userCanModerate: widget.userCanModerate,
+          AdvancedPagingListener(
+            controller: _pagingController,
+            builder: (context, state, fetchNextPage) => PagedSliverList(
+              state: state,
+              fetchNextPage: fetchNextPage,
+              builderDelegate: PagedChildBuilderDelegate<PostModel>(
+                firstPageErrorIndicatorBuilder: (context) =>
+                    FirstPageErrorIndicator(
+                      error: _pagingController.value.error,
+                      onTryAgain: _pagingController.fetchNextPage,
                     ),
-                  );
-                }
-
-                return Wrapper(
-                  shouldWrap:
-                      (context
-                              .read<AppController>()
-                              .profile
-                              .markThreadsReadOnScroll &&
-                          widget.view == FeedView.threads) ||
-                      (context
-                              .read<AppController>()
-                              .profile
-                              .markMicroblogsReadOnScroll &&
-                          widget.view == FeedView.microblog),
-                  parentBuilder: (child) {
-                    return VisibilityDetector(
-                      key: Key(item.id.toString()),
-                      onVisibilityChanged: (VisibilityInfo info) {
-                        if (index <= _lastVisibleIndex &&
-                            info.visibleFraction == 0 &&
-                            _scrollDirection == ScrollDirection.reverse) {
-                          _markAsReadDebounce.run(() async {
-                            List<int> readPosts = [];
-                            for (int i = index; i >= 0; i--) {
-                              if (_pagingController.itemList == null) return;
-                              final post = _pagingController.itemList![i];
-                              if (post.read || readPosts.contains(i)) {
-                                continue;
-                              }
-                              readPosts.add(i);
-                            }
-                            if (readPosts.isNotEmpty) {
-                              var postsMarkedAsRead = await context
-                                  .read<AppController>()
-                                  .markAsRead(
-                                    readPosts
-                                        .map(
-                                          (index) => _pagingController
-                                              .itemList![index],
-                                        )
-                                        .toList(),
-                                    true,
-                                  );
-
-                              var newList = _pagingController.itemList;
-                              for (var (index, i) in readPosts.indexed) {
-                                newList![i] = postsMarkedAsRead[index];
-                              }
-                              setState(() {
-                                _pagingController.itemList = newList;
-                              });
-                            }
-                          });
-                        }
-
-                        if (info.visibleFraction == 1) {
-                          setState(() {
-                            _lastVisibleIndex = index;
-                          });
-                        }
-                      },
-                      child: child,
+                newPageErrorIndicatorBuilder: (context) =>
+                    NewPageErrorIndicator(
+                      error: _pagingController.value.error,
+                      onTryAgain: _pagingController.fetchNextPage,
+                    ),
+                noItemsFoundIndicatorBuilder: _lastPageFilteredOut
+                    ? (context) =>
+                          NoItemsFoundIndicator(onTryAgain: fetchNextPage)
+                    : null,
+                noMoreItemsIndicatorBuilder: _lastPageFilteredOut
+                    ? (context) =>
+                          NoItemsFoundIndicator(onTryAgain: fetchNextPage)
+                    : null,
+                itemBuilder: (context, item, index) {
+                  void onPostTap() {
+                    pushRoute(
+                      context,
+                      builder: (context) => PostPage(
+                        initData: item,
+                        onUpdate: (newValue) =>
+                            _pagingController.updateItem(item, newValue),
+                        userCanModerate: widget.userCanModerate,
+                      ),
                     );
-                  },
-                  child: context.watch<AppController>().profile.compactMode
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: item.read
-                                    ? Theme.of(context).cardColor.darken(3)
-                                    : null,
+                  }
+
+                  return Wrapper(
+                    shouldWrap:
+                        (context
+                                .read<AppController>()
+                                .profile
+                                .markThreadsReadOnScroll &&
+                            widget.view == FeedView.threads) ||
+                        (context
+                                .read<AppController>()
+                                .profile
+                                .markMicroblogsReadOnScroll &&
+                            widget.view == FeedView.microblog),
+                    parentBuilder: (child) {
+                      return VisibilityDetector(
+                        key: Key(item.id.toString()),
+                        onVisibilityChanged: (VisibilityInfo info) {
+                          if (index <= _lastVisibleIndex &&
+                              info.visibleFraction == 0 &&
+                              _scrollDirection == ScrollDirection.reverse) {
+                            _markAsReadDebounce.run(() async {
+                              final items = _pagingController.value.items;
+                              if (items == null) return;
+
+                              List<PostModel> readPosts = [];
+                              for (int i = index; i >= 0; i--) {
+                                final post = items[i];
+                                if (post.read || readPosts.contains(i)) {
+                                  continue;
+                                }
+                                readPosts.add(post);
+                              }
+                              if (readPosts.isNotEmpty) {
+                                var postsMarkedAsRead = await context
+                                    .read<AppController>()
+                                    .markAsRead(readPosts, true);
+
+                                _pagingController.mapItems(
+                                  (oldItem) => postsMarkedAsRead.firstWhere(
+                                    (newItem) =>
+                                        (oldItem.type, oldItem.id) ==
+                                        (newItem.type, newItem.id),
+                                    orElse: () => oldItem,
+                                  ),
+                                );
+                              }
+                            });
+                          }
+
+                          if (info.visibleFraction == 1) {
+                            setState(() {
+                              _lastVisibleIndex = index;
+                            });
+                          }
+                        },
+                        child: child,
+                      );
+                    },
+                    child: context.watch<AppController>().profile.compactMode
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: item.read
+                                      ? Theme.of(context).cardColor.darken(3)
+                                      : null,
+                                ),
+                                child: PostItem(
+                                  item,
+                                  (newValue) => _pagingController.updateItem(
+                                    item,
+                                    newValue,
+                                  ),
+                                  onReply: whenLoggedIn(context, (
+                                    body,
+                                    lang,
+                                  ) async {
+                                    await context
+                                        .read<AppController>()
+                                        .api
+                                        .comments
+                                        .create(
+                                          item.type,
+                                          item.id,
+                                          body,
+                                          lang: lang,
+                                        );
+                                  }),
+                                  onTap: onPostTap,
+                                  filterListWarnings:
+                                      _filterListWarnings[(item.type, item.id)],
+                                  userCanModerate: widget.userCanModerate,
+                                  isTopLevel: true,
+                                  isCompact: true,
+                                ),
                               ),
-                              child: PostItem(
-                                item,
-                                (newValue) {
-                                  var newList = _pagingController.itemList;
-                                  if (newList == null) return;
-                                  newList[index] = newValue;
-                                  setState(() {
-                                    _pagingController.itemList = newList;
-                                  });
-                                },
-                                onReply: whenLoggedIn(context, (
-                                  body,
-                                  lang,
-                                ) async {
-                                  await context
-                                      .read<AppController>()
-                                      .api
-                                      .comments
-                                      .create(
-                                        item.type,
-                                        item.id,
-                                        body,
-                                        lang: lang,
-                                      );
-                                }),
-                                onTap: onPostTap,
-                                filterListWarnings:
-                                    _filterListWarnings[(item.type, item.id)],
-                                userCanModerate: widget.userCanModerate,
-                                isTopLevel: true,
-                                isCompact: true,
-                              ),
+                              const Divider(height: 1, thickness: 1),
+                            ],
+                          )
+                        : Card(
+                            color: item.read
+                                ? Theme.of(context).cardColor.darken(3)
+                                : null,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
                             ),
-                            const Divider(height: 1, thickness: 1),
-                          ],
-                        )
-                      : Card(
-                          color: item.read
-                              ? Theme.of(context).cardColor.darken(3)
-                              : null,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                            clipBehavior: Clip.antiAlias,
+                            child: PostItem(
+                              item,
+                              (newValue) =>
+                                  _pagingController.updateItem(item, newValue),
+                              onTap: onPostTap,
+                              isPreview: true,
+                              onReply: whenLoggedIn(context, (
+                                body,
+                                lang,
+                              ) async {
+                                await context
+                                    .read<AppController>()
+                                    .api
+                                    .comments
+                                    .create(
+                                      item.type,
+                                      item.id,
+                                      body,
+                                      lang: lang,
+                                    );
+                              }),
+                              filterListWarnings:
+                                  _filterListWarnings[(item.type, item.id)],
+                              userCanModerate: widget.userCanModerate,
+                              isTopLevel: true,
+                            ),
                           ),
-                          clipBehavior: Clip.antiAlias,
-                          child: PostItem(
-                            item,
-                            (newValue) {
-                              var newList = _pagingController.itemList;
-                              if (newList == null) return;
-                              newList[index] = newValue;
-                              setState(() {
-                                _pagingController.itemList = newList;
-                              });
-                            },
-                            onTap: onPostTap,
-                            isPreview: true,
-                            onReply: whenLoggedIn(context, (body, lang) async {
-                              await context
-                                  .read<AppController>()
-                                  .api
-                                  .comments
-                                  .create(item.type, item.id, body, lang: lang);
-                            }),
-                            filterListWarnings:
-                                _filterListWarnings[(item.type, item.id)],
-                            userCanModerate: widget.userCanModerate,
-                            isTopLevel: true,
-                          ),
-                        ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -1258,6 +1245,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   @override
   void dispose() {
     _scrollController?.dispose();
+    _pagingController.dispose();
     super.dispose();
   }
 }
