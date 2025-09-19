@@ -30,7 +30,7 @@ enum ServerSoftware {
 }
 
 @freezed
-class Server with _$Server {
+abstract class Server with _$Server {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory Server({
     required ServerSoftware software,

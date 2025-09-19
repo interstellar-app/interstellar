@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
@@ -22,12 +21,12 @@ import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
-import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
+import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
@@ -531,41 +530,23 @@ class UserScreenBody extends StatefulWidget {
 
 class _UserScreenBodyState extends State<UserScreenBody>
     with AutomaticKeepAliveClientMixin<UserScreenBody> {
-  final PagingController<String, dynamic> _pagingController = PagingController(
+  late final _pagingController = AdvancedPagingController<String, dynamic, int>(
+    logger: context.read<AppController>().logger,
     firstPageKey: '',
-  );
+    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    getItemId: (item) => item.id,
+    fetchPage: (pageKey) async {
+      final ac = context.read<AppController>();
 
-  @override
-  bool get wantKeepAlive => true;
+      const Map<FeedSort, CommentSort> feedToCommentSortMap = {
+        FeedSort.active: CommentSort.active,
+        FeedSort.commented: CommentSort.active,
+        FeedSort.hot: CommentSort.hot,
+        FeedSort.newest: CommentSort.newest,
+        FeedSort.oldest: CommentSort.oldest,
+        FeedSort.top: CommentSort.top,
+      };
 
-  @override
-  void didUpdateWidget(covariant oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.mode != oldWidget.mode || widget.sort != oldWidget.sort) {
-      _pagingController.refresh();
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _pagingController.addPageRequestListener(_fetchPage);
-  }
-
-  Future<void> _fetchPage(String pageKey) async {
-    final ac = context.read<AppController>();
-
-    const Map<FeedSort, CommentSort> feedToCommentSortMap = {
-      FeedSort.active: CommentSort.active,
-      FeedSort.commented: CommentSort.active,
-      FeedSort.hot: CommentSort.hot,
-      FeedSort.newest: CommentSort.newest,
-      FeedSort.oldest: CommentSort.oldest,
-      FeedSort.top: CommentSort.top,
-    };
-
-    try {
       final newPage = await (switch (widget.mode) {
         UserFeedType.thread => ac.api.threads.list(
           FeedSource.user,
@@ -621,126 +602,82 @@ class _UserScreenBodyState extends State<UserScreenBody>
         ),
       });
 
-      if (!mounted) return;
+      return (
+        switch (newPage) {
+          PostListModel newPage => newPage.items,
+          CommentListModel newPage => newPage.items,
+          DetailedUserListModel newPage => newPage.items,
+          Object _ => [],
+        },
+        switch (newPage) {
+          PostListModel newPage => newPage.nextPage,
+          CommentListModel newPage => newPage.nextPage,
+          DetailedUserListModel newPage => newPage.nextPage,
+          Object _ => null,
+        },
+      );
+    },
+  );
 
-      final currentItemIds =
-          _pagingController.itemList?.map((post) => post.id) ?? [];
-      List<dynamic> newItems = (switch (newPage) {
-        PostListModel newPage =>
-          newPage.items
-              .where((element) => !currentItemIds.contains(element.id))
-              .toList(),
-        CommentListModel newPage =>
-          newPage.items
-              .where((element) => !currentItemIds.contains(element.id))
-              .toList(),
-        DetailedUserListModel newPage =>
-          newPage.items
-              .where((element) => !currentItemIds.contains(element.id))
-              .toList(),
-        Object _ => [],
-      });
+  @override
+  bool get wantKeepAlive => true;
 
-      _pagingController.appendPage(newItems, (switch (newPage) {
-        PostListModel newPage => newPage.nextPage,
-        CommentListModel newPage => newPage.nextPage,
-        DetailedUserListModel newPage => newPage.nextPage,
-        Object _ => null,
-      }));
-    } catch (error) {
-      if (!mounted) return;
-      context.read<AppController>().logger.e(error);
-      _pagingController.error = error;
+  @override
+  void didUpdateWidget(covariant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.mode != oldWidget.mode || widget.sort != oldWidget.sort) {
+      _pagingController.refresh();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return RefreshIndicator(
-      onRefresh: () => Future.sync(() => _pagingController.refresh()),
-      child: CustomScrollView(
-        slivers: [
-          PagedSliverList(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<dynamic>(
-              firstPageErrorIndicatorBuilder: (context) =>
-                  FirstPageErrorIndicator(
-                    error: _pagingController.error,
-                    onTryAgain: _pagingController.retryLastFailedRequest,
-                  ),
-              newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
-                error: _pagingController.error,
-                onTryAgain: _pagingController.retryLastFailedRequest,
+    return AdvancedPagedScrollView(
+      controller: _pagingController,
+      itemBuilder: (context, item, index) {
+        return switch (widget.mode) {
+          UserFeedType.thread || UserFeedType.microblog => Card(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            clipBehavior: Clip.antiAlias,
+            child: PostItem(
+              item,
+              (newValue) => _pagingController.updateItem(item, newValue),
+              onTap: () => pushRoute(
+                context,
+                builder: (context) => PostPage(
+                  initData: item,
+                  onUpdate: (newValue) =>
+                      _pagingController.updateItem(item, newValue),
+                ),
               ),
-              itemBuilder: (context, item, index) {
-                return switch (widget.mode) {
-                  UserFeedType.thread || UserFeedType.microblog => Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: PostItem(
-                      item,
-                      (newValue) {
-                        var newList = _pagingController.itemList;
-                        newList![index] = newValue;
-                        setState(() {
-                          _pagingController.itemList = newList;
-                        });
-                      },
-                      onTap: () => pushRoute(
-                        context,
-                        builder: (context) => PostPage(
-                          initData: item,
-                          onUpdate: (newValue) {
-                            var newList = _pagingController.itemList;
-                            if (newList == null) return;
-                            newList[index] = newValue;
-                            setState(() {
-                              _pagingController.itemList = newList;
-                            });
-                          },
-                        ),
-                      ),
-                      isPreview: item.type == PostType.thread,
-                      isTopLevel: true,
-                    ),
-                  ),
-                  UserFeedType.comment || UserFeedType.reply => Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                    child: PostComment(
-                      item,
-                      (newValue) {
-                        var newList = _pagingController.itemList;
-                        if (newList == null) return;
-                        newList[index] = newValue;
-                        setState(() {
-                          _pagingController.itemList = newList;
-                        });
-                      },
-                      onClick: () => pushRoute(
-                        context,
-                        builder: (context) =>
-                            PostCommentScreen(item.postType, item.id),
-                      ),
-                    ),
-                  ),
-                  UserFeedType.follower ||
-                  UserFeedType.following => ExploreScreenItem(item, (newValue) {
-                    var newList = _pagingController.itemList;
-                    newList![index] = newValue;
-                    setState(() {
-                      _pagingController.itemList = newList;
-                    });
-                  }),
-                };
-              },
+              isPreview: item.type == PostType.thread,
+              isTopLevel: true,
             ),
           ),
-        ],
-      ),
+          UserFeedType.comment || UserFeedType.reply => Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: PostComment(
+              item,
+              (newValue) => _pagingController.updateItem(item, newValue),
+              onClick: () => pushRoute(
+                context,
+                builder: (context) => PostCommentScreen(item.postType, item.id),
+              ),
+            ),
+          ),
+          UserFeedType.follower || UserFeedType.following => ExploreScreenItem(
+            item,
+            (newValue) => _pagingController.updateItem(item, newValue),
+          ),
+        };
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }

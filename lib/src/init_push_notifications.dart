@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/open_webpage.dart';
+import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
 
@@ -33,22 +37,26 @@ Future<void> initPushNotifications(AppController ac) async {
   final random = Random();
 
   await UnifiedPush.initialize(
-    onNewEndpoint: (String endpoint, String instance) async {
+    onNewEndpoint: (PushEndpoint endpoint, String instance) async {
       await ac.api.notifications.pushRegister(
-        endpoint: endpoint,
+        endpoint: endpoint.url,
         serverKey: ac.webPushKeys.publicKey.auth,
         contentPublicKey: ac.webPushKeys.publicKey.p256dh,
       );
     },
-    onRegistrationFailed: (String instance) {
+    onRegistrationFailed: (FailedReason reason, String instance) {
       ac.removePushRegistrationStatus(instance);
     },
     onUnregistered: (String instance) {
       ac.removePushRegistrationStatus(instance);
     },
-    onMessage: (Uint8List message, String instance) async {
+    onMessage: (PushMessage message, String instance) async {
       final data = jsonDecode(
-        utf8.decode(await WebPush().decrypt(ac.webPushKeys, message)),
+        utf8.decode(
+          message.decrypted
+              ? message.content
+              : await WebPush().decrypt(ac.webPushKeys, message.content),
+        ),
       );
 
       final hostDomain = instance.split('@').last;
@@ -72,4 +80,46 @@ Future<void> initPushNotifications(AppController ac) async {
       );
     },
   );
+}
+
+Future<String?> getUnifiedPushDistributor(BuildContext context) async {
+  const noDistributorUrl = 'https://unifiedpush.org/users/intro/';
+
+  final distributors = await UnifiedPush.getDistributors();
+
+  if (!context.mounted) return null;
+
+  if (distributors.length > 1) {
+    return SelectionMenu<String>(
+      l(context).pushNotificationsDialog_title,
+      distributors.map((d) => SelectionMenuItem(value: d, title: d)).toList(),
+    ).askSelection(context, null);
+  } else if (distributors.length == 1) {
+    return distributors.single;
+  } else {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l(context).pushNotificationsDialog_title),
+        content: SingleChildScrollView(
+          child: SelectableText(
+            l(context).pushNotificationsDialog_noDistributor(noDistributorUrl),
+          ),
+        ),
+        actions: [
+          OutlinedButton(
+            onPressed: Navigator.of(context).pop,
+            child: Text(l(context).close),
+          ),
+          FilledButton(
+            onPressed: () =>
+                openWebpagePrimary(context, Uri.parse(noDistributorUrl)),
+            child: Text(l(context).openInBrowser),
+          ),
+        ],
+      ),
+    );
+
+    return null;
+  }
 }

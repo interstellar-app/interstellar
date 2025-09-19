@@ -8,7 +8,7 @@ import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 part 'user.freezed.dart';
 
 @freezed
-class DetailedUserListModel with _$DetailedUserListModel {
+abstract class DetailedUserListModel with _$DetailedUserListModel {
   const factory DetailedUserListModel({
     required List<DetailedUserModel> items,
     required String? nextPage,
@@ -39,7 +39,7 @@ class DetailedUserListModel with _$DetailedUserListModel {
 }
 
 @freezed
-class DetailedUserModel with _$DetailedUserModel {
+abstract class DetailedUserModel with _$DetailedUserModel {
   const factory DetailedUserModel({
     required int id,
     required String name,
@@ -128,7 +128,7 @@ class DetailedUserModel with _$DetailedUserModel {
 }
 
 @freezed
-class UserModel with _$UserModel {
+abstract class UserModel with _$UserModel {
   const factory UserModel({
     required int id,
     required String name,
@@ -171,7 +171,7 @@ class UserModel with _$UserModel {
 }
 
 @unfreezed
-class UserSettings with _$UserSettings {
+abstract class UserSettings with _$UserSettings {
   factory UserSettings({
     required bool showNSFW,
     required bool? blurNSFW,

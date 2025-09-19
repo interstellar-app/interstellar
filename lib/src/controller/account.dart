@@ -6,7 +6,7 @@ part 'account.freezed.dart';
 part 'account.g.dart';
 
 @freezed
-class Account with _$Account {
+abstract class Account with _$Account {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory Account({
     Credentials? oauth,

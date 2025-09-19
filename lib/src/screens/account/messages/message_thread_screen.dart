@@ -5,10 +5,10 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/message.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/paging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -36,8 +36,38 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   MessageThreadModel? _data;
   final TextEditingController _controller = TextEditingController();
 
-  final PagingController<String, MessageThreadItemModel> _pagingController =
-      PagingController(firstPageKey: '');
+  late final _pagingController =
+      AdvancedPagingController<String, MessageThreadItemModel, int>(
+        logger: context.read<AppController>().logger,
+        firstPageKey: '',
+        getItemId: (item) => item.id,
+        fetchPage: (pageKey) async {
+          final ac = context.read<AppController>();
+
+          if (_threadId == null) {
+            return (<MessageThreadItemModel>[], null);
+          }
+
+          // Need to have user id for Lemmy and PieFed
+          if (_userId == null && ac.serverSoftware != ServerSoftware.mbin) {
+            _userId = (await ac.api.users.getMe()).id;
+          }
+
+          final newPage = await ac.api.messages.getThreadWithMessages(
+            threadId: _threadId!,
+            page: nullIfEmpty(pageKey),
+            myUserId: _userId,
+          );
+
+          if (_data == null) {
+            setState(() {
+              _data = newPage;
+            });
+          }
+
+          return (newPage.messages, newPage.nextPage);
+        },
+      );
 
   int? _userId;
   int? _threadId;
@@ -54,57 +84,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
             : null);
     _otherUserId = widget.otherUser?.id;
     _data = widget.initData;
+
     if (_data != null) {
-      _pagingController.appendPage(_data!.messages, '');
-    }
-
-    _pagingController.addPageRequestListener(_fetchPage);
-  }
-
-  Future<void> _fetchPage(String pageKey) async {
-    if (_threadId == null) {
-      _pagingController.appendLastPage([]);
-    }
-    try {
-      // Need to have user id for Lemmy and PieFed
-      if (_userId == null &&
-          context.read<AppController>().serverSoftware != ServerSoftware.mbin) {
-        _userId = (await context.read<AppController>().api.users.getMe()).id;
-      }
-
-      // Check BuildContext
-      if (!mounted) return;
-
-      final newPage = await context
-          .read<AppController>()
-          .api
-          .messages
-          .getThreadWithMessages(
-            threadId: _threadId!,
-            page: nullIfEmpty(pageKey),
-            myUserId: _userId,
-          );
-
-      // Check BuildContext
-      if (!mounted) return;
-
-      if (_data == null) {
-        setState(() {
-          _data = newPage;
-        });
-      }
-
-      // Prevent duplicates
-      final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems = newPage.messages
-          .where((e) => !currentItemIds.contains(e.id))
-          .toList();
-
-      _pagingController.appendPage(newItems, newPage.nextPage);
-    } catch (error) {
-      if (!mounted) return;
-      context.read<AppController>().logger.e(error);
-      _pagingController.error = error;
+      _pagingController.prependPage('', _data!.messages);
     }
   }
 
@@ -112,10 +94,12 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   Widget build(BuildContext context) {
     final myUsername = context.watch<AppController>().localName;
 
-    final messageUser = _data?.participants.firstWhere(
-      (user) => user.name != myUsername,
-      orElse: () => _data!.participants.first,
-    ) ?? widget.otherUser;
+    final messageUser =
+        _data?.participants.firstWhere(
+          (user) => user.name != myUsername,
+          orElse: () => _data!.participants.first,
+        ) ??
+        widget.otherUser;
 
     final messageDraftController = context.watch<DraftsController>().auto(
       'message:${context.watch<AppController>().instanceHost}:${messageUser?.name}',
@@ -163,16 +147,9 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
 
                             _controller.text = '';
 
-                            setState(() {
-                              _data = newThread;
-                              _threadId = newThread.id;
-
-                              var newList = _pagingController.itemList;
-                              newList?.insert(0, newThread.messages.first);
-                              setState(() {
-                                _pagingController.itemList = newList;
-                              });
-                            });
+                            _pagingController.prependPage('', [
+                              newThread.messages.first,
+                            ]);
 
                             if (widget.onUpdate != null) {
                               widget.onUpdate!(newThread);
@@ -190,44 +167,33 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
             ),
             SliverPadding(
               padding: const EdgeInsets.all(16),
-              sliver: PagedSliverList(
-                pagingController: _pagingController,
-                builderDelegate:
-                    PagedChildBuilderDelegate<MessageThreadItemModel>(
-                      firstPageErrorIndicatorBuilder: (context) =>
-                          FirstPageErrorIndicator(
-                            error: _pagingController.error,
-                            onTryAgain:
-                                _pagingController.retryLastFailedRequest,
-                          ),
-                      newPageErrorIndicatorBuilder: (context) =>
-                          NewPageErrorIndicator(
-                            error: _pagingController.error,
-                            onTryAgain:
-                                _pagingController.retryLastFailedRequest,
-                          ),
-                      itemBuilder: (context, item, index) {
-                        final messages = _pagingController.itemList!;
+              sliver: AdvancedPagingListener(
+                controller: _pagingController,
+                builder: (context, state, fetchNextPage) {
+                  final pagedItems = state.items ?? [];
 
-                        final nextMessage = index - 1 < 0
-                            ? null
-                            : messages.elementAtOrNull(index - 1);
-                        final currMessage = messages[index];
-                        final prevMessage = index + 1 >= messages.length
-                            ? null
-                            : messages.elementAt(index + 1);
+                  return AdvancedPagedSliverList(
+                    controller: _pagingController,
+                    itemBuilder: (context, item, index) {
+                      final nextMessage = index - 1 < 0
+                          ? null
+                          : pagedItems.elementAtOrNull(index - 1);
+                      final currMessage = pagedItems[index];
+                      final prevMessage = index + 1 >= pagedItems.length
+                          ? null
+                          : pagedItems.elementAt(index + 1);
 
-                        final fromMyUser =
-                            currMessage.sender.name == myUsername;
+                      final fromMyUser = currMessage.sender.name == myUsername;
 
-                        return MessageThreadItem(
-                          fromMyUser: fromMyUser,
-                          prevMessage: prevMessage,
-                          currMessage: currMessage,
-                          nextMessage: nextMessage,
-                        );
-                      },
-                    ),
+                      return MessageThreadItem(
+                        fromMyUser: fromMyUser,
+                        prevMessage: prevMessage,
+                        currMessage: currMessage,
+                        nextMessage: nextMessage,
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],

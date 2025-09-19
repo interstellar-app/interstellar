@@ -4,7 +4,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'image.freezed.dart';
 
 @freezed
-class ImageModel with _$ImageModel {
+abstract class ImageModel with _$ImageModel {
   const factory ImageModel({
     required String src,
     required String? altText,
@@ -21,7 +21,11 @@ class ImageModel with _$ImageModel {
     blurHashHeight: json['height'] as int?,
   );
 
-  factory ImageModel.fromLemmy(String src, [String? altText, JsonMap? details]) => ImageModel(
+  factory ImageModel.fromLemmy(
+    String src, [
+    String? altText,
+    JsonMap? details,
+  ]) => ImageModel(
     src: src,
     altText: altText,
     blurHash: details?['blurhash'] as String?,

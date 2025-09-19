@@ -13,7 +13,7 @@ part 'post.freezed.dart';
 enum PostType { thread, microblog }
 
 @freezed
-class PostListModel with _$PostListModel {
+abstract class PostListModel with _$PostListModel {
   const factory PostListModel({
     required List<PostModel> items,
     required String? nextPage,
@@ -67,7 +67,7 @@ class PostListModel with _$PostListModel {
 }
 
 @freezed
-class PostModel with _$PostModel {
+abstract class PostModel with _$PostModel {
   const factory PostModel({
     required PostType type,
     required int id,
@@ -96,7 +96,7 @@ class PostModel with _$PostModel {
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
     required bool read,
-    required List<PostModel> crossPosts
+    required List<PostModel> crossPosts,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -138,7 +138,11 @@ class PostModel with _$PostModel {
           ),
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
-    crossPosts: (json['crosspostedEntries'] as List<dynamic>?)?.map((post) => PostModel.fromMbinEntry(post)).toList()?? []
+    crossPosts:
+        (json['crosspostedEntries'] as List<dynamic>?)
+            ?.map((post) => PostModel.fromMbinEntry(post))
+            .toList() ??
+        [],
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -175,7 +179,7 @@ class PostModel with _$PostModel {
           ),
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
-    crossPosts: []
+    crossPosts: [],
   );
 
   factory PostModel.fromLemmy(
@@ -209,7 +213,7 @@ class PostModel with _$PostModel {
             ? lemmyPost['url'] as String?
             : lemmyPost['thumbnail_url'] as String?,
         lemmyPost['alt_text'] as String?,
-        imageDetails
+        imageDetails,
       ),
       body: lemmyPost['body'] as String?,
       lang: langCodeIdPairs
@@ -238,7 +242,17 @@ class PostModel with _$PostModel {
         if (postView['saved'] as bool) '',
       ],
       read: postView['read'] as bool? ?? false,
-      crossPosts: (json['cross_posts'] as List<dynamic>?)?.map((crossPost) => {'post_view': crossPost}).map((crossPost) => PostModel.fromLemmy(crossPost, langCodeIdPairs: langCodeIdPairs)).toList() ??[]
+      crossPosts:
+          (json['cross_posts'] as List<dynamic>?)
+              ?.map((crossPost) => {'post_view': crossPost})
+              .map(
+                (crossPost) => PostModel.fromLemmy(
+                  crossPost,
+                  langCodeIdPairs: langCodeIdPairs,
+                ),
+              )
+              .toList() ??
+          [],
     );
   }
 
@@ -306,7 +320,17 @@ class PostModel with _$PostModel {
         if (postView['saved'] as bool) '',
       ],
       read: postView['read'] as bool? ?? false,
-      crossPosts: (json['cross_posts'] as List<dynamic>?)?.map((crossPost) => {'post_view': crossPost}).map((crossPost) => PostModel.fromPiefed(crossPost, langCodeIdPairs: langCodeIdPairs)).toList() ?? [],
+      crossPosts:
+          (json['cross_posts'] as List<dynamic>?)
+              ?.map((crossPost) => {'post_view': crossPost})
+              .map(
+                (crossPost) => PostModel.fromPiefed(
+                  crossPost,
+                  langCodeIdPairs: langCodeIdPairs,
+                ),
+              )
+              .toList() ??
+          [],
     );
   }
 }

@@ -6,7 +6,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'notification.freezed.dart';
 
 @freezed
-class NotificationListModel with _$NotificationListModel {
+abstract class NotificationListModel with _$NotificationListModel {
   const factory NotificationListModel({
     required List<NotificationModel> items,
     required String? nextPage,
@@ -48,7 +48,7 @@ class NotificationListModel with _$NotificationListModel {
 }
 
 @freezed
-class NotificationModel with _$NotificationModel {
+abstract class NotificationModel with _$NotificationModel {
   const factory NotificationModel({
     required int id,
     required NotificationType? type,
