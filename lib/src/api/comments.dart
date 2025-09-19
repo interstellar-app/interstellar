@@ -323,7 +323,8 @@ class APIComments {
           body: {
             'body': body,
             'post_id': postId,
-            'parent_id': parentCommentId,
+            if (parentCommentId != null)
+              'parent_id': parentCommentId,
             'language_id': await client.languageIdFromCode(lang),
           },
         );

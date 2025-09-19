@@ -206,7 +206,7 @@ class APIThreads {
         );
 
         return PostModel.fromLemmy(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -217,7 +217,7 @@ class APIThreads {
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -280,7 +280,7 @@ class APIThreads {
         );
 
         return PostModel.fromLemmy(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -298,7 +298,7 @@ class APIThreads {
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -370,7 +370,7 @@ class APIThreads {
         );
 
         return PostModel.fromLemmy(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -388,7 +388,7 @@ class APIThreads {
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -438,7 +438,7 @@ class APIThreads {
         );
 
         return PostModel.fromLemmy(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -457,7 +457,7 @@ class APIThreads {
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -538,7 +538,7 @@ class APIThreads {
         );
 
         return PostModel.fromLemmy(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -575,7 +575,7 @@ class APIThreads {
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }

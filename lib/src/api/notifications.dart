@@ -76,7 +76,7 @@ class APINotifications {
           NotificationsFilter.all || null => 'All',
         };
 
-        final query = {'page': page, 'status_request': status};
+        final query = {'page': page, 'status': status};
 
         final response = await client.get(path, queryParams: query);
 

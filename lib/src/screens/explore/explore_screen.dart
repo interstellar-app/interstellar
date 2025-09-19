@@ -74,7 +74,9 @@ class _ExploreScreenState extends State<ExploreScreen>
 
         case ExploreType.people:
           // Lemmy cannot search with an empty query
-          if (ac.serverSoftware == ServerSoftware.lemmy && search.isEmpty) {
+          if ((context.read<AppController>().serverSoftware !=
+                  ServerSoftware.mbin) &&
+              search.isEmpty) {
             return ([], null);
           }
 
