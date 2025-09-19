@@ -12,7 +12,7 @@ import 'package:interstellar/src/models/post.dart';
 part 'community.freezed.dart';
 
 @freezed
-class DetailedCommunityListModel with _$DetailedCommunityListModel {
+abstract class DetailedCommunityListModel with _$DetailedCommunityListModel {
   const factory DetailedCommunityListModel({
     required List<DetailedCommunityModel> items,
     required String? nextPage,
@@ -44,7 +44,7 @@ class DetailedCommunityListModel with _$DetailedCommunityListModel {
 }
 
 @freezed
-class DetailedCommunityModel with _$DetailedCommunityModel {
+abstract class DetailedCommunityModel with _$DetailedCommunityModel {
   const factory DetailedCommunityModel({
     required int id,
     required String name,
@@ -179,7 +179,7 @@ class DetailedCommunityModel with _$DetailedCommunityModel {
 }
 
 @freezed
-class CommunityModel with _$CommunityModel {
+abstract class CommunityModel with _$CommunityModel {
   const factory CommunityModel({
     required int id,
     required String name,
@@ -206,7 +206,7 @@ class CommunityModel with _$CommunityModel {
 }
 
 @freezed
-class CommunityBanListModel with _$CommunityBanListModel {
+abstract class CommunityBanListModel with _$CommunityBanListModel {
   const factory CommunityBanListModel({
     required List<CommunityBanModel> items,
     required String? nextPage,
@@ -229,7 +229,7 @@ class CommunityBanListModel with _$CommunityBanListModel {
 }
 
 @freezed
-class CommunityBanModel with _$CommunityBanModel {
+abstract class CommunityBanModel with _$CommunityBanModel {
   const factory CommunityBanModel({
     required String? reason,
     required DateTime? expiresAt,
@@ -259,7 +259,7 @@ class CommunityBanModel with _$CommunityBanModel {
 }
 
 @freezed
-class CommunityReportListModel with _$CommunityReportListModel {
+abstract class CommunityReportListModel with _$CommunityReportListModel {
   const factory CommunityReportListModel({
     required List<CommunityReportModel> items,
     required String? nextPage,
@@ -275,7 +275,7 @@ class CommunityReportListModel with _$CommunityReportListModel {
 }
 
 @freezed
-class CommunityReportModel with _$CommunityReportModel {
+abstract class CommunityReportModel with _$CommunityReportModel {
   const factory CommunityReportModel({
     required int id,
     required CommunityModel? community,

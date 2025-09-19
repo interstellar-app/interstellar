@@ -79,14 +79,9 @@ class NewPageErrorIndicator extends StatelessWidget {
 }
 
 class NoItemsFoundIndicator extends StatefulWidget {
-  const NoItemsFoundIndicator({
-    required this.nextPageKey,
-    required this.onTryAgain,
-    super.key,
-  });
+  const NoItemsFoundIndicator({required this.onTryAgain, super.key});
 
-  final String? nextPageKey;
-  final void Function(String, {bool toEnd}) onTryAgain;
+  final VoidCallback onTryAgain;
 
   @override
   State<NoItemsFoundIndicator> createState() => _NoItemsFoundIndicatorState();
@@ -105,7 +100,7 @@ class _NoItemsFoundIndicatorState extends State<NoItemsFoundIndicator> {
     } else {
       return InkWell(
         onTap: () {
-          widget.onTryAgain(widget.nextPageKey ?? '1', toEnd: true);
+          widget.onTryAgain();
           setState(() {
             _loading = true;
           });

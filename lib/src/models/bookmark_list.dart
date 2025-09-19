@@ -4,7 +4,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'bookmark_list.freezed.dart';
 
 @freezed
-class BookmarkListListModel with _$BookmarkListListModel {
+abstract class BookmarkListListModel with _$BookmarkListListModel {
   const factory BookmarkListListModel({
     required List<BookmarkListModel> items,
   }) = _BookmarkListListModel;
@@ -17,7 +17,7 @@ class BookmarkListListModel with _$BookmarkListListModel {
 }
 
 @freezed
-class BookmarkListModel with _$BookmarkListModel {
+abstract class BookmarkListModel with _$BookmarkListModel {
   const factory BookmarkListModel({
     required String name,
     required bool isDefault,

@@ -9,7 +9,7 @@ import 'package:interstellar/src/utils/utils.dart';
 part 'search.freezed.dart';
 
 @freezed
-class SearchListModel with _$SearchListModel {
+abstract class SearchListModel with _$SearchListModel {
   const factory SearchListModel({
     required List<Object> items,
     required String? nextPage,

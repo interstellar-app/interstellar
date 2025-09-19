@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -160,32 +160,22 @@ class BookmarksScreen extends StatefulWidget {
 }
 
 class _BookmarksScreenState extends State<BookmarksScreen> {
-  final PagingController<String, dynamic> _pagingController = PagingController(
+  late final _pagingController = AdvancedPagingController<String, dynamic, int>(
+    logger: context.read<AppController>().logger,
     firstPageKey: '',
-  );
+    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    getItemId: (item) => item.id,
+    fetchPage: (pageKey) async {
+      final ac = context.read<AppController>();
 
-  @override
-  void initState() {
-    super.initState();
-
-    _pagingController.addPageRequestListener(_fetchPage);
-  }
-
-  Future<void> _fetchPage(String pageKey) async {
-    final ac = context.read<AppController>();
-
-    try {
       final bookmarks = await ac.api.bookmark.list(
         page: nullIfEmpty(pageKey),
         list: widget.bookmarkList,
       );
-      _pagingController.appendPage(bookmarks.$1, bookmarks.$2);
-    } catch (e) {
-      if (!mounted) return;
-      ac.logger.e(e);
-      _pagingController.error = e;
-    }
-  }
+
+      return (bookmarks.$1, bookmarks.$2);
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -193,73 +183,52 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
       appBar: AppBar(
         title: Text('${widget.bookmarkList ?? ''} ${l(context).bookmarks}'),
       ),
-      body: RefreshIndicator(
-        onRefresh: () => Future.sync(() => _pagingController.refresh()),
-        child: CustomScrollView(
-          slivers: [
-            PagedSliverList(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                itemBuilder: (context, item, index) {
-                  return switch (item) {
-                    PostModel _ => Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: PostItem(
-                        item,
-                        (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                        onTap: () => pushRoute(
-                          context,
-                          builder: (context) => PostPage(
-                            initData: item,
-                            onUpdate: (newValue) {
-                              var newList = _pagingController.itemList;
-                              newList![index] = newValue;
-                              setState(() {
-                                _pagingController.itemList = newList;
-                              });
-                            },
-                          ),
-                        ),
-                        isPreview: item.type == PostType.thread,
-                        isTopLevel: true,
-                      ),
-                    ),
-                    CommentModel _ => Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                      child: PostComment(
-                        item,
-                        (newValue) {
-                          var newList = _pagingController.itemList;
-                          newList![index] = newValue;
-                          setState(() {
-                            _pagingController.itemList = newList;
-                          });
-                        },
-                        onClick: () => pushRoute(
-                          context,
-                          builder: (context) =>
-                              PostCommentScreen(item.postType, item.id),
-                        ),
-                      ),
-                    ),
-                    _ => throw 'unreachable',
-                  };
-                },
+      body: AdvancedPagedScrollView(
+        controller: _pagingController,
+        itemBuilder: (context, item, index) {
+          return switch (item) {
+            PostModel _ => Card(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              clipBehavior: Clip.antiAlias,
+              child: PostItem(
+                item,
+                (newValue) =>
+                    _pagingController.updateItem(newValue.id, newValue),
+                onTap: () => pushRoute(
+                  context,
+                  builder: (context) => PostPage(
+                    initData: item,
+                    onUpdate: (newValue) =>
+                        _pagingController.updateItem(newValue.id, newValue),
+                  ),
+                ),
+                isPreview: item.type == PostType.thread,
+                isTopLevel: true,
               ),
             ),
-          ],
-        ),
+            CommentModel _ => Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: PostComment(
+                item,
+                (newValue) =>
+                    _pagingController.updateItem(newValue.id, newValue),
+                onClick: () => pushRoute(
+                  context,
+                  builder: (context) =>
+                      PostCommentScreen(item.postType, item.id),
+                ),
+              ),
+            ),
+            _ => throw 'unreachable',
+          };
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }

@@ -6,7 +6,7 @@ import 'image.dart';
 part 'feed.freezed.dart';
 
 @freezed
-class FeedListModel with _$FeedListModel {
+abstract class FeedListModel with _$FeedListModel {
   const factory FeedListModel({required List<FeedModel> items}) =
       _FeedListModel;
 
@@ -33,7 +33,7 @@ class FeedListModel with _$FeedListModel {
 }
 
 @freezed
-class FeedModel with _$FeedModel {
+abstract class FeedModel with _$FeedModel {
   const factory FeedModel({
     required int id,
     required int? userId,

@@ -7,7 +7,7 @@ part 'filter_list.g.dart';
 enum FilterListMatchMode { simple, wholeWords, regex }
 
 @freezed
-class FilterList with _$FilterList {
+abstract class FilterList with _$FilterList {
   const FilterList._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)

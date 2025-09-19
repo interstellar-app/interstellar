@@ -6,7 +6,7 @@ part 'feed.freezed.dart';
 part 'feed.g.dart';
 
 @freezed
-class FeedInput with _$FeedInput {
+abstract class FeedInput with _$FeedInput {
   const FeedInput._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
@@ -20,13 +20,11 @@ class FeedInput with _$FeedInput {
 }
 
 @freezed
-class Feed with _$Feed {
+abstract class Feed with _$Feed {
   const Feed._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory Feed({
-    required Set<FeedInput> inputs,
-  }) = _Feed;
+  const factory Feed({required Set<FeedInput> inputs}) = _Feed;
 
   factory Feed.fromJson(JsonMap json) => _$FeedFromJson(json);
 
@@ -35,9 +33,10 @@ class Feed with _$Feed {
   }
 
   bool get serverFeed {
-    return inputs.every((input) =>
-        input.sourceType == FeedSource.feed ||
-        input.sourceType == FeedSource.topic
+    return inputs.every(
+      (input) =>
+          input.sourceType == FeedSource.feed ||
+          input.sourceType == FeedSource.topic,
     );
   }
 }

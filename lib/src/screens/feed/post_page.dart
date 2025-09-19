@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/comment.dart';
@@ -8,8 +7,8 @@ import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
-import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
+import 'package:interstellar/src/widgets/paging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -39,9 +38,6 @@ class _PostPageState extends State<PostPage> {
   PostModel? _data;
 
   CommentSort commentSort = CommentSort.hot;
-
-  final PagingController<String, CommentModel> _pagingController =
-      PagingController(firstPageKey: '');
 
   @override
   void initState() {
@@ -96,6 +92,9 @@ class _PostPageState extends State<PostPage> {
     widget.onUpdate?.call(newValue);
   }
 
+  Object _refreshKey = Object();
+  final _mainCommentSectionKey = GlobalKey<_CommentSectionState>();
+
   @override
   Widget build(BuildContext context) {
     final currentCommentSortOption = commentSortSelect(
@@ -139,7 +138,6 @@ class _PostPageState extends State<PostPage> {
                 if (newSort != null && newSort != commentSort) {
                   setState(() {
                     commentSort = newSort;
-                    _pagingController.refresh();
                   });
                 }
               },
@@ -149,153 +147,151 @@ class _PostPageState extends State<PostPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(() => _pagingController.refresh()),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: PostItem(
-                post,
-                _onUpdate,
-                onReply: whenLoggedIn(context, (body, lang) async {
-                  var newComment = await context
-                      .read<AppController>()
-                      .api
-                      .comments
-                      .create(post.type, post.id, body, lang: lang);
-                  var newList = _pagingController.itemList;
-                  newList?.insert(0, newComment);
-                  setState(() {
-                    _pagingController.itemList = newList;
-                  });
-                }),
-                onEdit: post.visibility != 'soft_deleted'
-                    ? whenLoggedIn(context, (body) async {
-                        final newPost = await switch (post.type) {
-                          PostType.thread =>
-                            context.read<AppController>().api.threads.edit(
-                              post.id,
-                              post.title!,
-                              post.isOC,
-                              body,
-                              post.lang,
-                              post.isNSFW,
-                            ),
-                          PostType.microblog =>
-                            context.read<AppController>().api.microblogs.edit(
-                              post.id,
-                              body,
-                              post.lang!,
-                              post.isNSFW,
-                            ),
-                        };
-                        _onUpdate(newPost);
-                      }, matchesUsername: post.user.name)
-                    : null,
-                onDelete: post.visibility != 'soft_deleted'
-                    ? whenLoggedIn(context, () async {
-                        await switch (post.type) {
-                          PostType.thread =>
-                            context.read<AppController>().api.threads.delete(
-                              post.id,
-                            ),
-                          PostType.microblog =>
-                            context.read<AppController>().api.microblogs.delete(
-                              post.id,
-                            ),
-                        };
-                        _onUpdate(
-                          post.copyWith(
-                            body: '_${l(context).postDeleted}_',
-                            upvotes: null,
-                            downvotes: null,
-                            boosts: null,
-                            visibility: 'soft_deleted',
-                          ),
-                        );
-                      }, matchesUsername: post.user.name)
-                    : null,
-                userCanModerate: widget.userCanModerate,
-              ),
-            ),
-            if (_data != null && _data!.crossPosts.isNotEmpty)
+        onRefresh: () => Future.sync(() => _refreshKey = Object()),
+        child: KeyedSubtree(
+          key: ValueKey(_refreshKey),
+          child: CustomScrollView(
+            slivers: [
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ElevatedButton(
-                    onPressed: () => ContextMenu(
-                      title: l(context).crossPosts,
-                      items: _data!.crossPosts
-                          .map(
-                            (crossPost) => ContextMenuItem(
-                              title: crossPost.community.name,
-                              onTap: () => pushRoute(
-                                context,
-                                builder: (context) => PostPage(
-                                  postType: PostType.thread,
-                                  postId: crossPost.id,
-                                  initData: crossPost,
+                child: PostItem(
+                  post,
+                  _onUpdate,
+                  onReply: whenLoggedIn(context, (body, lang) async {
+                    var newComment = await context
+                        .read<AppController>()
+                        .api
+                        .comments
+                        .create(post.type, post.id, body, lang: lang);
+
+                    _mainCommentSectionKey.currentState?._pagingController
+                        .prependPage('', [newComment]);
+                  }),
+                  onEdit: post.visibility != 'soft_deleted'
+                      ? whenLoggedIn(context, (body) async {
+                          final newPost = await switch (post.type) {
+                            PostType.thread =>
+                              context.read<AppController>().api.threads.edit(
+                                post.id,
+                                post.title!,
+                                post.isOC,
+                                body,
+                                post.lang,
+                                post.isNSFW,
+                              ),
+                            PostType.microblog =>
+                              context.read<AppController>().api.microblogs.edit(
+                                post.id,
+                                body,
+                                post.lang!,
+                                post.isNSFW,
+                              ),
+                          };
+                          _onUpdate(newPost);
+                        }, matchesUsername: post.user.name)
+                      : null,
+                  onDelete: post.visibility != 'soft_deleted'
+                      ? whenLoggedIn(context, () async {
+                          await switch (post.type) {
+                            PostType.thread =>
+                              context.read<AppController>().api.threads.delete(
+                                post.id,
+                              ),
+                            PostType.microblog =>
+                              context
+                                  .read<AppController>()
+                                  .api
+                                  .microblogs
+                                  .delete(post.id),
+                          };
+                          _onUpdate(
+                            post.copyWith(
+                              body: '_${l(context).postDeleted}_',
+                              upvotes: null,
+                              downvotes: null,
+                              boosts: null,
+                              visibility: 'soft_deleted',
+                            ),
+                          );
+                        }, matchesUsername: post.user.name)
+                      : null,
+                  userCanModerate: widget.userCanModerate,
+                ),
+              ),
+              if (_data != null && _data!.crossPosts.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: ElevatedButton(
+                      onPressed: () => ContextMenu(
+                        title: l(context).crossPosts,
+                        items: _data!.crossPosts
+                            .map(
+                              (crossPost) => ContextMenuItem(
+                                title: crossPost.community.name,
+                                onTap: () => pushRoute(
+                                  context,
+                                  builder: (context) => PostPage(
+                                    postType: PostType.thread,
+                                    postId: crossPost.id,
+                                    initData: crossPost,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                          .toList(),
-                    ).openMenu(context),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(
-                        l(context).crossPostCount(post.crossPosts.length),
+                            )
+                            .toList(),
+                      ).openMenu(context),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          l(context).crossPostCount(post.crossPosts.length),
+                        ),
                       ),
                     ),
                   ),
                 ),
+              CommentSection(
+                id: post.id,
+                postType: post.type,
+                sort: commentSort,
+                opUserId: post.user.id,
+                key: _mainCommentSectionKey,
               ),
-            CommentSection(
-              id: post.id,
-              postType: post.type,
-              sort: commentSort,
-              opUserId: post.user.id,
-            ),
-            if (context.read<AppController>().profile.showCrosspostComments)
-              ...post.crossPosts.map(
-                (crossPost) => SliverMainAxisGroup(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: ListTile(
-                        title: Text(
-                          l(
+              if (context.read<AppController>().profile.showCrosspostComments)
+                ...post.crossPosts.map(
+                  (crossPost) => SliverMainAxisGroup(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: ListTile(
+                          title: Text(
+                            l(
+                              context,
+                            ).crossPostComments(crossPost.community.name),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          onTap: () => pushRoute(
                             context,
-                          ).crossPostComments(crossPost.community.name),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        onTap: () => pushRoute(
-                          context,
-                          builder: (context) => PostPage(
-                            postType: crossPost.type,
-                            postId: crossPost.id,
-                            initData: crossPost,
+                            builder: (context) => PostPage(
+                              postType: crossPost.type,
+                              postId: crossPost.id,
+                              initData: crossPost,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    CommentSection(
-                      id: crossPost.id,
-                      postType: crossPost.type,
-                      sort: commentSort,
-                      opUserId: crossPost.user.id,
-                    ),
-                  ],
+                      CommentSection(
+                        id: crossPost.id,
+                        postType: crossPost.type,
+                        sort: commentSort,
+                        opUserId: crossPost.user.id,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 }
 
@@ -320,79 +316,49 @@ class CommentSection extends StatefulWidget {
 }
 
 class _CommentSectionState extends State<CommentSection> {
-  final PagingController<String, CommentModel> _pagingController =
-      PagingController(firstPageKey: '');
+  late final _pagingController =
+      AdvancedPagingController<String, CommentModel, int>(
+        logger: context.read<AppController>().logger,
+        firstPageKey: '',
+        getItemId: (item) => item.id,
+        fetchPage: (pageKey) async {
+          final ac = context.read<AppController>();
 
-  Future<void> _fetchPage(String pageKey) async {
-    try {
-      final newPage = await context.read<AppController>().api.comments.list(
-        widget.postType,
-        widget.id,
-        page: nullIfEmpty(pageKey),
-        sort: widget.sort,
-        usePreferredLangs: whenLoggedIn(
-          context,
-          context.read<AppController>().profile.useAccountLanguageFilter,
-        ),
-        langs: context
-            .read<AppController>()
-            .profile
-            .customLanguageFilter
-            .toList(),
+          final newPage = await ac.api.comments.list(
+            widget.postType,
+            widget.id,
+            page: nullIfEmpty(pageKey),
+            sort: widget.sort,
+            usePreferredLangs: whenLoggedIn(
+              context,
+              ac.profile.useAccountLanguageFilter,
+            ),
+            langs: ac.profile.customLanguageFilter.toList(),
+          );
+
+          return (newPage.items, newPage.nextPage);
+        },
       );
-
-      // Check BuildContext
-      if (!mounted) return;
-
-      // Prevent duplicates
-      final currentItemIds = _pagingController.itemList?.map((e) => e.id) ?? [];
-      final newItems = newPage.items
-          .where((e) => !currentItemIds.contains(e.id))
-          .toList();
-
-      _pagingController.appendPage(newItems, newPage.nextPage);
-    } catch (error) {
-      if (!mounted) return;
-      context.read<AppController>().logger.e(error);
-      _pagingController.error = error;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController.addPageRequestListener(_fetchPage);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return PagedSliverList(
-      pagingController: _pagingController,
-      builderDelegate: PagedChildBuilderDelegate<CommentModel>(
-        firstPageErrorIndicatorBuilder: (context) => FirstPageErrorIndicator(
-          error: _pagingController.error,
-          onTryAgain: _pagingController.retryLastFailedRequest,
-        ),
-        newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(
-          error: _pagingController.error,
-          onTryAgain: _pagingController.retryLastFailedRequest,
-        ),
-        itemBuilder: (context, item, index) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: PostComment(
-            item,
-            (newValue) {
-              var newList = _pagingController.itemList;
-              newList![index] = newValue;
-              setState(() {
-                _pagingController.itemList = newList;
-              });
-            },
-            opUserId: widget.opUserId,
-            userCanModerate: widget.canModerate,
-          ),
+    return AdvancedPagedSliverList(
+      controller: _pagingController,
+      itemBuilder: (context, item, index) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: PostComment(
+          item,
+          (newValue) => _pagingController.updateItem(item, newValue),
+          opUserId: widget.opUserId,
+          userCanModerate: widget.canModerate,
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 }
