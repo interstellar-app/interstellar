@@ -902,6 +902,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
             (newItems, nextPageKey) = await _tryFetchPage(nextPageKey);
             emptyPageCount++;
           }
+          if (!mounted) return (<PostModel>[], null);
           setState(() {
             _lastPageFilteredOut = newItems.isEmpty && nextPageKey != null;
           });
