@@ -1128,5 +1128,65 @@
     "settings_inlineReplies": "Відповісти в тексті",
     "@settings_inlineReplies": {},
     "settings_defaultDownloadDir": "Каталог завантажень за замовчуванням",
-    "@settings_defaultDownloadDir": {}
+    "@settings_defaultDownloadDir": {},
+    "rename": "Перейменувати",
+    "@rename": {},
+    "replace": "Замінити",
+    "@replace": {},
+    "feeds_exist": "Існуючий фід",
+    "@feeds_exist": {},
+    "topics": "Теми",
+    "@topics": {},
+    "topic": "Тема",
+    "@topic": {},
+    "server": "Сервер",
+    "@server": {},
+    "client": "Клієнт",
+    "@client": {},
+    "clientFeed": "Стрічка клієнта",
+    "@clientFeed": {},
+    "clientFeedSubtitle": "Вхідні дані каналу отримуються та об'єднуються локально на пристрої. Можна використовувати в різних екземплярах.",
+    "@clientFeedSubtitle": {},
+    "serverFeed": "Стрічка даних сервера",
+    "@serverFeed": {},
+    "serverFeedSubtitle": "Вхідні дані стрічки об'єднуються на сервері. Відповідає стрічці PieFed.",
+    "@serverFeedSubtitle": {},
+    "serverTopic": "Тема сервера",
+    "@serverTopic": {},
+    "serverTopicSubtitle": "Вхідні дані стрічки об'єднані на сервері. Відповідає темі PieFed.",
+    "@serverTopicSubtitle": {},
+    "crossPosts": "Поперечні стовпи",
+    "@crossPosts": {},
+    "crossPostCount": "{count} хрест {count, plural, =1{пост} other{пости}}",
+    "@crossPostCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "crossPostComments": "Коментарі від {community}",
+    "@crossPostComments": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_crosspostComments": "Показати розділи коментарів до перехресних публікацій",
+    "@settings_crosspostComments": {},
+    "settings_crossPostMarkAsRead": "Позначити перехресні повідомлення як прочитані",
+    "@settings_crossPostMarkAsRead": {},
+    "pushNotificationsDialog_title": "Push-сповіщення",
+    "@pushNotificationsDialog_title": {},
+    "pushNotificationsDialog_noDistributor": "Вам потрібно встановити дистриб'ютор UnifiedPush, щоб push-сповіщення працювали.\nБільше інформації можна знайти за адресою: {url}",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_selectDistributor": "Виберіть розподільник push",
+    "@pushNotificationsDialog_selectDistributor": {}
 }
