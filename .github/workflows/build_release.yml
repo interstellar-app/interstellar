@@ -150,13 +150,12 @@ jobs:
         working-directory: ${{ matrix.build_path }}
 
       - name: Build AppImage for linux
-        if: false
-        #if: matrix.target_os == 'linux'
+        if: matrix.target_os == 'linux'
         run: |
           EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
           wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
           chmod +x ./get-debloated-pkgs.sh
-          ./get-debloated-pkgs.sh mesa-nano gtk3-mini libxml2-mini opus-mini
+          ./get-debloated-pkgs.sh mesa-nano gtk3-mini libxml2-mini opus-mini || true
 
           ./scripts/build-appimage.sh
 
