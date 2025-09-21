@@ -22,7 +22,7 @@ jobs:
       - name: Gather build info
         id: build_info
         run: |
-          echo "INTERSTELLAR_VERSION=$(yq eval -r '.version' ./pubspec.yaml | cut -d+ -f1)" >> "$GITHUB_OUTPUT"
+          echo "INTERSTELLAR_VERSION=$(yq -r '.version' ./pubspec.yaml | cut -d+ -f1)" >> "$GITHUB_OUTPUT"
           echo "FLUTTER_VERSION=$(yq -r '.environment.flutter' ./pubspec.yaml)" >> "$GITHUB_OUTPUT"
 
       - name: Draft v${{ steps.build_info.outputs.INTERSTELLAR_VERSION }} release
