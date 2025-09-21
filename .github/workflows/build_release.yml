@@ -94,9 +94,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Flutter
-        if: matrix.target_os != 'linux'
         uses: subosito/flutter-action@v2
         with:
+          # Use master until Flutter action is fixed for arm (https://github.com/subosito/flutter-action/issues/345)
+          channel: ${{ matrix.target == 'linux-aarch64' && 'master' || 'stable' }}
           flutter-version: ${{ needs.prepare-release.outputs.flutter_version }}
 
       # Needed to fix "detected dubious ownership in repository" error caused by Linux containerization
