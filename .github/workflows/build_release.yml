@@ -153,30 +153,11 @@ jobs:
         if: false
         #if: matrix.target_os == 'linux'
         run: |
-          PKG_URL_PREFIX="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous"
+          EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
+          wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
+          chmod +x ./get-debloated-pkgs.sh
+          ./get-debloated-pkgs.sh mesa-nano gtk3-mini libxml2-mini opus-mini
 
-          case "$(uname -m)" in
-          "x86_64")
-              PKG_URL_SUFFIX="x86_64.pkg.tar.zst"
-              ;;
-          "aarch64")
-              PKG_URL_SUFFIX="aarch64.pkg.tar.xz"
-              ;;
-          *)
-              echo "Unsupported ARCH: '${ARCH}'"
-              exit 1
-              ;;
-          esac
-
-          wget "${PKG_URL_PREFIX}/llvm-libs-nano-${PKG_URL_SUFFIX}" -O /tmp/llvm-libs.pkg.tar.zst
-          wget "${PKG_URL_PREFIX}/libxml2-iculess-${PKG_URL_SUFFIX}" -O /tmp/libxml2.pkg.tar.zst
-          wget "${PKG_URL_PREFIX}/ffmpeg-mini-${PKG_URL_SUFFIX}" -O /tmp/ffmpeg-mini.pkg.tar.zst
-          wget "${PKG_URL_PREFIX}/mesa-mini-${PKG_URL_SUFFIX}" -O /tmp/mesa-mini.pkg.tar.zst
-          wget "${PKG_URL_PREFIX}/opus-nano-${PKG_URL_SUFFIX}" -O /tmp/opus-nano.pkg.tar.zst
-
-          pacman -U --noconfirm /tmp/*.pkg.tar.zst
-          pacman -Scc --noconfirm
-          rm -rf /tmp/*.pkg.tar.zst
           ./scripts/build-appimage.sh
 
       - name: Compress build for windows
