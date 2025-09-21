@@ -82,7 +82,7 @@ jobs:
           pacman -Syuq --needed --noconfirm --noprogressbar \
             ninja gtk3 xz gcc mpv wget jq git which base-devel \
             file zsync patchelf binutils strace mesa llvm \
-            xorg-server-xvfb cmake clang unzip
+            xorg-server-xvfb cmake clang unzip yq
 
       - name: Install windows dependencies
         if: matrix.target_os == 'windows'
