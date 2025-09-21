@@ -20,6 +20,7 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
     fetchPage,
   }) : _fetchPage = fetchPage,
        _getItemId = getItemId,
+       _firstPage = firstPageKey,
        _nextPage = firstPageKey,
        _logger = logger,
        super(PagingState<PageKeyType, PageItemType>());
@@ -34,6 +35,7 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
 
   Set<PageItemIdType> _itemIds = {};
   PageKeyType? _nextPage;
+  final PageKeyType _firstPage;
 
   Logger _logger;
 
@@ -125,7 +127,8 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   void refresh() {
     operation = null;
     value = value.reset();
-    _nextPage = null;
+    _nextPage = _firstPage;
+    _itemIds.clear();
   }
 
   /// Cancels the current fetch operation.
