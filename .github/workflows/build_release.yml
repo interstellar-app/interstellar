@@ -164,10 +164,6 @@ jobs:
         run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\dist\interstellar-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 
-      - name: Windows test
-        if: matrix.target_os == 'windows'
-        run: dir ${{ github.workspace }}\${{ matrix.build_path }}
-
       - name: Create setup exe for windows
         if: matrix.target_os == 'windows'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.7
