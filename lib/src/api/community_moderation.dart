@@ -116,7 +116,7 @@ class APICommunityModeration {
           'community_id': communityId,
           'user_id': userId,
           'reason': reason,
-          'expiredAt': expiredAt?.toIso8601String(),
+          'expires_at': expiredAt?.toIso8601String(),
         };
 
         final response = await client.post(path, body: body);

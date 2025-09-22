@@ -71,7 +71,7 @@ class APINotifications {
       case ServerSoftware.piefed:
         final path = '/user/notifications';
         final status = switch (filter) {
-          NotificationsFilter.new_ => 'New',
+          NotificationsFilter.new_ => 'Unread',
           NotificationsFilter.read => 'Read',
           NotificationsFilter.all || null => 'All',
         };

@@ -250,10 +250,10 @@ abstract class CommunityBanModel with _$CommunityBanModel {
 
   factory CommunityBanModel.fromPiefed(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
-    expiresAt: optionalDateTime(json['expiresAt'] as String?),
+    expiresAt: optionalDateTime(json['expires_at'] as String?),
     community: CommunityModel.fromPiefed(json['community'] as JsonMap),
-    bannedUser: UserModel.fromPiefed(json['bannedUser'] as JsonMap),
-    bannedBy: UserModel.fromPiefed(json['bannedBy'] as JsonMap),
+    bannedUser: UserModel.fromPiefed(json['banned_user'] as JsonMap),
+    bannedBy: UserModel.fromPiefed(json['banned_by'] as JsonMap),
     expired: json['expired'] as bool,
   );
 }
