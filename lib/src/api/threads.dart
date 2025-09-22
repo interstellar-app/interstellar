@@ -57,10 +57,10 @@ class APIThreads {
           FeedSource.user => '/users/${sourceId!}/entries',
           FeedSource.domain => '/domain/${sourceId!}/entries',
           FeedSource.feed => throw Exception(
-            'Feeds source not allowed for mbin'
+            'Feeds source not allowed for mbin',
           ),
           FeedSource.topic => throw Exception(
-              'Topics source not allowed for mbin'
+            'Topics source not allowed for mbin',
           ),
         };
         final query = {
@@ -114,10 +114,10 @@ class APIThreads {
               'Domain source not allowed for lemmy',
             ),
             FeedSource.feed => throw Exception(
-              'Feeds source not allowed for lemmy'
+              'Feeds source not allowed for lemmy',
             ),
             FeedSource.topic => throw Exception(
-                'Topics source not allowed for lemmy'
+              'Topics source not allowed for lemmy',
             ),
           });
 
@@ -130,7 +130,7 @@ class APIThreads {
 
       case ServerSoftware.piefed:
         const path = '/post/list';
-        final query = {'page_cursor': page, 'sort': lemmyFeedSortMap[sort]}
+        final query = {'page': page, 'sort': lemmyFeedSortMap[sort]}
           ..addAll(switch (source) {
             FeedSource.all => {'type_': 'All'},
             FeedSource.local => {'type_': 'Local'},
