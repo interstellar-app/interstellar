@@ -664,6 +664,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
                 context,
                 builder: (context) => PostCommentScreen(item.postType, item.id),
               ),
+              showChildren: false,
             ),
           ),
           UserFeedType.follower || UserFeedType.following => ExploreScreenItem(

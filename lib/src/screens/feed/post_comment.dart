@@ -26,6 +26,7 @@ class PostComment extends StatefulWidget {
     this.onClick,
     this.userCanModerate = false,
     this.level = 0,
+    this.showChildren = true,
     super.key,
   });
 
@@ -35,6 +36,7 @@ class PostComment extends StatefulWidget {
   final void Function()? onClick;
   final bool userCanModerate;
   final int level;
+  final bool showChildren;
 
   @override
   State<PostComment> createState() => _PostCommentState();
@@ -434,60 +436,62 @@ class _PostCommentState extends State<PostComment> {
             clipBehavior: Clip.antiAlias,
             child: contentItem,
           ),
-          if (widget.comment.childCount > 0 &&
-              _expandableController.expanded &&
-              (widget.comment.children?.isEmpty ?? false))
-            TextButton(
-              onPressed: () => pushRoute(
-                context,
-                builder: (context) => PostCommentScreen(
-                  widget.comment.postType,
-                  widget.comment.id,
-                  opUserId: widget.opUserId,
-                ),
-              ),
-              child: Text(l(context).openReplies(widget.comment.childCount)),
-            ),
-          if (widget.comment.childCount > 0)
-            Container(
-              margin: const EdgeInsets.only(left: 1),
-              padding: const EdgeInsets.only(left: 9),
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(
-                    color:
-                        Colors.primaries[widget
-                            .level], //Theme.of(context).colorScheme.outlineVariant,
-                    width: 2,
+          if (widget.showChildren) ...[
+            if (widget.comment.childCount > 0 &&
+                _expandableController.expanded &&
+                (widget.comment.children?.isEmpty ?? false))
+              TextButton(
+                onPressed: () => pushRoute(
+                  context,
+                  builder: (context) => PostCommentScreen(
+                    widget.comment.postType,
+                    widget.comment.id,
+                    opUserId: widget.opUserId,
                   ),
                 ),
+                child: Text(l(context).openReplies(widget.comment.childCount)),
               ),
-              child: Column(
-                children: widget.comment.children!
-                    .asMap()
-                    .entries
-                    .map(
-                      (item) => PostComment(
-                        item.value,
-                        (newValue) {
-                          var newChildren = [...widget.comment.children!];
-                          newChildren[item.key] = newValue;
-                          widget.onUpdate(
-                            widget.comment.copyWith(
-                              childCount: widget.comment.childCount + 1,
-                              children: newChildren,
-                            ),
-                          );
-                        },
-                        opUserId: widget.opUserId,
-                        onClick: widget.onClick,
-                        userCanModerate: widget.userCanModerate,
-                        level: widget.level + 1,
-                      ),
-                    )
-                    .toList(),
+            if (widget.comment.childCount > 0)
+              Container(
+                margin: const EdgeInsets.only(left: 1),
+                padding: const EdgeInsets.only(left: 9),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color:
+                          Colors.primaries[widget
+                              .level], //Theme.of(context).colorScheme.outlineVariant,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                child: Column(
+                  children: widget.comment.children!
+                      .asMap()
+                      .entries
+                      .map(
+                        (item) => PostComment(
+                          item.value,
+                          (newValue) {
+                            var newChildren = [...widget.comment.children!];
+                            newChildren[item.key] = newValue;
+                            widget.onUpdate(
+                              widget.comment.copyWith(
+                                childCount: widget.comment.childCount + 1,
+                                children: newChildren,
+                              ),
+                            );
+                          },
+                          opUserId: widget.opUserId,
+                          onClick: widget.onClick,
+                          userCanModerate: widget.userCanModerate,
+                          level: widget.level + 1,
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
-            ),
+          ]
         ],
       ),
     );
