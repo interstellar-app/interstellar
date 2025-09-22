@@ -82,7 +82,7 @@ class _MessagesScreenState extends State<MessagesScreen>
                 context,
                 builder: (context) => ExploreScreen(
                   mode: ExploreType.people,
-                  title: 'New chat',
+                  title: l(context).newChat,
                   onTap: (selected, item) async {
                     Navigator.of(context).pop();
                     await pushRoute(

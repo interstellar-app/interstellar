@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/screens/account/account_screen.dart';
+import 'package:interstellar/src/screens/account/inbox_screen.dart';
+import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
+import 'package:interstellar/src/screens/account/self_feed.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
@@ -29,6 +31,7 @@ class _AppHomeState extends State<AppHome> {
   Key _feedKey = UniqueKey();
   Key _exploreKey = UniqueKey();
   Key _accountKey = UniqueKey();
+  Key _inboxKey = UniqueKey();
   final ScrollController _feedScrollController = ScrollController();
   final FocusNode _exploreFocusNode = FocusNode();
   int _exitCounter = 0;
@@ -58,6 +61,22 @@ class _AppHomeState extends State<AppHome> {
           }();
           return;
         case 3:
+          pushRoute(
+            context,
+            builder: (context) => ExploreScreen(
+              mode: ExploreType.people,
+              title: l(context).newChat,
+              onTap: (selected, item) async {
+                Navigator.pop(context);
+                await pushRoute(
+                  context,
+                  builder: (context) =>
+                      MessageThreadScreen(threadId: null, otherUser: item),
+                );
+              },
+            ),
+          );
+        case 4:
           switchProfileSelect(context);
           return;
       }
@@ -97,6 +116,7 @@ class _AppHomeState extends State<AppHome> {
         _feedKey = UniqueKey();
         _exploreKey = UniqueKey();
         _accountKey = UniqueKey();
+        _inboxKey = UniqueKey();
       });
     };
 
@@ -134,6 +154,11 @@ class _AppHomeState extends State<AppHome> {
                       parentBuilder: (child) => NotificationBadge(child: child),
                       child: const Icon(Symbols.person_rounded, fill: 1),
                     ),
+                  ),
+                  NavigationDestination(
+                    label: l(context).inbox,
+                    icon: const Icon(Symbols.inbox_rounded),
+                    selectedIcon: const Icon(Symbols.inbox_rounded, fill: 1),
                   ),
                   NavigationDestination(
                     label: l(context).settings,
@@ -176,6 +201,11 @@ class _AppHomeState extends State<AppHome> {
                     ),
                   ),
                   NavigationRailDestination(
+                    label: Text(l(context).inbox),
+                    icon: const Icon(Symbols.inbox_rounded),
+                    selectedIcon: const Icon(Symbols.inbox_rounded, fill: 1),
+                  ),
+                  NavigationRailDestination(
                     label: Text(l(context).settings),
                     icon: const Icon(Symbols.settings_rounded),
                     selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
@@ -193,7 +223,8 @@ class _AppHomeState extends State<AppHome> {
                     scrollController: _feedScrollController,
                   ),
                   ExploreScreen(key: _exploreKey, focusNode: _exploreFocusNode),
-                  AccountScreen(key: _accountKey),
+                  SelfFeed(key: _accountKey),
+                  InboxScreen(key: _inboxKey),
                   SettingsScreen(),
                 ],
               ),
