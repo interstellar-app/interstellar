@@ -146,6 +146,8 @@ class ServerClient {
 
       _langCodeIdPairs = allLanguages
           .map((e) => (e['code'] as String, e['id'] as int))
+          // Don't track "und" (undefined) language
+          .where((pair) => pair.$1 != 'und')
           .toList();
     }
 
