@@ -228,6 +228,7 @@ class _PostPageState extends State<PostPage> {
                             .map(
                               (crossPost) => ContextMenuItem(
                                 title: crossPost.community.name,
+                                subtitle: l(context).commentsX(crossPost.numComments),
                                 onTap: () => pushRoute(
                                   context,
                                   builder: (context) => PostPage(
@@ -257,36 +258,39 @@ class _PostPageState extends State<PostPage> {
                 key: _mainCommentSectionKey,
               ),
               if (context.read<AppController>().profile.showCrosspostComments)
-                ...post.crossPosts.map(
-                  (crossPost) => SliverMainAxisGroup(
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: ListTile(
-                          title: Text(
-                            l(
-                              context,
-                            ).crossPostComments(crossPost.community.name),
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          onTap: () => pushRoute(
-                            context,
-                            builder: (context) => PostPage(
-                              postType: crossPost.type,
-                              postId: crossPost.id,
-                              initData: crossPost,
+                ...post.crossPosts
+                    .where((crossPost) => crossPost.numComments > 0)
+                    .map(
+                      (crossPost) => SliverMainAxisGroup(
+                        slivers: [
+                          SliverToBoxAdapter(child: const Divider()),
+                          SliverToBoxAdapter(
+                            child: ListTile(
+                              title: Text(
+                                l(
+                                  context,
+                                ).crossPostComments(crossPost.community.name),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              onTap: () => pushRoute(
+                                context,
+                                builder: (context) => PostPage(
+                                  postType: crossPost.type,
+                                  postId: crossPost.id,
+                                  initData: crossPost,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          CommentSection(
+                            id: crossPost.id,
+                            postType: crossPost.type,
+                            sort: commentSort,
+                            opUserId: crossPost.user.id,
+                          ),
+                        ],
                       ),
-                      CommentSection(
-                        id: crossPost.id,
-                        postType: crossPost.type,
-                        sort: commentSort,
-                        opUserId: crossPost.user.id,
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
             ],
           ),
         ),
