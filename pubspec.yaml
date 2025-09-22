@@ -3,7 +3,7 @@ name: interstellar
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.10.0+20
+version: 0.10.1+21
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
