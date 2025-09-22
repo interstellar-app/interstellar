@@ -127,7 +127,7 @@
     "@owner": {},
     "domains": "Домен",
     "@domains": {},
-    "modsOf": "Моди з {community}",
+    "modsOf": "Модератори {community}",
     "@modsOf": {
         "placeholders": {
             "community": {
@@ -1188,5 +1188,9 @@
         }
     },
     "pushNotificationsDialog_selectDistributor": "Виберіть розподільник push",
-    "@pushNotificationsDialog_selectDistributor": {}
+    "@pushNotificationsDialog_selectDistributor": {},
+    "inbox": "Вхідні",
+    "@inbox": {},
+    "newChat": "Новий чат",
+    "@newChat": {}
 }
