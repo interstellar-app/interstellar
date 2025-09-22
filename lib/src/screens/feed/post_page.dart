@@ -52,12 +52,9 @@ class _PostPageState extends State<PostPage> {
     if (widget.initData != null) {
       _data = widget.initData!;
     }
-    // Lemmy and PieFed only return crossposts on fetching single post not on list
-    // so need to fetch full post info. Can skip on mbin.
-    if (widget.postType != null && widget.postId != null ||
-        _data != null &&
-            context.read<AppController>().serverSoftware !=
-                ServerSoftware.mbin) {
+    // Crossposts are only returned on fetching single post not on list
+    // so need to fetch full post info.
+    if (widget.postType != null && widget.postId != null || _data != null) {
       final newPost = await switch (widget.postType ?? _data!.type) {
         PostType.thread => context.read<AppController>().api.threads.get(
           widget.postId ?? _data!.id,
@@ -228,7 +225,9 @@ class _PostPageState extends State<PostPage> {
                             .map(
                               (crossPost) => ContextMenuItem(
                                 title: crossPost.community.name,
-                                subtitle: l(context).commentsX(crossPost.numComments),
+                                subtitle: l(
+                                  context,
+                                ).commentsX(crossPost.numComments),
                                 onTap: () => pushRoute(
                                   context,
                                   builder: (context) => PostPage(
