@@ -208,11 +208,13 @@
   "account_settings_notifyOnThreadCommentReply": "Notify on thread comment reply",
   "account_settings_notifyOnMicroblogReply": "Notify on comments in authored microblogs",
   "account_settings_notifyOnMicroblogCommentReply": "Notify on microblog comment reply",
+  "inbox": "Inbox",
   "notifications": "Notifications",
   "notifications_readAll": "Mark all as read",
   "notifications_registerPush": "Register for push notifications",
   "notifications_unregisterPush": "Unregister push notifications",
   "messages": "Messages",
+  "newChat": "New chat",
   "reply": "Reply",
   "replying_toX": "Replying to {user}",
   "@replying_toX": {
