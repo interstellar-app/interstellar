@@ -38,24 +38,29 @@ void main() async {
   // Show snackbar on error
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
+    ac.logger.e(details.summary);
 
     // Don't show error for rendering issues
     if (details.library == 'rendering library') return;
     // Don't show error for image loading issues
     if (details.library == 'image resource service') return;
+    // Don't show error for "The provided ScrollController is attached to more than one ScrollPosition."
+    if (details.library == 'animation library') return;
 
-    ac.logger.e(details.summary);
     if (ac.profile.showErrors) {
       scaffoldMessengerKey.currentState?.showSnackBar(
-        SnackBar(content: Text(details.summary.toString())),
+        SnackBar(
+          content: Text(details.summary.toString()),
+          showCloseIcon: true,
+        ),
       );
     }
   };
-  PlatformDispatcher.instance.onError = (error, stack) {
-    ac.logger.e(error);
+  PlatformDispatcher.instance.onError = (error, st) {
+    ac.logger.e(error, stackTrace: st);
     if (ac.profile.showErrors) {
       scaffoldMessengerKey.currentState?.showSnackBar(
-        SnackBar(content: Text(error.toString())),
+        SnackBar(content: Text(error.toString()), showCloseIcon: true),
       );
     }
     return false;
