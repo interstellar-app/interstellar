@@ -144,21 +144,21 @@ class _AppHomeState extends State<AppHome> {
                   ),
                   NavigationDestination(
                     label: l(context).account,
+                    icon: const Icon(Symbols.person_rounded),
+                    selectedIcon: const Icon(Symbols.person_rounded, fill: 1),
+                  ),
+                  NavigationDestination(
+                    label: l(context).inbox,
                     icon: Wrapper(
                       shouldWrap: context.watch<AppController>().isLoggedIn,
                       parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.person_rounded),
+                      child: const Icon(Symbols.inbox_rounded),
                     ),
                     selectedIcon: Wrapper(
                       shouldWrap: context.watch<AppController>().isLoggedIn,
                       parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.person_rounded, fill: 1),
+                      child: const Icon(Symbols.inbox_rounded, fill: 1),
                     ),
-                  ),
-                  NavigationDestination(
-                    label: l(context).inbox,
-                    icon: const Icon(Symbols.inbox_rounded),
-                    selectedIcon: const Icon(Symbols.inbox_rounded, fill: 1),
                   ),
                   NavigationDestination(
                     label: l(context).settings,
@@ -189,21 +189,21 @@ class _AppHomeState extends State<AppHome> {
                   ),
                   NavigationRailDestination(
                     label: Text(l(context).account),
+                    icon: const Icon(Symbols.person_rounded),
+                    selectedIcon: const Icon(Symbols.person_rounded, fill: 1),
+                  ),
+                  NavigationRailDestination(
+                    label: Text(l(context).inbox),
                     icon: Wrapper(
                       shouldWrap: context.watch<AppController>().isLoggedIn,
                       parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.person_rounded),
+                      child: const Icon(Symbols.inbox_rounded),
                     ),
                     selectedIcon: Wrapper(
                       shouldWrap: context.watch<AppController>().isLoggedIn,
                       parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.person_rounded, fill: 1),
+                      child: const Icon(Symbols.inbox_rounded, fill: 1),
                     ),
-                  ),
-                  NavigationRailDestination(
-                    label: Text(l(context).inbox),
-                    icon: const Icon(Symbols.inbox_rounded),
-                    selectedIcon: const Icon(Symbols.inbox_rounded, fill: 1),
                   ),
                   NavigationRailDestination(
                     label: Text(l(context).settings),
