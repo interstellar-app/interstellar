@@ -110,6 +110,7 @@ class _PostPageState extends State<PostPage> {
             post.title ?? post.body ?? '',
             softWrap: false,
             overflow: TextOverflow.fade,
+            maxLines: 1,
           ),
           subtitle: Row(
             children: [
