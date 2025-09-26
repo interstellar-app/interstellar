@@ -12,8 +12,6 @@ import 'package:interstellar/src/widgets/paging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import '../../controller/server.dart';
-
 class PostPage extends StatefulWidget {
   const PostPage({
     this.postType,
@@ -89,8 +87,8 @@ class _PostPageState extends State<PostPage> {
     widget.onUpdate?.call(newValue);
   }
 
-  Object _refreshKey = Object();
-  final _mainCommentSectionKey = GlobalKey<_CommentSectionState>();
+  GlobalKey<_CommentSectionState> _mainCommentSectionKey =
+      GlobalKey<_CommentSectionState>();
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +133,7 @@ class _PostPageState extends State<PostPage> {
                 if (newSort != null && newSort != commentSort) {
                   setState(() {
                     commentSort = newSort;
+                    _mainCommentSectionKey = GlobalKey<_CommentSectionState>();
                   });
                 }
               },
@@ -144,154 +143,154 @@ class _PostPageState extends State<PostPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(() => _refreshKey = Object()),
-        child: KeyedSubtree(
-          key: ValueKey(_refreshKey),
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: PostItem(
-                  post,
-                  _onUpdate,
-                  onReply: whenLoggedIn(context, (body, lang) async {
-                    var newComment = await context
-                        .read<AppController>()
-                        .api
-                        .comments
-                        .create(post.type, post.id, body, lang: lang);
+        onRefresh: () => Future.sync(
+          () => setState(
+            () => _mainCommentSectionKey = GlobalKey<_CommentSectionState>(),
+          ),
+        ),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: PostItem(
+                post,
+                _onUpdate,
+                onReply: whenLoggedIn(context, (body, lang) async {
+                  var newComment = await context
+                      .read<AppController>()
+                      .api
+                      .comments
+                      .create(post.type, post.id, body, lang: lang);
 
-                    _mainCommentSectionKey.currentState?._pagingController
-                        .prependPage('', [newComment]);
-                  }),
-                  onEdit: post.visibility != 'soft_deleted'
-                      ? whenLoggedIn(context, (body) async {
-                          final newPost = await switch (post.type) {
-                            PostType.thread =>
-                              context.read<AppController>().api.threads.edit(
-                                post.id,
-                                post.title!,
-                                post.isOC,
-                                body,
-                                post.lang,
-                                post.isNSFW,
-                              ),
-                            PostType.microblog =>
-                              context.read<AppController>().api.microblogs.edit(
-                                post.id,
-                                body,
-                                post.lang!,
-                                post.isNSFW,
-                              ),
-                          };
-                          _onUpdate(newPost);
-                        }, matchesUsername: post.user.name)
-                      : null,
-                  onDelete: post.visibility != 'soft_deleted'
-                      ? whenLoggedIn(context, () async {
-                          await switch (post.type) {
-                            PostType.thread =>
-                              context.read<AppController>().api.threads.delete(
-                                post.id,
-                              ),
-                            PostType.microblog =>
-                              context
-                                  .read<AppController>()
-                                  .api
-                                  .microblogs
-                                  .delete(post.id),
-                          };
-                          _onUpdate(
-                            post.copyWith(
-                              body: '_${l(context).postDeleted}_',
-                              upvotes: null,
-                              downvotes: null,
-                              boosts: null,
-                              visibility: 'soft_deleted',
+                  _mainCommentSectionKey.currentState?._pagingController
+                      .prependPage('', [newComment]);
+                }),
+                onEdit: post.visibility != 'soft_deleted'
+                    ? whenLoggedIn(context, (body) async {
+                        final newPost = await switch (post.type) {
+                          PostType.thread =>
+                            context.read<AppController>().api.threads.edit(
+                              post.id,
+                              post.title!,
+                              post.isOC,
+                              body,
+                              post.lang,
+                              post.isNSFW,
                             ),
-                          );
-                        }, matchesUsername: post.user.name)
-                      : null,
-                  userCanModerate: widget.userCanModerate,
-                ),
+                          PostType.microblog =>
+                            context.read<AppController>().api.microblogs.edit(
+                              post.id,
+                              body,
+                              post.lang!,
+                              post.isNSFW,
+                            ),
+                        };
+                        _onUpdate(newPost);
+                      }, matchesUsername: post.user.name)
+                    : null,
+                onDelete: post.visibility != 'soft_deleted'
+                    ? whenLoggedIn(context, () async {
+                        await switch (post.type) {
+                          PostType.thread =>
+                            context.read<AppController>().api.threads.delete(
+                              post.id,
+                            ),
+                          PostType.microblog =>
+                            context.read<AppController>().api.microblogs.delete(
+                              post.id,
+                            ),
+                        };
+                        _onUpdate(
+                          post.copyWith(
+                            body: '_${l(context).postDeleted}_',
+                            upvotes: null,
+                            downvotes: null,
+                            boosts: null,
+                            visibility: 'soft_deleted',
+                          ),
+                        );
+                      }, matchesUsername: post.user.name)
+                    : null,
+                userCanModerate: widget.userCanModerate,
               ),
-              if (_data != null && _data!.crossPosts.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: ElevatedButton(
-                      onPressed: () => ContextMenu(
-                        title: l(context).crossPosts,
-                        items: _data!.crossPosts
-                            .map(
-                              (crossPost) => ContextMenuItem(
-                                title: crossPost.community.name,
-                                subtitle: l(
-                                  context,
-                                ).commentsX(crossPost.numComments),
-                                onTap: () => pushRoute(
-                                  context,
-                                  builder: (context) => PostPage(
-                                    postType: PostType.thread,
-                                    postId: crossPost.id,
-                                    initData: crossPost,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ).openMenu(context),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          l(context).crossPostCount(post.crossPosts.length),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              CommentSection(
-                id: post.id,
-                postType: post.type,
-                sort: commentSort,
-                opUserId: post.user.id,
-                key: _mainCommentSectionKey,
-              ),
-              if (context.read<AppController>().profile.showCrosspostComments)
-                ...post.crossPosts
-                    .where((crossPost) => crossPost.numComments > 0)
-                    .map(
-                      (crossPost) => SliverMainAxisGroup(
-                        slivers: [
-                          SliverToBoxAdapter(child: const Divider()),
-                          SliverToBoxAdapter(
-                            child: ListTile(
-                              title: Text(
-                                l(
-                                  context,
-                                ).crossPostComments(crossPost.community.name),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
+            ),
+            if (_data != null && _data!.crossPosts.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ElevatedButton(
+                    onPressed: () => ContextMenu(
+                      title: l(context).crossPosts,
+                      items: _data!.crossPosts
+                          .map(
+                            (crossPost) => ContextMenuItem(
+                              title: crossPost.community.name,
+                              subtitle: l(
+                                context,
+                              ).commentsX(crossPost.numComments),
                               onTap: () => pushRoute(
                                 context,
                                 builder: (context) => PostPage(
-                                  postType: crossPost.type,
+                                  postType: PostType.thread,
                                   postId: crossPost.id,
                                   initData: crossPost,
                                 ),
                               ),
                             ),
-                          ),
-                          CommentSection(
-                            id: crossPost.id,
-                            postType: crossPost.type,
-                            sort: commentSort,
-                            opUserId: crossPost.user.id,
-                          ),
-                        ],
+                          )
+                          .toList(),
+                    ).openMenu(context),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        l(context).crossPostCount(post.crossPosts.length),
                       ),
                     ),
-            ],
-          ),
+                  ),
+                ),
+              ),
+            CommentSection(
+              id: post.id,
+              postType: post.type,
+              sort: commentSort,
+              opUserId: post.user.id,
+              key: _mainCommentSectionKey,
+            ),
+            if (context.read<AppController>().profile.showCrosspostComments)
+              ...post.crossPosts
+                  .where((crossPost) => crossPost.numComments > 0)
+                  .map(
+                    (crossPost) => SliverMainAxisGroup(
+                      slivers: [
+                        SliverToBoxAdapter(child: const Divider()),
+                        SliverToBoxAdapter(
+                          child: ListTile(
+                            title: Text(
+                              l(
+                                context,
+                              ).crossPostComments(crossPost.community.name),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            onTap: () => pushRoute(
+                              context,
+                              builder: (context) => PostPage(
+                                postType: crossPost.type,
+                                postId: crossPost.id,
+                                initData: crossPost,
+                              ),
+                            ),
+                          ),
+                        ),
+                        CommentSection(
+                          id: crossPost.id,
+                          postType: crossPost.type,
+                          sort: commentSort,
+                          opUserId: crossPost.user.id,
+                          key: Key('${crossPost.id}$commentSort'),
+                        ),
+                      ],
+                    ),
+                  ),
+          ],
         ),
       ),
     );
