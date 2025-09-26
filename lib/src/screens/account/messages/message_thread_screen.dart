@@ -95,10 +95,12 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
     final myUsername = context.watch<AppController>().localName;
 
     final messageUser =
-        _data?.participants.firstWhere(
-          (user) => user.name != myUsername,
-          orElse: () => _data!.participants.first,
-        ) ??
+        (_data != null && _data!.participants.isNotEmpty
+            ? _data?.participants.firstWhere(
+                (user) => user.name != myUsername,
+                orElse: () => _data!.participants.first,
+              )
+            : null) ??
         widget.otherUser;
 
     final messageDraftController = context.watch<DraftsController>().auto(
