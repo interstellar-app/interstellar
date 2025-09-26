@@ -28,6 +28,7 @@ import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
+import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -49,6 +50,15 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   DetailedUserModel? _data;
   late FeedSort _sort;
+  final ScrollController _scrollController = ScrollController();
+  final List<GlobalKey<_UserScreenBodyState>> _feedKeyList = [];
+
+  GlobalKey<_UserScreenBodyState> _getFeedKey(int index) {
+    while (index >= _feedKeyList.length) {
+      _feedKeyList.add(GlobalKey());
+    }
+    return _feedKeyList[index];
+  }
 
   @override
   void initState() {
@@ -141,370 +151,394 @@ class _UserScreenState extends State<UserScreen> {
       ),
       body: DefaultTabController(
         length: ac.serverSoftware == ServerSoftware.mbin ? 6 : 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    fit: StackFit.passthrough,
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height / 3,
+        child: DefaultTabControllerListener(
+          onTabSelected: (newIndex) => setState(() {}),
+          child: NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      fit: StackFit.passthrough,
+                      children: [
+                        Container(
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height / 3,
+                          ),
+                          height: user.cover == null ? 48 : null,
+                          margin: const EdgeInsets.only(bottom: 48),
+                          child: user.cover != null
+                              ? AdvancedImage(user.cover!, fit: BoxFit.cover)
+                              : null,
                         ),
-                        height: user.cover == null ? 48 : null,
-                        margin: const EdgeInsets.only(bottom: 48),
-                        child: user.cover != null
-                            ? AdvancedImage(user.cover!, fit: BoxFit.cover)
-                            : null,
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 12,
-                        child: Avatar(
-                          user.avatar,
-                          radius: 36,
-                          borderRadius: 4,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).scaffoldBackgroundColor,
+                        Positioned(
+                          bottom: 0,
+                          left: 12,
+                          child: Avatar(
+                            user.avatar,
+                            radius: 36,
+                            borderRadius: 4,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).scaffoldBackgroundColor,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 16,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (isMyUser)
-                                  FilledButton(
-                                    onPressed: () => pushRoute(
-                                      context,
-                                      builder: (context) => ProfileEditScreen(
-                                        _data!,
-                                        (DetailedUserModel user) {
-                                          setState(() {
-                                            _data = user;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    child: Text(l(context).account_edit),
-                                  ),
-                                if (!isMyUser &&
-                                    ac.serverSoftware == ServerSoftware.mbin)
-                                  SubscriptionButton(
-                                    isSubscribed: user.isFollowedByUser,
-                                    subscriptionCount: user.followersCount ?? 0,
-                                    onSubscribe: (selected) async {
-                                      var newValue = await ac.api.users.follow(
-                                        user.id,
-                                        selected,
-                                      );
-                                      setState(() {
-                                        _data = newValue;
-                                      });
-                                      if (widget.onUpdate != null) {
-                                        widget.onUpdate!(newValue);
-                                      }
-                                    },
-                                    followMode: true,
-                                  ),
-                                StarButton(globalName),
-                                if (isLoggedIn && !isMyUser)
-                                  LoadingIconButton(
-                                    onPressed: () async {
-                                      final newValue = await ac.api.users
-                                          .putBlock(
-                                            user.id,
-                                            !user.isBlockedByUser!,
-                                          );
-
-                                      setState(() {
-                                        _data = newValue;
-                                      });
-                                      if (widget.onUpdate != null) {
-                                        widget.onUpdate!(newValue);
-                                      }
-                                    },
-                                    icon: const Icon(Symbols.block_rounded),
-                                    style: ButtonStyle(
-                                      foregroundColor: WidgetStatePropertyAll(
-                                        user.isBlockedByUser == true
-                                            ? Theme.of(
-                                                context,
-                                              ).colorScheme.error
-                                            : Theme.of(context).disabledColor,
-                                      ),
-                                    ),
-                                  ),
-                                if (isLoggedIn && !isMyUser)
-                                  IconButton(
-                                    onPressed: () {
-                                      pushRoute(
+                        Positioned(
+                          bottom: 0,
+                          right: 16,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (isMyUser)
+                                    FilledButton(
+                                      onPressed: () => pushRoute(
                                         context,
-                                        builder: (context) =>
-                                            MessageThreadScreen(
-                                              threadId: null,
-                                              otherUser: _data,
-                                            ),
-                                      );
-                                    },
-                                    icon: const Icon(Symbols.mail_rounded),
-                                    tooltip: 'Send message',
-                                  ),
-                                IconButton(
-                                  onPressed: () => ContextMenu(
-                                    actions: [
-                                      if (!isMyUser &&
-                                          ac.serverSoftware ==
-                                              ServerSoftware.mbin)
-                                        ContextMenuAction(
-                                          child: SubscriptionButton(
-                                            isSubscribed: user.isFollowedByUser,
-                                            subscriptionCount:
-                                                user.followersCount ?? 0,
-                                            onSubscribe: (selected) async {
-                                              var newValue = await ac.api.users
-                                                  .follow(user.id, selected);
-                                              setState(() {
-                                                _data = newValue;
-                                              });
-                                              if (widget.onUpdate != null) {
-                                                widget.onUpdate!(newValue);
-                                              }
-                                            },
-                                            followMode: true,
-                                          ),
+                                        builder: (context) => ProfileEditScreen(
+                                          _data!,
+                                          (DetailedUserModel user) {
+                                            setState(() {
+                                              _data = user;
+                                            });
+                                          },
                                         ),
-                                      ContextMenuAction(
-                                        child: StarButton(globalName),
                                       ),
-                                      if (isLoggedIn && !isMyUser)
-                                        ContextMenuAction(
-                                          child: LoadingIconButton(
-                                            onPressed: () async {
-                                              final newValue = await ac
-                                                  .api
-                                                  .users
-                                                  .putBlock(
-                                                    user.id,
-                                                    !user.isBlockedByUser!,
-                                                  );
+                                      child: Text(l(context).account_edit),
+                                    ),
+                                  if (!isMyUser &&
+                                      ac.serverSoftware == ServerSoftware.mbin)
+                                    SubscriptionButton(
+                                      isSubscribed: user.isFollowedByUser,
+                                      subscriptionCount:
+                                          user.followersCount ?? 0,
+                                      onSubscribe: (selected) async {
+                                        var newValue = await ac.api.users
+                                            .follow(user.id, selected);
+                                        setState(() {
+                                          _data = newValue;
+                                        });
+                                        if (widget.onUpdate != null) {
+                                          widget.onUpdate!(newValue);
+                                        }
+                                      },
+                                      followMode: true,
+                                    ),
+                                  StarButton(globalName),
+                                  if (isLoggedIn && !isMyUser)
+                                    LoadingIconButton(
+                                      onPressed: () async {
+                                        final newValue = await ac.api.users
+                                            .putBlock(
+                                              user.id,
+                                              !user.isBlockedByUser!,
+                                            );
 
-                                              setState(() {
-                                                _data = newValue;
-                                              });
-                                              if (widget.onUpdate != null) {
-                                                widget.onUpdate!(newValue);
-                                              }
-                                            },
-                                            icon: const Icon(
-                                              Symbols.block_rounded,
+                                        setState(() {
+                                          _data = newValue;
+                                        });
+                                        if (widget.onUpdate != null) {
+                                          widget.onUpdate!(newValue);
+                                        }
+                                      },
+                                      icon: const Icon(Symbols.block_rounded),
+                                      style: ButtonStyle(
+                                        foregroundColor: WidgetStatePropertyAll(
+                                          user.isBlockedByUser == true
+                                              ? Theme.of(
+                                                  context,
+                                                ).colorScheme.error
+                                              : Theme.of(context).disabledColor,
+                                        ),
+                                      ),
+                                    ),
+                                  if (isLoggedIn && !isMyUser)
+                                    IconButton(
+                                      onPressed: () {
+                                        pushRoute(
+                                          context,
+                                          builder: (context) =>
+                                              MessageThreadScreen(
+                                                threadId: null,
+                                                otherUser: _data,
+                                              ),
+                                        );
+                                      },
+                                      icon: const Icon(Symbols.mail_rounded),
+                                      tooltip: 'Send message',
+                                    ),
+                                  IconButton(
+                                    onPressed: () => ContextMenu(
+                                      actions: [
+                                        if (!isMyUser &&
+                                            ac.serverSoftware ==
+                                                ServerSoftware.mbin)
+                                          ContextMenuAction(
+                                            child: SubscriptionButton(
+                                              isSubscribed:
+                                                  user.isFollowedByUser,
+                                              subscriptionCount:
+                                                  user.followersCount ?? 0,
+                                              onSubscribe: (selected) async {
+                                                var newValue = await ac
+                                                    .api
+                                                    .users
+                                                    .follow(user.id, selected);
+                                                setState(() {
+                                                  _data = newValue;
+                                                });
+                                                if (widget.onUpdate != null) {
+                                                  widget.onUpdate!(newValue);
+                                                }
+                                              },
+                                              followMode: true,
                                             ),
-                                            style: ButtonStyle(
-                                              foregroundColor:
-                                                  WidgetStatePropertyAll(
-                                                    user.isBlockedByUser == true
-                                                        ? Theme.of(
-                                                            context,
-                                                          ).colorScheme.error
-                                                        : Theme.of(
-                                                            context,
-                                                          ).disabledColor,
+                                          ),
+                                        ContextMenuAction(
+                                          child: StarButton(globalName),
+                                        ),
+                                        if (isLoggedIn && !isMyUser)
+                                          ContextMenuAction(
+                                            child: LoadingIconButton(
+                                              onPressed: () async {
+                                                final newValue = await ac
+                                                    .api
+                                                    .users
+                                                    .putBlock(
+                                                      user.id,
+                                                      !user.isBlockedByUser!,
+                                                    );
+
+                                                setState(() {
+                                                  _data = newValue;
+                                                });
+                                                if (widget.onUpdate != null) {
+                                                  widget.onUpdate!(newValue);
+                                                }
+                                              },
+                                              icon: const Icon(
+                                                Symbols.block_rounded,
+                                              ),
+                                              style: ButtonStyle(
+                                                foregroundColor:
+                                                    WidgetStatePropertyAll(
+                                                      user.isBlockedByUser ==
+                                                              true
+                                                          ? Theme.of(
+                                                              context,
+                                                            ).colorScheme.error
+                                                          : Theme.of(
+                                                              context,
+                                                            ).disabledColor,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        if (isLoggedIn && !isMyUser)
+                                          ContextMenuAction(
+                                            icon: Symbols.mail_rounded,
+                                            onTap: () => pushRoute(
+                                              context,
+                                              builder: (context) =>
+                                                  MessageThreadScreen(
+                                                    threadId: null,
+                                                    otherUser: _data,
                                                   ),
                                             ),
                                           ),
-                                        ),
-                                      if (isLoggedIn && !isMyUser)
-                                        ContextMenuAction(
-                                          icon: Symbols.mail_rounded,
-                                          onTap: () => pushRoute(
+                                      ],
+                                      items: [
+                                        ContextMenuItem(
+                                          title: l(context).feeds_addTo,
+                                          onTap: () async => showAddToFeedMenu(
                                             context,
-                                            builder: (context) =>
-                                                MessageThreadScreen(
-                                                  threadId: null,
-                                                  otherUser: _data,
-                                                ),
+                                            normalizeName(
+                                              user.name,
+                                              ac.instanceHost,
+                                            ),
+                                            FeedSource.user,
                                           ),
                                         ),
-                                    ],
-                                    items: [
-                                      ContextMenuItem(
-                                        title: l(context).feeds_addTo,
-                                        onTap: () async => showAddToFeedMenu(
-                                          context,
-                                          normalizeName(
-                                            user.name,
-                                            ac.instanceHost,
-                                          ),
-                                          FeedSource.user,
-                                        ),
-                                      ),
-                                    ],
-                                  ).openMenu(context),
-                                  icon: const Icon(Symbols.more_vert_rounded),
-                                ),
-                              ],
-                            ),
-                            if (!isMyUser &&
-                                _data!.notificationControlStatus != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: NotificationControlSegment(
-                                  _data!.notificationControlStatus!,
-                                  (newStatus) async {
-                                    await ac.api.notifications.updateControl(
-                                      targetType:
-                                          NotificationControlUpdateTargetType
-                                              .user,
-                                      targetId: _data!.id,
-                                      status: newStatus,
-                                    );
-
-                                    final newValue = _data!.copyWith(
-                                      notificationControlStatus: newStatus,
-                                    );
-                                    setState(() {
-                                      _data = newValue;
-                                    });
-                                    if (widget.onUpdate != null) {
-                                      widget.onUpdate!(newValue);
-                                    }
-                                  },
-                                ),
+                                      ],
+                                    ).openMenu(context),
+                                    icon: const Icon(Symbols.more_vert_rounded),
+                                  ),
+                                ],
                               ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user.displayName ?? user.name.split('@').first,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                await Clipboard.setData(
-                                  ClipboardData(
-                                    text: user.name.contains('@')
-                                        ? '@${user.name}'
-                                        : '@${user.name}@${ac.instanceHost}',
-                                  ),
-                                );
+                              if (!isMyUser &&
+                                  _data!.notificationControlStatus != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: NotificationControlSegment(
+                                    _data!.notificationControlStatus!,
+                                    (newStatus) async {
+                                      await ac.api.notifications.updateControl(
+                                        targetType:
+                                            NotificationControlUpdateTargetType
+                                                .user,
+                                        targetId: _data!.id,
+                                        status: newStatus,
+                                      );
 
-                                if (!context.mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(l(context).copied),
-                                    duration: const Duration(seconds: 2),
+                                      final newValue = _data!.copyWith(
+                                        notificationControlStatus: newStatus,
+                                      );
+                                      setState(() {
+                                        _data = newValue;
+                                      });
+                                      if (widget.onUpdate != null) {
+                                        widget.onUpdate!(newValue);
+                                      }
+                                    },
                                   ),
-                                );
-                              },
-                              child: Text(globalName),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text(
-                                  'Joined: ${dateOnlyFormat(user.createdAt)}',
                                 ),
-                                UserStatusIcons(
-                                  cakeDay: user.createdAt,
-                                  isBot: user.isBot,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        if (user.about != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Markdown(
-                              user.about!,
-                              getNameHost(context, user.name),
-                            ),
+                            ],
                           ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              title: TabBar(
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                tabs: [
-                  const Tab(text: 'Threads'),
-                  if (ac.serverSoftware == ServerSoftware.mbin)
-                    const Tab(text: 'Microblogs'),
-                  const Tab(text: 'Comments'),
-                  if (ac.serverSoftware == ServerSoftware.mbin)
-                    const Tab(text: 'Replies'),
-                  if (ac.serverSoftware == ServerSoftware.mbin)
-                    const Tab(text: 'Followers'),
-                  if (ac.serverSoftware == ServerSoftware.mbin)
-                    const Tab(text: 'Following'),
-                ],
-              ),
-              pinned: true,
-            ),
-          ],
-          body: TabBarView(
-            physics: appTabViewPhysics(context),
-            children: [
-              UserScreenBody(
-                mode: UserFeedType.thread,
-                sort: _sort,
-                data: _data,
-              ),
-              if (ac.serverSoftware == ServerSoftware.mbin)
-                UserScreenBody(
-                  mode: UserFeedType.microblog,
-                  sort: _sort,
-                  data: _data,
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.displayName ?? user.name.split('@').first,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  await Clipboard.setData(
+                                    ClipboardData(
+                                      text: user.name.contains('@')
+                                          ? '@${user.name}'
+                                          : '@${user.name}@${ac.instanceHost}',
+                                    ),
+                                  );
+
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l(context).copied),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                },
+                                child: Text(globalName),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Joined: ${dateOnlyFormat(user.createdAt)}',
+                                  ),
+                                  UserStatusIcons(
+                                    cakeDay: user.createdAt,
+                                    isBot: user.isBot,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          if (user.about != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Markdown(
+                                user.about!,
+                                getNameHost(context, user.name),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              UserScreenBody(
-                mode: UserFeedType.comment,
-                sort: _sort,
-                data: _data,
               ),
-              if (ac.serverSoftware == ServerSoftware.mbin)
-                UserScreenBody(
-                  mode: UserFeedType.reply,
-                  sort: _sort,
-                  data: _data,
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                title: TabBar(
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  tabs: [
+                    const Tab(text: 'Threads'),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      const Tab(text: 'Microblogs'),
+                    const Tab(text: 'Comments'),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      const Tab(text: 'Replies'),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      const Tab(text: 'Followers'),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      const Tab(text: 'Following'),
+                  ],
                 ),
-              if (ac.serverSoftware == ServerSoftware.mbin)
-                UserScreenBody(
-                  mode: UserFeedType.follower,
-                  sort: _sort,
-                  data: _data,
-                ),
-              if (ac.serverSoftware == ServerSoftware.mbin)
-                UserScreenBody(
-                  mode: UserFeedType.following,
-                  sort: _sort,
-                  data: _data,
-                ),
+                pinned: true,
+              ),
             ],
+            body: Builder(
+              builder: (context) {
+                final controller = DefaultTabController.of(context);
+                return TabBarView(
+                  physics: appTabViewPhysics(context),
+                  children: [
+                    UserScreenBody(
+                      key: _getFeedKey(0),
+                      mode: UserFeedType.thread,
+                      sort: _sort,
+                      data: _data,
+                      isActive: controller.index == 0,
+                    ),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      UserScreenBody(
+                        key: _getFeedKey(1),
+                        mode: UserFeedType.microblog,
+                        sort: _sort,
+                        data: _data,
+                        isActive: controller.index == 1,
+                      ),
+                    UserScreenBody(
+                      key: _getFeedKey(2),
+                      mode: UserFeedType.comment,
+                      sort: _sort,
+                      data: _data,
+                      isActive: controller.index == 2,
+                    ),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      UserScreenBody(
+                        key: _getFeedKey(3),
+                        mode: UserFeedType.reply,
+                        sort: _sort,
+                        data: _data,
+                        isActive: controller.index == 3,
+                      ),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      UserScreenBody(
+                        key: _getFeedKey(4),
+                        mode: UserFeedType.follower,
+                        sort: _sort,
+                        data: _data,
+                        isActive: controller.index == 4,
+                      ),
+                    if (ac.serverSoftware == ServerSoftware.mbin)
+                      UserScreenBody(
+                        key: _getFeedKey(5),
+                        mode: UserFeedType.following,
+                        sort: _sort,
+                        data: _data,
+                        isActive: controller.index == 5,
+                      ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -516,12 +550,14 @@ class UserScreenBody extends StatefulWidget {
   final UserFeedType mode;
   final FeedSort sort;
   final DetailedUserModel? data;
+  final bool isActive;
 
   const UserScreenBody({
     super.key,
     required this.mode,
     required this.sort,
     this.data,
+    this.isActive = false,
   });
 
   @override
@@ -618,16 +654,29 @@ class _UserScreenBodyState extends State<UserScreenBody>
       );
     },
   );
+  SubordinateScrollController? _scrollController;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
-  void didUpdateWidget(covariant oldWidget) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final parentController = PrimaryScrollController.of(context);
+    if (parentController != _scrollController?.parent) {
+      _scrollController?.dispose();
+      _scrollController = SubordinateScrollController(parent: parentController);
+      _scrollController!.isActive = widget.isActive;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant UserScreenBody oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.mode != oldWidget.mode || widget.sort != oldWidget.sort) {
       _pagingController.refresh();
     }
+    _scrollController?.isActive = widget.isActive;
   }
 
   @override
@@ -635,6 +684,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
     super.build(context);
     return AdvancedPagedScrollView(
       controller: _pagingController,
+      scrollController: _scrollController,
       itemBuilder: (context, item, index) {
         return switch (widget.mode) {
           UserFeedType.thread || UserFeedType.microblog => Card(
@@ -678,6 +728,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
 
   @override
   void dispose() {
+    _scrollController?.dispose();
     _pagingController.dispose();
     super.dispose();
   }

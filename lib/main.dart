@@ -44,8 +44,6 @@ void main() async {
     if (details.library == 'rendering library') return;
     // Don't show error for image loading issues
     if (details.library == 'image resource service') return;
-    // Don't show error for "The provided ScrollController is attached to more than one ScrollPosition."
-    if (details.library == 'animation library') return;
 
     if (ac.profile.showErrors) {
       scaffoldMessengerKey.currentState?.showSnackBar(

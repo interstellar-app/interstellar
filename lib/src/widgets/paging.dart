@@ -249,6 +249,7 @@ class AdvancedPagedScrollView<PageKeyType, PageItemType, PageItemIdType>
   const AdvancedPagedScrollView({
     required this.controller,
     required this.itemBuilder,
+    this.scrollController,
     this.leadingSlivers,
     this.trailingSlivers,
 
@@ -258,6 +259,7 @@ class AdvancedPagedScrollView<PageKeyType, PageItemType, PageItemIdType>
   final AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   controller;
   final ItemWidgetBuilder<PageItemType> itemBuilder;
+  final ScrollController? scrollController;
 
   final List<Widget>? leadingSlivers;
   final List<Widget>? trailingSlivers;
@@ -266,6 +268,7 @@ class AdvancedPagedScrollView<PageKeyType, PageItemType, PageItemIdType>
   Widget build(BuildContext context) => RefreshIndicator(
     onRefresh: () => Future.sync(() => controller.refresh()),
     child: CustomScrollView(
+      controller: scrollController,
       slivers: [
         ...?leadingSlivers,
         AdvancedPagedSliverList(
