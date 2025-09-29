@@ -6,9 +6,16 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
 import 'package:interstellar/src/widgets/paging.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/api/bookmark.dart';
+import 'package:interstellar/src/api/notifications.dart';
+import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -87,6 +94,214 @@ class _PostPageState extends State<PostPage> {
     widget.onUpdate?.call(newValue);
   }
 
+  void _updateCrossPost(PostModel crossPost) {
+    var newCrossPosts = _data!.crossPosts.toList();
+    int indexOfPost = newCrossPosts.indexWhere(
+      (post) => post.id == crossPost.id,
+    );
+    newCrossPosts[indexOfPost] = crossPost;
+    _onUpdate(_data!.copyWith(crossPosts: newCrossPosts));
+  }
+
+  Future<void> showCrosspostMenu(
+    BuildContext context,
+    PostModel crossPost,
+  ) async {
+    final ac = context.read<AppController>();
+    final canModerate = crossPost.canAuthUserModerate ?? false;
+    final contentItem = ContentItem(
+      originInstance: getNameHost(context, crossPost.user.name),
+      user: crossPost.user,
+      community: crossPost.community,
+      boosts: crossPost.boosts,
+      isBoosted: crossPost.myBoost == true,
+      onBoost: whenLoggedIn(context, () async {
+        _updateCrossPost(
+          (await ac.markAsRead([
+            await switch (crossPost.type) {
+              PostType.thread => ac.api.threads.boost(crossPost.id),
+              PostType.microblog => ac.api.microblogs.putVote(crossPost.id, 1),
+            },
+          ], true)).first,
+        );
+      }),
+      upVotes: crossPost.upvotes,
+      isUpVoted: crossPost.myVote == 1,
+      onUpVote: whenLoggedIn(context, () async {
+        _updateCrossPost(
+          (await ac.markAsRead([
+            await switch (crossPost.type) {
+              PostType.thread => ac.api.threads.vote(
+                crossPost.id,
+                1,
+                crossPost.myVote == 1 ? 0 : 1,
+              ),
+              PostType.microblog => ac.api.microblogs.putFavorite(crossPost.id),
+            },
+          ], true)).first,
+        );
+      }),
+      downVotes: crossPost.downvotes,
+      isDownVoted: crossPost.myVote == -1,
+      onDownVote: whenLoggedIn(context, () async {
+        _updateCrossPost(
+          (await ac.markAsRead([
+            await switch (crossPost.type) {
+              PostType.thread => ac.api.threads.vote(
+                crossPost.id,
+                -1,
+                crossPost.myVote == -1 ? 0 : -1,
+              ),
+              PostType.microblog => ac.api.microblogs.putVote(crossPost.id, -1),
+            },
+          ], true)).first,
+        );
+      }),
+      contentTypeName: l(context).post,
+      onReport: whenLoggedIn(context, (reason) async {
+        await switch (crossPost.type) {
+          PostType.thread => ac.api.threads.report(crossPost.id, reason),
+          PostType.microblog => ac.api.microblogs.report(crossPost.id, reason),
+        };
+      }),
+      onMarkAsRead: () async {
+        _updateCrossPost(
+          (await ac.markAsRead([crossPost], !crossPost.read)).first,
+        );
+      },
+      onModeratePin: !canModerate
+          ? null
+          : () async {
+              _updateCrossPost(
+                await ac.api.moderation.postPin(crossPost.type, crossPost.id),
+              );
+            },
+      onModerateMarkNSFW: !canModerate
+          ? null
+          : () async {
+              _updateCrossPost(
+                await ac.api.moderation.postMarkNSFW(
+                  crossPost.type,
+                  crossPost.id,
+                  !crossPost.isNSFW,
+                ),
+              );
+            },
+      onModerateDelete: !canModerate
+          ? null
+          : () async {
+              _updateCrossPost(
+                await ac.api.moderation.postDelete(
+                  crossPost.type,
+                  crossPost.id,
+                  true,
+                ),
+              );
+            },
+      onModerateBan: !canModerate
+          ? null
+          : () async {
+              await openBanDialog(
+                context,
+                user: crossPost.user,
+                community: crossPost.community,
+              );
+            },
+      numComments: crossPost.numComments,
+      openLinkUri: Uri.https(
+        ac.instanceHost,
+        ac.serverSoftware == ServerSoftware.mbin
+            ? '/m/${crossPost.community.name}/${switch (crossPost.type) {
+                PostType.thread => 't',
+                PostType.microblog => 'p',
+              }}/${crossPost.id}'
+            : '/post/${crossPost.id}',
+      ),
+      editDraftResourceId:
+          'edit:${crossPost.type.name}:${ac.instanceHost}:${crossPost.id}',
+      replyDraftResourceId:
+          'reply:${crossPost.type.name}:${ac.instanceHost}:${crossPost.id}',
+      activeBookmarkLists: crossPost.bookmarks,
+      loadPossibleBookmarkLists: whenLoggedIn(
+        context,
+        () async => (await ac.api.bookmark.getBookmarkLists())
+            .map((list) => list.name)
+            .toList(),
+        matchesSoftware: ServerSoftware.mbin,
+      ),
+      onAddBookmark: whenLoggedIn(context, () async {
+        try {
+          final newBookmarks = await ac.api.bookmark.addBookmarkToDefault(
+            subjectType: BookmarkListSubject.fromPostType(
+              postType: crossPost.type,
+              isComment: false,
+            ),
+            subjectId: crossPost.id,
+          );
+          _updateCrossPost(crossPost.copyWith(bookmarks: newBookmarks));
+        } catch (e) {
+          //
+        }
+      }),
+      onAddBookmarkToList: whenLoggedIn(context, (String listName) async {
+        final newBookmarks = await ac.api.bookmark.addBookmarkToList(
+          subjectType: BookmarkListSubject.fromPostType(
+            postType: crossPost.type,
+            isComment: false,
+          ),
+          subjectId: crossPost.id,
+          listName: listName,
+        );
+        _updateCrossPost(crossPost.copyWith(bookmarks: newBookmarks));
+      }, matchesSoftware: ServerSoftware.mbin),
+      onRemoveBookmark: whenLoggedIn(context, () async {
+        try {
+          final newBookmarks = await ac.api.bookmark.removeBookmarkFromAll(
+            subjectType: BookmarkListSubject.fromPostType(
+              postType: crossPost.type,
+              isComment: false,
+            ),
+            subjectId: crossPost.id,
+          );
+          _updateCrossPost(crossPost.copyWith(bookmarks: newBookmarks));
+        } catch (e) {
+          //
+        }
+      }),
+      onRemoveBookmarkFromList: whenLoggedIn(context, (String listName) async {
+        final newBookmarks = await ac.api.bookmark.removeBookmarkFromList(
+          subjectType: BookmarkListSubject.fromPostType(
+            postType: crossPost.type,
+            isComment: false,
+          ),
+          subjectId: crossPost.id,
+          listName: listName,
+        );
+        _updateCrossPost(crossPost.copyWith(bookmarks: newBookmarks));
+      }, matchesSoftware: ServerSoftware.mbin),
+      notificationControlStatus: crossPost.notificationControlStatus,
+      onNotificationControlStatusChange:
+          crossPost.notificationControlStatus == null
+          ? null
+          : (newStatus) async {
+              await ac.api.notifications.updateControl(
+                targetType: switch (crossPost.type) {
+                  PostType.thread => NotificationControlUpdateTargetType.entry,
+                  PostType.microblog =>
+                    NotificationControlUpdateTargetType.post,
+                },
+                targetId: crossPost.id,
+                status: newStatus,
+              );
+
+              _updateCrossPost(
+                crossPost.copyWith(notificationControlStatus: newStatus),
+              );
+            },
+    );
+    showContentMenu(context, contentItem);
+  }
+
   GlobalKey<_CommentSectionState> _mainCommentSectionKey =
       GlobalKey<_CommentSectionState>();
 
@@ -101,6 +316,8 @@ class _PostPageState extends State<PostPage> {
     }
 
     PostModel post = _data!;
+
+    final ac = context.read<AppController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -168,22 +385,20 @@ class _PostPageState extends State<PostPage> {
                 onEdit: post.visibility != 'soft_deleted'
                     ? whenLoggedIn(context, (body) async {
                         final newPost = await switch (post.type) {
-                          PostType.thread =>
-                            context.read<AppController>().api.threads.edit(
-                              post.id,
-                              post.title!,
-                              post.isOC,
-                              body,
-                              post.lang,
-                              post.isNSFW,
-                            ),
-                          PostType.microblog =>
-                            context.read<AppController>().api.microblogs.edit(
-                              post.id,
-                              body,
-                              post.lang!,
-                              post.isNSFW,
-                            ),
+                          PostType.thread => ac.api.threads.edit(
+                            post.id,
+                            post.title!,
+                            post.isOC,
+                            body,
+                            post.lang,
+                            post.isNSFW,
+                          ),
+                          PostType.microblog => ac.api.microblogs.edit(
+                            post.id,
+                            body,
+                            post.lang!,
+                            post.isNSFW,
+                          ),
                         };
                         _onUpdate(newPost);
                       }, matchesUsername: post.user.name)
@@ -191,14 +406,10 @@ class _PostPageState extends State<PostPage> {
                 onDelete: post.visibility != 'soft_deleted'
                     ? whenLoggedIn(context, () async {
                         await switch (post.type) {
-                          PostType.thread =>
-                            context.read<AppController>().api.threads.delete(
-                              post.id,
-                            ),
-                          PostType.microblog =>
-                            context.read<AppController>().api.microblogs.delete(
-                              post.id,
-                            ),
+                          PostType.thread => ac.api.threads.delete(post.id),
+                          PostType.microblog => ac.api.microblogs.delete(
+                            post.id,
+                          ),
                         };
                         _onUpdate(
                           post.copyWith(
@@ -271,6 +482,11 @@ class _PostPageState extends State<PostPage> {
                               ).crossPostComments(crossPost.community.name),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
+                            trailing: LoadingIconButton(
+                              onPressed: () =>
+                                  showCrosspostMenu(context, crossPost),
+                              icon: const Icon(Symbols.more_vert_rounded),
+                            ),
                             onTap: () => pushRoute(
                               context,
                               builder: (context) => PostPage(
@@ -279,6 +495,8 @@ class _PostPageState extends State<PostPage> {
                                 initData: crossPost,
                               ),
                             ),
+                            onLongPress: () =>
+                                showCrosspostMenu(context, crossPost),
                           ),
                         ),
                         CommentSection(

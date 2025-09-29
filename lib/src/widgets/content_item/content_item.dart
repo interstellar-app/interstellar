@@ -6,7 +6,9 @@ import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/content_item/content_menu.dart';
+import 'package:interstellar/src/models/user.dart';
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/content_item/content_reply.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
@@ -47,16 +49,10 @@ class ContentItem extends StatefulWidget {
   final bool isNSFW;
   final bool isOC;
 
-  final String? user;
-  final ImageModel? userIcon;
-  final int? userIdOnClick;
-  final DateTime? userCakeDay;
-  final bool userIsBot;
+  final UserModel? user;
   final int? opUserId;
 
-  final String? community;
-  final ImageModel? communityIcon;
-  final int? communityIdOnClick;
+  final CommunityModel? community;
 
   final String? domain;
   final int? domainIdOnClick;
@@ -125,14 +121,8 @@ class ContentItem extends StatefulWidget {
     this.isNSFW = false,
     this.isOC = false,
     this.user,
-    this.userIcon,
-    this.userIdOnClick,
-    this.userCakeDay,
-    this.userIsBot = false,
     this.opUserId,
     this.community,
-    this.communityIcon,
-    this.communityIdOnClick,
     this.domain,
     this.domainIdOnClick,
     this.boosts,
@@ -304,22 +294,22 @@ class _ContentItemState extends State<ContentItem> {
                 children: [
                   Flexible(
                     child: DisplayName(
-                      widget.user!,
-                      icon: widget.userIcon,
-                      onTap: widget.userIdOnClick != null
+                      widget.user!.name,
+                      icon: widget.user!.avatar,
+                      onTap: widget.user?.id != null
                           ? () => pushRoute(
                               context,
                               builder: (context) =>
-                                  UserScreen(widget.userIdOnClick!),
+                                  UserScreen(widget.user!.id),
                             )
                           : null,
                     ),
                   ),
                   UserStatusIcons(
-                    cakeDay: widget.userCakeDay,
-                    isBot: widget.userIsBot,
+                    cakeDay: widget.user!.createdAt,
+                    isBot: widget.user!.isBot,
                   ),
-                  if (widget.opUserId == widget.userIdOnClick)
+                  if (widget.opUserId == widget.user?.id)
                     Padding(
                       padding: const EdgeInsets.only(left: 5),
                       child: Tooltip(
@@ -344,13 +334,13 @@ class _ContentItemState extends State<ContentItem> {
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
               child: DisplayName(
-                widget.community!,
-                icon: widget.communityIcon,
-                onTap: widget.communityIdOnClick != null
+                widget.community!.name,
+                icon: widget.community!.icon,
+                onTap: widget.community?.id != null
                     ? () => pushRoute(
                         context,
                         builder: (context) =>
-                            CommunityScreen(widget.communityIdOnClick!),
+                            CommunityScreen(widget.community!.id),
                       )
                     : null,
               ),
@@ -899,19 +889,19 @@ class _ContentItemState extends State<ContentItem> {
                 children: [
                   Flexible(
                     child: DisplayName(
-                      widget.user!,
-                      onTap: widget.userIdOnClick != null
+                      widget.user!.name,
+                      onTap: widget.user?.id != null
                           ? () => pushRoute(
                               context,
                               builder: (context) =>
-                                  UserScreen(widget.userIdOnClick!),
+                                  UserScreen(widget.user!.id),
                             )
                           : null,
                     ),
                   ),
                   UserStatusIcons(
-                    cakeDay: widget.userCakeDay,
-                    isBot: widget.userIsBot,
+                    cakeDay: widget.user!.createdAt,
+                    isBot: widget.user!.isBot,
                   ),
                 ],
               ),
@@ -923,12 +913,12 @@ class _ContentItemState extends State<ContentItem> {
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
               child: DisplayName(
-                widget.community!,
-                onTap: widget.communityIdOnClick != null
+                widget.community!.name,
+                onTap: widget.community?.id != null
                     ? () => pushRoute(
                         context,
                         builder: (context) =>
-                            CommunityScreen(widget.communityIdOnClick!),
+                            CommunityScreen(widget.community!.id),
                       )
                     : null,
               ),
