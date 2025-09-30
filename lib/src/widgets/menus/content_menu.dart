@@ -276,7 +276,7 @@ Future<void> showContentMenu(
           title: normalizeName(widget.user!.name, ac.instanceHost),
           subtitle: l(context).user,
           onTap: () async {
-            showUserMenu(context, user: widget.user);
+            showUserMenu(context, detailedUser: widget.user);
           },
           trailing: const Padding(
             padding: EdgeInsets.all(8),

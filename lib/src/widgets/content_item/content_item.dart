@@ -49,7 +49,7 @@ class ContentItem extends StatefulWidget {
   final bool isNSFW;
   final bool isOC;
 
-  final UserModel? user;
+  final DetailedUserModel? user;
   final int? opUserId;
 
   final CommunityModel? community;
