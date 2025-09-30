@@ -50,6 +50,7 @@ class ContentItem extends StatefulWidget {
   final bool isOC;
 
   final DetailedUserModel? user;
+  final Future<void> Function(DetailedUserModel)? updateUser;
   final int? opUserId;
 
   final CommunityModel? community;
@@ -142,6 +143,7 @@ class ContentItem extends StatefulWidget {
     this.onEdit,
     this.onDelete,
     this.onMarkAsRead,
+    this.updateUser,
     this.onModeratePin,
     this.onModerateMarkNSFW,
     this.onModerateDelete,

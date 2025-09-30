@@ -276,7 +276,8 @@ Future<void> showContentMenu(
           title: normalizeName(widget.user!.name, ac.instanceHost),
           subtitle: l(context).user,
           onTap: () async {
-            showUserMenu(context, detailedUser: widget.user);
+            Navigator.pop(context);
+            showUserMenu(context, user: widget.user!, update: widget.updateUser);
           },
           trailing: const Padding(
             padding: EdgeInsets.all(8),
@@ -288,6 +289,7 @@ Future<void> showContentMenu(
           title: normalizeName(widget.community!.name, ac.instanceHost),
           subtitle: l(context).community,
           onTap: () async {
+            Navigator.pop(context);
             showCommunityMenu(context, community: widget.community);
           },
           trailing: const Padding(

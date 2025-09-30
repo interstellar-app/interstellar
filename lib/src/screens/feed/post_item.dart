@@ -114,6 +114,7 @@ class _PostItemState extends State<PostItem> {
           isNSFW: widget.item.isNSFW,
           isOC: widget.item.isOC == true,
           user: widget.item.user,
+          updateUser: (user) async => widget.onUpdate(widget.item.copyWith(user: user)),
           community: widget.item.community,
           domain: widget.item.domain?.name,
           domainIdOnClick: widget.item.domain?.id,

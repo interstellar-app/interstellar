@@ -274,7 +274,7 @@ class _UserScreenState extends State<UserScreen> {
                                   IconButton(
                                     onPressed: () => showUserMenu(
                                       context,
-                                      detailedUser: _data,
+                                      user: _data!,
                                       update: (newUser) {
                                         setState(() {
                                           _data = newUser;

@@ -112,6 +112,9 @@ class _PostPageState extends State<PostPage> {
     final contentItem = ContentItem(
       originInstance: getNameHost(context, crossPost.user.name),
       user: crossPost.user,
+      updateUser: (user) async {
+        _updateCrossPost(crossPost.copyWith(user: user));
+      },
       community: crossPost.community,
       boosts: crossPost.boosts,
       isBoosted: crossPost.myBoost == true,

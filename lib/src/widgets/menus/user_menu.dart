@@ -18,43 +18,41 @@ import 'package:provider/provider.dart';
 
 Future<void> showUserMenu(
   BuildContext context, {
-  DetailedUserModel? detailedUser,
-  UserModel? user,
+  required DetailedUserModel user,
   Function(DetailedUserModel)? update,
   bool navigateOption = false,
 }) async {
   final ac = context.read<AppController>();
-
-  if (detailedUser == null && user == null) return;
 
   final isMe =
       ac.isLoggedIn &&
       whenLoggedIn(
             context,
             true,
-            matchesUsername: detailedUser?.name ?? user!.name,
+            matchesUsername: user.name,
           ) ==
           true;
-  final name = detailedUser?.name ?? user!.name;
-  final globalName = name.contains('@')
-      ? '@$name'
-      : '@$name@${ac.instanceHost}';
+  final globalName = user.name.contains('@')
+      ? '@${user.name}'
+      : '@${user.name}@${ac.instanceHost}';
 
   return ContextMenu(
     actions: [
       if (!isMe && ac.serverSoftware == ServerSoftware.mbin)
         ContextMenuAction(
           child: SubscriptionButton(
-            isSubscribed: detailedUser?.isFollowedByUser,
-            subscriptionCount: detailedUser?.followersCount,
+            isSubscribed: user.isFollowedByUser,
+            subscriptionCount: user.followersCount,
             onSubscribe: (selected) async {
               var newValue = await ac.api.users.follow(
-                detailedUser?.id ?? user!.id,
+                user.id,
                 selected,
               );
               if (update != null) {
                 update(newValue);
               }
+              if (!context.mounted) return;
+              Navigator.pop(context);
             },
             followMode: true,
           ),
@@ -65,41 +63,43 @@ Future<void> showUserMenu(
           child: LoadingIconButton(
             onPressed: () async {
               final newValue = await ac.api.users.putBlock(
-                detailedUser?.id?? user!.id,
-                !(detailedUser?.isBlockedByUser?? false),
+                user.id,
+                !(user.isBlockedByUser?? false),
               );
 
               if (update != null) {
                 update(newValue);
               }
+              if (!context.mounted) return;
+              Navigator.pop(context);
             },
             icon: const Icon(Symbols.block_rounded),
             style: ButtonStyle(
               foregroundColor: WidgetStatePropertyAll(
-                detailedUser?.isBlockedByUser == true
+                user.isBlockedByUser == true
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).disabledColor,
               ),
             ),
           ),
         ),
-      if (ac.isLoggedIn && !isMe && detailedUser != null)
+      if (ac.isLoggedIn && !isMe)
         ContextMenuAction(
           icon: Symbols.mail_rounded,
           onTap: () => pushRoute(
             context,
             builder: (context) =>
-                MessageThreadScreen(threadId: null, otherUser: detailedUser),
+                MessageThreadScreen(threadId: null, otherUser: user),
           ),
         ),
     ],
     items: [
       ContextMenuItem(
-        title: l(context).openItem(name),
+        title: l(context).openItem(user.name),
         onTap: () => pushRoute(
           context,
           builder: (context) =>
-              UserScreen(detailedUser?.id ?? user!.id, initData: detailedUser),
+              UserScreen(user.id, initData: user),
         ),
       ),
       ContextMenuItem(
@@ -108,7 +108,7 @@ Future<void> showUserMenu(
           context,
           Uri.https(
             ac.instanceHost,
-            '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, name) != ac.instanceHost ? '@' : ''}$name',
+            '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, user.name) != ac.instanceHost ? '@' : ''}${user.name}',
           ),
         ),
       ),
@@ -116,7 +116,7 @@ Future<void> showUserMenu(
         title: l(context).feeds_addTo,
         onTap: () async => showAddToFeedMenu(
           context,
-          normalizeName(name, ac.instanceHost),
+          normalizeName(user.name, ac.instanceHost),
           FeedSource.user,
         ),
       ),
