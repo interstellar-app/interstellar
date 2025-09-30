@@ -9,6 +9,7 @@ import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -34,21 +35,21 @@ Future<void> showUserMenu(
             matchesUsername: detailedUser?.name ?? user!.name,
           ) ==
           true;
-  final globalName = (detailedUser?.name ?? user!.name).contains('@')
-      ? '@${detailedUser?.name ?? user!.name}'
-      : '@${detailedUser?.name ?? user!.name}@${ac.instanceHost}';
+  final name = detailedUser?.name ?? user!.name;
+  final globalName = name.contains('@')
+      ? '@$name'
+      : '@$name@${ac.instanceHost}';
 
   return ContextMenu(
     actions: [
-      if (!isMe &&
-          ac.serverSoftware == ServerSoftware.mbin)
+      if (!isMe && ac.serverSoftware == ServerSoftware.mbin)
         ContextMenuAction(
           child: SubscriptionButton(
             isSubscribed: detailedUser?.isFollowedByUser,
             subscriptionCount: detailedUser?.followersCount,
             onSubscribe: (selected) async {
               var newValue = await ac.api.users.follow(
-                detailedUser?.id?? user!.id,
+                detailedUser?.id ?? user!.id,
                 selected,
               );
               if (update != null) {
@@ -59,24 +60,23 @@ Future<void> showUserMenu(
           ),
         ),
       ContextMenuAction(child: StarButton(globalName)),
-      if (ac.isLoggedIn &&
-          !isMe &&
-          detailedUser != null &&
-          update != null)
+      if (ac.isLoggedIn && !isMe)
         ContextMenuAction(
           child: LoadingIconButton(
             onPressed: () async {
               final newValue = await ac.api.users.putBlock(
-                detailedUser.id,
-                !detailedUser.isBlockedByUser!,
+                detailedUser?.id?? user!.id,
+                !(detailedUser?.isBlockedByUser?? false),
               );
 
-              update(newValue);
+              if (update != null) {
+                update(newValue);
+              }
             },
             icon: const Icon(Symbols.block_rounded),
             style: ButtonStyle(
               foregroundColor: WidgetStatePropertyAll(
-                detailedUser.isBlockedByUser == true
+                detailedUser?.isBlockedByUser == true
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).disabledColor,
               ),
@@ -95,7 +95,7 @@ Future<void> showUserMenu(
     ],
     items: [
       ContextMenuItem(
-        title: 'Open',
+        title: l(context).openItem(name),
         onTap: () => pushRoute(
           context,
           builder: (context) =>
@@ -103,10 +103,20 @@ Future<void> showUserMenu(
         ),
       ),
       ContextMenuItem(
+        title: l(context).openInBrowser,
+        onTap: () async => openWebpagePrimary(
+          context,
+          Uri.https(
+            ac.instanceHost,
+            '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, name) != ac.instanceHost ? '@' : ''}$name',
+          ),
+        ),
+      ),
+      ContextMenuItem(
         title: l(context).feeds_addTo,
         onTap: () async => showAddToFeedMenu(
           context,
-          normalizeName(detailedUser?.name ?? user!.name, ac.instanceHost),
+          normalizeName(name, ac.instanceHost),
           FeedSource.user,
         ),
       ),

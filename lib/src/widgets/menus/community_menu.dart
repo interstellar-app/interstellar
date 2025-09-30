@@ -57,32 +57,33 @@ Future<void> showCommunityMenu(
         ),
       ),
       ContextMenuAction(child: StarButton(globalName)),
-      ContextMenuAction(
-        child: LoadingIconButton(
-          onPressed: () async {
-            final newValue = await ac.api.community.block(
-              detailedCommunity?.id ?? community!.id,
-              detailedCommunity != null
-                  ? !detailedCommunity.isBlockedByUser!
-                  : false,
-            );
-            update!(newValue);
-          },
-          icon: const Icon(Symbols.block_rounded),
-          style: ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(
-              detailedCommunity != null &&
-                      detailedCommunity.isBlockedByUser == true
-                  ? Theme.of(context).colorScheme.error
-                  : Theme.of(context).disabledColor,
+      if (ac.isLoggedIn)
+        ContextMenuAction(
+          child: LoadingIconButton(
+            onPressed: () async {
+              final newValue = await ac.api.community.block(
+                detailedCommunity?.id ?? community!.id,
+                !(detailedCommunity?.isBlockedByUser?? false),
+              );
+              if (update != null) {
+                update(newValue);
+              }
+            },
+            icon: const Icon(Symbols.block_rounded),
+            style: ButtonStyle(
+              foregroundColor: WidgetStatePropertyAll(
+                detailedCommunity != null &&
+                        detailedCommunity.isBlockedByUser == true
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).disabledColor,
+              ),
             ),
           ),
         ),
-      ),
     ],
     items: [
       ContextMenuItem(
-        title: 'Open',
+        title: l(context).openItem(name),
         onTap: () => pushRoute(
           context,
           builder: (context) => CommunityScreen(

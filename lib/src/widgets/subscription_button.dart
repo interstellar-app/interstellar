@@ -25,7 +25,9 @@ class SubscriptionButton extends StatelessWidget {
       selected: isSubscribed ?? false,
       icon: const Icon(Symbols.people_rounded),
       label: Text(
-        subscriptionCount != null ? intFormat(subscriptionCount!) : 'Subscribe',
+        subscriptionCount != null
+            ? intFormat(subscriptionCount!)
+            : l(context).subscribe,
       ),
       onSelected: whenLoggedIn(
         context,

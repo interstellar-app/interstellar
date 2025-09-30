@@ -249,7 +249,7 @@ Future<void> showContentMenu(
         ),
       if (widget.body != null && onTranslate != null)
         ContextMenuItem(
-          title: 'Translate',
+          title: l(context).translate,
           onTap: () async {
             await onTranslate(ac.profile.defaultCreateLanguage);
             if (!context.mounted) return;
@@ -274,6 +274,7 @@ Future<void> showContentMenu(
       if (widget.user != null)
         ContextMenuItem(
           title: normalizeName(widget.user!.name, ac.instanceHost),
+          subtitle: l(context).user,
           onTap: () async {
             showUserMenu(context, user: widget.user);
           },
@@ -285,6 +286,7 @@ Future<void> showContentMenu(
       if (widget.community != null)
         ContextMenuItem(
           title: normalizeName(widget.community!.name, ac.instanceHost),
+          subtitle: l(context).community,
           onTap: () async {
             showCommunityMenu(context, community: widget.community);
           },
