@@ -47,7 +47,7 @@ class Markdown extends StatelessWidget {
       },
       imageBuilder: (uri, title, alt) {
         if (uri.path.split('.').last == 'mp4') {
-          return VideoPlayer(uri);
+          return VideoPlayer(uri, enableBlur: nsfw);
         }
         return AdvancedImage(
           ImageModel(
@@ -73,7 +73,7 @@ class Markdown extends StatelessWidget {
         'sub': SubscriptMarkdownBuilder(),
         'sup': SuperscriptMarkdownBuilder(),
         'mention': MentionMarkdownBuilder(originInstance: originInstance),
-        'video': VideoMarkdownBuilder(),
+        'video': VideoMarkdownBuilder(enableBlur: nsfw),
         'spoiler': SpoilerMarkdownBuilder(originInstance: originInstance),
         'config-share': ConfigShareMarkdownBuilder(),
       },

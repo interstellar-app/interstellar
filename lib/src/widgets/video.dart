@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart'
     as youtube_explode_dart;
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
+import 'package:interstellar/src/widgets/blur.dart';
 
 bool isSupportedYouTubeVideo(Uri link) {
   return [
@@ -22,8 +24,9 @@ bool isSupportedYouTubeVideo(Uri link) {
 
 class VideoPlayer extends StatefulWidget {
   final Uri uri;
+  final bool enableBlur;
 
-  const VideoPlayer(this.uri, {super.key});
+  const VideoPlayer(this.uri, {super.key, this.enableBlur = false});
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();
@@ -98,30 +101,35 @@ class _VideoPlayerState extends State<VideoPlayer> {
               child: Center(child: Text(error!)),
             ),
           if (error == null)
-            Video(
-              controller: controller,
-              controls: (state) {
-                return Stack(
-                  children: [
-                    media_kit_video_controls.AdaptiveVideoControls(state),
-                    if (!_isPlaying)
-                      Center(child: MaterialPlayOrPauseButton(iconSize: 56)),
-                    if (!state.isFullscreen())
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            LoadingIconButton(
-                              onPressed: () async => await shareUri(widget.uri),
-                              icon: const Icon(Symbols.share_rounded),
-                            ),
-                          ],
+            Wrapper(
+              shouldWrap: widget.enableBlur,
+              parentBuilder: (child) => Blur(child),
+              child: Video(
+                controller: controller,
+                controls: (state) {
+                  return Stack(
+                    children: [
+                      media_kit_video_controls.AdaptiveVideoControls(state),
+                      if (!_isPlaying)
+                        Center(child: MaterialPlayOrPauseButton(iconSize: 56)),
+                      if (!state.isFullscreen())
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              LoadingIconButton(
+                                onPressed: () async =>
+                                    await shareUri(widget.uri),
+                                icon: const Icon(Symbols.share_rounded),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
         ],
       ),

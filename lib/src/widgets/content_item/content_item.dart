@@ -230,6 +230,10 @@ class _ContentItemState extends State<ContentItem> {
   }
 
   Widget contentBody(BuildContext context) {
+    final isNSFW =
+        widget.isNSFW &&
+        context.read<AppController>().profile.coverMediaMarkedSensitive;
+
     return widget.translation != null
         // A translation is available
         ? widget.isPreview
@@ -263,11 +267,7 @@ class _ContentItemState extends State<ContentItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Markdown(
-                      widget.body!,
-                      widget.originInstance,
-                      nsfw: widget.isNSFW,
-                    ),
+                    Markdown(widget.body!, widget.originInstance, nsfw: isNSFW),
                     Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -281,14 +281,14 @@ class _ContentItemState extends State<ContentItem> {
                     Markdown(
                       widget.translation!.translations.text,
                       widget.originInstance,
-                      nsfw: widget.isNSFW,
+                      nsfw: isNSFW,
                     ),
                   ],
                 )
         // No translation is available
         : widget.isPreview
         ? Text(widget.body!, maxLines: 4, overflow: TextOverflow.ellipsis)
-        : Markdown(widget.body!, widget.originInstance, nsfw: widget.isNSFW);
+        : Markdown(widget.body!, widget.originInstance, nsfw: isNSFW);
   }
 
   Widget full() {
@@ -486,7 +486,15 @@ class _ContentItemState extends State<ContentItem> {
                     child: child,
                   ),
                   child: (!widget.isPreview && isVideo)
-                      ? VideoPlayer(widget.link!)
+                      ? VideoPlayer(
+                          widget.link!,
+                          enableBlur:
+                              widget.isNSFW &&
+                              context
+                                  .read<AppController>()
+                                  .profile
+                                  .coverMediaMarkedSensitive,
+                        )
                       : imageWidget!,
                 ),
               Container(
