@@ -82,16 +82,17 @@ Future<void> showCommunityMenu(
         ),
     ],
     items: [
-      ContextMenuItem(
-        title: l(context).openItem(name),
-        onTap: () => pushRoute(
-          context,
-          builder: (context) => CommunityScreen(
-            detailedCommunity?.id ?? community!.id,
-            initData: detailedCommunity,
+      if (navigateOption)
+        ContextMenuItem(
+          title: l(context).openItem(name),
+          onTap: () => pushRoute(
+            context,
+            builder: (context) => CommunityScreen(
+              detailedCommunity?.id ?? community!.id,
+              initData: detailedCommunity,
+            ),
           ),
         ),
-      ),
       ContextMenuItem(
         title: l(context).openInBrowser,
         onTap: () async => openWebpagePrimary(

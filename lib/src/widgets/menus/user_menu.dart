@@ -94,14 +94,15 @@ Future<void> showUserMenu(
         ),
     ],
     items: [
-      ContextMenuItem(
-        title: l(context).openItem(user.name),
-        onTap: () => pushRoute(
-          context,
-          builder: (context) =>
-              UserScreen(user.id, initData: user),
+      if (navigateOption)
+        ContextMenuItem(
+          title: l(context).openItem(user.name),
+          onTap: () => pushRoute(
+            context,
+            builder: (context) =>
+                UserScreen(user.id, initData: user),
+          ),
         ),
-      ),
       ContextMenuItem(
         title: l(context).openInBrowser,
         onTap: () async => openWebpagePrimary(

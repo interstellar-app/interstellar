@@ -277,7 +277,12 @@ Future<void> showContentMenu(
           subtitle: l(context).user,
           onTap: () async {
             Navigator.pop(context);
-            showUserMenu(context, user: widget.user!, update: widget.updateUser);
+            showUserMenu(
+              context,
+              user: widget.user!,
+              update: widget.updateUser,
+              navigateOption: true,
+            );
           },
           trailing: const Padding(
             padding: EdgeInsets.all(8),
@@ -290,7 +295,11 @@ Future<void> showContentMenu(
           subtitle: l(context).community,
           onTap: () async {
             Navigator.pop(context);
-            showCommunityMenu(context, community: widget.community);
+            showCommunityMenu(
+              context,
+              community: widget.community,
+              navigateOption: true,
+            );
           },
           trailing: const Padding(
             padding: EdgeInsets.all(8),
