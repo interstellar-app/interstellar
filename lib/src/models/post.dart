@@ -71,7 +71,7 @@ abstract class PostModel with _$PostModel {
   const factory PostModel({
     required PostType type,
     required int id,
-    required UserModel user,
+    required DetailedUserModel user,
     required CommunityModel community,
     required DomainModel? domain,
     required String? title,
@@ -102,7 +102,7 @@ abstract class PostModel with _$PostModel {
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
     type: PostType.thread,
     id: json['entryId'] as int,
-    user: UserModel.fromMbin(json['user'] as JsonMap),
+    user: DetailedUserModel.fromMbin(json['user'] as JsonMap),
     community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     domain: json['domain'] == null
         ? null
@@ -148,7 +148,7 @@ abstract class PostModel with _$PostModel {
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
     type: PostType.microblog,
     id: json['postId'] as int,
-    user: UserModel.fromMbin(json['user'] as JsonMap),
+    user: DetailedUserModel.fromMbin(json['user'] as JsonMap),
     community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     domain: null,
     title: null,
@@ -202,7 +202,7 @@ abstract class PostModel with _$PostModel {
     return PostModel(
       type: PostType.thread,
       id: lemmyPost['id'] as int,
-      user: UserModel.fromLemmy(postView['creator'] as JsonMap),
+      user: DetailedUserModel.fromLemmy(postView['creator'] as JsonMap),
       community: CommunityModel.fromLemmy(postView['community'] as JsonMap),
       domain: null,
       title: lemmyPost['name'] as String,
@@ -278,7 +278,7 @@ abstract class PostModel with _$PostModel {
     return PostModel(
       type: PostType.thread,
       id: piefedPost['id'] as int,
-      user: UserModel.fromPiefed(postView['creator'] as JsonMap),
+      user: DetailedUserModel.fromPiefed(postView['creator'] as JsonMap),
       community: CommunityModel.fromPiefed(postView['community'] as JsonMap),
       domain: null,
       title: piefedPost['title'] as String,

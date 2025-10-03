@@ -162,6 +162,14 @@
   "people": "People",
   "domains": "Domains",
   "openInBrowser": "Open in Browser",
+  "openItem": "Open {item}",
+  "@openItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "modsOf": "Mods of {community}",
   "@modsOf": {
     "placeholders": {
@@ -493,6 +501,9 @@
   "tags_hint": "Separate with spaces",
   "language": "Language",
   "community": "Community",
+  "translate": "Translate",
+  "user": "User",
+  "subscribe": "Subscribe",
   "action_setLocation": "Set Action Location",
   "action_hide": "Hide",
   "action_appBar": "App Bar",

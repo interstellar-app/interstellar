@@ -111,7 +111,7 @@ abstract class CommentListModel with _$CommentListModel {
 abstract class CommentModel with _$CommentModel {
   const factory CommentModel({
     required int id,
-    required UserModel user,
+    required DetailedUserModel user,
     required CommunityModel community,
     required PostType postType,
     required int postId,
@@ -137,7 +137,7 @@ abstract class CommentModel with _$CommentModel {
 
   factory CommentModel.fromMbin(JsonMap json) => CommentModel(
     id: json['commentId'] as int,
-    user: UserModel.fromMbin(json['user'] as JsonMap),
+    user: DetailedUserModel.fromMbin(json['user'] as JsonMap),
     community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
     postType: (json['postId'] != null ? PostType.microblog : PostType.thread),
     postId: (json['entryId'] ?? json['postId']) as int,
@@ -197,7 +197,7 @@ abstract class CommentModel with _$CommentModel {
 
     return CommentModel(
       id: lemmyComment['id'] as int,
-      user: UserModel.fromLemmy(json['creator'] as JsonMap),
+      user: DetailedUserModel.fromLemmy(json['creator'] as JsonMap),
       community: CommunityModel.fromLemmy(json['community'] as JsonMap),
       postType: PostType.thread,
       postId: (json['post'] as JsonMap)['id'] as int,
@@ -286,7 +286,7 @@ abstract class CommentModel with _$CommentModel {
 
     return CommentModel(
       id: piefedComment['id'] as int,
-      user: UserModel.fromPiefed(json['creator'] as JsonMap),
+      user: DetailedUserModel.fromPiefed(json['creator'] as JsonMap),
       community: community,
       postType: PostType.thread,
       postId: postId,

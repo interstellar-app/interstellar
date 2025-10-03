@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 Future<void> openBanDialog(
   BuildContext context, {
-  required UserModel user,
+  required DetailedUserModel user,
   required CommunityModel community,
 }) async {
   await showDialog<DetailedCommunityModel>(
@@ -20,7 +20,7 @@ Future<void> openBanDialog(
 }
 
 class BanDialog extends StatefulWidget {
-  final UserModel user;
+  final DetailedUserModel user;
   final CommunityModel community;
 
   const BanDialog({required this.user, required this.community, super.key});

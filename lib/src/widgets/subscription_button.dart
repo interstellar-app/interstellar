@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class SubscriptionButton extends StatelessWidget {
   final bool? isSubscribed;
-  final int subscriptionCount;
+  final int? subscriptionCount;
   final Future<void> Function(bool) onSubscribe;
   final bool followMode;
 
@@ -24,7 +24,11 @@ class SubscriptionButton extends StatelessWidget {
     return LoadingChip(
       selected: isSubscribed ?? false,
       icon: const Icon(Symbols.people_rounded),
-      label: Text(intFormat(subscriptionCount)),
+      label: Text(
+        subscriptionCount != null
+            ? intFormat(subscriptionCount!)
+            : l(context).subscribe,
+      ),
       onSelected: whenLoggedIn(
         context,
         context.watch<AppController>().profile.askBeforeUnsubscribing

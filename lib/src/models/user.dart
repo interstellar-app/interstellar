@@ -66,7 +66,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
       createdAt: DateTime.parse(json['createdAt'] as String),
       isBot: json['isBot'] as bool,
       about: json['about'] as String?,
-      followersCount: json['followersCount'] as int,
+      followersCount: json['followersCount'] as int?,
       isFollowedByUser: json['isFollowedByUser'] as bool?,
       isFollowerOfUser: json['isFollowerOfUser'] as bool?,
       isBlockedByUser: json['isBlockedByUser'] as bool?,
@@ -83,7 +83,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
   }
 
   factory DetailedUserModel.fromLemmy(JsonMap json) {
-    final lemmyPerson = json['person'] as JsonMap;
+    final lemmyPerson = json['person'] as JsonMap? ?? json;
 
     return DetailedUserModel(
       id: lemmyPerson['id'] as int,
@@ -103,7 +103,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
   }
 
   factory DetailedUserModel.fromPiefed(JsonMap json, {bool blocked = false}) {
-    final piefedPerson = json['person'] as JsonMap;
+    final piefedPerson = json['person'] as JsonMap? ?? json;
 
     return DetailedUserModel(
       id: piefedPerson['id'] as int,
