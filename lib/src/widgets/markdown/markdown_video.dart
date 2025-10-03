@@ -86,10 +86,13 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
 }
 
 class VideoMarkdownBuilder extends mdf.MarkdownElementBuilder {
+  final bool enableBlur;
+  VideoMarkdownBuilder({this.enableBlur = false});
+
   @override
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     var textContent = element.textContent;
 
-    return VideoPlayer(Uri.parse(textContent));
+    return VideoPlayer(Uri.parse(textContent), enableBlur: enableBlur);
   }
 }
