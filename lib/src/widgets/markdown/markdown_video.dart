@@ -93,6 +93,6 @@ class VideoMarkdownBuilder extends mdf.MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     var textContent = element.textContent;
 
-    return VideoPlayer(Uri.parse(textContent));
+    return VideoPlayer(Uri.parse(textContent), enableBlur: enableBlur);
   }
 }

@@ -102,8 +102,22 @@ class _VideoPlayerState extends State<VideoPlayer> {
             ),
           if (error == null)
             Wrapper(
-              shouldWrap: widget.enableBlur,
-              parentBuilder: (child) => Blur(child),
+              shouldWrap: widget.enableBlur && !_isPlaying,
+              parentBuilder: (child) => Stack(
+                children: [
+                  Blur(child),
+                  Center(child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isPlaying = !_isPlaying;
+                        player.playOrPause();
+                      });
+                    },
+                    icon: const Icon(Symbols.play_arrow_rounded, fill: 1),
+                      iconSize: 56
+                  )),
+                ],
+              ),
               child: Video(
                 controller: controller,
                 controls: (state) {
