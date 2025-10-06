@@ -1124,5 +1124,73 @@
         }
     },
     "settings_defaultDownloadDir": "默认下载目录",
-    "@settings_defaultDownloadDir": {}
+    "@settings_defaultDownloadDir": {},
+    "rename": "重命名",
+    "@rename": {},
+    "replace": "替换",
+    "@replace": {},
+    "combined": "合并",
+    "@combined": {},
+    "feeds_exist": "现有订阅源",
+    "@feeds_exist": {},
+    "topics": "主题",
+    "@topics": {},
+    "topic": "主题",
+    "@topic": {},
+    "server": "服务器",
+    "@server": {},
+    "client": "客户端",
+    "@client": {},
+    "clientFeed": "客户端订阅源",
+    "@clientFeed": {},
+    "clientFeedSubtitle": "订阅源输入在设备本地获取并合并，可在多个实例间使用。",
+    "@clientFeedSubtitle": {},
+    "serverFeed": "服务器订阅源",
+    "@serverFeed": {},
+    "serverFeedSubtitle": "订阅源输入在服务器端合并，对应 PieFed 订阅源。",
+    "@serverFeedSubtitle": {},
+    "serverTopic": "服务器主题",
+    "@serverTopic": {},
+    "serverTopicSubtitle": "订阅源输入在服务器端合并，对应 PieFed 主题。",
+    "@serverTopicSubtitle": {},
+    "crossPosts": "转发帖子",
+    "@crossPosts": {},
+    "crossPostCount": "{count} 条转发帖子",
+    "@crossPostCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "crossPostComments": "来自 {community} 的评论",
+    "@crossPostComments": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "inbox": "收件箱",
+    "@inbox": {},
+    "newChat": "新建聊天",
+    "@newChat": {},
+    "settings_inlineReplies": "内联回复",
+    "@settings_inlineReplies": {},
+    "settings_crosspostComments": "显示转发帖子评论区",
+    "@settings_crosspostComments": {},
+    "settings_crossPostMarkAsRead": "将转发帖子标记为已读",
+    "@settings_crossPostMarkAsRead": {},
+    "pushNotificationsDialog_title": "推送通知",
+    "@pushNotificationsDialog_title": {},
+    "pushNotificationsDialog_noDistributor": "您需要安装 UnifiedPush 分发器才能使推送通知正常工作。\n更多信息请访问：{url}",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_selectDistributor": "选择推送分发器",
+    "@pushNotificationsDialog_selectDistributor": {}
 }
