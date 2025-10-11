@@ -1146,5 +1146,51 @@
     "pushNotificationsDialog_title": "Push-уведомления",
     "@pushNotificationsDialog_title": {},
     "feeds_exist": "Существующие ленты",
-    "@feeds_exist": {}
+    "@feeds_exist": {},
+    "pushNotificationsDialog_selectDistributor": "Выберите распределитель уведомлений",
+    "@pushNotificationsDialog_selectDistributor": {},
+    "clientFeedSubtitle": "Данные лент получаются и объединяются локально на устройстве. Можно использовать с разными серверами.",
+    "@clientFeedSubtitle": {},
+    "serverFeed": "Лента сервера",
+    "@serverFeed": {},
+    "serverFeedSubtitle": "Входные данные лент объединяются на сервере. Соответствует ленте PieFed.",
+    "@serverFeedSubtitle": {},
+    "serverTopicSubtitle": "Входные данные лент объединяются на сервере. Соответствует теме PieFed.",
+    "@serverTopicSubtitle": {},
+    "crossPosts": "Перепубликации",
+    "@crossPosts": {},
+    "crossPostCount": "{count} переопубликовано {count, plural, =1{запись} other{записей}}",
+    "@crossPostCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "inbox": "Входящие",
+    "@inbox": {},
+    "newChat": "Новый чат",
+    "@newChat": {},
+    "replying_toX": "Ответ к {user}",
+    "@replying_toX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_inlineReplies": "Ответить в тексте",
+    "@settings_inlineReplies": {},
+    "settings_crossPostMarkAsRead": "Отметить перепубликации как прочтённые",
+    "@settings_crossPostMarkAsRead": {},
+    "pushNotificationsDialog_noDistributor": "Для работы push-уведомлений необходимо установить распределитель UnifiedPush.\nПодробнее см. по ссылке: {url}",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_crosspostComments": "Показывать комментарии для перепубликаций",
+    "@settings_crosspostComments": {}
 }
