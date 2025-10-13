@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path/path.dart';
@@ -54,7 +55,17 @@ class FeedItems extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
-@DriftDatabase(tables: [Accounts, FeedItems])
+class FeedCache extends Table {
+  TextColumn get name => text()();
+  TextColumn get server => text()();
+  IntColumn get id => integer()();
+  IntColumn get source => intEnum<FeedSource>()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {name, server};
+}
+
+@DriftDatabase(tables: [Accounts, FeedItems, FeedCache])
 class InterstellarDatabase extends _$InterstellarDatabase {
 
   InterstellarDatabase([QueryExecutor? executor]) : super(executor?? _openConnection());

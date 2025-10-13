@@ -31,7 +31,6 @@ enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
-  final _feedCacheStore = StoreRef<String, JsonMap>('feedCache');
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _serverStore = StoreRef<String, JsonMap>('server');
@@ -167,13 +166,17 @@ class AppController with ChangeNotifier {
 
     _accounts = Map.fromEntries(
       (await _database.select(_database.accounts).get()).map(
-        (account) => MapEntry(account.handle, account)
-      )
+        (account) => MapEntry(account.handle, account),
+      ),
     );
 
     if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
-      await setAccount('@kbin.earth', const Account(handle: '@kbin.earth'), switchNow: true);
+      await setAccount(
+        '@kbin.earth',
+        const Account(handle: '@kbin.earth'),
+        switchNow: true,
+      );
     }
 
     _feeds = Map.fromEntries(
@@ -406,10 +409,9 @@ class AppController with ChangeNotifier {
           orElse: () => '',
         )
         .isEmpty) {
-      _feedCacheStore.delete(
-        db,
-        finder: Finder(filter: Filter.equals('server', keyAccountServer)),
-      );
+      await (_database.delete(
+        _database.feedCache,
+      )..where((f) => f.server.equals(keyAccountServer))).go();
 
       _servers.remove(keyAccountServer);
 
@@ -420,7 +422,9 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await (_database.delete(_database.accounts)..where((t) => t.handle.equals(key))).go();
+    await (_database.delete(
+      _database.accounts,
+    )..where((f) => f.handle.equals(key))).go();
     await _selectedAccountRecord.put(db, _selectedAccount);
   }
 
@@ -461,9 +465,10 @@ class AppController with ChangeNotifier {
             credentials,
             identifier: identifier,
             onCredentialsRefreshed: (newCredentials) async {
-              setAccount(account, _accounts[account]!.copyWith(
-                oauth: Value(newCredentials)
-              ));
+              setAccount(
+                account,
+                _accounts[account]!.copyWith(oauth: Value(newCredentials)),
+              );
             },
           );
         }
@@ -557,7 +562,9 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> addPushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: Value(true));
+    _accounts[account] = _accounts[account]!.copyWith(
+      isPushRegistered: Value(true),
+    );
 
     notifyListeners();
 
@@ -565,7 +572,9 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> removePushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: Value(false));
+    _accounts[account] = _accounts[account]!.copyWith(
+      isPushRegistered: Value(false),
+    );
 
     notifyListeners();
 
@@ -591,7 +600,7 @@ class AppController with ChangeNotifier {
 
     await (_database.delete(
       _database.feedItems,
-    )..where((t) => t.name.equals(name))).go();
+    )..where((f) => f.name.equals(name))).go();
   }
 
   Future<void> renameFeed(String oldName, String newName) async {
@@ -602,7 +611,7 @@ class AppController with ChangeNotifier {
 
     await (_database.update(
       _database.feedItems,
-    )..where((t) => t.name.equals(oldName))).write(
+    )..where((f) => f.name.equals(oldName))).write(
       FeedItemsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
     );
   }
@@ -740,20 +749,18 @@ class AppController with ChangeNotifier {
         null;
   }
 
-  Finder _feedCacheStoreFinder(String name, FeedSource source) => Finder(
-    filter: Filter.and([
-      Filter.equals('server', instanceHost),
-      Filter.equals('name', name),
-      Filter.equals('source', source.index),
-    ]),
-  );
-
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
-    final cachedValue = (await _feedCacheStore.find(
-      db,
-      finder: _feedCacheStoreFinder(name, source),
-    )).firstOrNull;
-    if (cachedValue != null) return cachedValue.value['id'] as int;
+    final cachedValue =
+        (await (_database.select(_database.feedCache)..where(
+                  (t) =>
+                      t.name.equals(name) &
+                      t.server.equals(instanceHost) &
+                      t.source.equals(source.index),
+                ))
+                .get())
+            .firstOrNull;
+
+    if (cachedValue != null) return cachedValue.id;
 
     try {
       final newValue = switch (source) {
@@ -773,12 +780,16 @@ class AppController with ChangeNotifier {
       };
 
       if (newValue != null) {
-        await _feedCacheStore.add(db, {
-          'server': instanceHost,
-          'name': name,
-          'id': newValue,
-          'source': source.index,
-        });
+        await _database
+            .into(_database.feedCache)
+            .insertOnConflictUpdate(
+              FeedCacheCompanion.insert(
+                name: name,
+                server: instanceHost,
+                id: newValue,
+                source: source,
+              ),
+            );
       }
 
       return newValue;
