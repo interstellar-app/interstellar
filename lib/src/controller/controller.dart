@@ -48,6 +48,8 @@ class AppController with ChangeNotifier {
   late final _starsRecord = _mainStore.record('stars');
   late final _webPushKeysRecord = _mainStore.record('webPushKeys');
 
+  late final InterstellarDatabase _database;
+
   String? _defaultDownloadsDir;
   Directory? get defaultDownloadDir =>
       _defaultDownloadsDir == null ? null : Directory(_defaultDownloadsDir!);
@@ -112,6 +114,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> init() async {
+    _database = InterstellarDatabase();
     refreshState = () {};
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
@@ -179,6 +182,12 @@ class AppController with ChangeNotifier {
       (await _feedStore.find(
         db,
       )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
+    );
+
+    _feeds = Map.fromEntries(
+      (await _database.select(_database.feedItems).get()).map(
+        (feed) => MapEntry(feed.name, Feed(inputs: feed.items)),
+      ),
     );
 
     _filterLists = Map.fromEntries(
@@ -581,6 +590,11 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await _feedStore.record(FieldKey.escape(name)).put(db, value.toJson());
+    await _database
+        .into(_database.feedItems)
+        .insertOnConflictUpdate(
+          FeedItemsCompanion.insert(name: name, items: value.inputs),
+        );
   }
 
   Future<void> removeFeed(String name) async {
@@ -589,6 +603,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await _feedStore.record(FieldKey.escape(name)).delete(db);
+    await (_database.delete(
+      _database.feedItems,
+    )..where((t) => t.name.equals(name))).go();
   }
 
   Future<void> renameFeed(String oldName, String newName) async {
@@ -601,6 +618,12 @@ class AppController with ChangeNotifier {
         .record(FieldKey.escape(newName))
         .put(db, _feeds[newName]!.toJson());
     await _feedStore.record(FieldKey.escape(oldName)).delete(db);
+
+    await (_database.update(
+      _database.feedItems,
+    )..where((t) => t.name.equals(oldName))).write(
+      FeedItemsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
+    );
   }
 
   Future<void> setFilterList(String name, FilterList value) async {

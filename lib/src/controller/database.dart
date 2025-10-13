@@ -1,6 +1,51 @@
+import 'dart:convert';
+import 'package:drift_flutter/drift_flutter.dart';
+import 'package:interstellar/src/controller/feed.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:drift/drift.dart';
+part 'database.g.dart';
+
+class FeedInputConverter extends TypeConverter<Set<FeedInput>, String> {
+  const FeedInputConverter();
+
+  @override
+  Set<FeedInput> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>).map((json) => FeedInput.fromJson(json)).toSet();
+  }
+
+  @override
+  String toSql(Set<FeedInput> inputs) {
+    return jsonEncode(inputs.toList());
+  }
+}
+
+class FeedItems extends Table {
+  TextColumn get name => text()();
+  TextColumn get items => text().map(const FeedInputConverter())();
+
+  @override
+  Set<Column<Object>> get primaryKey => {name};
+}
+
+@DriftDatabase(tables: [FeedItems])
+class InterstellarDatabase extends _$InterstellarDatabase {
+
+  InterstellarDatabase([QueryExecutor? executor]) : super(executor?? _openConnection());
+
+  @override
+  int get schemaVersion => 1;
+
+  static QueryExecutor _openConnection() {
+    return driftDatabase(
+      name: 'interstellar.db',
+      native: const DriftNativeOptions(
+        databaseDirectory: getApplicationSupportDirectory,
+      )
+    );
+  }
+}
 
 late final Database db;
 
