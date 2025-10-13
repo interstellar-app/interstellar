@@ -33,7 +33,6 @@ class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
-  final _readStore = StoreRef<String, JsonMap>('read');
   final _miscStore = StoreRef<String, dynamic>('misc');
 
   late final _mainProfileRecord = _mainStore.record('mainProfile');
@@ -395,10 +394,9 @@ class AppController with ChangeNotifier {
     }
 
     // Remove read posts associated with account
-    _readStore.delete(
-      db,
-      finder: Finder(filter: Filter.equals('account', key)),
-    );
+    await (_database.delete(
+      _database.readPostCache,
+    )..where((f) => f.account.equals(key))).go();
 
     _rebuildProfile();
 
@@ -707,14 +705,6 @@ class AppController with ChangeNotifier {
     }
   }
 
-  Finder _readStoreFinder(PostModel post) => Finder(
-    filter: Filter.and([
-      Filter.equals('account', _selectedAccount),
-      Filter.equals('postType', post.type.name),
-      Filter.equals('postId', post.id),
-    ]),
-  );
-
   Future<List<PostModel>> markAsRead(List<PostModel> posts, bool read) async {
     // Use Lemmy's and PieFed's read API when available
     if (isLoggedIn && serverSoftware != ServerSoftware.mbin) {
@@ -726,11 +716,15 @@ class AppController with ChangeNotifier {
       await db.transaction((txn) async {
         for (var post in posts) {
           if (!await isRead(post)) {
-            await _readStore.add(txn, {
-              'account': _selectedAccount,
-              'postType': post.type.name,
-              'postId': post.id,
-            });
+            await _database
+                .into(_database.readPostCache)
+                .insertOnConflictUpdate(
+                  ReadPostCacheCompanion.insert(
+                    account: _selectedAccount,
+                    postType: post.type,
+                    postId: post.id,
+                  ),
+                );
           }
         }
       });
@@ -739,7 +733,13 @@ class AppController with ChangeNotifier {
     else {
       await db.transaction((txn) async {
         for (var post in posts) {
-          await _readStore.delete(txn, finder: _readStoreFinder(post));
+          await (_database.delete(_database.readPostCache)..where(
+                (f) =>
+                    f.account.equals(_selectedAccount) &
+                    f.postType.equals(post.type.index) &
+                    f.postId.equals(post.id),
+              ))
+              .go();
         }
       });
     }
@@ -748,10 +748,14 @@ class AppController with ChangeNotifier {
   }
 
   Future<bool> isRead(PostModel post) async {
-    return (await _readStore.find(
-          db,
-          finder: _readStoreFinder(post),
-        )).firstOrNull !=
+    return (await (_database.select(_database.readPostCache)..where(
+                  (f) =>
+                      f.account.equals(_selectedAccount) &
+                      f.postType.equals(post.type.index) &
+                      f.postId.equals(post.id),
+                ))
+                .get())
+            .firstOrNull !=
         null;
   }
 

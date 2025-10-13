@@ -3,6 +3,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -75,7 +76,16 @@ class Servers extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
-@DriftDatabase(tables: [Accounts, FeedItems, FeedCache, Servers])
+class ReadPostCache extends Table {
+  TextColumn get account => text()();
+  IntColumn get postType => intEnum<PostType>()();
+  IntColumn get postId => integer()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {account, postType, postId};
+}
+
+@DriftDatabase(tables: [Accounts, FeedItems, FeedCache, Servers, ReadPostCache])
 class InterstellarDatabase extends _$InterstellarDatabase {
 
   InterstellarDatabase([QueryExecutor? executor]) : super(executor?? _openConnection());
