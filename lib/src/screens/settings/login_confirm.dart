@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/oauth.dart';
-import 'package:interstellar/src/controller/account.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
@@ -16,6 +15,7 @@ import 'package:interstellar/src/widgets/redirect_listen.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:provider/provider.dart';
+import 'package:interstellar/src/controller/database.dart';
 
 class LoginConfirmScreen extends StatefulWidget {
   final ServerSoftware software;
@@ -96,7 +96,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                   String account = '@${widget.server}';
                   context.read<AppController>().setAccount(
                     account,
-                    const Account(),
+                    const Account(handle: ''),
                     switchNow: true,
                   );
 
@@ -159,7 +159,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           if (!context.mounted) return;
                           context.read<AppController>().setAccount(
                             '${user.name}@${widget.server}',
-                            Account(jwt: response.bodyJson['jwt'] as String),
+                            Account(handle: '${user.name}@${widget.server}', jwt: response.bodyJson['jwt'] as String),
                           );
                         } else {
                           final authorizationEndpoint = Uri.https(
@@ -227,7 +227,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
 
                           context.read<AppController>().setAccount(
                             '${user.name}@${widget.server}',
-                            Account(oauth: client.credentials),
+                            Account(handle: '${user.name}@${widget.server}', oauth: client.credentials),
                             switchNow: true,
                           );
                         }

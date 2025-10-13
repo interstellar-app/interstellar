@@ -7,7 +7,6 @@ import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/oauth.dart';
-import 'package:interstellar/src/controller/account.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
@@ -26,13 +25,12 @@ import 'package:sembast/sembast_io.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
+import 'package:drift/drift.dart';
 
 enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
-  final _accountStore = StoreRef<String, JsonMap>('account');
-  final _feedStore = StoreRef<String, JsonMap>('feeds');
   final _feedCacheStore = StoreRef<String, JsonMap>('feedCache');
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
@@ -168,21 +166,15 @@ class AppController with ChangeNotifier {
     }
 
     _accounts = Map.fromEntries(
-      (await _accountStore.find(
-        db,
-      )).map((record) => MapEntry(record.key, Account.fromJson(record.value))),
+      (await _database.select(_database.accounts).get()).map(
+        (account) => MapEntry(account.handle, account)
+      )
     );
 
     if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
-      await setAccount('@kbin.earth', const Account(), switchNow: true);
+      await setAccount('@kbin.earth', const Account(handle: '@kbin.earth'), switchNow: true);
     }
-
-    _feeds = Map.fromEntries(
-      (await _feedStore.find(
-        db,
-      )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
-    );
 
     _feeds = Map.fromEntries(
       (await _database.select(_database.feedItems).get()).map(
@@ -360,7 +352,7 @@ class AppController with ChangeNotifier {
   }) async {
     _accounts[key] = value;
 
-    await _accountStore.record(key).put(db, _accounts[key]!.toJson());
+    await _database.into(_database.accounts).insertOnConflictUpdate(value);
 
     if (switchNow) {
       await switchAccounts(key);
@@ -428,7 +420,7 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _accountStore.record(key).delete(db);
+    await (_database.delete(_database.accounts)..where((t) => t.handle.equals(key))).go();
     await _selectedAccountRecord.put(db, _selectedAccount);
   }
 
@@ -469,13 +461,9 @@ class AppController with ChangeNotifier {
             credentials,
             identifier: identifier,
             onCredentialsRefreshed: (newCredentials) async {
-              _accounts[account] = _accounts[account]!.copyWith(
-                oauth: newCredentials,
-              );
-
-              await _accountStore
-                  .record(account)
-                  .put(db, _accounts[account]!.toJson());
+              setAccount(account, _accounts[account]!.copyWith(
+                oauth: Value(newCredentials)
+              ));
             },
           );
         }
@@ -569,19 +557,19 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> addPushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: true);
+    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: Value(true));
 
     notifyListeners();
 
-    await _accountStore.record(account).put(db, _accounts[account]!.toJson());
+    setAccount(account, _accounts[account]!);
   }
 
   Future<void> removePushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: false);
+    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: Value(false));
 
     notifyListeners();
 
-    await _accountStore.record(account).put(db, _accounts[account]!.toJson());
+    setAccount(account, _accounts[account]!);
   }
 
   Future<void> setFeed(String name, Feed value) async {
@@ -589,7 +577,6 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _feedStore.record(FieldKey.escape(name)).put(db, value.toJson());
     await _database
         .into(_database.feedItems)
         .insertOnConflictUpdate(
@@ -602,7 +589,6 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _feedStore.record(FieldKey.escape(name)).delete(db);
     await (_database.delete(
       _database.feedItems,
     )..where((t) => t.name.equals(name))).go();
@@ -613,11 +599,6 @@ class AppController with ChangeNotifier {
     _feeds.remove(oldName);
 
     notifyListeners();
-
-    await _feedStore
-        .record(FieldKey.escape(newName))
-        .put(db, _feeds[newName]!.toJson());
-    await _feedStore.record(FieldKey.escape(oldName)).delete(db);
 
     await (_database.update(
       _database.feedItems,

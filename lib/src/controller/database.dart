@@ -1,11 +1,36 @@
 import 'dart:convert';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:interstellar/src/controller/feed.dart';
+import 'package:oauth2/oauth2.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:drift/drift.dart';
 part 'database.g.dart';
+
+class CredentialsConverter extends TypeConverter<Credentials, String> {
+  const CredentialsConverter();
+  
+  @override
+  Credentials fromSql(String fromDb) {
+    return Credentials.fromJson(jsonDecode(fromDb));
+  }
+  
+  @override
+  String toSql(Credentials credentials) {
+    return jsonEncode(credentials);
+  }
+}
+
+class Accounts extends Table {
+  TextColumn get handle => text()();
+  TextColumn get oauth => text().map(const CredentialsConverter()).nullable()();
+  TextColumn get jwt => text().nullable()();
+  BoolColumn get isPushRegistered => boolean().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {handle};
+}
 
 class FeedInputConverter extends TypeConverter<Set<FeedInput>, String> {
   const FeedInputConverter();
@@ -29,7 +54,7 @@ class FeedItems extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
-@DriftDatabase(tables: [FeedItems])
+@DriftDatabase(tables: [Accounts, FeedItems])
 class InterstellarDatabase extends _$InterstellarDatabase {
 
   InterstellarDatabase([QueryExecutor? executor]) : super(executor?? _openConnection());
