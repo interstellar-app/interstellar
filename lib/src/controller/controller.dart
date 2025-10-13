@@ -31,7 +31,6 @@ enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
-  final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
   final _miscStore = StoreRef<String, dynamic>('misc');
 
@@ -184,8 +183,8 @@ class AppController with ChangeNotifier {
     );
 
     _filterLists = Map.fromEntries(
-      (await _filterListStore.find(db)).map(
-        (record) => MapEntry(record.key, FilterList.fromJson(record.value)),
+      (await _database.select(_database.filterListCache).get()).map(
+        (list) => MapEntry(list.name, list),
       ),
     );
 
@@ -625,9 +624,17 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _filterListStore
-        .record(FieldKey.escape(name))
-        .put(db, value.toJson());
+    await _database
+        .into(_database.filterListCache)
+        .insertOnConflictUpdate(
+          FilterListCacheCompanion.insert(
+            name: name,
+            phrases: value.phrases,
+            matchMode: value.matchMode,
+            caseSensitive: value.caseSensitive,
+            showWithWarning: value.showWithWarning,
+          ),
+        );
   }
 
   Future<void> removeFilterList(String name) async {
@@ -650,7 +657,9 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _filterListStore.record(FieldKey.escape(name)).delete(db);
+    await (_database.delete(
+      _database.filterListCache,
+    )..where((f) => f.name.equals(name))).go();
   }
 
   Future<void> renameFilterList(String oldName, String newName) async {
@@ -677,10 +686,20 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _filterListStore
-        .record(FieldKey.escape(newName))
-        .put(db, _filterLists[newName]!.toJson());
-    await _filterListStore.record(FieldKey.escape(oldName)).delete(db);
+    await _database
+        .into(_database.filterListCache)
+        .insertOnConflictUpdate(
+          FilterListCacheCompanion.insert(
+            name: newName,
+            phrases: _filterLists[newName]!.phrases,
+            matchMode: _filterLists[newName]!.matchMode,
+            caseSensitive: _filterLists[newName]!.caseSensitive,
+            showWithWarning: _filterLists[newName]!.showWithWarning,
+          ),
+        );
+    await (_database.delete(
+      _database.filterListCache,
+    )..where((f) => f.name.equals(oldName))).go();
   }
 
   Future<void> vibrate(HapticsType type) async {

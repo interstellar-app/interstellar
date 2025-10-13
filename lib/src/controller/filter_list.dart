@@ -12,6 +12,7 @@ abstract class FilterList with _$FilterList {
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory FilterList({
+    required String name,
     required Set<String> phrases,
     required FilterListMatchMode matchMode,
     required bool caseSensitive,
@@ -21,6 +22,7 @@ abstract class FilterList with _$FilterList {
   factory FilterList.fromJson(JsonMap json) => _$FilterListFromJson(json);
 
   static const nullFilterList = FilterList(
+    name: '',
     phrases: {},
     matchMode: FilterListMatchMode.simple,
     caseSensitive: false,

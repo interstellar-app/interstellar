@@ -3,6 +3,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path/path.dart';
@@ -85,7 +86,33 @@ class ReadPostCache extends Table {
   Set<Column<Object>> get primaryKey => {account, postType, postId};
 }
 
-@DriftDatabase(tables: [Accounts, FeedItems, FeedCache, Servers, ReadPostCache])
+class FilterListConverter extends TypeConverter<Set<String>, String> {
+  const FilterListConverter();
+
+  @override
+  Set<String> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>).map((item) => item as String).toSet();
+  }
+
+  @override
+  String toSql(Set<String> inputs) {
+    return jsonEncode(inputs.toList());
+  }
+}
+
+@UseRowClass(FilterList)
+class FilterListCache extends Table {
+  TextColumn get name => text()();
+  TextColumn get phrases => text().map(const FilterListConverter())();
+  IntColumn get matchMode => intEnum<FilterListMatchMode>()();
+  BoolColumn get caseSensitive => boolean()();
+  BoolColumn get showWithWarning => boolean()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {name};
+}
+
+@DriftDatabase(tables: [Accounts, FeedItems, FeedCache, Servers, ReadPostCache, FilterListCache])
 class InterstellarDatabase extends _$InterstellarDatabase {
 
   InterstellarDatabase([QueryExecutor? executor]) : super(executor?? _openConnection());
