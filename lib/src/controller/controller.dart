@@ -33,7 +33,6 @@ class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
   final _filterListStore = StoreRef<String, JsonMap>('filterList');
   final _profileStore = StoreRef<String, JsonMap>('profile');
-  final _serverStore = StoreRef<String, JsonMap>('server');
   final _readStore = StoreRef<String, JsonMap>('read');
   final _miscStore = StoreRef<String, dynamic>('misc');
 
@@ -153,9 +152,9 @@ class AppController with ChangeNotifier {
     }
 
     _servers = Map.fromEntries(
-      (await _serverStore.find(
-        db,
-      )).map((record) => MapEntry(record.key, Server.fromJson(record.value))),
+      (await _database.select(_database.servers).get()).map(
+        (server) => MapEntry(server.name, server),
+      ),
     );
 
     if (_autoSelectProfile != null && _builtProfile.autoSwitchAccount != null) {
@@ -319,9 +318,11 @@ class AppController with ChangeNotifier {
       return;
     }
 
-    _servers[server] = Server(software: software);
+    _servers[server] = Server(name: server, software: software);
 
-    await _serverStore.record(server).put(db, _servers[server]!.toJson());
+    await _database
+        .into(_database.servers)
+        .insertOnConflictUpdate(_servers[server]!);
   }
 
   Future<String> getMbinOAuthIdentifier(
@@ -339,11 +340,14 @@ class AppController with ChangeNotifier {
 
     String oauthIdentifier = await registerOauthApp(server);
     _servers[server] = Server(
+      name: server,
       software: software,
       oauthIdentifier: oauthIdentifier,
     );
 
-    await _serverStore.record(server).put(db, _servers[server]!.toJson());
+    await _database
+        .into(_database.servers)
+        .insertOnConflictUpdate(_servers[server]!);
 
     return oauthIdentifier;
   }
@@ -415,7 +419,9 @@ class AppController with ChangeNotifier {
 
       _servers.remove(keyAccountServer);
 
-      await _serverStore.record(keyAccountServer).delete(db);
+      await (_database.delete(
+        _database.servers,
+      )..where((f) => f.name.equals(keyAccountServer))).go();
     }
 
     _updateAPI();
