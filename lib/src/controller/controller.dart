@@ -39,8 +39,6 @@ class AppController with ChangeNotifier {
 
   static const _downloadsDirKey = 'downloads-directory';
 
-  late final InterstellarDatabase _database;
-
   String? _defaultDownloadsDir;
   Directory? get defaultDownloadDir =>
       _defaultDownloadsDir == null ? null : Directory(_defaultDownloadsDir!);
@@ -102,7 +100,6 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> init() async {
-    _database = InterstellarDatabase();
     refreshState = () {};
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
@@ -144,7 +141,7 @@ class AppController with ChangeNotifier {
     }
 
     _servers = Map.fromEntries(
-      (await _database.select(_database.servers).get()).map(
+      (await database.select(database.servers).get()).map(
         (server) => MapEntry(server.name, server),
       ),
     );
@@ -157,7 +154,7 @@ class AppController with ChangeNotifier {
     }
 
     _accounts = Map.fromEntries(
-      (await _database.select(_database.accounts).get()).map(
+      (await database.select(database.accounts).get()).map(
         (account) => MapEntry(account.handle, account),
       ),
     );
@@ -172,13 +169,13 @@ class AppController with ChangeNotifier {
     }
 
     _feeds = Map.fromEntries(
-      (await _database.select(_database.feedItems).get()).map(
+      (await database.select(database.feedItems).get()).map(
         (feed) => MapEntry(feed.name, Feed(inputs: feed.items)),
       ),
     );
 
     _filterLists = Map.fromEntries(
-      (await _database.select(_database.filterListCache).get()).map(
+      (await database.select(database.filterListCache).get()).map(
         (list) => MapEntry(list.name, list),
       ),
     );
@@ -205,15 +202,15 @@ class AppController with ChangeNotifier {
   }
 
   Future<ProfileOptional> getProfile(String profile) async {
-    final profileValue = (await (_database.select(
-      _database.profiles,
+    final profileValue = (await (database.select(
+      database.profiles,
     )..where((f) => f.name.equals(profile))).get()).firstOrNull;
     return profileValue ?? ProfileOptional.nullProfile;
   }
 
   Future<void> setProfile(String profile, ProfileOptional value) async {
-    await _database
-        .into(_database.profiles)
+    await database
+        .into(database.profiles)
         .insertOnConflictUpdate(value.copyWith(name: profile));
 
     await _rebuildProfile();
@@ -264,8 +261,8 @@ class AppController with ChangeNotifier {
   }
 
   Future<List<String>> getProfileNames() async {
-    final list = await _database
-        .select(_database.profiles)
+    final list = await database
+        .select(database.profiles)
         .map((profile) => profile.name)
         .get();
     list.sort((a, b) {
@@ -284,8 +281,8 @@ class AppController with ChangeNotifier {
     if (profileName == _autoSelectProfile) await setAutoSelectProfile(null);
     if (profileName == _selectedProfile) await switchProfiles(_mainProfile);
 
-    await (_database.delete(
-      _database.profiles,
+    await (database.delete(
+      database.profiles,
     )..where((f) => f.name.equals(profileName))).go();
   }
 
@@ -311,8 +308,8 @@ class AppController with ChangeNotifier {
 
     _servers[server] = Server(name: server, software: software);
 
-    await _database
-        .into(_database.servers)
+    await database
+        .into(database.servers)
         .insertOnConflictUpdate(_servers[server]!);
   }
 
@@ -336,8 +333,8 @@ class AppController with ChangeNotifier {
       oauthIdentifier: oauthIdentifier,
     );
 
-    await _database
-        .into(_database.servers)
+    await database
+        .into(database.servers)
         .insertOnConflictUpdate(_servers[server]!);
 
     return oauthIdentifier;
@@ -350,7 +347,7 @@ class AppController with ChangeNotifier {
   }) async {
     _accounts[key] = value;
 
-    await _database.into(_database.accounts).insertOnConflictUpdate(value);
+    await database.into(database.accounts).insertOnConflictUpdate(value);
 
     if (switchNow) {
       await switchAccounts(key);
@@ -372,18 +369,18 @@ class AppController with ChangeNotifier {
     }
 
     // Remove a profile's autoSwitchAccount value if it is for this account
-    final autoSwitchAccountProfiles = await (_database.select(
-      _database.profiles,
+    final autoSwitchAccountProfiles = await (database.select(
+      database.profiles,
     )..where((f) => f.autoSwitchAccount.equals(key))).get();
     for (var profile in autoSwitchAccountProfiles) {
-      await _database
-          .into(_database.profiles)
+      await database
+          .into(database.profiles)
           .insertOnConflictUpdate(profile.copyWith(autoSwitchAccount: null));
     }
 
     // Remove read posts associated with account
-    await (_database.delete(
-      _database.readPostCache,
+    await (database.delete(
+      database.readPostCache,
     )..where((f) => f.account.equals(key))).go();
 
     _rebuildProfile();
@@ -399,14 +396,14 @@ class AppController with ChangeNotifier {
           orElse: () => '',
         )
         .isEmpty) {
-      await (_database.delete(
-        _database.feedCache,
+      await (database.delete(
+        database.feedCache,
       )..where((f) => f.server.equals(keyAccountServer))).go();
 
       _servers.remove(keyAccountServer);
 
-      await (_database.delete(
-        _database.servers,
+      await (database.delete(
+        database.servers,
       )..where((f) => f.name.equals(keyAccountServer))).go();
     }
 
@@ -414,8 +411,8 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await (_database.delete(
-      _database.accounts,
+    await (database.delete(
+      database.accounts,
     )..where((f) => f.handle.equals(key))).go();
     await cacheValue(_selectedAccountKey, _selectedAccount);
   }
@@ -578,8 +575,8 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _database
-        .into(_database.feedItems)
+    await database
+        .into(database.feedItems)
         .insertOnConflictUpdate(
           FeedItemsCompanion.insert(name: name, items: value.inputs),
         );
@@ -590,8 +587,8 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await (_database.delete(
-      _database.feedItems,
+    await (database.delete(
+      database.feedItems,
     )..where((f) => f.name.equals(name))).go();
   }
 
@@ -601,8 +598,8 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await (_database.update(
-      _database.feedItems,
+    await (database.update(
+      database.feedItems,
     )..where((f) => f.name.equals(oldName))).write(
       FeedItemsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
     );
@@ -613,8 +610,8 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _database
-        .into(_database.filterListCache)
+    await database
+        .into(database.filterListCache)
         .insertOnConflictUpdate(
           FilterListCacheCompanion.insert(
             name: name,
@@ -630,21 +627,21 @@ class AppController with ChangeNotifier {
     _filterLists.remove(name);
 
     // Remove a profile's activation value if it is for this filter list
-    final profile = await (_database.select(
-      _database.profiles,
+    final profile = await (database.select(
+      database.profiles,
     )..where((f) => f.filterLists.contains(name))).getSingle();
     final newFilterLists = {...?profile.filterLists};
     newFilterLists.remove(name);
-    _database
-        .into(_database.profiles)
+    database
+        .into(database.profiles)
         .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
 
     _rebuildProfile();
 
     notifyListeners();
 
-    await (_database.delete(
-      _database.filterListCache,
+    await (database.delete(
+      database.filterListCache,
     )..where((f) => f.name.equals(name))).go();
   }
 
@@ -653,24 +650,24 @@ class AppController with ChangeNotifier {
     _filterLists.remove(oldName);
 
     // Update a profile's activation value if it is for this filter list
-    final profile = await (_database.select(
-      _database.profiles,
+    final profile = await (database.select(
+      database.profiles,
     )..where((f) => f.filterLists.contains(oldName))).getSingle();
     final newFilterLists = {
       ...?profile.filterLists,
       newName: profile.filterLists?[oldName] ?? false,
     };
     newFilterLists.remove(oldName);
-    _database
-        .into(_database.profiles)
+    database
+        .into(database.profiles)
         .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
 
     _rebuildProfile();
 
     notifyListeners();
 
-    await _database
-        .into(_database.filterListCache)
+    await database
+        .into(database.filterListCache)
         .insertOnConflictUpdate(
           FilterListCacheCompanion.insert(
             name: newName,
@@ -680,8 +677,8 @@ class AppController with ChangeNotifier {
             showWithWarning: _filterLists[newName]!.showWithWarning,
           ),
         );
-    await (_database.delete(
-      _database.filterListCache,
+    await (database.delete(
+      database.filterListCache,
     )..where((f) => f.name.equals(oldName))).go();
   }
 
@@ -718,8 +715,8 @@ class AppController with ChangeNotifier {
       await db.transaction((txn) async {
         for (var post in posts) {
           if (!await isRead(post)) {
-            await _database
-                .into(_database.readPostCache)
+            await database
+                .into(database.readPostCache)
                 .insertOnConflictUpdate(
                   ReadPostCacheCompanion.insert(
                     account: _selectedAccount,
@@ -735,7 +732,7 @@ class AppController with ChangeNotifier {
     else {
       await db.transaction((txn) async {
         for (var post in posts) {
-          await (_database.delete(_database.readPostCache)..where(
+          await (database.delete(database.readPostCache)..where(
                 (f) =>
                     f.account.equals(_selectedAccount) &
                     f.postType.equals(post.type.index) &
@@ -750,7 +747,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<bool> isRead(PostModel post) async {
-    return (await (_database.select(_database.readPostCache)..where(
+    return (await (database.select(database.readPostCache)..where(
                   (f) =>
                       f.account.equals(_selectedAccount) &
                       f.postType.equals(post.type.index) &
@@ -763,7 +760,7 @@ class AppController with ChangeNotifier {
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
     final cachedValue =
-        (await (_database.select(_database.feedCache)..where(
+        (await (database.select(database.feedCache)..where(
                   (t) =>
                       t.name.equals(name) &
                       t.server.equals(instanceHost) &
@@ -792,8 +789,8 @@ class AppController with ChangeNotifier {
       };
 
       if (newValue != null) {
-        await _database
-            .into(_database.feedCache)
+        await database
+            .into(database.feedCache)
             .insertOnConflictUpdate(
               FeedCacheCompanion.insert(
                 name: name,
@@ -812,12 +809,12 @@ class AppController with ChangeNotifier {
 
   Future<void> cacheValue<T>(String key, T? value) async {
     if (value == null) {
-      await (_database.delete(
-        _database.miscCache,
+      await (database.delete(
+        database.miscCache,
       )..where((f) => f.key.equals(key))).go();
     } else {
-      await _database
-          .into(_database.miscCache)
+      await database
+          .into(database.miscCache)
           .insertOnConflictUpdate(
             MiscCacheCompanion.insert(key: key, json: jsonEncode(value)),
           );
@@ -825,8 +822,8 @@ class AppController with ChangeNotifier {
   }
 
   Future<T?> fetchCachedValue<T>(String key) async {
-    final value = (await (_database.select(
-      _database.miscCache,
+    final value = (await (database.select(
+      database.miscCache,
     )..where((f) => f.key.equals(key))).get()).firstOrNull?.json;
     if (value == null) return null;
     return jsonDecode(value) as T?;

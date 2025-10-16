@@ -232,6 +232,13 @@ class MiscCache extends Table {
   Set<Column<Object>> get primaryKey => {key};
 }
 
+class Drafts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get body => text()();
+  TextColumn get resourceId => text().nullable()();
+  DateTimeColumn get at => dateTime().withDefault(currentDateAndTime)();
+}
+
 @DriftDatabase(
   tables: [
     Accounts,
@@ -242,6 +249,7 @@ class MiscCache extends Table {
     FilterListCache,
     Profiles,
     MiscCache,
+    Drafts,
   ],
 )
 class InterstellarDatabase extends _$InterstellarDatabase {
@@ -262,6 +270,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
 }
 
 late final Database db;
+InterstellarDatabase database = InterstellarDatabase();
 
 Future<void> initDatabase() async {
   final dir = await getApplicationSupportDirectory();
