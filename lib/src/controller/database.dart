@@ -12,10 +12,9 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:oauth2/oauth2.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast_io.dart';
 import 'package:drift/drift.dart';
+
 part 'database.g.dart';
 
 class CredentialsConverter extends TypeConverter<Credentials, String> {
@@ -259,9 +258,11 @@ class InterstellarDatabase extends _$InterstellarDatabase {
   @override
   int get schemaVersion => 1;
 
+  static const databaseFilename = 'interstellar.db';
+
   static QueryExecutor _openConnection() {
     return driftDatabase(
-      name: 'interstellar.db',
+      name: databaseFilename,
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationSupportDirectory,
       ),
@@ -269,13 +270,14 @@ class InterstellarDatabase extends _$InterstellarDatabase {
   }
 }
 
-late final Database db;
-InterstellarDatabase database = InterstellarDatabase();
+late InterstellarDatabase database;
 
 Future<void> initDatabase() async {
-  final dir = await getApplicationSupportDirectory();
+  database = InterstellarDatabase();
+}
 
-  final dbPath = join(dir.path, 'database');
-
-  db = await databaseFactoryIo.openDatabase(dbPath);
+Future<void> deleteTables() async {
+  for (var table in database.allTables) {
+    await database.delete(table).go();
+  }
 }

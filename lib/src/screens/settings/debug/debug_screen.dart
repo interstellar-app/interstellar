@@ -5,7 +5,6 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
-import 'package:sembast/sembast.dart';
 import 'package:interstellar/src/controller/database.dart';
 
 class DebugSettingsScreen extends StatelessWidget {
@@ -41,7 +40,7 @@ class DebugSettingsScreen extends StatelessWidget {
                   ),
                   FilledButton(
                     onPressed: () async {
-                      await db.dropAll();
+                      await deleteTables();
                       ac.logger.i('Cleared database');
                       if (!context.mounted) return;
                       Navigator.pop(context);

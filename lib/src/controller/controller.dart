@@ -712,32 +712,32 @@ class AppController with ChangeNotifier {
     // Use local database otherwise.
     // If marking as read, then check for a db row first, and add one if not present.
     else if (read) {
-      await db.transaction((txn) async {
+      await database.transaction(() async {
         for (var post in posts) {
           if (!await isRead(post)) {
             await database
                 .into(database.readPostCache)
                 .insertOnConflictUpdate(
-                  ReadPostCacheCompanion.insert(
-                    account: _selectedAccount,
-                    postType: post.type,
-                    postId: post.id,
-                  ),
-                );
+              ReadPostCacheCompanion.insert(
+                account: _selectedAccount,
+                postType: post.type,
+                postId: post.id,
+              ),
+            );
           }
         }
       });
     }
     // If marking as unread, then delete any matching database rows.
     else {
-      await db.transaction((txn) async {
+      await database.transaction(() async {
         for (var post in posts) {
           await (database.delete(database.readPostCache)..where(
                 (f) =>
-                    f.account.equals(_selectedAccount) &
-                    f.postType.equals(post.type.index) &
-                    f.postId.equals(post.id),
-              ))
+            f.account.equals(_selectedAccount) &
+            f.postType.equals(post.type.index) &
+            f.postId.equals(post.id),
+          ))
               .go();
         }
       });
