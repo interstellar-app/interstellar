@@ -15,7 +15,6 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
-import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
@@ -31,7 +30,6 @@ enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
   final _mainStore = StoreRef.main();
-  final _profileStore = StoreRef<String, JsonMap>('profile');
   final _miscStore = StoreRef<String, dynamic>('misc');
 
   late final _mainProfileRecord = _mainStore.record('mainProfile');
@@ -47,9 +45,6 @@ class AppController with ChangeNotifier {
   String? _defaultDownloadsDir;
   Directory? get defaultDownloadDir =>
       _defaultDownloadsDir == null ? null : Directory(_defaultDownloadsDir!);
-
-  RecordRef<String, JsonMap> _profileRecord(String name) =>
-      _profileStore.record(FieldKey.escape(name));
 
   late String _mainProfile;
   String get mainProfile => _mainProfile;
@@ -122,9 +117,7 @@ class AppController with ChangeNotifier {
       _mainProfile = mainProfileTemp;
     } else {
       _mainProfile = 'Default';
-      await _profileRecord(
-        _mainProfile,
-      ).put(db, ProfileOptional.nullProfile.toJson());
+      await updateProfile(ProfileOptional.nullProfile);
       await _mainProfileRecord.put(db, _mainProfile);
     }
     _autoSelectProfile = await _autoSelectProfileRecord.get(db) as String?;
@@ -210,18 +203,16 @@ class AppController with ChangeNotifier {
   }
 
   Future<ProfileOptional> getProfile(String profile) async {
-    final record = _profileRecord(profile);
-
-    final profileValue = await record.get(db);
-
-    return profileValue == null
-        ? ProfileOptional.nullProfile
-        : ProfileOptional.fromJson(profileValue);
+    final profileValue = (await (_database.select(
+      _database.profiles,
+    )..where((f) => f.name.equals(profile))).get()).firstOrNull;
+    return profileValue ?? ProfileOptional.nullProfile;
   }
 
   Future<void> setProfile(String profile, ProfileOptional value) async {
-    final record = _profileRecord(profile);
-    await record.put(db, value.toJson());
+    await _database
+        .into(_database.profiles)
+        .insertOnConflictUpdate(value.copyWith(name: profile));
 
     await _rebuildProfile();
 
@@ -275,7 +266,10 @@ class AppController with ChangeNotifier {
   }
 
   Future<List<String>> getProfileNames() async {
-    final list = await _profileStore.findKeys(db);
+    final list = await _database
+        .select(_database.profiles)
+        .map((profile) => profile.name)
+        .get();
     list.sort((a, b) {
       // Main profile should be in the front
       if (a == _mainProfile) return -1;
@@ -292,8 +286,9 @@ class AppController with ChangeNotifier {
     if (profileName == _autoSelectProfile) await setAutoSelectProfile(null);
     if (profileName == _selectedProfile) await switchProfiles(_mainProfile);
 
-    final record = _profileRecord(profileName);
-    await record.delete(db);
+    await (_database.delete(
+      _database.profiles,
+    )..where((f) => f.name.equals(profileName))).go();
   }
 
   Future<void> renameProfile(
@@ -379,17 +374,13 @@ class AppController with ChangeNotifier {
     }
 
     // Remove a profile's autoSwitchAccount value if it is for this account
-    final autoSwitchAccountProfiles = await _profileStore.find(
-      db,
-      finder: Finder(filter: Filter.equals('autoSwitchAccount', key)),
-    );
-    for (var record in autoSwitchAccountProfiles) {
-      await _profileRecord(record.key).put(
-        db,
-        ProfileOptional.fromJson(
-          record.value,
-        ).copyWith(autoSwitchAccount: null).toJson(),
-      );
+    final autoSwitchAccountProfiles = await (_database.select(
+      _database.profiles,
+    )..where((f) => f.autoSwitchAccount.equals(key))).get();
+    for (var profile in autoSwitchAccountProfiles) {
+      await _database
+          .into(_database.profiles)
+          .insertOnConflictUpdate(profile.copyWith(autoSwitchAccount: null));
     }
 
     // Remove read posts associated with account
@@ -641,17 +632,14 @@ class AppController with ChangeNotifier {
     _filterLists.remove(name);
 
     // Remove a profile's activation value if it is for this filter list
-    for (var record in await _profileStore.find(db)) {
-      final profile = ProfileOptional.fromJson(record.value);
-      if (profile.filterLists?.containsKey(name) == true) {
-        final newProfileFilterLists = {...profile.filterLists!};
-        newProfileFilterLists.remove(name);
-        await _profileRecord(record.key).put(
-          db,
-          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
-        );
-      }
-    }
+    final profile = await (_database.select(
+      _database.profiles,
+    )..where((f) => f.filterLists.contains(name))).getSingle();
+    final newFilterLists = {...?profile.filterLists};
+    newFilterLists.remove(name);
+    _database
+        .into(_database.profiles)
+        .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
 
     _rebuildProfile();
 
@@ -667,20 +655,17 @@ class AppController with ChangeNotifier {
     _filterLists.remove(oldName);
 
     // Update a profile's activation value if it is for this filter list
-    for (var record in await _profileStore.find(db)) {
-      final profile = ProfileOptional.fromJson(record.value);
-      if (profile.filterLists?.containsKey(oldName) == true) {
-        final newProfileFilterLists = {
-          ...profile.filterLists!,
-          newName: profile.filterLists![oldName]!,
-        };
-        newProfileFilterLists.remove(oldName);
-        await _profileRecord(record.key).put(
-          db,
-          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
-        );
-      }
-    }
+    final profile = await (_database.select(
+      _database.profiles,
+    )..where((f) => f.filterLists.contains(oldName))).getSingle();
+    final newFilterLists = {
+      ...?profile.filterLists,
+      newName: profile.filterLists?[oldName] ?? false,
+    };
+    newFilterLists.remove(oldName);
+    _database
+        .into(_database.profiles)
+        .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
 
     _rebuildProfile();
 
