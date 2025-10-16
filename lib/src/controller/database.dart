@@ -223,6 +223,15 @@ class Profiles extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
+// Table to store misc data that is either one off or doesn't fit into other tables
+class MiscCache extends Table {
+  TextColumn get key => text()();
+  TextColumn get json => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {key};
+}
+
 @DriftDatabase(
   tables: [
     Accounts,
@@ -232,6 +241,7 @@ class Profiles extends Table {
     ReadPostCache,
     FilterListCache,
     Profiles,
+    MiscCache,
   ],
 )
 class InterstellarDatabase extends _$InterstellarDatabase {
