@@ -493,5 +493,8 @@ Future<bool> migrateDatabase() async {
     await database.into(database.drafts).insertOnConflictUpdate(entry);
   }
 
+  await db.close();
+  await File(dbPath).delete();
+
   return true;
 }
