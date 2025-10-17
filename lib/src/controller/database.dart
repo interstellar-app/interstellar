@@ -73,7 +73,8 @@ class FeedInputConverter extends TypeConverter<Set<FeedInput>, String> {
   }
 }
 
-class FeedItems extends Table {
+@DataClassName('RawFeed')
+class Feeds extends Table {
   TextColumn get name => text()();
   TextColumn get items => text().map(const FeedInputConverter())();
 
@@ -81,7 +82,7 @@ class FeedItems extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
-class FeedCache extends Table {
+class FeedInputCache extends Table {
   TextColumn get name => text()();
   TextColumn get server => text()();
   IntColumn get id => integer()();
@@ -126,7 +127,7 @@ class FilterListConverter extends TypeConverter<Set<String>, String> {
 }
 
 @UseRowClass(FilterList)
-class FilterListCache extends Table {
+class FilterLists extends Table {
   TextColumn get name => text()();
   TextColumn get phrases => text().map(const FilterListConverter())();
   TextColumn get matchMode => textEnum<FilterListMatchMode>()();
@@ -257,11 +258,11 @@ class Drafts extends Table {
 @DriftDatabase(
   tables: [
     Accounts,
-    FeedItems,
-    FeedCache,
+    Feeds,
+    FeedInputCache,
     Servers,
     ReadPostCache,
-    FilterListCache,
+    FilterLists,
     Profiles,
     MiscCache,
     Drafts,
@@ -419,9 +420,9 @@ Future<bool> migrateDatabase() async {
   );
   for (var entry in feeds.entries) {
     await database
-        .into(database.feedItems)
+        .into(database.feeds)
         .insertOnConflictUpdate(
-          FeedItemsCompanion.insert(name: entry.key, items: entry.value.inputs),
+          FeedsCompanion.insert(name: entry.key, items: entry.value.inputs),
         );
   }
 
@@ -435,9 +436,9 @@ Future<bool> migrateDatabase() async {
   );
   for (var entry in filterLists.entries) {
     await database
-        .into(database.filterListCache)
+        .into(database.filterLists)
         .insertOnConflictUpdate(
-          FilterListCacheCompanion.insert(
+          FilterListsCompanion.insert(
             name: entry.key,
             phrases: entry.value.phrases,
             matchMode: entry.value.matchMode,

@@ -169,13 +169,13 @@ class AppController with ChangeNotifier {
     }
 
     _feeds = Map.fromEntries(
-      (await database.select(database.feedItems).get()).map(
+      (await database.select(database.feeds).get()).map(
         (feed) => MapEntry(feed.name, Feed(inputs: feed.items)),
       ),
     );
 
     _filterLists = Map.fromEntries(
-      (await database.select(database.filterListCache).get()).map(
+      (await database.select(database.filterLists).get()).map(
         (list) => MapEntry(list.name, list),
       ),
     );
@@ -397,7 +397,7 @@ class AppController with ChangeNotifier {
         )
         .isEmpty) {
       await (database.delete(
-        database.feedCache,
+        database.feedInputCache,
       )..where((f) => f.server.equals(keyAccountServer))).go();
 
       _servers.remove(keyAccountServer);
@@ -576,9 +576,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await database
-        .into(database.feedItems)
+        .into(database.feeds)
         .insertOnConflictUpdate(
-          FeedItemsCompanion.insert(name: name, items: value.inputs),
+          FeedsCompanion.insert(name: name, items: value.inputs),
         );
   }
 
@@ -588,7 +588,7 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await (database.delete(
-      database.feedItems,
+      database.feeds,
     )..where((f) => f.name.equals(name))).go();
   }
 
@@ -599,9 +599,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await (database.update(
-      database.feedItems,
+      database.feeds,
     )..where((f) => f.name.equals(oldName))).write(
-      FeedItemsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
+      FeedsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
     );
   }
 
@@ -611,9 +611,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await database
-        .into(database.filterListCache)
+        .into(database.filterLists)
         .insertOnConflictUpdate(
-          FilterListCacheCompanion.insert(
+          FilterListsCompanion.insert(
             name: name,
             phrases: value.phrases,
             matchMode: value.matchMode,
@@ -641,7 +641,7 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await (database.delete(
-      database.filterListCache,
+      database.filterLists,
     )..where((f) => f.name.equals(name))).go();
   }
 
@@ -667,9 +667,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
 
     await database
-        .into(database.filterListCache)
+        .into(database.filterLists)
         .insertOnConflictUpdate(
-          FilterListCacheCompanion.insert(
+          FilterListsCompanion.insert(
             name: newName,
             phrases: _filterLists[newName]!.phrases,
             matchMode: _filterLists[newName]!.matchMode,
@@ -678,7 +678,7 @@ class AppController with ChangeNotifier {
           ),
         );
     await (database.delete(
-      database.filterListCache,
+      database.filterLists,
     )..where((f) => f.name.equals(oldName))).go();
   }
 
@@ -760,7 +760,7 @@ class AppController with ChangeNotifier {
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
     final cachedValue =
-        (await (database.select(database.feedCache)..where(
+        (await (database.select(database.feedInputCache)..where(
                   (t) =>
                       t.name.equals(name) &
                       t.server.equals(instanceHost) &
@@ -790,9 +790,9 @@ class AppController with ChangeNotifier {
 
       if (newValue != null) {
         await database
-            .into(database.feedCache)
+            .into(database.feedInputCache)
             .insertOnConflictUpdate(
-              FeedCacheCompanion.insert(
+              FeedInputCacheCompanion.insert(
                 name: name,
                 server: instanceHost,
                 id: newValue,

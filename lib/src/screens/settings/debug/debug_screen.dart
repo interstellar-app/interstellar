@@ -1,3 +1,4 @@
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/settings/debug/log_console.dart';
@@ -25,6 +26,14 @@ class DebugSettingsScreen extends StatelessWidget {
             onChanged: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(showErrors: newValue),
             ),
+          ),
+          ListTile(
+              leading: const Icon(Symbols.schema_rounded),
+              title: Text(l(context).settings_debug_inspectDatabase),
+              onTap: () => pushRoute(
+                  context,
+                  builder: (context) => DriftDbViewer(database)
+              )
           ),
           ListTile(
             leading: const Icon(Symbols.storage_rounded),
@@ -97,6 +106,56 @@ class DebugSettingsScreen extends StatelessWidget {
                         ac.deleteProfile(profile);
                       }
                       ac.logger.i('Cleared profiles');
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    },
+                    child: Text(l(context).remove),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.mark_email_read_rounded),
+            title: Text(l(context).settings_debug_clearReadPosts),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l(context).settings_debug_clearReadPosts),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l(context).cancel),
+                  ),
+                  FilledButton(
+                    onPressed: () async {
+                      await database.delete(database.readPostCache).go();
+                      ac.logger.i('Cleared read posts');
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    },
+                    child: Text(l(context).remove),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.download_for_offline_rounded),
+            title: Text(l(context).settings_debug_clearFeedCache),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l(context).settings_debug_clearFeedCache),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l(context).cancel),
+                  ),
+                  FilledButton(
+                    onPressed: () async {
+                      await database.delete(database.feedInputCache).go();
+                      ac.logger.i('Cleared feed cache');
                       if (!context.mounted) return;
                       Navigator.pop(context);
                     },
