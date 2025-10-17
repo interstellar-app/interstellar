@@ -718,12 +718,12 @@ class AppController with ChangeNotifier {
             await database
                 .into(database.readPostCache)
                 .insertOnConflictUpdate(
-              ReadPostCacheCompanion.insert(
-                account: _selectedAccount,
-                postType: post.type,
-                postId: post.id,
-              ),
-            );
+                  ReadPostCacheCompanion.insert(
+                    account: _selectedAccount,
+                    postType: post.type,
+                    postId: post.id,
+                  ),
+                );
           }
         }
       });
@@ -734,10 +734,10 @@ class AppController with ChangeNotifier {
         for (var post in posts) {
           await (database.delete(database.readPostCache)..where(
                 (f) =>
-            f.account.equals(_selectedAccount) &
-            f.postType.equals(post.type.index) &
-            f.postId.equals(post.id),
-          ))
+                    f.account.equals(_selectedAccount) &
+                    f.postType.equals(post.type.name) &
+                    f.postId.equals(post.id),
+              ))
               .go();
         }
       });
@@ -750,7 +750,7 @@ class AppController with ChangeNotifier {
     return (await (database.select(database.readPostCache)..where(
                   (f) =>
                       f.account.equals(_selectedAccount) &
-                      f.postType.equals(post.type.index) &
+                      f.postType.equals(post.type.name) &
                       f.postId.equals(post.id),
                 ))
                 .get())
@@ -764,7 +764,7 @@ class AppController with ChangeNotifier {
                   (t) =>
                       t.name.equals(name) &
                       t.server.equals(instanceHost) &
-                      t.source.equals(source.index),
+                      t.source.equals(source.name),
                 ))
                 .get())
             .firstOrNull;

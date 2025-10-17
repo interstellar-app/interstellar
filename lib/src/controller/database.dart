@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -11,13 +12,18 @@ import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/widgets/actions.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:drift/drift.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
+import 'package:path/path.dart';
 
 part 'database.g.dart';
 
-class CredentialsConverter extends TypeConverter<Credentials, String> {
+class CredentialsConverter extends TypeConverter<Credentials, String>
+    with JsonTypeConverter2<Credentials, String, String> {
   const CredentialsConverter();
 
   @override
@@ -28,6 +34,16 @@ class CredentialsConverter extends TypeConverter<Credentials, String> {
   @override
   String toSql(Credentials credentials) {
     return jsonEncode(credentials);
+  }
+
+  @override
+  Credentials fromJson(String json) {
+    return Credentials.fromJson(json);
+  }
+
+  @override
+  String toJson(Credentials value) {
+    return jsonEncode(value);
   }
 }
 
@@ -69,7 +85,7 @@ class FeedCache extends Table {
   TextColumn get name => text()();
   TextColumn get server => text()();
   IntColumn get id => integer()();
-  IntColumn get source => intEnum<FeedSource>()();
+  TextColumn get source => textEnum<FeedSource>()();
 
   @override
   Set<Column<Object>> get primaryKey => {name, server};
@@ -77,7 +93,7 @@ class FeedCache extends Table {
 
 class Servers extends Table {
   TextColumn get name => text()();
-  IntColumn get software => intEnum<ServerSoftware>()();
+  TextColumn get software => textEnum<ServerSoftware>()();
   TextColumn get oauthIdentifier => text().nullable()();
 
   @override
@@ -86,7 +102,7 @@ class Servers extends Table {
 
 class ReadPostCache extends Table {
   TextColumn get account => text()();
-  IntColumn get postType => intEnum<PostType>()();
+  TextColumn get postType => textEnum<PostType>()();
   IntColumn get postId => integer()();
 
   @override
@@ -113,7 +129,7 @@ class FilterListConverter extends TypeConverter<Set<String>, String> {
 class FilterListCache extends Table {
   TextColumn get name => text()();
   TextColumn get phrases => text().map(const FilterListConverter())();
-  IntColumn get matchMode => intEnum<FilterListMatchMode>()();
+  TextColumn get matchMode => textEnum<FilterListMatchMode>()();
   BoolColumn get caseSensitive => boolean()();
   BoolColumn get showWithWarning => boolean()();
 
@@ -174,8 +190,8 @@ class Profiles extends Table {
   BoolColumn get markCrosspostsAsRead => boolean().nullable()();
   // Display
   TextColumn get appLanguage => text().nullable()();
-  IntColumn get themeMode => intEnum<ThemeMode>().nullable()();
-  IntColumn get colorScheme => intEnum<FlexScheme>().nullable()();
+  TextColumn get themeMode => textEnum<ThemeMode>().nullable()();
+  TextColumn get colorScheme => textEnum<FlexScheme>().nullable()();
   BoolColumn get enableTrueBlack => boolean().nullable()();
   BoolColumn get compactMode => boolean().nullable()();
   BoolColumn get hideActionButtons => boolean().nullable()();
@@ -186,32 +202,32 @@ class Profiles extends Table {
   BoolColumn get fullImageSizeThreads => boolean().nullable()();
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
   // Feed defaults
-  IntColumn get feedDefaultView => intEnum<FeedView>().nullable()();
-  IntColumn get feedDefaultFilter => intEnum<FeedSource>().nullable()();
-  IntColumn get feedDefaultThreadsSort => intEnum<FeedSort>().nullable()();
-  IntColumn get feedDefaultMicroblogSort => intEnum<FeedSort>().nullable()();
-  IntColumn get feedDefaultCombinedSort => intEnum<FeedSort>().nullable()();
-  IntColumn get feedDefaultExploreSort => intEnum<FeedSort>().nullable()();
-  IntColumn get feedDefaultCommentSort => intEnum<CommentSort>().nullable()();
+  TextColumn get feedDefaultView => textEnum<FeedView>().nullable()();
+  TextColumn get feedDefaultFilter => textEnum<FeedSource>().nullable()();
+  TextColumn get feedDefaultThreadsSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultMicroblogSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultCombinedSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultExploreSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultCommentSort => textEnum<CommentSort>().nullable()();
   BoolColumn get feedDefaultHideReadPosts => boolean().nullable()();
   // Feed actions
-  IntColumn get feedActionBackToTop => intEnum<ActionLocation>().nullable()();
-  IntColumn get feedActionCreateNew => intEnum<ActionLocation>().nullable()();
-  IntColumn get feedActionExpandFab => intEnum<ActionLocation>().nullable()();
-  IntColumn get feedActionRefresh => intEnum<ActionLocation>().nullable()();
-  IntColumn get feedActionSetFilter =>
-      intEnum<ActionLocationWithTabs>().nullable()();
-  IntColumn get feedActionSetSort => intEnum<ActionLocation>().nullable()();
-  IntColumn get feedActionSetView =>
-      intEnum<ActionLocationWithTabs>().nullable()();
-  IntColumn get feedActionHideReadPosts =>
-      intEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionBackToTop => textEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionCreateNew => textEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionExpandFab => textEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionRefresh => textEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionSetFilter =>
+      textEnum<ActionLocationWithTabs>().nullable()();
+  TextColumn get feedActionSetSort => textEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionSetView =>
+      textEnum<ActionLocationWithTabs>().nullable()();
+  TextColumn get feedActionHideReadPosts =>
+      textEnum<ActionLocation>().nullable()();
   // Swipe actions
   BoolColumn get enableSwipeActions => boolean().nullable()();
-  IntColumn get swipeActionLeftShort => intEnum<SwipeAction>().nullable()();
-  IntColumn get swipeActionLeftLong => intEnum<SwipeAction>().nullable()();
-  IntColumn get swipeActionRightShort => intEnum<SwipeAction>().nullable()();
-  IntColumn get swipeActionRightLong => intEnum<SwipeAction>().nullable()();
+  TextColumn get swipeActionLeftShort => textEnum<SwipeAction>().nullable()();
+  TextColumn get swipeActionLeftLong => textEnum<SwipeAction>().nullable()();
+  TextColumn get swipeActionRightShort => textEnum<SwipeAction>().nullable()();
+  TextColumn get swipeActionRightLong => textEnum<SwipeAction>().nullable()();
   RealColumn get swipeActionThreshold => real().nullable()();
   // Filter list activations
   TextColumn get filterLists =>
@@ -273,6 +289,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
 late InterstellarDatabase database;
 
 Future<void> initDatabase() async {
+  if (await migrateDatabase()) return;
   database = InterstellarDatabase();
 }
 
@@ -280,4 +297,200 @@ Future<void> deleteTables() async {
   for (var table in database.allTables) {
     await database.delete(table).go();
   }
+}
+
+Future<bool> migrateDatabase() async {
+  final dir = await getApplicationSupportDirectory();
+  final dbPath = join(dir.path, 'database');
+  if (!await File(dbPath).exists()) {
+    return false;
+  }
+  final Database db = await databaseFactoryIo.openDatabase(dbPath);
+  database = InterstellarDatabase();
+
+  final mainStore = StoreRef.main();
+  final accountStore = StoreRef<String, JsonMap>('account');
+  final feedStore = StoreRef<String, JsonMap>('feeds');
+  final filterListStore = StoreRef<String, JsonMap>('filterList');
+  final profileStore = StoreRef<String, JsonMap>('profile');
+  final serverStore = StoreRef<String, JsonMap>('server');
+  final readStore = StoreRef<String, JsonMap>('read');
+  final miscStore = StoreRef<String, dynamic>('misc');
+  final draftsStore = StoreRef<int, JsonMap>('draft');
+
+  late final mainProfileRecord = mainStore.record('mainProfile');
+  late final selectedProfileRecord = mainStore.record('selectedProfile');
+  late final autoSelectProfileRecord = mainStore.record('autoSelectProfile');
+
+  late final selectedAccountRecord = mainStore.record('selectedAccount');
+  late final starsRecord = mainStore.record('stars');
+  late final webPushKeysRecord = mainStore.record('webPushKeys');
+
+  final mainProfileTmp =
+      await mainProfileRecord.get(db) as String? ?? 'Default';
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion.insert(
+          key: 'main-profile',
+          json: jsonEncode(mainProfileTmp),
+        ),
+      );
+
+  final autoSelectProfile =
+      await autoSelectProfileRecord.get(db) as String? ?? mainProfileTmp;
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion.insert(
+          key: 'auto-select-profile',
+          json: jsonEncode(autoSelectProfile),
+        ),
+      );
+
+  final selectedProfile =
+      await selectedProfileRecord.get(db) as String? ?? mainProfileTmp;
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion.insert(
+          key: 'selected-profile',
+          json: jsonEncode(selectedProfile),
+        ),
+      );
+
+  final selectedAccount = await selectedAccountRecord.get(db) as String? ?? '';
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion.insert(
+          key: 'selected-account',
+          json: jsonEncode(selectedAccount),
+        ),
+      );
+
+  final stars = (await starsRecord.get(db) as List<Object?>? ?? [])
+      .map((v) => v as String)
+      .toList();
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion.insert(key: 'stars', json: jsonEncode(stars)),
+      );
+
+  final webPushKeys = await webPushKeysRecord.get(db) as String?;
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion.insert(
+          key: 'web-push-keys',
+          json: jsonEncode(webPushKeys),
+        ),
+      );
+
+  final accounts = Map.fromEntries(
+    (await accountStore.find(db)).map(
+      (record) => MapEntry(
+        record.key,
+        Account.fromJson({...record.value, 'handle': record.key}),
+      ),
+    ),
+  );
+  for (var entry in accounts.entries) {
+    await database.into(database.accounts).insertOnConflictUpdate(entry.value);
+  }
+
+  final servers = Map.fromEntries(
+    (await serverStore.find(db)).map(
+      (record) => MapEntry(
+        record.key,
+        Server.fromJson({...record.value, 'name': record.key}),
+      ),
+    ),
+  );
+  for (var entry in servers.entries) {
+    await database.into(database.servers).insertOnConflictUpdate(entry.value);
+  }
+
+  final feeds = Map.fromEntries(
+    (await feedStore.find(
+      db,
+    )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
+  );
+  for (var entry in feeds.entries) {
+    await database
+        .into(database.feedItems)
+        .insertOnConflictUpdate(
+          FeedItemsCompanion.insert(name: entry.key, items: entry.value.inputs),
+        );
+  }
+
+  final filterLists = Map.fromEntries(
+    (await filterListStore.find(db)).map(
+      (record) => MapEntry(
+        record.key,
+        FilterList.fromJson({...record.value, 'name': record.key}),
+      ),
+    ),
+  );
+  for (var entry in filterLists.entries) {
+    await database
+        .into(database.filterListCache)
+        .insertOnConflictUpdate(
+          FilterListCacheCompanion.insert(
+            name: entry.key,
+            phrases: entry.value.phrases,
+            matchMode: entry.value.matchMode,
+            caseSensitive: entry.value.caseSensitive,
+            showWithWarning: entry.value.showWithWarning,
+          ),
+        );
+  }
+
+  final profiles = await profileStore.find(db);
+  for (var entry in profiles) {
+    await database
+        .into(database.profiles)
+        .insertOnConflictUpdate(
+          ProfileOptional.fromJson({...entry.value, 'name': entry.key}),
+        );
+  }
+
+  final readPosts = await readStore.find(db);
+  await database.transaction(() async {
+    for (var entry in readPosts) {
+      await database
+          .into(database.readPostCache)
+          .insertOnConflictUpdate(
+            ReadPostCacheCompanion.insert(
+              account: entry.value['account'] as String,
+              postType: PostType.values.byName(
+                entry.value['postType'] as String? ?? 'thread',
+              ),
+              postId: entry.value['postId'] as int,
+            ),
+          );
+    }
+  });
+
+  final miscValues = await miscStore.find(db);
+  for (var entry in miscValues) {
+    await database
+        .into(database.miscCache)
+        .insertOnConflictUpdate(
+          MiscCacheCompanion.insert(
+            key: entry.key,
+            json: jsonEncode(entry.value),
+          ),
+        );
+  }
+
+  final drafts = (await draftsStore.find(
+    db,
+  )).map((d) => Draft.fromJson({...d.value, 'id': d.key}));
+  for (var entry in drafts) {
+    await database.into(database.drafts).insertOnConflictUpdate(entry);
+  }
+
+  return true;
 }
