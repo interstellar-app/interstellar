@@ -338,6 +338,8 @@
   "settings_swipeThreshold": "Swipe Action Threshold",
   "settings_debug_showErrors": "Show Errors",
   "settings_debug_inspectDatabase": "Inspect database",
+  "settings_debug_exportDatabase": "Export database",
+  "settings_debug_importDatabase": "Import database",
   "settings_debug_clearDatabase": "Clear database",
   "settings_debug_clearAccounts": "Clear accounts",
   "settings_debug_clearProfiles": "Clear profiles",

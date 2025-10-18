@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/settings/debug/log_console.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/controller/database.dart';
@@ -34,6 +38,54 @@ class DebugSettingsScreen extends StatelessWidget {
                   context,
                   builder: (context) => DriftDbViewer(database)
               )
+          ),
+          ListTile(
+            title: Text(l(context).settings_debug_exportDatabase),
+            onTap: () async {
+              final dbDir = await getApplicationSupportDirectory();
+              final dbFile = File(join(dbDir.path, '${InterstellarDatabase.databaseFilename}.sqlite'));
+
+              final useBytes = Platform.isAndroid || Platform.isIOS;
+              String? filePath;
+              try {
+                filePath = await FilePicker.platform.saveFile(
+                  fileName: InterstellarDatabase.databaseFilename,
+                  bytes: useBytes ? dbFile.readAsBytesSync() : null,
+                );
+                if (filePath == null) return;
+              } catch (e) {
+                final dir = await getDownloadsDirectory();
+                if (dir == null) {
+                  throw Exception('Downloads directory not found');
+                }
+                filePath = join(dir.path, InterstellarDatabase.databaseFilename);
+              }
+
+              if (!useBytes) {
+                dbFile.copy(filePath);
+              }
+            },
+          ),
+          ListTile(
+            title: Text(l(context).settings_debug_importDatabase),
+            onTap: () async {
+              String? filePath;
+              try {
+                final result = await FilePicker.platform.pickFiles();
+                filePath = result?.files.single.path;
+              } catch (e) {
+                //
+              }
+
+              if (filePath == null) return;
+
+              final srcFile = File(filePath);
+
+              final dbDir = await getApplicationSupportDirectory();
+              final dbFilepath = join(dbDir.path, '${InterstellarDatabase.databaseFilename}.sqlite');
+
+              srcFile.copy(dbFilepath);
+            },
           ),
           ListTile(
             leading: const Icon(Symbols.storage_rounded),
