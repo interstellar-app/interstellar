@@ -53,7 +53,6 @@ class ContextMenu {
     BuildContext context,
   ) async => await showModalBottomSheet(
     context: context,
-    isScrollControlled: true,
     builder: (BuildContext context) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -89,8 +88,8 @@ class ContextMenu {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.only(top: 12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: ListView(
+                shrinkWrap: true,
                 children: items
                     .map(
                       (item) => LoadingListTile(

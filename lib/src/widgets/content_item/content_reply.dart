@@ -120,7 +120,7 @@ class _ContentReplyState extends State<ContentReply> {
         appBar: AppBar(
           title: Text(
             l(context).replying_toX(
-              widget.content.user ?? widget.content.contentTypeName,
+              widget.content.user?.name ?? widget.content.contentTypeName,
             ),
           ),
         ),

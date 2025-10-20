@@ -3,22 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/screens/explore/community_mod_panel.dart';
-import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
-import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
-import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
-import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
-import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
+import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -139,142 +133,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               ),
                             ),
                           IconButton(
-                            onPressed: () => ContextMenu(
-                              actions: [
-                                ContextMenuAction(
-                                  child: SubscriptionButton(
-                                    isSubscribed: _data!.isUserSubscribed,
-                                    subscriptionCount:
-                                        _data!.subscriptionsCount,
-                                    onSubscribe: (selected) async {
-                                      var newValue = await ac.api.community
-                                          .subscribe(_data!.id, selected);
-
-                                      setState(() {
-                                        _data = newValue;
-                                      });
-                                      if (widget.onUpdate != null) {
-                                        widget.onUpdate!(newValue);
-                                      }
-                                    },
-                                    followMode: false,
-                                  ),
-                                ),
-                                ContextMenuAction(
-                                  child: StarButton(globalName),
-                                ),
-                                ContextMenuAction(
-                                  child: LoadingIconButton(
-                                    onPressed: () async {
-                                      final newValue = await ac.api.community
-                                          .block(
-                                            _data!.id,
-                                            !_data!.isBlockedByUser!,
-                                          );
-
-                                      setState(() {
-                                        _data = newValue;
-                                      });
-                                      if (widget.onUpdate != null) {
-                                        widget.onUpdate!(newValue);
-                                      }
-                                    },
-                                    icon: const Icon(Symbols.block_rounded),
-                                    style: ButtonStyle(
-                                      foregroundColor: WidgetStatePropertyAll(
-                                        _data!.isBlockedByUser == true
-                                            ? Theme.of(
-                                                context,
-                                              ).colorScheme.error
-                                            : Theme.of(context).disabledColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              items: [
-                                ContextMenuItem(
-                                  title: l(context).openInBrowser,
-                                  onTap: () async => openWebpagePrimary(
-                                    context,
-                                    Uri.https(
-                                      ac.instanceHost,
-                                      ac.serverSoftware == ServerSoftware.mbin
-                                          ? '/m/${_data!.name}'
-                                          : '/c/${_data!.name}',
-                                    ),
-                                  ),
-                                ),
-                                ContextMenuItem(
-                                  title: l(context).viewMods,
-                                  onTap: () => showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(
-                                        l(context).modsOf(_data!.name),
-                                      ),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: _data!.moderators
-                                            .map(
-                                              (mod) => UserItemSimple(
-                                                mod,
-                                                isOwner:
-                                                    mod.id == _data!.owner?.id,
-                                              ),
-                                            )
-                                            .toList(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                if (isModerator)
-                                  ContextMenuItem(
-                                    title: l(context).modPanel,
-                                    onTap: () => pushRoute(
-                                      context,
-                                      builder: (context) => CommunityModPanel(
-                                        initData: _data!,
-                                        onUpdate: (newValue) {
-                                          setState(() {
-                                            _data = newValue;
-                                          });
-                                          if (widget.onUpdate != null) {
-                                            widget.onUpdate!(newValue);
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                if (_data!.owner != null &&
-                                    _data!.owner!.name == ac.localName)
-                                  ContextMenuItem(
-                                    title: l(context).ownerPanel,
-                                    onTap: () => pushRoute(
-                                      context,
-                                      builder: (context) => CommunityOwnerPanel(
-                                        initData: _data!,
-                                        onUpdate: (newValue) {
-                                          setState(() {
-                                            _data = newValue;
-                                          });
-                                          if (widget.onUpdate != null) {
-                                            widget.onUpdate!(newValue);
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ContextMenuItem(
-                                  title: l(context).feeds_addTo,
-                                  onTap: () async => showAddToFeedMenu(
-                                    context,
-                                    normalizeName(_data!.name, ac.instanceHost),
-                                    FeedSource.community,
-                                  ),
-                                ),
-                              ],
-                            ).openMenu(context),
+                            onPressed: () => showCommunityMenu(
+                              context,
+                              detailedCommunity: _data,
+                              update: (newCommunity) {
+                                setState(() {
+                                  _data = newCommunity;
+                                });
+                                if (widget.onUpdate != null) {
+                                  widget.onUpdate!(newCommunity);
+                                }
+                              },
+                            ),
                             icon: Icon(Symbols.more_vert_rounded),
                           ),
                         ],

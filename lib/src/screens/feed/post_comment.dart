@@ -10,7 +10,7 @@ import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:interstellar/src/widgets/content_item/content_menu.dart';
+import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
@@ -139,11 +139,8 @@ class _PostCommentState extends State<PostComment> {
       lang: widget.comment.lang,
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
-      user: widget.comment.user.name,
-      userIcon: widget.comment.user.avatar,
-      userIdOnClick: widget.comment.user.id,
-      userCakeDay: widget.comment.user.createdAt,
-      userIsBot: widget.comment.user.isBot,
+      user: widget.comment.user,
+      updateUser: (user) async => widget.onUpdate(widget.comment.copyWith(user: user)),
       opUserId: widget.opUserId,
       boosts: widget.comment.boosts,
       isBoosted: widget.comment.myBoost == true,
@@ -491,7 +488,7 @@ class _PostCommentState extends State<PostComment> {
                       .toList(),
                 ),
               ),
-          ]
+          ],
         ],
       ),
     );

@@ -17,10 +17,8 @@ import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
-import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
-import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
@@ -31,6 +29,7 @@ import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
+import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -273,99 +272,18 @@ class _UserScreenState extends State<UserScreen> {
                                       tooltip: 'Send message',
                                     ),
                                   IconButton(
-                                    onPressed: () => ContextMenu(
-                                      actions: [
-                                        if (!isMyUser &&
-                                            ac.serverSoftware ==
-                                                ServerSoftware.mbin)
-                                          ContextMenuAction(
-                                            child: SubscriptionButton(
-                                              isSubscribed:
-                                                  user.isFollowedByUser,
-                                              subscriptionCount:
-                                                  user.followersCount ?? 0,
-                                              onSubscribe: (selected) async {
-                                                var newValue = await ac
-                                                    .api
-                                                    .users
-                                                    .follow(user.id, selected);
-                                                setState(() {
-                                                  _data = newValue;
-                                                });
-                                                if (widget.onUpdate != null) {
-                                                  widget.onUpdate!(newValue);
-                                                }
-                                              },
-                                              followMode: true,
-                                            ),
-                                          ),
-                                        ContextMenuAction(
-                                          child: StarButton(globalName),
-                                        ),
-                                        if (isLoggedIn && !isMyUser)
-                                          ContextMenuAction(
-                                            child: LoadingIconButton(
-                                              onPressed: () async {
-                                                final newValue = await ac
-                                                    .api
-                                                    .users
-                                                    .putBlock(
-                                                      user.id,
-                                                      !user.isBlockedByUser!,
-                                                    );
-
-                                                setState(() {
-                                                  _data = newValue;
-                                                });
-                                                if (widget.onUpdate != null) {
-                                                  widget.onUpdate!(newValue);
-                                                }
-                                              },
-                                              icon: const Icon(
-                                                Symbols.block_rounded,
-                                              ),
-                                              style: ButtonStyle(
-                                                foregroundColor:
-                                                    WidgetStatePropertyAll(
-                                                      user.isBlockedByUser ==
-                                                              true
-                                                          ? Theme.of(
-                                                              context,
-                                                            ).colorScheme.error
-                                                          : Theme.of(
-                                                              context,
-                                                            ).disabledColor,
-                                                    ),
-                                              ),
-                                            ),
-                                          ),
-                                        if (isLoggedIn && !isMyUser)
-                                          ContextMenuAction(
-                                            icon: Symbols.mail_rounded,
-                                            onTap: () => pushRoute(
-                                              context,
-                                              builder: (context) =>
-                                                  MessageThreadScreen(
-                                                    threadId: null,
-                                                    otherUser: _data,
-                                                  ),
-                                            ),
-                                          ),
-                                      ],
-                                      items: [
-                                        ContextMenuItem(
-                                          title: l(context).feeds_addTo,
-                                          onTap: () async => showAddToFeedMenu(
-                                            context,
-                                            normalizeName(
-                                              user.name,
-                                              ac.instanceHost,
-                                            ),
-                                            FeedSource.user,
-                                          ),
-                                        ),
-                                      ],
-                                    ).openMenu(context),
+                                    onPressed: () => showUserMenu(
+                                      context,
+                                      user: _data!,
+                                      update: (newUser) {
+                                        setState(() {
+                                          _data = newUser;
+                                        });
+                                        if (widget.onUpdate != null) {
+                                          widget.onUpdate!(newUser);
+                                        }
+                                      },
+                                    ),
                                     icon: const Icon(Symbols.more_vert_rounded),
                                   ),
                                 ],

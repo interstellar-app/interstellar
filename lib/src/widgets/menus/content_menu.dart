@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/utils/language.dart';
+import 'package:interstellar/src/widgets/menus/community_menu.dart';
+import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -15,16 +17,16 @@ import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/controller/server.dart';
 
-void showContentMenu(
+Future<void> showContentMenu(
   BuildContext context,
   ContentItem widget, {
   Function()? onEdit,
   Function(String lang)? onTranslate,
   Function()? onReply,
-}) {
+}) async {
   final ac = context.read<AppController>();
 
-  ContextMenu(
+  return ContextMenu(
     actionSpacing: 50,
     actions: [
       if (widget.boosts != null)
@@ -78,16 +80,11 @@ void showContentMenu(
             ],
           ),
         ),
-      if (widget.notificationControlStatus !=
-          null &&
-          widget.onNotificationControlStatusChange !=
-              null &&
-          ((ac.serverSoftware ==
-              ServerSoftware.mbin &&
-              widget.contentTypeName !=
-                  l(context).comment) ||
-              ac.serverSoftware ==
-                  ServerSoftware.piefed))
+      if (widget.notificationControlStatus != null &&
+          widget.onNotificationControlStatusChange != null &&
+          ((ac.serverSoftware == ServerSoftware.mbin &&
+                  widget.contentTypeName != l(context).comment) ||
+              ac.serverSoftware == ServerSoftware.piefed))
         ContextMenuAction(
           child: NotificationControlSegment(
             widget.notificationControlStatus!,
@@ -127,7 +124,25 @@ void showContentMenu(
         ContextMenuItem(
           title: l(context).bookmark,
           onTap: () async => showBookmarksMenu(context, widget),
-          trailing: const Icon(Symbols.arrow_right_rounded),
+          trailing: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Symbols.arrow_right_rounded),
+          ),
+        ),
+      if (ac.serverSoftware != ServerSoftware.mbin &&
+          widget.activeBookmarkLists != null &&
+          widget.onAddBookmark != null &&
+          widget.onRemoveBookmark != null)
+        ContextMenuItem(
+          title: l(context).bookmark,
+          onTap: () async {
+            if (widget.activeBookmarkLists!.isEmpty) {
+              widget.onAddBookmark!();
+            } else {
+              widget.onRemoveBookmark!();
+            }
+            Navigator.pop(context);
+          },
         ),
       if (widget.onMarkAsRead != null)
         ContextMenuItem(
@@ -234,7 +249,7 @@ void showContentMenu(
         ),
       if (widget.body != null && onTranslate != null)
         ContextMenuItem(
-          title: 'Translate',
+          title: l(context).translate,
           onTap: () async {
             await onTranslate(ac.profile.defaultCreateLanguage);
             if (!context.mounted) return;
@@ -254,6 +269,41 @@ void showContentMenu(
               Navigator.pop(context);
             },
             icon: Icon(Symbols.arrow_right_rounded),
+          ),
+        ),
+      if (widget.user != null)
+        ContextMenuItem(
+          title: normalizeName(widget.user!.name, ac.instanceHost),
+          subtitle: l(context).user,
+          onTap: () async {
+            Navigator.pop(context);
+            showUserMenu(
+              context,
+              user: widget.user!,
+              update: widget.updateUser,
+              navigateOption: true,
+            );
+          },
+          trailing: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Symbols.arrow_right_rounded),
+          ),
+        ),
+      if (widget.community != null)
+        ContextMenuItem(
+          title: normalizeName(widget.community!.name, ac.instanceHost),
+          subtitle: l(context).community,
+          onTap: () async {
+            Navigator.pop(context);
+            showCommunityMenu(
+              context,
+              community: widget.community,
+              navigateOption: true,
+            );
+          },
+          trailing: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Symbols.arrow_right_rounded),
           ),
         ),
       if (widget.onModeratePin != null ||
@@ -302,11 +352,11 @@ void showContentMenu(
   ).openMenu(context);
 }
 
-void showBookmarksMenu(BuildContext context, ContentItem widget) async {
+Future<void> showBookmarksMenu(BuildContext context, ContentItem widget) async {
   final possibleBookMarkLists = await widget.loadPossibleBookmarkLists!();
   if (!context.mounted) return;
 
-  ContextMenu(
+  return ContextMenu(
     title: l(context).bookmark,
     items: [
       ...{...widget.activeBookmarkLists!, ...possibleBookMarkLists}.map(
