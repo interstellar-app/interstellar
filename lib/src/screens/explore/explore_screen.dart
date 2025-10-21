@@ -13,11 +13,11 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
-
-import '../../models/feed.dart';
+import 'package:interstellar/src/models/feed.dart';
 
 class ExploreScreen extends StatefulWidget {
   final ExploreType? mode;
+  final int? id;
   final bool subOnly;
   final FocusNode? focusNode;
   final void Function(bool, dynamic)? onTap;
@@ -26,6 +26,7 @@ class ExploreScreen extends StatefulWidget {
 
   const ExploreScreen({
     this.mode,
+    this.id,
     this.subOnly = false,
     this.focusNode,
     this.onTap,
@@ -57,11 +58,13 @@ class _ExploreScreenState extends State<ExploreScreen>
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
 
-      if (type == ExploreType.all && search.isEmpty) {
+      final searchType = widget.id != null ? ExploreType.all : type;
+
+      if (searchType == ExploreType.all && search.isEmpty) {
         return ([], null);
       }
 
-      switch (type) {
+      switch (searchType) {
         case ExploreType.communities:
           final newPage = await ac.api.community.list(
             page: nullIfEmpty(pageKey),
@@ -109,6 +112,8 @@ class _ExploreScreenState extends State<ExploreScreen>
           final newPage = await ac.api.search.get(
             page: nullIfEmpty(pageKey),
             search: search,
+            userId: type == ExploreType.people ? widget.id : null,
+            communityId: type == ExploreType.communities ? widget.id : null,
           );
 
           return (newPage.items, newPage.nextPage);

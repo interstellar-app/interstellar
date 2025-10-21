@@ -12,6 +12,8 @@ class APISearch {
     String? page,
     String? search,
     ExploreFilter? filter,
+    int? communityId,
+    int? userId,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
@@ -19,7 +21,7 @@ class APISearch {
 
         final response = await client.get(
           path,
-          queryParams: {'p': page, 'q': search},
+          queryParams: {'p': page, 'q': search, 'authorId': userId?.toString(), 'magazineId': communityId?.toString()},
         );
 
         return SearchListModel.fromMbin(response.bodyJson);
@@ -35,6 +37,8 @@ class APISearch {
             ExploreFilter.local => 'Local',
             _ => 'All',
           },
+          'community_id': communityId?.toString(),
+          'creator_id': userId?.toString(),
         };
 
         final response = await client.get(path, queryParams: query);
@@ -67,6 +71,7 @@ class APISearch {
             ExploreFilter.local => 'Local',
             _ => 'All',
           },
+          'community_id': communityId?.toString(),
         };
 
         final response = await client.get(path, queryParams: query);
