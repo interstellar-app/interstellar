@@ -158,7 +158,11 @@ class FilterListActivationConverter
 
   @override
   Map<String, bool> fromSql(String fromDb) {
-    return jsonDecode(fromDb) as Map<String, bool>;
+    return Map.fromEntries(
+      (jsonDecode(fromDb) as Map<String, dynamic>).entries.map(
+        (a) => MapEntry(a.key, a.value as bool),
+      ),
+    );
   }
 
   @override

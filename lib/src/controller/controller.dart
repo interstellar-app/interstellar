@@ -612,15 +612,7 @@ class AppController with ChangeNotifier {
 
     await database
         .into(database.filterLists)
-        .insertOnConflictUpdate(
-          FilterListsCompanion.insert(
-            name: name,
-            phrases: value.phrases,
-            matchMode: value.matchMode,
-            caseSensitive: value.caseSensitive,
-            showWithWarning: value.showWithWarning,
-          ),
-        );
+        .insertOnConflictUpdate(value.copyWith(name: name));
   }
 
   Future<void> removeFilterList(String name) async {
@@ -668,15 +660,7 @@ class AppController with ChangeNotifier {
 
     await database
         .into(database.filterLists)
-        .insertOnConflictUpdate(
-          FilterListsCompanion.insert(
-            name: newName,
-            phrases: _filterLists[newName]!.phrases,
-            matchMode: _filterLists[newName]!.matchMode,
-            caseSensitive: _filterLists[newName]!.caseSensitive,
-            showWithWarning: _filterLists[newName]!.showWithWarning,
-          ),
-        );
+        .insertOnConflictUpdate(_filterLists[newName]!.copyWith(name: newName));
     await (database.delete(
       database.filterLists,
     )..where((f) => f.name.equals(oldName))).go();
