@@ -4,6 +4,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
+import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/screens/explore/community_mod_panel.dart';
@@ -63,7 +64,7 @@ Future<void> showCommunityMenu(
             onPressed: () async {
               final newValue = await ac.api.community.block(
                 detailedCommunity?.id ?? community!.id,
-                !(detailedCommunity?.isBlockedByUser?? false),
+                !(detailedCommunity?.isBlockedByUser ?? false),
               );
               if (update != null) {
                 update(newValue);
@@ -154,6 +155,16 @@ Future<void> showCommunityMenu(
           context,
           normalizeName(name, ac.instanceHost),
           FeedSource.community,
+        ),
+      ),
+      ContextMenuItem(
+        title: l(context).search,
+        onTap: () => pushRoute(
+          context,
+          builder: (context) => ExploreScreen(
+            mode: ExploreType.communities,
+            id: detailedCommunity?.id ?? community!.id,
+          ),
         ),
       ),
     ],

@@ -3,6 +3,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/models/user.dart';
+import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
@@ -26,12 +27,7 @@ Future<void> showUserMenu(
 
   final isMe =
       ac.isLoggedIn &&
-      whenLoggedIn(
-            context,
-            true,
-            matchesUsername: user.name,
-          ) ==
-          true;
+      whenLoggedIn(context, true, matchesUsername: user.name) == true;
   final globalName = user.name.contains('@')
       ? '@${user.name}'
       : '@${user.name}@${ac.instanceHost}';
@@ -44,10 +40,7 @@ Future<void> showUserMenu(
             isSubscribed: user.isFollowedByUser,
             subscriptionCount: user.followersCount,
             onSubscribe: (selected) async {
-              var newValue = await ac.api.users.follow(
-                user.id,
-                selected,
-              );
+              var newValue = await ac.api.users.follow(user.id, selected);
               if (update != null) {
                 update(newValue);
               }
@@ -64,7 +57,7 @@ Future<void> showUserMenu(
             onPressed: () async {
               final newValue = await ac.api.users.putBlock(
                 user.id,
-                !(user.isBlockedByUser?? false),
+                !(user.isBlockedByUser ?? false),
               );
 
               if (update != null) {
@@ -99,8 +92,7 @@ Future<void> showUserMenu(
           title: l(context).openItem(user.name),
           onTap: () => pushRoute(
             context,
-            builder: (context) =>
-                UserScreen(user.id, initData: user),
+            builder: (context) => UserScreen(user.id, initData: user),
           ),
         ),
       ContextMenuItem(
@@ -121,6 +113,15 @@ Future<void> showUserMenu(
           FeedSource.user,
         ),
       ),
+      if (ac.serverSoftware != ServerSoftware.piefed)
+        ContextMenuItem(
+          title: l(context).search,
+          onTap: () => pushRoute(
+            context,
+            builder: (context) =>
+                ExploreScreen(mode: ExploreType.people, id: user.id),
+          ),
+        ),
     ],
   ).openMenu(context);
 }
