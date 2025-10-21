@@ -309,7 +309,7 @@ abstract class PostModel with _$PostModel {
       editedAt: optionalDateTime(piefedPost['updated'] as String?),
       lastActive: DateTime.parse(piefedCounts['newest_comment_time'] as String),
       visibility: 'visible',
-      canAuthUserModerate: postView['canAuthUserModerate'] as bool?,
+      canAuthUserModerate: postView['can_auth_user_moderate'] as bool?,
       notificationControlStatus: postView['activity_alert'] == null
           ? null
           : postView['activity_alert'] as bool
