@@ -314,38 +314,42 @@ Future<void> showContentMenu(
           title: l(context).moderate,
           // onTap: () async => showModerateMenu(context, widget),
           subItems: [
-            ContextMenuItem(
-              title: l(context).pin,
-              onTap: () async {
-                widget.onModeratePin!();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-            ContextMenuItem(
-              title: l(context).notSafeForWork_mark,
-              onTap: () async {
-                widget.onModerateMarkNSFW!();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-            ContextMenuItem(
-              title: l(context).delete,
-              onTap: () async {
-                widget.onModerateDelete!();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-            ContextMenuItem(
-              title: l(context).banUser,
-              onTap: () async {
-                Navigator.pop(context);
-                Navigator.pop(context);
-                widget.onModerateBan!();
-              },
-            ),
+            if (widget.onModeratePin != null)
+              ContextMenuItem(
+                title: l(context).pin,
+                onTap: () async {
+                  widget.onModeratePin!();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            if (widget.onModerateMarkNSFW != null)
+              ContextMenuItem(
+                title: l(context).notSafeForWork_mark,
+                onTap: () async {
+                  widget.onModerateMarkNSFW!();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            if (widget.onModerateDelete != null)
+              ContextMenuItem(
+                title: l(context).delete,
+                onTap: () async {
+                  widget.onModerateDelete!();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            if (widget.onModerateBan != null)
+              ContextMenuItem(
+                title: l(context).banUser,
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  widget.onModerateBan!();
+                },
+              ),
           ],
         ),
     ],
