@@ -12,6 +12,7 @@ import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
+import 'package:interstellar/src/controller/database.dart';
 import './markdown.dart';
 
 class MarkdownEditor extends StatefulWidget {

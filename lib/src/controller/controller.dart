@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,6 @@ import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/oauth.dart';
-import 'package:interstellar/src/controller/account.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
@@ -16,44 +16,32 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
-import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast_io.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
+import 'package:drift/drift.dart';
 
 enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
-  final _mainStore = StoreRef.main();
-  final _accountStore = StoreRef<String, JsonMap>('account');
-  final _feedStore = StoreRef<String, JsonMap>('feeds');
-  final _feedCacheStore = StoreRef<String, JsonMap>('feedCache');
-  final _filterListStore = StoreRef<String, JsonMap>('filterList');
-  final _profileStore = StoreRef<String, JsonMap>('profile');
-  final _serverStore = StoreRef<String, JsonMap>('server');
-  final _readStore = StoreRef<String, JsonMap>('read');
-  final _miscStore = StoreRef<String, dynamic>('misc');
+  static const _mainProfileKey = 'main-profile';
+  static const _selectedProfileKey = 'selected-profile';
+  static const _autoSelectProfileKey = 'auto-select-profile';
 
-  late final _mainProfileRecord = _mainStore.record('mainProfile');
-  late final _selectedProfileRecord = _mainStore.record('selectedProfile');
-  late final _autoSelectProfileRecord = _mainStore.record('autoSelectProfile');
+  static const _selectedAccountKey = 'selected-account';
+  static const _starsKey = 'stars';
+  static const _webPushKey = 'web-push-keys';
 
-  late final _selectedAccountRecord = _mainStore.record('selectedAccount');
-  late final _starsRecord = _mainStore.record('stars');
-  late final _webPushKeysRecord = _mainStore.record('webPushKeys');
+  static const _downloadsDirKey = 'downloads-directory';
 
   String? _defaultDownloadsDir;
   Directory? get defaultDownloadDir =>
       _defaultDownloadsDir == null ? null : Directory(_defaultDownloadsDir!);
-
-  RecordRef<String, JsonMap> _profileRecord(String name) =>
-      _profileStore.record(FieldKey.escape(name));
 
   late String _mainProfile;
   String get mainProfile => _mainProfile;
@@ -120,70 +108,75 @@ class AppController with ChangeNotifier {
     );
     logger.i('Initializing interstellar');
 
-    final mainProfileTemp = await _mainProfileRecord.get(db) as String?;
+    final mainProfileTemp = await fetchCachedValue<String?>(_mainProfileKey);
     if (mainProfileTemp != null) {
       _mainProfile = mainProfileTemp;
     } else {
       _mainProfile = 'Default';
-      await _profileRecord(
-        _mainProfile,
-      ).put(db, ProfileOptional.nullProfile.toJson());
-      await _mainProfileRecord.put(db, _mainProfile);
+      _selectedProfile = _mainProfile;
+      await updateProfile(ProfileOptional.nullProfile);
+      await cacheValue(_selectedProfileKey, _selectedProfile);
+      await cacheValue(_mainProfileKey, _mainProfile);
     }
-    _autoSelectProfile = await _autoSelectProfileRecord.get(db) as String?;
+    _autoSelectProfile = await fetchCachedValue<String?>(_autoSelectProfileKey);
     if (_autoSelectProfile != null) {
       _selectedProfile = _autoSelectProfile!;
     } else {
       _selectedProfile =
-          await _selectedProfileRecord.get(db) as String? ?? _mainProfile;
+          await fetchCachedValue<String?>(_selectedProfileKey) ?? _mainProfile;
     }
 
     await _rebuildProfile();
 
-    _stars = (await _starsRecord.get(db) as List<Object?>? ?? [])
+    _stars = (await fetchCachedValue<List<dynamic>>(_starsKey) ?? [])
         .map((v) => v as String)
         .toList();
 
-    final webPushKeysValue = await _webPushKeysRecord.get(db) as String?;
+    final webPushKeysValue = await fetchCachedValue<String?>(_webPushKey);
     if (webPushKeysValue != null) {
       _webPushKeys = await WebPushKeySet.deserialize(webPushKeysValue);
     } else {
       _webPushKeys = await WebPushKeySet.newKeyPair();
-      await _webPushKeysRecord.put(db, _webPushKeys.serialize);
+      await cacheValue(_webPushKey, _webPushKeys.serialize);
     }
 
     _servers = Map.fromEntries(
-      (await _serverStore.find(
-        db,
-      )).map((record) => MapEntry(record.key, Server.fromJson(record.value))),
+      (await database.select(database.servers).get()).map(
+        (server) => MapEntry(server.name, server),
+      ),
     );
 
     if (_autoSelectProfile != null && _builtProfile.autoSwitchAccount != null) {
       _selectedAccount = _builtProfile.autoSwitchAccount!;
     } else {
-      _selectedAccount = await _selectedAccountRecord.get(db) as String? ?? '';
+      _selectedAccount =
+          await fetchCachedValue<String?>(_selectedAccountKey) ?? '';
     }
 
     _accounts = Map.fromEntries(
-      (await _accountStore.find(
-        db,
-      )).map((record) => MapEntry(record.key, Account.fromJson(record.value))),
+      (await database.select(database.accounts).get()).map(
+        (account) => MapEntry(account.handle, account),
+      ),
     );
 
     if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
-      await setAccount('@kbin.earth', const Account(), switchNow: true);
+      await setAccount(
+        '@kbin.earth',
+        const Account(handle: '@kbin.earth'),
+        switchNow: true,
+      );
     }
 
     _feeds = Map.fromEntries(
-      (await _feedStore.find(
-        db,
-      )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
+      (await database.select(database.feeds).get()).map(
+        (feed) => MapEntry(feed.name, Feed(inputs: feed.items)),
+      ),
     );
 
     _filterLists = Map.fromEntries(
-      (await _filterListStore.find(db)).map(
-        (record) => MapEntry(record.key, FilterList.fromJson(record.value)),
+      (await database.select(database.filterLists).get()).map(
+        (list) => MapEntry(list.name, list),
       ),
     );
 
@@ -209,18 +202,16 @@ class AppController with ChangeNotifier {
   }
 
   Future<ProfileOptional> getProfile(String profile) async {
-    final record = _profileRecord(profile);
-
-    final profileValue = await record.get(db);
-
-    return profileValue == null
-        ? ProfileOptional.nullProfile
-        : ProfileOptional.fromJson(profileValue);
+    final profileValue = (await (database.select(
+      database.profiles,
+    )..where((f) => f.name.equals(profile))).get()).firstOrNull;
+    return profileValue ?? ProfileOptional.nullProfile;
   }
 
   Future<void> setProfile(String profile, ProfileOptional value) async {
-    final record = _profileRecord(profile);
-    await record.put(db, value.toJson());
+    await database
+        .into(database.profiles)
+        .insertOnConflictUpdate(value.copyWith(name: profile));
 
     await _rebuildProfile();
 
@@ -234,7 +225,7 @@ class AppController with ChangeNotifier {
     logger.i('Switch profiles $_selectedProfile -> $newProfile');
 
     _selectedProfile = newProfile;
-    await _selectedProfileRecord.put(db, _selectedProfile);
+    await cacheValue(_selectedProfileKey, _selectedProfile);
 
     await _rebuildProfile();
 
@@ -253,7 +244,7 @@ class AppController with ChangeNotifier {
     if (newProfile == _mainProfile) return;
 
     _mainProfile = newProfile;
-    await _mainProfileRecord.put(db, _mainProfile);
+    await cacheValue(_mainProfileKey, _mainProfile);
 
     await _rebuildProfile();
 
@@ -264,17 +255,16 @@ class AppController with ChangeNotifier {
     if (newProfile == _autoSelectProfile) return;
 
     _autoSelectProfile = newProfile;
-    if (_autoSelectProfile != null) {
-      await _autoSelectProfileRecord.put(db, _autoSelectProfile);
-    } else {
-      await _autoSelectProfileRecord.delete(db);
-    }
+    await cacheValue(_autoSelectProfileKey, _autoSelectProfile);
 
     notifyListeners();
   }
 
   Future<List<String>> getProfileNames() async {
-    final list = await _profileStore.findKeys(db);
+    final list = await database
+        .select(database.profiles)
+        .map((profile) => profile.name)
+        .get();
     list.sort((a, b) {
       // Main profile should be in the front
       if (a == _mainProfile) return -1;
@@ -291,8 +281,9 @@ class AppController with ChangeNotifier {
     if (profileName == _autoSelectProfile) await setAutoSelectProfile(null);
     if (profileName == _selectedProfile) await switchProfiles(_mainProfile);
 
-    final record = _profileRecord(profileName);
-    await record.delete(db);
+    await (database.delete(
+      database.profiles,
+    )..where((f) => f.name.equals(profileName))).go();
   }
 
   Future<void> renameProfile(
@@ -315,9 +306,11 @@ class AppController with ChangeNotifier {
       return;
     }
 
-    _servers[server] = Server(software: software);
+    _servers[server] = Server(name: server, software: software);
 
-    await _serverStore.record(server).put(db, _servers[server]!.toJson());
+    await database
+        .into(database.servers)
+        .insertOnConflictUpdate(_servers[server]!);
   }
 
   Future<String> getMbinOAuthIdentifier(
@@ -335,11 +328,14 @@ class AppController with ChangeNotifier {
 
     String oauthIdentifier = await registerOauthApp(server);
     _servers[server] = Server(
+      name: server,
       software: software,
       oauthIdentifier: oauthIdentifier,
     );
 
-    await _serverStore.record(server).put(db, _servers[server]!.toJson());
+    await database
+        .into(database.servers)
+        .insertOnConflictUpdate(_servers[server]!);
 
     return oauthIdentifier;
   }
@@ -351,7 +347,7 @@ class AppController with ChangeNotifier {
   }) async {
     _accounts[key] = value;
 
-    await _accountStore.record(key).put(db, _accounts[key]!.toJson());
+    await database.into(database.accounts).insertOnConflictUpdate(value);
 
     if (switchNow) {
       await switchAccounts(key);
@@ -373,24 +369,19 @@ class AppController with ChangeNotifier {
     }
 
     // Remove a profile's autoSwitchAccount value if it is for this account
-    final autoSwitchAccountProfiles = await _profileStore.find(
-      db,
-      finder: Finder(filter: Filter.equals('autoSwitchAccount', key)),
-    );
-    for (var record in autoSwitchAccountProfiles) {
-      await _profileRecord(record.key).put(
-        db,
-        ProfileOptional.fromJson(
-          record.value,
-        ).copyWith(autoSwitchAccount: null).toJson(),
-      );
+    final autoSwitchAccountProfiles = await (database.select(
+      database.profiles,
+    )..where((f) => f.autoSwitchAccount.equals(key))).get();
+    for (var profile in autoSwitchAccountProfiles) {
+      await database
+          .into(database.profiles)
+          .insertOnConflictUpdate(profile.copyWith(autoSwitchAccount: null));
     }
 
     // Remove read posts associated with account
-    _readStore.delete(
-      db,
-      finder: Finder(filter: Filter.equals('account', key)),
-    );
+    await (database.delete(
+      database.readPostCache,
+    )..where((f) => f.account.equals(key))).go();
 
     _rebuildProfile();
 
@@ -405,22 +396,25 @@ class AppController with ChangeNotifier {
           orElse: () => '',
         )
         .isEmpty) {
-      _feedCacheStore.delete(
-        db,
-        finder: Finder(filter: Filter.equals('server', keyAccountServer)),
-      );
+      await (database.delete(
+        database.feedInputCache,
+      )..where((f) => f.server.equals(keyAccountServer))).go();
 
       _servers.remove(keyAccountServer);
 
-      await _serverStore.record(keyAccountServer).delete(db);
+      await (database.delete(
+        database.servers,
+      )..where((f) => f.name.equals(keyAccountServer))).go();
     }
 
     _updateAPI();
 
     notifyListeners();
 
-    await _accountStore.record(key).delete(db);
-    await _selectedAccountRecord.put(db, _selectedAccount);
+    await (database.delete(
+      database.accounts,
+    )..where((f) => f.handle.equals(key))).go();
+    await cacheValue(_selectedAccountKey, _selectedAccount);
   }
 
   Future<void> switchAccounts(String? newAccount) async {
@@ -438,7 +432,7 @@ class AppController with ChangeNotifier {
     notifyListeners();
     refreshState();
 
-    await _selectedAccountRecord.put(db, _selectedAccount);
+    await cacheValue(_selectedAccountKey, _selectedAccount);
   }
 
   Future<void> _updateAPI() async {
@@ -460,13 +454,10 @@ class AppController with ChangeNotifier {
             credentials,
             identifier: identifier,
             onCredentialsRefreshed: (newCredentials) async {
-              _accounts[account] = _accounts[account]!.copyWith(
-                oauth: newCredentials,
+              setAccount(
+                account,
+                _accounts[account]!.copyWith(oauth: Value(newCredentials)),
               );
-
-              await _accountStore
-                  .record(account)
-                  .put(db, _accounts[account]!.toJson());
             },
           );
         }
@@ -496,7 +487,7 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _starsRecord.put(db, _stars);
+    await cacheValue(_starsKey, _stars);
   }
 
   Future<void> removeStar(String oldStar) async {
@@ -506,7 +497,7 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _starsRecord.put(db, _stars);
+    cacheValue(_starsKey, _stars);
   }
 
   Future<void> registerPush(BuildContext context) async {
@@ -560,19 +551,23 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> addPushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: true);
+    _accounts[account] = _accounts[account]!.copyWith(
+      isPushRegistered: Value(true),
+    );
 
     notifyListeners();
 
-    await _accountStore.record(account).put(db, _accounts[account]!.toJson());
+    setAccount(account, _accounts[account]!);
   }
 
   Future<void> removePushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: false);
+    _accounts[account] = _accounts[account]!.copyWith(
+      isPushRegistered: Value(false),
+    );
 
     notifyListeners();
 
-    await _accountStore.record(account).put(db, _accounts[account]!.toJson());
+    setAccount(account, _accounts[account]!);
   }
 
   Future<void> setFeed(String name, Feed value) async {
@@ -580,7 +575,11 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _feedStore.record(FieldKey.escape(name)).put(db, value.toJson());
+    await database
+        .into(database.feeds)
+        .insertOnConflictUpdate(
+          FeedsCompanion.insert(name: name, items: value.inputs),
+        );
   }
 
   Future<void> removeFeed(String name) async {
@@ -588,7 +587,9 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _feedStore.record(FieldKey.escape(name)).delete(db);
+    await (database.delete(
+      database.feeds,
+    )..where((f) => f.name.equals(name))).go();
   }
 
   Future<void> renameFeed(String oldName, String newName) async {
@@ -597,10 +598,11 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _feedStore
-        .record(FieldKey.escape(newName))
-        .put(db, _feeds[newName]!.toJson());
-    await _feedStore.record(FieldKey.escape(oldName)).delete(db);
+    await (database.update(
+      database.feeds,
+    )..where((f) => f.name.equals(oldName))).write(
+      FeedsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
+    );
   }
 
   Future<void> setFilterList(String name, FilterList value) async {
@@ -608,32 +610,31 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await _filterListStore
-        .record(FieldKey.escape(name))
-        .put(db, value.toJson());
+    await database
+        .into(database.filterLists)
+        .insertOnConflictUpdate(value.copyWith(name: name));
   }
 
   Future<void> removeFilterList(String name) async {
     _filterLists.remove(name);
 
     // Remove a profile's activation value if it is for this filter list
-    for (var record in await _profileStore.find(db)) {
-      final profile = ProfileOptional.fromJson(record.value);
-      if (profile.filterLists?.containsKey(name) == true) {
-        final newProfileFilterLists = {...profile.filterLists!};
-        newProfileFilterLists.remove(name);
-        await _profileRecord(record.key).put(
-          db,
-          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
-        );
-      }
-    }
+    final profile = await (database.select(
+      database.profiles,
+    )..where((f) => f.filterLists.contains(name))).getSingle();
+    final newFilterLists = {...?profile.filterLists};
+    newFilterLists.remove(name);
+    database
+        .into(database.profiles)
+        .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
 
     _rebuildProfile();
 
     notifyListeners();
 
-    await _filterListStore.record(FieldKey.escape(name)).delete(db);
+    await (database.delete(
+      database.filterLists,
+    )..where((f) => f.name.equals(name))).go();
   }
 
   Future<void> renameFilterList(String oldName, String newName) async {
@@ -641,29 +642,28 @@ class AppController with ChangeNotifier {
     _filterLists.remove(oldName);
 
     // Update a profile's activation value if it is for this filter list
-    for (var record in await _profileStore.find(db)) {
-      final profile = ProfileOptional.fromJson(record.value);
-      if (profile.filterLists?.containsKey(oldName) == true) {
-        final newProfileFilterLists = {
-          ...profile.filterLists!,
-          newName: profile.filterLists![oldName]!,
-        };
-        newProfileFilterLists.remove(oldName);
-        await _profileRecord(record.key).put(
-          db,
-          profile.copyWith(filterLists: newProfileFilterLists).toJson(),
-        );
-      }
-    }
+    final profile = await (database.select(
+      database.profiles,
+    )..where((f) => f.filterLists.contains(oldName))).getSingle();
+    final newFilterLists = {
+      ...?profile.filterLists,
+      newName: profile.filterLists?[oldName] ?? false,
+    };
+    newFilterLists.remove(oldName);
+    database
+        .into(database.profiles)
+        .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
 
     _rebuildProfile();
 
     notifyListeners();
 
-    await _filterListStore
-        .record(FieldKey.escape(newName))
-        .put(db, _filterLists[newName]!.toJson());
-    await _filterListStore.record(FieldKey.escape(oldName)).delete(db);
+    await database
+        .into(database.filterLists)
+        .insertOnConflictUpdate(_filterLists[newName]!.copyWith(name: newName));
+    await (database.delete(
+      database.filterLists,
+    )..where((f) => f.name.equals(oldName))).go();
   }
 
   Future<void> vibrate(HapticsType type) async {
@@ -688,14 +688,6 @@ class AppController with ChangeNotifier {
     }
   }
 
-  Finder _readStoreFinder(PostModel post) => Finder(
-    filter: Filter.and([
-      Filter.equals('account', _selectedAccount),
-      Filter.equals('postType', post.type.name),
-      Filter.equals('postId', post.id),
-    ]),
-  );
-
   Future<List<PostModel>> markAsRead(List<PostModel> posts, bool read) async {
     // Use Lemmy's and PieFed's read API when available
     if (isLoggedIn && serverSoftware != ServerSoftware.mbin) {
@@ -704,23 +696,33 @@ class AppController with ChangeNotifier {
     // Use local database otherwise.
     // If marking as read, then check for a db row first, and add one if not present.
     else if (read) {
-      await db.transaction((txn) async {
+      await database.transaction(() async {
         for (var post in posts) {
           if (!await isRead(post)) {
-            await _readStore.add(txn, {
-              'account': _selectedAccount,
-              'postType': post.type.name,
-              'postId': post.id,
-            });
+            await database
+                .into(database.readPostCache)
+                .insertOnConflictUpdate(
+                  ReadPostCacheCompanion.insert(
+                    account: _selectedAccount,
+                    postType: post.type,
+                    postId: post.id,
+                  ),
+                );
           }
         }
       });
     }
     // If marking as unread, then delete any matching database rows.
     else {
-      await db.transaction((txn) async {
+      await database.transaction(() async {
         for (var post in posts) {
-          await _readStore.delete(txn, finder: _readStoreFinder(post));
+          await (database.delete(database.readPostCache)..where(
+                (f) =>
+                    f.account.equals(_selectedAccount) &
+                    f.postType.equals(post.type.name) &
+                    f.postId.equals(post.id),
+              ))
+              .go();
         }
       });
     }
@@ -729,27 +731,29 @@ class AppController with ChangeNotifier {
   }
 
   Future<bool> isRead(PostModel post) async {
-    return (await _readStore.find(
-          db,
-          finder: _readStoreFinder(post),
-        )).firstOrNull !=
+    return (await (database.select(database.readPostCache)..where(
+                  (f) =>
+                      f.account.equals(_selectedAccount) &
+                      f.postType.equals(post.type.name) &
+                      f.postId.equals(post.id),
+                ))
+                .get())
+            .firstOrNull !=
         null;
   }
 
-  Finder _feedCacheStoreFinder(String name, FeedSource source) => Finder(
-    filter: Filter.and([
-      Filter.equals('server', instanceHost),
-      Filter.equals('name', name),
-      Filter.equals('source', source.index),
-    ]),
-  );
-
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
-    final cachedValue = (await _feedCacheStore.find(
-      db,
-      finder: _feedCacheStoreFinder(name, source),
-    )).firstOrNull;
-    if (cachedValue != null) return cachedValue.value['id'] as int;
+    final cachedValue =
+        (await (database.select(database.feedInputCache)..where(
+                  (t) =>
+                      t.name.equals(name) &
+                      t.server.equals(instanceHost) &
+                      t.source.equals(source.name),
+                ))
+                .get())
+            .firstOrNull;
+
+    if (cachedValue != null) return cachedValue.id;
 
     try {
       final newValue = switch (source) {
@@ -769,12 +773,16 @@ class AppController with ChangeNotifier {
       };
 
       if (newValue != null) {
-        await _feedCacheStore.add(db, {
-          'server': instanceHost,
-          'name': name,
-          'id': newValue,
-          'source': source.index,
-        });
+        await database
+            .into(database.feedInputCache)
+            .insertOnConflictUpdate(
+              FeedInputCacheCompanion.insert(
+                name: name,
+                server: instanceHost,
+                id: newValue,
+                source: source,
+              ),
+            );
       }
 
       return newValue;
@@ -783,26 +791,35 @@ class AppController with ChangeNotifier {
     }
   }
 
-  Future<void> cacheValue(String key, dynamic value) async {
-    await _miscStore.record(key).put(db, value);
+  Future<void> cacheValue<T>(String key, T? value) async {
+    if (value == null) {
+      await (database.delete(
+        database.miscCache,
+      )..where((f) => f.key.equals(key))).go();
+    } else {
+      await database
+          .into(database.miscCache)
+          .insertOnConflictUpdate(
+            MiscCacheCompanion.insert(key: key, json: jsonEncode(value)),
+          );
+    }
   }
 
-  Future<dynamic> fetchCachedValue(String key) async {
-    return await _miscStore.record(key).get(db);
+  Future<T?> fetchCachedValue<T>(String key) async {
+    final value = (await (database.select(
+      database.miscCache,
+    )..where((f) => f.key.equals(key))).get()).firstOrNull?.json;
+    if (value == null) return null;
+    return jsonDecode(value) as T?;
   }
 
   Future<String?> getDefaultDownloadDir() async {
     return _defaultDownloadsDir ??
-        await _mainStore.record('defaultDownloadDir').get(db) as String?;
+        await fetchCachedValue<String?>(_downloadsDirKey);
   }
 
   Future<void> setDefaultDownloadDir(String? path) async {
-    if (path == null) {
-      await _mainStore.record('defaultDownloadDir').delete(db);
-      _defaultDownloadsDir = path;
-      return;
-    }
-    await _mainStore.record('defaultDownloadDir').put(db, path);
+    await cacheValue(_downloadsDirKey, path);
     _defaultDownloadsDir = path;
   }
 }

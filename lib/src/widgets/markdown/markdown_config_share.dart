@@ -87,10 +87,16 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
       }
       switch (config.type) {
         case ConfigShareType.profile:
-          configProfile = ProfileOptional.fromJson(config.payload);
+          configProfile = ProfileOptional.fromJson({
+            ...config.payload,
+            'name': config.name,
+          });
           break;
         case ConfigShareType.filterList:
-          configFilterList = FilterList.fromJson(config.payload);
+          configFilterList = FilterList.fromJson({
+            ...config.payload,
+            'name': config.name,
+          });
           break;
         case ConfigShareType.feed:
           configFeed = Feed.fromJson(config.payload);
@@ -178,7 +184,10 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                       ConfigShareType.feed => () async {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => EditFeedScreen(feed: config.name, feedData: configFeed),
+                            builder: (context) => EditFeedScreen(
+                              feed: config.name,
+                              feedData: configFeed,
+                            ),
                           ),
                         );
                       },
