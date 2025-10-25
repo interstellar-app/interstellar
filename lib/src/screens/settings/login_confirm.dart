@@ -96,7 +96,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                   String account = '@${widget.server}';
                   context.read<AppController>().setAccount(
                     account,
-                    const Account(handle: ''),
+                    const Account(handle: '', isPushRegistered: false),
                     switchNow: true,
                   );
 
@@ -159,7 +159,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           if (!context.mounted) return;
                           context.read<AppController>().setAccount(
                             '${user.name}@${widget.server}',
-                            Account(handle: '${user.name}@${widget.server}', jwt: response.bodyJson['jwt'] as String),
+                            Account(handle: '${user.name}@${widget.server}', jwt: response.bodyJson['jwt'] as String, isPushRegistered: false),
                           );
                         } else {
                           final authorizationEndpoint = Uri.https(
@@ -227,7 +227,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
 
                           context.read<AppController>().setAccount(
                             '${user.name}@${widget.server}',
-                            Account(handle: '${user.name}@${widget.server}', oauth: client.credentials),
+                            Account(handle: '${user.name}@${widget.server}', oauth: client.credentials, isPushRegistered: false),
                             switchNow: true,
                           );
                         }

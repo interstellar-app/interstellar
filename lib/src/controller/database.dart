@@ -51,7 +51,7 @@ class Accounts extends Table {
   TextColumn get handle => text()();
   TextColumn get oauth => text().map(const CredentialsConverter()).nullable()();
   TextColumn get jwt => text().nullable()();
-  BoolColumn get isPushRegistered => boolean().nullable()();
+  BoolColumn get isPushRegistered => boolean().withDefault(Constant(false))();
 
   @override
   Set<Column<Object>> get primaryKey => {handle};
@@ -85,7 +85,7 @@ class Feeds extends Table {
 class FeedInputCache extends Table {
   TextColumn get name => text()();
   TextColumn get server => text()();
-  IntColumn get id => integer()();
+  IntColumn get serverId => integer()();
   TextColumn get source => textEnum<FeedSource>()();
 
   @override
@@ -102,7 +102,7 @@ class Servers extends Table {
 }
 
 class ReadPostCache extends Table {
-  TextColumn get account => text()();
+  TextColumn get account => text().references(Accounts, #handle, onDelete: KeyAction.cascade)();
   TextColumn get postType => textEnum<PostType>()();
   IntColumn get postId => integer()();
 
@@ -175,7 +175,7 @@ class FilterListActivationConverter
 class Profiles extends Table {
   TextColumn get name => text()();
 
-  TextColumn get autoSwitchAccount => text().nullable()();
+  TextColumn get autoSwitchAccount => text().nullable().references(Accounts, #handle, onDelete: KeyAction.setNull)();
   // Behaviour
   TextColumn get defaultCreateLanguage => text().nullable()();
   BoolColumn get useAccountLanguageFilter => boolean().nullable()();
@@ -278,6 +278,15 @@ class InterstellarDatabase extends _$InterstellarDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      }
+    );
+  }
 
   static const databaseFilename = 'interstellar.db';
 
@@ -397,7 +406,7 @@ Future<bool> migrateDatabase() async {
     (await accountStore.find(db)).map(
       (record) => MapEntry(
         record.key,
-        Account.fromJson({...record.value, 'handle': record.key}),
+        Account.fromJson({...record.value, 'handle': record.key, 'isPushRegistered': record.value['isPushRegistered']?? false}),
       ),
     ),
   );

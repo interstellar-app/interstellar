@@ -163,7 +163,7 @@ class AppController with ChangeNotifier {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount(
         '@kbin.earth',
-        const Account(handle: '@kbin.earth'),
+        const Account(handle: '@kbin.earth', isPushRegistered: false),
         switchNow: true,
       );
     }
@@ -363,25 +363,10 @@ class AppController with ChangeNotifier {
     if (!_accounts.containsKey(key)) return;
 
     try {
-      if (_accounts[key]!.isPushRegistered ?? false) await unregisterPush(key);
+      if (_accounts[key]!.isPushRegistered) await unregisterPush(key);
     } catch (e) {
       // Ignore error in case unregister fails so the account is still removed
     }
-
-    // Remove a profile's autoSwitchAccount value if it is for this account
-    final autoSwitchAccountProfiles = await (database.select(
-      database.profiles,
-    )..where((f) => f.autoSwitchAccount.equals(key))).get();
-    for (var profile in autoSwitchAccountProfiles) {
-      await database
-          .into(database.profiles)
-          .insertOnConflictUpdate(profile.copyWith(autoSwitchAccount: null));
-    }
-
-    // Remove read posts associated with account
-    await (database.delete(
-      database.readPostCache,
-    )..where((f) => f.account.equals(key))).go();
 
     _rebuildProfile();
 
@@ -552,7 +537,7 @@ class AppController with ChangeNotifier {
 
   Future<void> addPushRegistrationStatus(String account) async {
     _accounts[account] = _accounts[account]!.copyWith(
-      isPushRegistered: Value(true),
+      isPushRegistered: true,
     );
 
     notifyListeners();
@@ -562,7 +547,7 @@ class AppController with ChangeNotifier {
 
   Future<void> removePushRegistrationStatus(String account) async {
     _accounts[account] = _accounts[account]!.copyWith(
-      isPushRegistered: Value(false),
+      isPushRegistered: false,
     );
 
     notifyListeners();
@@ -753,7 +738,7 @@ class AppController with ChangeNotifier {
                 .get())
             .firstOrNull;
 
-    if (cachedValue != null) return cachedValue.id;
+    if (cachedValue != null) return cachedValue.serverId;
 
     try {
       final newValue = switch (source) {
@@ -779,7 +764,7 @@ class AppController with ChangeNotifier {
               FeedInputCacheCompanion.insert(
                 name: name,
                 server: instanceHost,
-                id: newValue,
+                serverId: newValue,
                 source: source,
               ),
             );
