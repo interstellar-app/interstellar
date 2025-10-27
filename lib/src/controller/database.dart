@@ -48,7 +48,7 @@ class CredentialsConverter extends TypeConverter<Credentials, String>
 }
 
 class Accounts extends Table {
-  TextColumn get handle => text()();
+  TextColumn get handle => text().clientDefault(() => '@kbin.earth')();
   TextColumn get oauth => text().map(const CredentialsConverter()).nullable()();
   TextColumn get jwt => text().nullable()();
   BoolColumn get isPushRegistered => boolean().withDefault(Constant(false))();
@@ -102,7 +102,8 @@ class Servers extends Table {
 }
 
 class ReadPostCache extends Table {
-  TextColumn get account => text().references(Accounts, #handle, onDelete: KeyAction.cascade)();
+  TextColumn get account =>
+      text().references(Accounts, #handle, onDelete: KeyAction.cascade)();
   TextColumn get postType => textEnum<PostType>()();
   IntColumn get postId => integer()();
 
@@ -173,9 +174,13 @@ class FilterListActivationConverter
 
 @UseRowClass(ProfileOptional)
 class Profiles extends Table {
-  TextColumn get name => text()();
+  TextColumn get name => text().clientDefault(() => 'Default')();
 
-  TextColumn get autoSwitchAccount => text().nullable().references(Accounts, #handle, onDelete: KeyAction.setNull)();
+  TextColumn get autoSwitchAccount => text().nullable().references(
+    Accounts,
+    #handle,
+    onDelete: KeyAction.setNull,
+  )();
   // Behaviour
   TextColumn get defaultCreateLanguage => text().nullable()();
   BoolColumn get useAccountLanguageFilter => boolean().nullable()();
@@ -243,13 +248,36 @@ class Profiles extends Table {
   Set<Column<Object>> get primaryKey => {name};
 }
 
+class Stars extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+}
+
 // Table to store misc data that is either one off or doesn't fit into other tables
 class MiscCache extends Table {
-  TextColumn get key => text()();
-  TextColumn get json => text()();
+  IntColumn get id => integer()();
+  IntColumn get lock =>
+      integer().unique().withDefault(Constant(0)).check(lock.equals(0))();
+  TextColumn get mainProfile =>
+      text().references(Profiles, #name).clientDefault(() => 'Default')();
+  TextColumn get selectedProfile =>
+      text().references(Profiles, #name).clientDefault(() => 'Default')();
+  TextColumn get autoSelectProfile =>
+      text().nullable().references(Profiles, #name)();
+  TextColumn get selectedAccount =>
+      text().references(Accounts, #handle).clientDefault(() => '@kbin.earth')();
+  TextColumn get webPushKeys => text().nullable()();
+  TextColumn get downloadsDir => text().nullable()();
+  BoolColumn get expandNavDrawer => boolean().withDefault(Constant(true))();
+  BoolColumn get expandNavStars => boolean().withDefault(Constant(true))();
+  BoolColumn get expandNavFeeds => boolean().withDefault(Constant(true))();
+  BoolColumn get expandNavSubscriptions =>
+      boolean().withDefault(Constant(true))();
+  BoolColumn get expandNavFollows => boolean().withDefault(Constant(true))();
+  BoolColumn get expandNavDomains => boolean().withDefault(Constant(true))();
 
   @override
-  Set<Column<Object>> get primaryKey => {key};
+  Set<Column<Object>> get primaryKey => {id};
 }
 
 class Drafts extends Table {
@@ -268,6 +296,7 @@ class Drafts extends Table {
     ReadPostCache,
     FilterLists,
     Profiles,
+    Stars,
     MiscCache,
     Drafts,
   ],
@@ -284,7 +313,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     return MigrationStrategy(
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
-      }
+      },
     );
   }
 
@@ -340,73 +369,27 @@ Future<bool> migrateDatabase() async {
   late final starsRecord = mainStore.record('stars');
   late final webPushKeysRecord = mainStore.record('webPushKeys');
 
-  final mainProfileTmp =
-      await mainProfileRecord.get(db) as String? ?? 'Default';
-  await database
-      .into(database.miscCache)
-      .insertOnConflictUpdate(
-        MiscCacheCompanion.insert(
-          key: 'main-profile',
-          json: jsonEncode(mainProfileTmp),
-        ),
-      );
-
-  final autoSelectProfile =
-      await autoSelectProfileRecord.get(db) as String? ?? mainProfileTmp;
-  await database
-      .into(database.miscCache)
-      .insertOnConflictUpdate(
-        MiscCacheCompanion.insert(
-          key: 'auto-select-profile',
-          json: jsonEncode(autoSelectProfile),
-        ),
-      );
-
-  final selectedProfile =
-      await selectedProfileRecord.get(db) as String? ?? mainProfileTmp;
-  await database
-      .into(database.miscCache)
-      .insertOnConflictUpdate(
-        MiscCacheCompanion.insert(
-          key: 'selected-profile',
-          json: jsonEncode(selectedProfile),
-        ),
-      );
-
-  final selectedAccount = await selectedAccountRecord.get(db) as String? ?? '';
-  await database
-      .into(database.miscCache)
-      .insertOnConflictUpdate(
-        MiscCacheCompanion.insert(
-          key: 'selected-account',
-          json: jsonEncode(selectedAccount),
-        ),
-      );
-
   final stars = (await starsRecord.get(db) as List<Object?>? ?? [])
       .map((v) => v as String)
       .toList();
-  await database
-      .into(database.miscCache)
-      .insertOnConflictUpdate(
-        MiscCacheCompanion.insert(key: 'stars', json: jsonEncode(stars)),
-      );
 
-  final webPushKeys = await webPushKeysRecord.get(db) as String?;
-  await database
-      .into(database.miscCache)
-      .insertOnConflictUpdate(
-        MiscCacheCompanion.insert(
-          key: 'web-push-keys',
-          json: jsonEncode(webPushKeys),
-        ),
-      );
+  await database.transaction(() async {
+    for (final star in stars) {
+      await database
+          .into(database.stars)
+          .insertOnConflictUpdate(StarsCompanion.insert(name: star));
+    }
+  });
 
   final accounts = Map.fromEntries(
     (await accountStore.find(db)).map(
       (record) => MapEntry(
         record.key,
-        Account.fromJson({...record.value, 'handle': record.key, 'isPushRegistered': record.value['isPushRegistered']?? false}),
+        Account.fromJson({
+          ...record.value,
+          'handle': record.key,
+          'isPushRegistered': record.value['isPushRegistered'] ?? false,
+        }),
       ),
     ),
   );
@@ -487,24 +470,50 @@ Future<bool> migrateDatabase() async {
     }
   });
 
-  final miscValues = await miscStore.find(db);
-  for (var entry in miscValues) {
-    await database
-        .into(database.miscCache)
-        .insertOnConflictUpdate(
-          MiscCacheCompanion.insert(
-            key: entry.key,
-            json: jsonEncode(entry.value),
-          ),
-        );
-  }
-
   final drafts = (await draftsStore.find(
     db,
   )).map((d) => Draft.fromJson({...d.value, 'id': d.key}));
   for (var entry in drafts) {
     await database.into(database.drafts).insertOnConflictUpdate(entry);
   }
+
+  final mainProfileTmp =
+      await mainProfileRecord.get(db) as String? ?? 'Default';
+  final autoSelectProfile =
+      await autoSelectProfileRecord.get(db) as String? ?? mainProfileTmp;
+  final selectedProfile =
+      await selectedProfileRecord.get(db) as String? ?? mainProfileTmp;
+  final selectedAccount = await selectedAccountRecord.get(db) as String? ?? '';
+  final webPushKeys = await webPushKeysRecord.get(db) as String?;
+
+  final expandedNavDrawer =
+      await miscStore.record('nav-widescreen').get(db) as bool?;
+  final expandedNavStars = await miscStore.record('nav-stars').get(db) as bool?;
+  final expandedNavFeeds = await miscStore.record('nav-feeds').get(db) as bool?;
+  final expandedNavSubscriptions =
+      await miscStore.record('nav-subscriptions').get(db) as bool?;
+  final expandedNavFollows =
+      await miscStore.record('nav-follows').get(db) as bool?;
+  final expandedNavDomains =
+      await miscStore.record('nav-domains').get(db) as bool?;
+
+  await database
+      .into(database.miscCache)
+      .insertOnConflictUpdate(
+        MiscCacheCompanion(
+          mainProfile: Value(mainProfileTmp),
+          autoSelectProfile: Value(autoSelectProfile),
+          selectedProfile: Value(selectedProfile),
+          selectedAccount: Value(selectedAccount),
+          webPushKeys: Value(webPushKeys),
+          expandNavDrawer: Value(expandedNavDrawer ?? true),
+          expandNavStars: Value(expandedNavStars ?? true),
+          expandNavFeeds: Value(expandedNavFeeds ?? true),
+          expandNavSubscriptions: Value(expandedNavSubscriptions ?? true),
+          expandNavFollows: Value(expandedNavFollows ?? true),
+          expandNavDomains: Value(expandedNavDomains ?? true),
+        ),
+      );
 
   await db.close();
   await File(dbPath).delete();

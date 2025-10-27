@@ -89,11 +89,7 @@ class _FeedScreenState extends State<FeedScreen>
         };
 
   void _initNavExpanded() async {
-    final initExpanded =
-        (await context.read<AppController>().fetchCachedValue(
-          'nav-widescreen',
-        )) ??
-        true;
+    final initExpanded = await context.read<AppController>().expandNavDrawer;
     if (initExpanded != _drawerController.expanded) {
       if (!mounted) return;
       setState(() {
@@ -379,10 +375,7 @@ class _FeedScreenState extends State<FeedScreen>
                               setState(() {
                                 _drawerController.toggle();
                               });
-                              ac.cacheValue(
-                                'nav-widescreen',
-                                _drawerController.expanded,
-                              );
+                              ac.setExpandNavDrawer(_drawerController.expanded);
                             },
                             icon: const Icon(Symbols.menu_rounded),
                           )

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,16 +28,6 @@ import 'package:drift/drift.dart';
 enum HapticsType { light, medium, heavy, selection, vibrate }
 
 class AppController with ChangeNotifier {
-  static const _mainProfileKey = 'main-profile';
-  static const _selectedProfileKey = 'selected-profile';
-  static const _autoSelectProfileKey = 'auto-select-profile';
-
-  static const _selectedAccountKey = 'selected-account';
-  static const _starsKey = 'stars';
-  static const _webPushKey = 'web-push-keys';
-
-  static const _downloadsDirKey = 'downloads-directory';
-
   String? _defaultDownloadsDir;
   Directory? get defaultDownloadDir =>
       _defaultDownloadsDir == null ? null : Directory(_defaultDownloadsDir!);
@@ -93,6 +82,62 @@ class AppController with ChangeNotifier {
   late Logger _logger;
   Logger get logger => _logger;
 
+  Future<bool> get expandNavDrawer async =>
+      await database
+          .select(database.miscCache)
+          .map((f) => f.expandNavDrawer)
+          .getSingleOrNull() ??
+      true;
+  Future<bool> get expandNavStars async =>
+      await database
+          .select(database.miscCache)
+          .map((f) => f.expandNavStars)
+          .getSingleOrNull() ??
+      true;
+  Future<bool> get expandNavFeeds async =>
+      await database
+          .select(database.miscCache)
+          .map((f) => f.expandNavFeeds)
+          .getSingleOrNull() ??
+      true;
+  Future<bool> get expandNavSubscriptions async =>
+      await database
+          .select(database.miscCache)
+          .map((f) => f.expandNavSubscriptions)
+          .getSingleOrNull() ??
+      true;
+  Future<bool> get expandNavFollows async =>
+      await database
+          .select(database.miscCache)
+          .map((f) => f.expandNavFollows)
+          .getSingleOrNull() ??
+      true;
+  Future<bool> get expandNavDomains async =>
+      await database
+          .select(database.miscCache)
+          .map((f) => f.expandNavDomains)
+          .getSingleOrNull() ??
+      true;
+
+  Future<void> setExpandNavDrawer(bool value) async => await database
+      .update(database.miscCache)
+      .write(MiscCacheCompanion(expandNavDrawer: Value(value)));
+  Future<void> setExpandNavStars(bool value) async => await database
+      .update(database.miscCache)
+      .write(MiscCacheCompanion(expandNavStars: Value(value)));
+  Future<void> setExpandNavFeeds(bool value) async => await database
+      .update(database.miscCache)
+      .write(MiscCacheCompanion(expandNavFeeds: Value(value)));
+  Future<void> setExpandNavSubscriptions(bool value) async => await database
+      .update(database.miscCache)
+      .write(MiscCacheCompanion(expandNavSubscriptions: Value(value)));
+  Future<void> setExpandNavFollows(bool value) async => await database
+      .update(database.miscCache)
+      .write(MiscCacheCompanion(expandNavFollows: Value(value)));
+  Future<void> setExpandNavDomains(bool value) async => await database
+      .update(database.miscCache)
+      .write(MiscCacheCompanion(expandNavDomains: Value(value)));
+
   Future<File> get logFile async {
     final logDir = await getApplicationSupportDirectory();
     final logFile = join(logDir.path, 'log.log');
@@ -108,36 +153,43 @@ class AppController with ChangeNotifier {
     );
     logger.i('Initializing interstellar');
 
-    final mainProfileTemp = await fetchCachedValue<String?>(_mainProfileKey);
-    if (mainProfileTemp != null) {
-      _mainProfile = mainProfileTemp;
-    } else {
-      _mainProfile = 'Default';
-      _selectedProfile = _mainProfile;
-      await updateProfile(ProfileOptional.nullProfile);
-      await cacheValue(_selectedProfileKey, _selectedProfile);
-      await cacheValue(_mainProfileKey, _mainProfile);
-    }
-    _autoSelectProfile = await fetchCachedValue<String?>(_autoSelectProfileKey);
+    final mainProfileTemp = await database
+        .select(database.miscCache)
+        .map((f) => f.mainProfile)
+        .getSingle();
+    _mainProfile = mainProfileTemp;
+    _autoSelectProfile = await database
+        .select(database.miscCache)
+        .map((f) => f.autoSelectProfile)
+        .getSingle();
     if (_autoSelectProfile != null) {
       _selectedProfile = _autoSelectProfile!;
     } else {
-      _selectedProfile =
-          await fetchCachedValue<String?>(_selectedProfileKey) ?? _mainProfile;
+      _selectedProfile = await database
+          .select(database.miscCache)
+          .map((f) => f.selectedAccount)
+          .getSingle();
     }
 
     await _rebuildProfile();
 
-    _stars = (await fetchCachedValue<List<dynamic>>(_starsKey) ?? [])
-        .map((v) => v as String)
+    _stars = (await database.select(database.stars).get())
+        .map((star) => star.name)
         .toList();
 
-    final webPushKeysValue = await fetchCachedValue<String?>(_webPushKey);
+    final webPushKeysValue = await database
+        .select(database.miscCache)
+        .map((f) => f.webPushKeys)
+        .getSingleOrNull();
     if (webPushKeysValue != null) {
       _webPushKeys = await WebPushKeySet.deserialize(webPushKeysValue);
     } else {
       _webPushKeys = await WebPushKeySet.newKeyPair();
-      await cacheValue(_webPushKey, _webPushKeys.serialize);
+      await database
+          .update(database.miscCache)
+          .write(
+            MiscCacheCompanion(webPushKeys: Value(_webPushKeys.serialize)),
+          );
     }
 
     _servers = Map.fromEntries(
@@ -149,8 +201,10 @@ class AppController with ChangeNotifier {
     if (_autoSelectProfile != null && _builtProfile.autoSwitchAccount != null) {
       _selectedAccount = _builtProfile.autoSwitchAccount!;
     } else {
-      _selectedAccount =
-          await fetchCachedValue<String?>(_selectedAccountKey) ?? '';
+      _selectedAccount = await database
+          .select(database.miscCache)
+          .map((f) => f.selectedAccount)
+          .getSingle();
     }
 
     _accounts = Map.fromEntries(
@@ -225,7 +279,9 @@ class AppController with ChangeNotifier {
     logger.i('Switch profiles $_selectedProfile -> $newProfile');
 
     _selectedProfile = newProfile;
-    await cacheValue(_selectedProfileKey, _selectedProfile);
+    await database
+        .update(database.miscCache)
+        .write(MiscCacheCompanion(selectedProfile: Value(_selectedProfile)));
 
     await _rebuildProfile();
 
@@ -244,7 +300,9 @@ class AppController with ChangeNotifier {
     if (newProfile == _mainProfile) return;
 
     _mainProfile = newProfile;
-    await cacheValue(_mainProfileKey, _mainProfile);
+    await database
+        .update(database.miscCache)
+        .write(MiscCacheCompanion(mainProfile: Value(_mainProfile)));
 
     await _rebuildProfile();
 
@@ -255,7 +313,11 @@ class AppController with ChangeNotifier {
     if (newProfile == _autoSelectProfile) return;
 
     _autoSelectProfile = newProfile;
-    await cacheValue(_autoSelectProfileKey, _autoSelectProfile);
+    await database
+        .update(database.miscCache)
+        .write(
+          MiscCacheCompanion(autoSelectProfile: Value(_autoSelectProfile)),
+        );
 
     notifyListeners();
   }
@@ -399,7 +461,9 @@ class AppController with ChangeNotifier {
     await (database.delete(
       database.accounts,
     )..where((f) => f.handle.equals(key))).go();
-    await cacheValue(_selectedAccountKey, _selectedAccount);
+    await database
+        .update(database.miscCache)
+        .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
   }
 
   Future<void> switchAccounts(String? newAccount) async {
@@ -417,7 +481,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
     refreshState();
 
-    await cacheValue(_selectedAccountKey, _selectedAccount);
+    await database
+        .update(database.miscCache)
+        .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
   }
 
   Future<void> _updateAPI() async {
@@ -471,8 +537,9 @@ class AppController with ChangeNotifier {
     _stars.add(newStar);
 
     notifyListeners();
-
-    await cacheValue(_starsKey, _stars);
+    await database
+        .into(database.stars)
+        .insertOnConflictUpdate(StarsCompanion.insert(name: newStar));
   }
 
   Future<void> removeStar(String oldStar) async {
@@ -481,8 +548,9 @@ class AppController with ChangeNotifier {
     _stars.remove(oldStar);
 
     notifyListeners();
-
-    cacheValue(_starsKey, _stars);
+    await (database.delete(
+      database.stars,
+    )..where((f) => f.name.equals(oldStar))).go();
   }
 
   Future<void> registerPush(BuildContext context) async {
@@ -536,9 +604,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> addPushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(
-      isPushRegistered: true,
-    );
+    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: true);
 
     notifyListeners();
 
@@ -546,9 +612,7 @@ class AppController with ChangeNotifier {
   }
 
   Future<void> removePushRegistrationStatus(String account) async {
-    _accounts[account] = _accounts[account]!.copyWith(
-      isPushRegistered: false,
-    );
+    _accounts[account] = _accounts[account]!.copyWith(isPushRegistered: false);
 
     notifyListeners();
 
@@ -776,35 +840,18 @@ class AppController with ChangeNotifier {
     }
   }
 
-  Future<void> cacheValue<T>(String key, T? value) async {
-    if (value == null) {
-      await (database.delete(
-        database.miscCache,
-      )..where((f) => f.key.equals(key))).go();
-    } else {
-      await database
-          .into(database.miscCache)
-          .insertOnConflictUpdate(
-            MiscCacheCompanion.insert(key: key, json: jsonEncode(value)),
-          );
-    }
-  }
-
-  Future<T?> fetchCachedValue<T>(String key) async {
-    final value = (await (database.select(
-      database.miscCache,
-    )..where((f) => f.key.equals(key))).get()).firstOrNull?.json;
-    if (value == null) return null;
-    return jsonDecode(value) as T?;
-  }
-
   Future<String?> getDefaultDownloadDir() async {
     return _defaultDownloadsDir ??
-        await fetchCachedValue<String?>(_downloadsDirKey);
+        await database
+            .select(database.miscCache)
+            .map((f) => f.downloadsDir)
+            .getSingle();
   }
 
   Future<void> setDefaultDownloadDir(String? path) async {
-    await cacheValue(_downloadsDirKey, path);
+    await database
+        .update(database.miscCache)
+        .write(MiscCacheCompanion(downloadsDir: Value(path)));
     _defaultDownloadsDir = path;
   }
 }
