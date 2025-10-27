@@ -32,18 +32,23 @@ class DebugSettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-              leading: const Icon(Symbols.schema_rounded),
-              title: Text(l(context).settings_debug_inspectDatabase),
-              onTap: () => pushRoute(
-                  context,
-                  builder: (context) => DriftDbViewer(database)
-              )
+            leading: const Icon(Symbols.schema_rounded),
+            title: Text(l(context).settings_debug_inspectDatabase),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => DriftDbViewer(database),
+            ),
           ),
           ListTile(
             title: Text(l(context).settings_debug_exportDatabase),
             onTap: () async {
               final dbDir = await getApplicationSupportDirectory();
-              final dbFile = File(join(dbDir.path, '${InterstellarDatabase.databaseFilename}.sqlite'));
+              final dbFile = File(
+                join(
+                  dbDir.path,
+                  '${InterstellarDatabase.databaseFilename}.sqlite',
+                ),
+              );
 
               final useBytes = Platform.isAndroid || Platform.isIOS;
               String? filePath;
@@ -58,7 +63,10 @@ class DebugSettingsScreen extends StatelessWidget {
                 if (dir == null) {
                   throw Exception('Downloads directory not found');
                 }
-                filePath = join(dir.path, InterstellarDatabase.databaseFilename);
+                filePath = join(
+                  dir.path,
+                  InterstellarDatabase.databaseFilename,
+                );
               }
 
               if (!useBytes) {
@@ -82,7 +90,10 @@ class DebugSettingsScreen extends StatelessWidget {
               final srcFile = File(filePath);
 
               final dbDir = await getApplicationSupportDirectory();
-              final dbFilepath = join(dbDir.path, '${InterstellarDatabase.databaseFilename}.sqlite');
+              final dbFilepath = join(
+                dbDir.path,
+                '${InterstellarDatabase.databaseFilename}.sqlite',
+              );
 
               srcFile.copy(dbFilepath);
             },
@@ -206,7 +217,7 @@ class DebugSettingsScreen extends StatelessWidget {
                   ),
                   FilledButton(
                     onPressed: () async {
-                      await database.delete(database.feedInputCache).go();
+                      await database.delete(database.feedInputs).go();
                       ac.logger.i('Cleared feed cache');
                       if (!context.mounted) return;
                       Navigator.pop(context);

@@ -222,11 +222,27 @@ class AppController with ChangeNotifier {
       );
     }
 
-    _feeds = Map.fromEntries(
-      (await database.select(database.feeds).get()).map(
-        (feed) => MapEntry(feed.name, Feed(inputs: feed.items)),
+    final feeds = await database.select(database.feeds).get();
+    final finalFeeds = await Future.wait(
+      feeds.map(
+        (feed) async => MapEntry(
+          feed.name,
+          Feed(
+            inputs:
+                (await (database.select(
+                      database.feedInputs,
+                    )..where((f) => f.feed.equals(feed.name))).get())
+                    .map(
+                      (input) =>
+                          FeedInput(name: input.name, sourceType: input.source),
+                    )
+                    .toSet(),
+          ),
+        ),
       ),
     );
+
+    _feeds = Map.fromEntries(finalFeeds);
 
     _filterLists = Map.fromEntries(
       (await database.select(database.filterLists).get()).map(
@@ -444,7 +460,7 @@ class AppController with ChangeNotifier {
         )
         .isEmpty) {
       await (database.delete(
-        database.feedInputCache,
+        database.feedSourceCache,
       )..where((f) => f.server.equals(keyAccountServer))).go();
 
       _servers.remove(keyAccountServer);
@@ -626,9 +642,21 @@ class AppController with ChangeNotifier {
 
     await database
         .into(database.feeds)
-        .insertOnConflictUpdate(
-          FeedsCompanion.insert(name: name, items: value.inputs),
-        );
+        .insertOnConflictUpdate(FeedsCompanion.insert(name: name));
+
+    await database.transaction(() async {
+      for (var input in value.inputs) {
+        await database
+            .into(database.feedInputs)
+            .insertOnConflictUpdate(
+              FeedInputsCompanion.insert(
+                feed: name,
+                name: input.name,
+                source: input.sourceType,
+              ),
+            );
+      }
+    });
   }
 
   Future<void> removeFeed(String name) async {
@@ -647,11 +675,9 @@ class AppController with ChangeNotifier {
 
     notifyListeners();
 
-    await (database.update(
-      database.feeds,
-    )..where((f) => f.name.equals(oldName))).write(
-      FeedsCompanion.insert(name: newName, items: _feeds[newName]!.inputs),
-    );
+    await (database.update(database.feeds)
+          ..where((f) => f.name.equals(oldName)))
+        .write(FeedsCompanion.insert(name: newName));
   }
 
   Future<void> setFilterList(String name, FilterList value) async {
@@ -793,7 +819,7 @@ class AppController with ChangeNotifier {
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
     final cachedValue =
-        (await (database.select(database.feedInputCache)..where(
+        (await (database.select(database.feedSourceCache)..where(
                   (t) =>
                       t.name.equals(name) &
                       t.server.equals(instanceHost) &
@@ -802,7 +828,7 @@ class AppController with ChangeNotifier {
                 .get())
             .firstOrNull;
 
-    if (cachedValue != null) return cachedValue.serverId;
+    if (cachedValue != null) return cachedValue.sourceId;
 
     try {
       final newValue = switch (source) {
@@ -823,12 +849,12 @@ class AppController with ChangeNotifier {
 
       if (newValue != null) {
         await database
-            .into(database.feedInputCache)
+            .into(database.feedSourceCache)
             .insertOnConflictUpdate(
-              FeedInputCacheCompanion.insert(
+              FeedSourceCacheCompanion.insert(
                 name: name,
                 server: instanceHost,
-                serverId: newValue,
+                sourceId: Value(newValue),
                 source: source,
               ),
             );

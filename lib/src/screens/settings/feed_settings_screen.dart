@@ -312,9 +312,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
       nameController.text = widget.feed!;
     }
 
-    feedData = widget.feedData == null
-        ? Feed(inputs: {})
-        : widget.feedData!;
+    feedData = widget.feedData == null ? Feed(inputs: {}) : widget.feedData!;
   }
 
   void addInput(FeedInput input) {

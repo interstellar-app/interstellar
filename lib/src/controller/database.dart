@@ -57,35 +57,38 @@ class Accounts extends Table {
   Set<Column<Object>> get primaryKey => {handle};
 }
 
-class FeedInputConverter extends TypeConverter<Set<FeedInput>, String> {
-  const FeedInputConverter();
-
-  @override
-  Set<FeedInput> fromSql(String fromDb) {
-    return (jsonDecode(fromDb) as List<dynamic>)
-        .map((json) => FeedInput.fromJson(json))
-        .toSet();
-  }
-
-  @override
-  String toSql(Set<FeedInput> inputs) {
-    return jsonEncode(inputs.toList());
-  }
-}
-
 @DataClassName('RawFeed')
 class Feeds extends Table {
   TextColumn get name => text()();
-  TextColumn get items => text().map(const FeedInputConverter())();
 
   @override
   Set<Column<Object>> get primaryKey => {name};
 }
 
-class FeedInputCache extends Table {
+@DataClassName('RawFeedInput')
+class FeedInputs extends Table {
+  TextColumn get feed => text().references(
+    Feeds,
+    #name,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
   TextColumn get name => text()();
-  TextColumn get server => text()();
-  IntColumn get serverId => integer()();
+  TextColumn get source => textEnum<FeedSource>()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {name};
+}
+
+class FeedSourceCache extends Table {
+  TextColumn get name => text().references(
+    FeedInputs,
+    #name,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
+  TextColumn get server => text().references(Servers, #name)();
+  IntColumn get sourceId => integer().nullable()();
   TextColumn get source => textEnum<FeedSource>()();
 
   @override
@@ -291,7 +294,8 @@ class Drafts extends Table {
   tables: [
     Accounts,
     Feeds,
-    FeedInputCache,
+    FeedInputs,
+    FeedSourceCache,
     Servers,
     ReadPostCache,
     FilterLists,
@@ -414,13 +418,24 @@ Future<bool> migrateDatabase() async {
       db,
     )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
   );
-  for (var entry in feeds.entries) {
-    await database
-        .into(database.feeds)
-        .insertOnConflictUpdate(
-          FeedsCompanion.insert(name: entry.key, items: entry.value.inputs),
-        );
-  }
+  await database.transaction(() async {
+    for (var entry in feeds.entries) {
+      await database
+          .into(database.feeds)
+          .insertOnConflictUpdate(FeedsCompanion.insert(name: entry.key));
+      for (var input in entry.value.inputs) {
+        await database
+            .into(database.feedInputs)
+            .insertOnConflictUpdate(
+              FeedInputsCompanion.insert(
+                feed: entry.key,
+                name: input.name,
+                source: input.sourceType,
+              ),
+            );
+      }
+    }
+  });
 
   final filterLists = Map.fromEntries(
     (await filterListStore.find(db)).map(
