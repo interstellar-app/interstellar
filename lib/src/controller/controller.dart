@@ -156,19 +156,30 @@ class AppController with ChangeNotifier {
     final mainProfileTemp = await database
         .select(database.miscCache)
         .map((f) => f.mainProfile)
-        .getSingle();
-    _mainProfile = mainProfileTemp;
+        .getSingleOrNull();
+    if (mainProfileTemp != null) {
+      _mainProfile = mainProfileTemp;
+    } else {
+      _mainProfile = 'Default';
+      await database
+          .into(database.profiles)
+          .insertOnConflictUpdate(
+            ProfileOptional.nullProfile.copyWith(name: _mainProfile),
+          );
+    }
     _autoSelectProfile = await database
         .select(database.miscCache)
         .map((f) => f.autoSelectProfile)
-        .getSingle();
+        .getSingleOrNull();
     if (_autoSelectProfile != null) {
       _selectedProfile = _autoSelectProfile!;
     } else {
-      _selectedProfile = await database
-          .select(database.miscCache)
-          .map((f) => f.selectedAccount)
-          .getSingle();
+      _selectedProfile =
+          await database
+              .select(database.miscCache)
+              .map((f) => f.selectedAccount)
+              .getSingleOrNull() ??
+          _mainProfile;
     }
 
     await _rebuildProfile();
@@ -201,10 +212,12 @@ class AppController with ChangeNotifier {
     if (_autoSelectProfile != null && _builtProfile.autoSwitchAccount != null) {
       _selectedAccount = _builtProfile.autoSwitchAccount!;
     } else {
-      _selectedAccount = await database
-          .select(database.miscCache)
-          .map((f) => f.selectedAccount)
-          .getSingle();
+      _selectedAccount =
+          await database
+              .select(database.miscCache)
+              .map((f) => f.selectedAccount)
+              .getSingleOrNull() ??
+          '';
     }
 
     _accounts = Map.fromEntries(
@@ -220,6 +233,13 @@ class AppController with ChangeNotifier {
         const Account(handle: '@kbin.earth', isPushRegistered: false),
         switchNow: true,
       );
+    }
+
+    // ensure misc row is initialised
+    if (null == await database.select(database.miscCache).getSingleOrNull()) {
+      await database
+          .into(database.miscCache)
+          .insert(MiscCacheCompanion.insert());
     }
 
     final feeds = await database.select(database.feeds).get();
@@ -871,7 +891,7 @@ class AppController with ChangeNotifier {
         await database
             .select(database.miscCache)
             .map((f) => f.downloadsDir)
-            .getSingle();
+            .getSingleOrNull();
   }
 
   Future<void> setDefaultDownloadDir(String? path) async {
