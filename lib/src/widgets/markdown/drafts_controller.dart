@@ -1,23 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/controller/database.dart';
-import 'package:interstellar/src/utils/utils.dart';
-import 'package:sembast/sembast_io.dart';
-
-part 'drafts_controller.freezed.dart';
-part 'drafts_controller.g.dart';
-
-@freezed
-abstract class Draft with _$Draft {
-  @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory Draft({
-    required DateTime at,
-    required String body,
-    String? resourceId,
-  }) = _Draft;
-
-  factory Draft.fromJson(JsonMap json) => _$DraftFromJson(json);
-}
+import 'package:drift/drift.dart';
 
 class DraftAutoController {
   final Draft? Function() read;
@@ -32,8 +15,6 @@ class DraftAutoController {
 }
 
 class DraftsController with ChangeNotifier {
-  final _draftsStore = StoreRef<int, JsonMap>('draft');
-
   List<Draft> _drafts = [];
   List<Draft> get drafts => _drafts;
 
@@ -42,9 +23,7 @@ class DraftsController with ChangeNotifier {
   }
 
   Future<void> _init() async {
-    _drafts = (await _draftsStore.find(
-      db,
-    )).map((record) => Draft.fromJson(record.value)).toList();
+    _drafts = await database.select(database.drafts).get();
 
     notifyListeners();
   }
@@ -61,16 +40,19 @@ class DraftsController with ChangeNotifier {
       save: (body) async {
         _removeByResourceId(resourceId);
 
-        final draft = Draft(
-          at: DateTime.now(),
-          body: body,
-          resourceId: resourceId,
-        );
+        final draft = await database
+            .into(database.drafts)
+            .insertReturning(
+              DraftsCompanion.insert(
+                body: body,
+                resourceId: Value(resourceId),
+                at: Value(DateTime.now()),
+              ),
+            );
 
         drafts.add(draft);
 
         notifyListeners();
-        await _draftsStore.add(db, draft.toJson());
       },
       discard: () async {
         _removeByResourceId(resourceId);
@@ -89,30 +71,30 @@ class DraftsController with ChangeNotifier {
   }
 
   Future<void> manualSave(String body) async {
-    final draft = Draft(at: DateTime.now(), body: body);
+    final draft = await database
+        .into(database.drafts)
+        .insertReturning(
+          DraftsCompanion.insert(body: body, at: Value(DateTime.now())),
+        );
 
     drafts.add(draft);
 
     notifyListeners();
-    await _draftsStore.add(db, draft.toJson());
   }
 
   Future<void> _removeByResourceId(String resourceId) async {
     drafts.removeWhere((draft) => draft.resourceId == resourceId);
 
-    await _draftsStore.delete(
-      db,
-      finder: Finder(filter: Filter.equals('resourceId', resourceId)),
-    );
+    await (database.delete(
+      database.drafts,
+    )..where((f) => f.resourceId.equals(resourceId))).go();
   }
 
   Future<void> _removeByDate(DateTime at) async {
     drafts.removeWhere((draft) => draft.at == at);
-
-    await _draftsStore.delete(
-      db,
-      finder: Finder(filter: Filter.equals('at', at.toIso8601String())),
-    );
+    await (database.delete(
+      database.drafts,
+    )..where((f) => f.at.equals(at))).go();
   }
 
   Future<void> removeByDate(DateTime at) async {
@@ -123,8 +105,8 @@ class DraftsController with ChangeNotifier {
 
   Future<void> removeAll() async {
     drafts.clear();
+    await database.delete(database.drafts).go();
 
     notifyListeners();
-    await _draftsStore.drop(db);
   }
 }

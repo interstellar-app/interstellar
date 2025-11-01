@@ -67,14 +67,11 @@ class NavDrawPersistentState {
 
 Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
   final fetchTime = DateTime.now();
-  final initExpandedStars = (await ac.fetchCachedValue('nav-stars')) ?? false;
-  final initExpandedFeeds = (await ac.fetchCachedValue('nav-feeds')) ?? false;
-  final initExpandedSubscriptions =
-      (await ac.fetchCachedValue('nav-subscriptions')) ?? false;
-  final initExpandedFollows =
-      (await ac.fetchCachedValue('nav-follows')) ?? false;
-  final initExpandedDomains =
-      (await ac.fetchCachedValue('nav-domains')) ?? false;
+  final initExpandedStars = await ac.expandNavStars;
+  final initExpandedFeeds = await ac.expandNavFeeds;
+  final initExpandedSubscriptions = await ac.expandNavSubscriptions;
+  final initExpandedFollows = await ac.expandNavFollows;
+  final initExpandedDomains = await ac.expandNavDomains;
 
   List<DetailedCommunityModel> subbedCommunities = [];
   List<DetailedUserModel> subbedUsers = [];
@@ -164,7 +161,7 @@ class _NavDrawerState extends State<NavDrawer> {
         ExpansionTile(
           title: SettingsHeader(l(context).stars),
           onExpansionChanged: (bool value) {
-            ac.cacheValue('nav-stars', value);
+            ac.setExpandNavStars(value);
             widget.updateState!(
               widget.drawerState!.copyWith(initExpandedStars: value),
             );
@@ -226,7 +223,7 @@ class _NavDrawerState extends State<NavDrawer> {
         ExpansionTile(
           title: SettingsHeader(l(context).feeds),
           onExpansionChanged: (bool value) {
-            ac.cacheValue('nav-feeds', value);
+            ac.setExpandNavFeeds(value);
             widget.updateState!(
               widget.drawerState!.copyWith(initExpandedFeeds: value),
             );
@@ -269,7 +266,7 @@ class _NavDrawerState extends State<NavDrawer> {
           ExpansionTile(
             title: SettingsHeader(l(context).subscriptions),
             onExpansionChanged: (bool value) {
-              ac.cacheValue('nav-subscriptions', value);
+              ac.setExpandNavSubscriptions(value);
               widget.updateState!(
                 widget.drawerState!.copyWith(initExpandedSubscriptions: value),
               );
@@ -348,7 +345,7 @@ class _NavDrawerState extends State<NavDrawer> {
           ExpansionTile(
             title: SettingsHeader(l(context).subscriptions_user),
             onExpansionChanged: (bool value) {
-              ac.cacheValue('nav-follows', value);
+              ac.setExpandNavFollows(value);
               widget.updateState!(
                 widget.drawerState!.copyWith(initExpandedFollows: value),
               );
@@ -426,7 +423,7 @@ class _NavDrawerState extends State<NavDrawer> {
           ExpansionTile(
             title: SettingsHeader(l(context).subscriptions_domain),
             onExpansionChanged: (bool value) {
-              ac.cacheValue('nav-domains', value);
+              ac.setExpandNavDomains(value);
               widget.updateState!(
                 widget.drawerState!.copyWith(initExpandedDomains: value),
               );
