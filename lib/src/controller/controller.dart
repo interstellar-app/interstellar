@@ -694,14 +694,14 @@ class AppController with ChangeNotifier {
     _filterLists.remove(name);
 
     // Remove a profile's activation value if it is for this filter list
-    final profile = await (database.select(
+    final profiles = await (database.select(
       database.profiles,
-    )..where((f) => f.filterLists.contains(name))).getSingle();
-    final newFilterLists = {...?profile.filterLists};
-    newFilterLists.remove(name);
-    database
-        .into(database.profiles)
-        .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
+    )..where((f) => f.filterLists.contains(name))).get();
+    for (final profile in profiles) {
+      final newFilterLists = {...?profile.filterLists};
+      newFilterLists.remove(name);
+      setProfile(profile.name, profile.copyWith(filterLists: newFilterLists));
+    }
 
     _rebuildProfile();
 
@@ -717,17 +717,17 @@ class AppController with ChangeNotifier {
     _filterLists.remove(oldName);
 
     // Update a profile's activation value if it is for this filter list
-    final profile = await (database.select(
+    final profiles = await (database.select(
       database.profiles,
-    )..where((f) => f.filterLists.contains(oldName))).getSingle();
-    final newFilterLists = {
-      ...?profile.filterLists,
-      newName: profile.filterLists?[oldName] ?? false,
-    };
-    newFilterLists.remove(oldName);
-    database
-        .into(database.profiles)
-        .insertOnConflictUpdate(profile.copyWith(filterLists: newFilterLists));
+    )..where((f) => f.filterLists.contains(oldName))).get();
+    for (final profile in profiles) {
+      final newFilterLists = {
+        ...?profile.filterLists,
+        newName: profile.filterLists?[oldName] ?? false,
+      };
+      newFilterLists.remove(oldName);
+      setProfile(profile.name, profile.copyWith(filterLists: newFilterLists));
+    }
 
     _rebuildProfile();
 
