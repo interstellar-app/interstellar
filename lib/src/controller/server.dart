@@ -1,9 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:interstellar/src/utils/utils.dart';
-
-part 'server.freezed.dart';
-part 'server.g.dart';
 
 enum ServerSoftware {
   mbin,
@@ -27,15 +22,4 @@ enum ServerSoftware {
     ServerSoftware.lemmy => Color(0xff03a80e),
     ServerSoftware.piefed => Color(0xff0e6ef9),
   };
-}
-
-@freezed
-abstract class Server with _$Server {
-  @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory Server({
-    required ServerSoftware software,
-    String? oauthIdentifier,
-  }) = _Server;
-
-  factory Server.fromJson(JsonMap json) => _$ServerFromJson(json);
 }

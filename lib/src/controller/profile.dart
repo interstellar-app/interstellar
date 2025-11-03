@@ -5,7 +5,18 @@ import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/actions.dart';
+import 'package:interstellar/src/widgets/actions.dart'
+    hide
+        feedActionBackToTop,
+        feedActionCreateNew,
+        feedActionExpandFab,
+        feedActionRefresh,
+        feedActionSetFilter,
+        feedActionSetSort,
+        feedActionSetView,
+        feedActionHideReadPosts;
+import 'package:drift/drift.dart' show Insertable, Value, Expression;
+import 'database.dart' show ProfilesCompanion;
 
 part 'profile.freezed.dart';
 part 'profile.g.dart';
@@ -249,11 +260,14 @@ abstract class ProfileRequired with _$ProfileRequired {
 
 /// Profile class where all fields are optional.
 @freezed
-abstract class ProfileOptional with _$ProfileOptional {
+abstract class ProfileOptional
+    with _$ProfileOptional
+    implements Insertable<ProfileOptional> {
   const ProfileOptional._();
 
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory ProfileOptional({
+    required String name,
     required String? autoSwitchAccount,
     // Behavior settings
     required String? defaultCreateLanguage,
@@ -317,7 +331,73 @@ abstract class ProfileOptional with _$ProfileOptional {
   factory ProfileOptional.fromJson(JsonMap json) =>
       _$ProfileOptionalFromJson(json);
 
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    return ProfilesCompanion(
+      name: Value(name),
+      autoSwitchAccount: Value(autoSwitchAccount),
+      // Behaviour
+      defaultCreateLanguage: Value(defaultCreateLanguage),
+      useAccountLanguageFilter: Value(useAccountLanguageFilter),
+      customLanguageFilter: Value(customLanguageFilter),
+      disableTabSwiping: Value(disableTabSwiping),
+      askBeforeUnsubscribing: Value(askBeforeUnsubscribing),
+      askBeforeDeleting: Value(askBeforeDeleting),
+      autoPlayVideos: Value(autoPlayVideos),
+      hapticFeedback: Value(hapticFeedback),
+      autoTranslate: Value(autoTranslate),
+      markThreadsReadOnScroll: Value(markThreadsReadOnScroll),
+      markMicroblogsReadOnScroll: Value(markMicroblogsReadOnScroll),
+      animationSpeed: Value(animationSpeed),
+      inlineReplies: Value(inlineReplies),
+      showCrosspostComments: Value(showCrosspostComments),
+      markCrosspostsAsRead: Value(markCrosspostsAsRead),
+      // Display
+      appLanguage: Value(appLanguage),
+      themeMode: Value(themeMode),
+      colorScheme: Value(colorScheme),
+      enableTrueBlack: Value(enableTrueBlack),
+      compactMode: Value(compactMode),
+      hideActionButtons: Value(hideActionButtons),
+      hideFeedUIOnScroll: Value(hideFeedUIOnScroll),
+      globalTextScale: Value(globalTextScale),
+      alwaysShowInstance: Value(alwaysShowInstance),
+      coverMediaMarkedSensitive: Value(coverMediaMarkedSensitive),
+      fullImageSizeThreads: Value(fullImageSizeThreads),
+      fullImageSizeMicroblogs: Value(fullImageSizeMicroblogs),
+      // Feed defaults
+      feedDefaultView: Value(feedDefaultView),
+      feedDefaultFilter: Value(feedDefaultFilter),
+      feedDefaultThreadsSort: Value(feedDefaultThreadsSort),
+      feedDefaultMicroblogSort: Value(feedDefaultMicroblogSort),
+      feedDefaultCombinedSort: Value(feedDefaultCombinedSort),
+      feedDefaultExploreSort: Value(feedDefaultExploreSort),
+      feedDefaultCommentSort: Value(feedDefaultCommentSort),
+      feedDefaultHideReadPosts: Value(feedDefaultHideReadPosts),
+      // Feed actions
+      feedActionBackToTop: Value(feedActionBackToTop),
+      feedActionCreateNew: Value(feedActionCreateNew),
+      feedActionExpandFab: Value(feedActionExpandFab),
+      feedActionRefresh: Value(feedActionRefresh),
+      feedActionSetFilter: Value(feedActionSetFilter),
+      feedActionSetSort: Value(feedActionSetSort),
+      feedActionSetView: Value(feedActionSetView),
+      feedActionHideReadPosts: Value(feedActionHideReadPosts),
+      // Swipe actions
+      enableSwipeActions: Value(enableSwipeActions),
+      swipeActionLeftShort: Value(swipeActionLeftShort),
+      swipeActionLeftLong: Value(swipeActionLeftLong),
+      swipeActionRightShort: Value(swipeActionRightShort),
+      swipeActionRightLong: Value(swipeActionRightLong),
+      swipeActionThreshold: Value(swipeActionThreshold),
+      // Filter list activations
+      filterLists: Value(filterLists),
+      showErrors: Value(showErrors),
+    ).toColumns(nullToAbsent);
+  }
+
   static const nullProfile = ProfileOptional(
+    name: '',
     autoSwitchAccount: null,
     defaultCreateLanguage: null,
     useAccountLanguageFilter: null,
@@ -376,6 +456,7 @@ abstract class ProfileOptional with _$ProfileOptional {
     if (other == null) return this;
 
     return ProfileOptional(
+      name: name,
       autoSwitchAccount: other.autoSwitchAccount,
       defaultCreateLanguage:
           other.defaultCreateLanguage ?? defaultCreateLanguage,
