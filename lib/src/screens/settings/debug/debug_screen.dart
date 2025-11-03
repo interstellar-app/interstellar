@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/controller/database.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 class DebugSettingsScreen extends StatelessWidget {
   const DebugSettingsScreen({super.key});
@@ -88,6 +89,18 @@ class DebugSettingsScreen extends StatelessWidget {
               if (filePath == null) return;
 
               final srcFile = File(filePath);
+              final importDb = sqlite3.open(filePath);
+
+              final tmpDir = await getTemporaryDirectory();
+              final tmpPath = join(tmpDir.path, 'import.db.sqlite');
+
+              try {
+                importDb..execute('VACUUM INTO ?', [tmpPath])..dispose();
+                File(tmpPath).delete();
+              } catch (e) {
+                ac.logger.e('Attempted to import invalid database');
+                return;
+              }
 
               final dbDir = await getApplicationSupportDirectory();
               final dbFilepath = join(
