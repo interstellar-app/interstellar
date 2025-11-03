@@ -490,16 +490,27 @@ class AppController with ChangeNotifier {
       )..where((f) => f.name.equals(keyAccountServer))).go();
     }
 
-    _updateAPI();
+    await database
+        .update(database.miscCache)
+        .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
 
-    notifyListeners();
+    // Ensure default guest account remains
+    if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty || _accounts.length == 1) {
+      await saveServer(ServerSoftware.mbin, 'kbin.earth');
+      await setAccount(
+        '@kbin.earth',
+        const Account(handle: '@kbin.earth', isPushRegistered: false),
+        switchNow: true,
+      );
+    }
 
     await (database.delete(
       database.accounts,
     )..where((f) => f.handle.equals(key))).go();
-    await database
-        .update(database.miscCache)
-        .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
+
+    _updateAPI();
+
+    notifyListeners();
   }
 
   Future<void> switchAccounts(String? newAccount) async {

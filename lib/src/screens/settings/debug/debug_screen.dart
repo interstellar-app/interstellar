@@ -136,9 +136,10 @@ class DebugSettingsScreen extends StatelessWidget {
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
-                    onPressed: () {
-                      for (var account in ac.accounts.keys) {
-                        ac.removeAccount(account);
+                    onPressed: () async {
+                      final accountKeys = ac.accounts.keys.toList();
+                      for (var account in accountKeys) {
+                        await ac.removeAccount(account);
                       }
                       ac.logger.i('Cleared accounts');
                       if (!context.mounted) return;

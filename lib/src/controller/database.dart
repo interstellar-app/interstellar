@@ -262,13 +262,13 @@ class MiscCache extends Table {
   IntColumn get lock =>
       integer().unique().withDefault(Constant(0)).check(lock.equals(0))();
   TextColumn get mainProfile =>
-      text().references(Profiles, #name).clientDefault(() => 'Default')();
+      text().references(Profiles, #name, onDelete: KeyAction.setDefault).clientDefault(() => 'Default')();
   TextColumn get selectedProfile =>
-      text().references(Profiles, #name).clientDefault(() => 'Default')();
+      text().references(Profiles, #name, onDelete: KeyAction.setDefault).clientDefault(() => 'Default')();
   TextColumn get autoSelectProfile =>
-      text().nullable().references(Profiles, #name)();
+      text().nullable().references(Profiles, #name, onDelete: KeyAction.setNull)();
   TextColumn get selectedAccount =>
-      text().references(Accounts, #handle).clientDefault(() => '@kbin.earth')();
+      text().references(Accounts, #handle, onDelete: KeyAction.setDefault).clientDefault(() => '@kbin.earth')();
   TextColumn get webPushKeys => text().nullable()();
   TextColumn get downloadsDir => text().nullable()();
   BoolColumn get expandNavDrawer => boolean().withDefault(Constant(true))();
@@ -341,6 +341,8 @@ Future<void> initDatabase() async {
 }
 
 Future<void> deleteTables() async {
+  // Ensure miscCache is deleted before accounts
+  await database.delete(database.miscCache).go();
   for (var table in database.allTables) {
     await database.delete(table).go();
   }
