@@ -258,11 +258,14 @@ class Stars extends Table {
 
 // Table to store misc data that is either one off or doesn't fit into other tables
 class MiscCache extends Table {
-  IntColumn get id => integer().unique().check(id.equals(1))();
+  IntColumn get id => integer().check(id.equals(1))();
+  @ReferenceName('mainProfile')
   TextColumn get mainProfile =>
       text().references(Profiles, #name, onDelete: KeyAction.setDefault).clientDefault(() => 'Default')();
+  @ReferenceName('selectedProfile')
   TextColumn get selectedProfile =>
       text().references(Profiles, #name, onDelete: KeyAction.setDefault).clientDefault(() => 'Default')();
+  @ReferenceName('autoSelectProfile')
   TextColumn get autoSelectProfile =>
       text().nullable().references(Profiles, #name, onDelete: KeyAction.setNull)();
   TextColumn get selectedAccount =>

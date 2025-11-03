@@ -177,7 +177,7 @@ class AppController with ChangeNotifier {
       _selectedProfile =
           await database
               .select(database.miscCache)
-              .map((f) => f.selectedAccount)
+              .map((f) => f.selectedProfile)
               .getSingleOrNull() ??
           _mainProfile;
     }
