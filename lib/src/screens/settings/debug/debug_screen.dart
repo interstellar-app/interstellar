@@ -99,7 +99,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 File(tmpPath).delete();
               } catch (e) {
                 ac.logger.e('Attempted to import invalid database');
-                return;
+                throw 'Attempted to import invalid database';
               }
 
               final dbDir = await getApplicationSupportDirectory();
