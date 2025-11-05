@@ -495,7 +495,10 @@ class AppController with ChangeNotifier {
         .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
 
     // Ensure default guest account remains
-    if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty || _accounts.length == 1) {
+    if (_servers.isEmpty ||
+        _accounts.isEmpty ||
+        _selectedAccount.isEmpty ||
+        _accounts.length == 1) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount(
         '@kbin.earth',

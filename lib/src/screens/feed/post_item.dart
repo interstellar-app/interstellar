@@ -110,6 +110,7 @@ class _PostItemState extends State<PostItem> {
               : true,
           showCommunityFirst: widget.item.type == PostType.thread,
           read: widget.isTopLevel && widget.item.read,
+          feedView: widget.isTopLevel,
           isPinned: widget.item.isPinned,
           isNSFW: widget.item.isNSFW,
           isOC: widget.item.isOC == true,

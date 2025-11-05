@@ -1,18 +1,38 @@
+import 'dart:io';
 import 'dart:math';
-
+import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class DisplaySettingsScreen extends StatelessWidget {
+class DisplaySettingsScreen extends StatefulWidget {
   const DisplaySettingsScreen({super.key});
+
+  @override
+  State<DisplaySettingsScreen> createState() => _DisplaySettingsState();
+}
+
+class _DisplaySettingsState extends State<DisplaySettingsScreen> {
+  late final List<PostComponent> _postComponentOrder;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _postComponentOrder = context
+        .read<AppController>()
+        .profile
+        .postComponentOrder
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +201,41 @@ class DisplaySettingsScreen extends StatelessWidget {
                     ),
                   ),
             enabled: ac.serverSoftware == ServerSoftware.mbin,
+          ),
+          const Divider(),
+          ListTileSwitch(
+            title: Text('Show posts as cards'),
+            value: ac.profile.showPostsCards,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(showPostsCards: newValue),
+            ),
+          ),
+          ReorderableListView(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            children: _postComponentOrder
+                .mapIndexed(
+                  (index, item) => ListTile(
+                    key: Key(item.index.toString()),
+                    title: Text(item.name.capitalize),
+                    trailing: Platform.isIOS || Platform.isAndroid
+                        ? const Icon(Symbols.drag_handle_rounded)
+                        : null,
+                  ),
+                )
+                .toList(),
+            onReorder: (int oldIndex, int newIndex) => setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final item = _postComponentOrder.removeAt(oldIndex);
+              _postComponentOrder.insert(newIndex, item);
+              ac.updateProfile(
+                ac.selectedProfileValue.copyWith(
+                  postComponentOrder: _postComponentOrder,
+                ),
+              );
+            }),
           ),
         ],
       ),

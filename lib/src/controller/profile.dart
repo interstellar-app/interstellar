@@ -5,18 +5,10 @@ import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/actions.dart'
-    hide
-        feedActionBackToTop,
-        feedActionCreateNew,
-        feedActionExpandFab,
-        feedActionRefresh,
-        feedActionSetFilter,
-        feedActionSetSort,
-        feedActionSetView,
-        feedActionHideReadPosts;
+import 'package:interstellar/src/widgets/actions.dart' show ActionLocation, ActionLocationWithTabs, SwipeAction;
 import 'package:drift/drift.dart' show Insertable, Value, Expression;
 import 'database.dart' show ProfilesCompanion;
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
 
 part 'profile.freezed.dart';
 part 'profile.g.dart';
@@ -61,6 +53,8 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool coverMediaMarkedSensitive,
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
+    required bool showPostsCards,
+    required List<PostComponent> postComponentOrder,
     // Feed defaults
     @FeedViewConverter() required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
@@ -148,6 +142,9 @@ abstract class ProfileRequired with _$ProfileRequired {
     fullImageSizeMicroblogs:
         profile?.fullImageSizeMicroblogs ??
         defaultProfile.fullImageSizeMicroblogs,
+    showPostsCards: profile?.showPostsCards ?? defaultProfile.showPostsCards,
+    postComponentOrder:
+        profile?.postComponentOrder ?? defaultProfile.postComponentOrder,
     feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
     feedDefaultFilter:
         profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
@@ -231,6 +228,14 @@ abstract class ProfileRequired with _$ProfileRequired {
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
     fullImageSizeMicroblogs: false,
+    showPostsCards: true,
+    postComponentOrder: [
+      PostComponent.image,
+      PostComponent.title,
+      PostComponent.link,
+      PostComponent.info,
+      PostComponent.body,
+    ],
     feedDefaultView: FeedView.threads,
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
@@ -298,6 +303,8 @@ abstract class ProfileOptional
     required bool? coverMediaMarkedSensitive,
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
+    required bool? showPostsCards,
+    required List<PostComponent>? postComponentOrder,
     // Feed defaults
     @FeedViewConverter() required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
@@ -365,6 +372,8 @@ abstract class ProfileOptional
       coverMediaMarkedSensitive: Value(coverMediaMarkedSensitive),
       fullImageSizeThreads: Value(fullImageSizeThreads),
       fullImageSizeMicroblogs: Value(fullImageSizeMicroblogs),
+      showPostsCards: Value(showPostsCards),
+      postComponentOrder: Value(postComponentOrder),
       // Feed defaults
       feedDefaultView: Value(feedDefaultView),
       feedDefaultFilter: Value(feedDefaultFilter),
@@ -426,6 +435,8 @@ abstract class ProfileOptional
     coverMediaMarkedSensitive: null,
     fullImageSizeThreads: null,
     fullImageSizeMicroblogs: null,
+    showPostsCards: null,
+    postComponentOrder: null,
     feedDefaultView: null,
     feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
@@ -493,6 +504,8 @@ abstract class ProfileOptional
       fullImageSizeThreads: other.fullImageSizeThreads ?? fullImageSizeThreads,
       fullImageSizeMicroblogs:
           other.fullImageSizeMicroblogs ?? fullImageSizeMicroblogs,
+      showPostsCards: other.showPostsCards ?? showPostsCards,
+      postComponentOrder: other.postComponentOrder ?? postComponentOrder,
       feedDefaultView: other.feedDefaultView ?? feedDefaultView,
       feedDefaultFilter: other.feedDefaultFilter ?? feedDefaultFilter,
       feedDefaultThreadsSort:

@@ -140,7 +140,8 @@ class _PostCommentState extends State<PostComment> {
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
       user: widget.comment.user,
-      updateUser: (user) async => widget.onUpdate(widget.comment.copyWith(user: user)),
+      updateUser: (user) async =>
+          widget.onUpdate(widget.comment.copyWith(user: user)),
       opUserId: widget.opUserId,
       boosts: widget.comment.boosts,
       isBoosted: widget.comment.myBoost == true,
@@ -428,11 +429,7 @@ class _PostCommentState extends State<PostComment> {
       ),
       expanded: Column(
         children: [
-          Card(
-            margin: const EdgeInsets.only(top: 8),
-            clipBehavior: Clip.antiAlias,
-            child: contentItem,
-          ),
+          contentItem,
           if (widget.showChildren) ...[
             if (widget.comment.childCount > 0 &&
                 _expandableController.expanded &&

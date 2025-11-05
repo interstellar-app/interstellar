@@ -13,6 +13,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:drift/drift.dart';
@@ -175,6 +176,22 @@ class FilterListActivationConverter
   }
 }
 
+class PostComponentConverter extends TypeConverter<List<PostComponent>, String> {
+  const PostComponentConverter();
+
+  @override
+  List<PostComponent> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>)
+        .map((item) => PostComponent.values.byName(item))
+        .toList();
+  }
+
+  @override
+  String toSql(List<PostComponent> components) {
+    return jsonEncode(components.map((component) => component.name).toList());
+  }
+}
+
 @UseRowClass(ProfileOptional)
 class Profiles extends Table {
   TextColumn get name => text().clientDefault(() => 'Default')();
@@ -214,6 +231,8 @@ class Profiles extends Table {
   BoolColumn get coverMediaMarkedSensitive => boolean().nullable()();
   BoolColumn get fullImageSizeThreads => boolean().nullable()();
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
+  BoolColumn get showPostsCards => boolean().nullable()();
+  TextColumn get postComponentOrder => text().map(const PostComponentConverter()).nullable()();
   // Feed defaults
   TextColumn get feedDefaultView => textEnum<FeedView>().nullable()();
   TextColumn get feedDefaultFilter => textEnum<FeedSource>().nullable()();
