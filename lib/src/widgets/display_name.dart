@@ -5,16 +5,17 @@ import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:provider/provider.dart';
 
 class DisplayName extends StatelessWidget {
-  const DisplayName(this.name, {super.key, this.icon, this.onTap});
+  const DisplayName(this.name, {super.key, this.displayName, this.icon, this.onTap});
 
   final String name;
+  final String? displayName;
   final ImageModel? icon;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     var nameTuple = name.split('@');
-    String localName = nameTuple.first;
+    String localName = displayName ?? nameTuple.first;
     String? hostName = nameTuple.length > 1 ? nameTuple[1] : null;
 
     return Row(

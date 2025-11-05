@@ -153,7 +153,8 @@ class ContentInfo extends StatelessWidget {
                 children: [
                   Flexible(
                     child: DisplayName(
-                      user!.displayName ?? user!.name,
+                      user!.name,
+                      displayName: user!.displayName,
                       icon: user!.avatar,
                       onTap: () => pushRoute(
                         context,
