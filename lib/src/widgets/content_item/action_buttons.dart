@@ -45,7 +45,10 @@ class ActionButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (numComments != null) ...[
-          Icon(Symbols.comment_rounded),
+          const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Symbols.comment_rounded),
+          ),
           Text(intFormat(numComments!)),
         ],
         if (onReply != null)
