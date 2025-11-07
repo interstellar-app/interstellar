@@ -210,7 +210,7 @@ class _ContentItemState extends State<ContentItem> {
         ? Card(
             color: widget.read ? Theme.of(context).cardColor.darken(3) : null,
             margin: widget.contentTypeName == l(context).comment
-                ? const EdgeInsets.only(top: 8)
+                ? const EdgeInsets.symmetric(vertical: 4)
                 : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             clipBehavior: Clip.antiAlias,
             child: post(),
@@ -422,9 +422,9 @@ class _ContentItemState extends State<ContentItem> {
             }
 
             return Padding(
-              padding: widget.title != null
-                  ? const EdgeInsets.all(12)
-                  : const EdgeInsets.fromLTRB(12, 0, 8, 12),
+              padding: widget.contentTypeName == l(context).comment
+                  ? const EdgeInsets.fromLTRB(12, 0, 12, 8)
+                  : const EdgeInsets.fromLTRB(12, 8, 12 ,8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

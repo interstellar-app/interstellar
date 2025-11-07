@@ -164,17 +164,20 @@ class ContentInfo extends StatelessWidget {
                   ),
                   UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
                   if (isOp)
-                    Tooltip(
-                      message: l(context).originalContent_long,
-                      triggerMode: TooltipTriggerMode.tap,
-                      child: Text(
-                        l(context).originalContent_short,
-                        style: const TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Tooltip(
+                        message: l(context).originalPoster_long,
+                        triggerMode: TooltipTriggerMode.tap,
+                        child: Text(
+                          l(context).originalPoster_short,
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
+                    )
                 ],
               ),
             ),

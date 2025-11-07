@@ -113,7 +113,7 @@ class _PostCommentState extends State<PostComment> {
             ),
             if (widget.opUserId == widget.comment.user.id)
               Padding(
-                padding: const EdgeInsets.only(left: 5),
+                padding: const EdgeInsets.only(left: 8),
                 child: Tooltip(
                   message: l(context).originalPoster_long,
                   triggerMode: TooltipTriggerMode.tap,
@@ -374,7 +374,7 @@ class _PostCommentState extends State<PostComment> {
     return Expandable(
       controller: _expandableController,
       collapsed: Card(
-        margin: const EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: widget.onClick ?? collapse,
@@ -393,7 +393,7 @@ class _PostCommentState extends State<PostComment> {
             },
           ),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(12, 0, 8, 0),
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
