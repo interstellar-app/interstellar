@@ -1192,5 +1192,29 @@
     "inbox": "Вхідні",
     "@inbox": {},
     "newChat": "Новий чат",
-    "@newChat": {}
+    "@newChat": {},
+    "openItem": "Відкрити {item}",
+    "@openItem": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_debug_inspectDatabase": "Перевірити базу даних",
+    "@settings_debug_inspectDatabase": {},
+    "settings_debug_exportDatabase": "Експорт бази даних",
+    "@settings_debug_exportDatabase": {},
+    "settings_debug_importDatabase": "Імпорт бази даних",
+    "@settings_debug_importDatabase": {},
+    "settings_debug_clearReadPosts": "Очистити прочитані дописи",
+    "@settings_debug_clearReadPosts": {},
+    "settings_debug_clearFeedCache": "Очистити кеш стрічки",
+    "@settings_debug_clearFeedCache": {},
+    "translate": "Перекласти",
+    "@translate": {},
+    "user": "Користувач",
+    "@user": {},
+    "subscribe": "Підписатися",
+    "@subscribe": {}
 }
