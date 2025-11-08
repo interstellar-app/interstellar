@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class PostLayoutSettingsScreen extends StatefulWidget {
 }
 
 class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
-  late final List<PostComponent> _postComponentOrder;
+  late List<PostComponent> _postComponentOrder;
 
   @override
   void initState() {
@@ -35,26 +36,42 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l(context).settings_postLayoutOrder),
+        actions: [
+          IconButton(
+            onPressed: () => setState(() {
+              _postComponentOrder = ProfileRequired
+                  .defaultProfile
+                  .postComponentOrder
+                  .toList();
+              ac.updateProfile(
+                ac.selectedProfileValue.copyWith(
+                  postComponentOrder: _postComponentOrder,
+                ),
+              );
+            }),
+            icon: const Icon(Symbols.restore),
+          ),
+        ],
       ),
       body: ReorderableListView(
-          children: _postComponentOrder
-              .mapIndexed(
-                (index, item) => ListTile(
-              key: Key(item.index.toString()),
-              leading: Icon(switch (item) {
-                PostComponent.title => Symbols.title_rounded,
-                PostComponent.image => Symbols.image_rounded,
-                PostComponent.info => Symbols.info_rounded,
-                PostComponent.body => Symbols.article_rounded,
-                PostComponent.link => Symbols.link_rounded,
-              }),
-              title: Text(item.name.capitalize),
-              trailing: Platform.isIOS || Platform.isAndroid
-                  ? const Icon(Symbols.drag_handle_rounded)
-                  : null,
-            ),
-          )
-              .toList(),
+        children: _postComponentOrder
+            .mapIndexed(
+              (index, item) => ListTile(
+                key: Key(item.index.toString()),
+                leading: Icon(switch (item) {
+                  PostComponent.title => Symbols.title_rounded,
+                  PostComponent.image => Symbols.image_rounded,
+                  PostComponent.info => Symbols.info_rounded,
+                  PostComponent.body => Symbols.article_rounded,
+                  PostComponent.link => Symbols.link_rounded,
+                }),
+                title: Text(item.name.capitalize),
+                trailing: Platform.isIOS || Platform.isAndroid
+                    ? const Icon(Symbols.drag_handle_rounded)
+                    : null,
+              ),
+            )
+            .toList(),
         onReorder: (int oldIndex, int newIndex) => setState(() {
           if (oldIndex < newIndex) {
             newIndex -= 1;
@@ -66,9 +83,8 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
               postComponentOrder: _postComponentOrder,
             ),
           );
-        }
-      )),
+        }),
+      ),
     );
   }
-
 }
