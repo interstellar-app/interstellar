@@ -158,6 +158,14 @@
     }
   },
   "search": "Search",
+  "searchSource": "Search {source}",
+  "@searchSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "communities": "Communities",
   "people": "People",
   "domains": "Domains",
