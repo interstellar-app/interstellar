@@ -164,6 +164,9 @@ Future<void> showCommunityMenu(
           builder: (context) => ExploreScreen(
             mode: ExploreType.communities,
             id: detailedCommunity?.id ?? community!.id,
+            title: l(
+              context,
+            ).searchSource(detailedCommunity?.name ?? community!.name),
           ),
         ),
       ),

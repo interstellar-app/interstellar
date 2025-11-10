@@ -118,8 +118,11 @@ Future<void> showUserMenu(
           title: l(context).search,
           onTap: () => pushRoute(
             context,
-            builder: (context) =>
-                ExploreScreen(mode: ExploreType.people, id: user.id),
+            builder: (context) => ExploreScreen(
+              mode: ExploreType.people,
+              id: user.id,
+              title: l(context).searchSource(user.name),
+            ),
           ),
         ),
     ],
