@@ -459,7 +459,7 @@ class _ContentItemState extends State<ContentItem> {
                       onUpVote: widget.onUpVote,
                       onDownVote: widget.onDownVote,
                       onBoost: widget.onBoost,
-                      onReply: _reply,
+                      onReply: widget.onReply == null ? null : _reply,
                       onAddBookmark: widget.onAddBookmark,
                       onRemoveBookmark: widget.onRemoveBookmark,
                     ),

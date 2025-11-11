@@ -74,7 +74,7 @@ class ActionButtons extends StatelessWidget {
     final voting = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (boosts != null && onBoost != null)
+        if (boosts != null)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -86,14 +86,14 @@ class ActionButtons extends StatelessWidget {
               Text(intFormat(boosts!)),
             ],
           ),
-        if (upVotes != null && onUpVote != null)
+        if (upVotes != null)
           IconButton(
             onPressed: onUpVote,
             color: isUpvoted ? Colors.green.shade400 : null,
             icon: const Icon(Symbols.arrow_upward_rounded),
           ),
         Text(intFormat((upVotes ?? 0) - (downVotes ?? 0))),
-        if (downVotes != null && onDownVote != null)
+        if (downVotes != null)
           IconButton(
             onPressed: onDownVote,
             color: isDownvoted ? Colors.red.shade400 : null,
