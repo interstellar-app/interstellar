@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
+import 'package:interstellar/src/widgets/redirect_listen.dart';
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:path/path.dart';
@@ -438,17 +440,123 @@ class AppController with ChangeNotifier {
     return oauthIdentifier;
   }
 
+  Future<void> login({
+    required ServerSoftware software,
+    required String server,
+    String? username,
+    String? password,
+    String? totp,
+    BuildContext? context,
+  }) async {
+    switch (software) {
+      case ServerSoftware.lemmy:
+      case ServerSoftware.piefed:
+        final loginPath = '${software.apiPathPrefix}/user/login';
+
+        final loginEndpoint = Uri.https(server, loginPath);
+
+        final response = await http.post(
+          loginEndpoint,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            switch (software) {
+              ServerSoftware.lemmy => 'username_or_email',
+              ServerSoftware.piefed => 'username',
+              ServerSoftware.mbin => throw Exception('unreachable'),
+            }: username,
+            'password': password,
+            if (software == ServerSoftware.lemmy) 'totp_2fa_token': totp,
+          }),
+        );
+        ServerClient.checkResponseSuccess(loginEndpoint, response);
+
+        final jwt = response.bodyJson['jwt'] as String;
+        final user = await API(
+          ServerClient(
+            httpClient: JwtHttpClient(jwt),
+            software: software,
+            domain: server,
+          ),
+        ).users.getMe();
+
+        final handle = '${user.name}@$server';
+
+        setAccount(
+          handle,
+          Account(handle: handle, jwt: jwt, isPushRegistered: false),
+          switchNow: true,
+          forceSwitch: true,
+        );
+
+        return;
+      case ServerSoftware.mbin:
+        final authorizationEndpoint = Uri.https(server, '/authorize');
+        final tokenEndpoint = Uri.https(server, '/token');
+
+        String identifier = await getMbinOAuthIdentifier(software, server);
+
+        final grant = oauth2.AuthorizationCodeGrant(
+          identifier,
+          authorizationEndpoint,
+          tokenEndpoint,
+        );
+
+        final authorizationUrl = grant.getAuthorizationUrl(
+          Uri.parse(redirectUri),
+          scopes: oauthScopes,
+        );
+
+        if (!context!.mounted) return;
+        Map<String, String>? result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                RedirectListener(authorizationUrl, title: server),
+          ),
+        );
+
+        if (result == null || !result.containsKey('code')) {
+          throw Exception(
+            result?['message'] != null
+                ? result!['message']
+                : 'unsuccessful login',
+          );
+        }
+
+        final client = await grant.handleAuthorizationResponse(result);
+
+        final user = await API(
+          ServerClient(httpClient: client, software: software, domain: server),
+        ).users.getMe();
+
+        final handle = '${user.name}@$server';
+        setAccount(
+          handle,
+          Account(
+            handle: handle,
+            oauth: client.credentials,
+            isPushRegistered: false,
+          ),
+          switchNow: true,
+          forceSwitch: true,
+        );
+
+        return;
+    }
+  }
+
   Future<void> setAccount(
     String key,
     Account value, {
     bool switchNow = false,
+    bool forceSwitch = false,
   }) async {
     _accounts[key] = value;
 
     await database.into(database.accounts).insertOnConflictUpdate(value);
 
     if (switchNow) {
-      await switchAccounts(key);
+      await switchAccounts(key, force: forceSwitch);
     } else {
       // The following is already done when switchAccounts is run, so only needed without switchAccounts.
       _updateAPI();
@@ -495,7 +603,10 @@ class AppController with ChangeNotifier {
         .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
 
     // Ensure default guest account remains
-    if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty || _accounts.length == 1) {
+    if (_servers.isEmpty ||
+        _accounts.isEmpty ||
+        _selectedAccount.isEmpty ||
+        _accounts.length == 1) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount(
         '@kbin.earth',
@@ -513,9 +624,9 @@ class AppController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> switchAccounts(String? newAccount) async {
+  Future<void> switchAccounts(String? newAccount, {bool force = false}) async {
     if (newAccount == null) return;
-    if (newAccount == _selectedAccount) return;
+    if (newAccount == _selectedAccount && !force) return;
 
     logger.i('Switch accounts $_selectedAccount -> $newAccount');
 
