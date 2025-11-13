@@ -190,7 +190,10 @@ class APIComments {
 
       case ServerSoftware.lemmy:
         const path = '/comment/list';
-        final query = {'parent_id': commentId.toString()};
+        final query = {
+          'parent_id': commentId.toString(),
+          'type_': 'All',
+        };
 
         final response = await client.get(path, queryParams: query);
 
