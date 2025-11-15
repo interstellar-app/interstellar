@@ -3,6 +3,8 @@ import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/screens/settings/feed_defaults/feed_source_order.dart';
+import 'package:interstellar/src/screens/settings/feed_defaults/feed_view_order.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -111,6 +113,14 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
                 feedDefaultHideReadPosts: newValue,
               ),
             ),
+          ),
+          ListTile(
+            title: Text(l(context).settings_feedSourceOrder),
+            onTap: () => pushRoute(context, builder: (context) => FeedSourceOrderSettingsScreen()),
+          ),
+          ListTile(
+            title: Text(l(context).settings_feedViewOrder),
+            onTap: () => pushRoute(context, builder: (context) => FeedViewOrderSettingsScreen()),
           ),
         ],
       ),

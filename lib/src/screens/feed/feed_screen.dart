@@ -27,6 +27,7 @@ import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:collection/collection.dart';
 
 class FeedScreen extends StatefulWidget {
   final FeedAggregator? feed;
@@ -98,6 +99,74 @@ class _FeedScreenState extends State<FeedScreen>
     }
   }
 
+  List<Tab> _getFeedTabs(AppController ac, ActionItem tabsAction) {
+    return switch (tabsAction.name) {
+      String name when name == feedActionSetFilter(context).name =>
+        ac.profile.feedSourceOrder
+            .map(
+              (option) => Tab(
+                text: option.title(context).substring(0, 3),
+                icon: ac.profile.compactMode ? null : Icon(option.icon),
+              ),
+            )
+            .toList(),
+      String name when name == feedActionSetView(context).name =>
+        ac.profile.feedViewOrder
+            .map(
+              (option) => Tab(
+                text: option.title(context),
+                icon: ac.profile.compactMode ? null : Icon(option.icon),
+              ),
+            )
+            .toList(),
+      String() => throw UnimplementedError(),
+    };
+  }
+
+  List<FeedScreenBody> _getFeedBodies(
+    AppController ac,
+    ActionItem tabsAction,
+    bool userCanModerate,
+    TabController? controller,
+  ) {
+    return switch (tabsAction.name) {
+      String name when name == feedActionSetFilter(context).name =>
+        ac.profile.feedSourceOrder
+            .mapIndexed(
+              (index, feed) => FeedScreenBody(
+                key: _getFeedKey(index),
+                feed: widget.feed,
+                source: feed,
+                sort: _sort ?? _defaultSortFromMode(_view),
+                view: _view,
+                details: widget.details,
+                userCanModerate: userCanModerate,
+                hideReadPosts: _hideReadPosts,
+                isActive: controller?.index == index,
+              ),
+            )
+            .toList(),
+      String name when name == feedActionSetView(context).name =>
+        ac.profile.feedViewOrder
+            .mapIndexed(
+              (index, view) => FeedScreenBody(
+                key: _getFeedKey(index),
+                feed: widget.feed,
+                source: widget.source ?? _filter,
+                sourceId: widget.sourceId,
+                sort: _sort ?? _defaultSortFromMode(view),
+                view: view,
+                details: widget.details,
+                userCanModerate: userCanModerate,
+                hideReadPosts: _hideReadPosts,
+                isActive: controller?.index == index,
+              ),
+            )
+            .toList(),
+      String() => throw UnimplementedError(),
+    };
+  }
+
   @override
   void initState() {
     super.initState();
@@ -136,6 +205,8 @@ class _FeedScreenState extends State<FeedScreen>
 
     final currentFeedModeOption = feedViewSelect(context).getOption(_view);
     final currentFeedSortOption = feedSortSelect(context).getOption(sort);
+
+    final ac = context.watch<AppController>();
 
     // in community check if user is moderator
     // don't really need for mbin since mbin api returns
@@ -313,28 +384,13 @@ class _FeedScreenState extends State<FeedScreen>
                 .key,
           _ => 0,
         },
-        length: switch (tabsAction?.name) {
-          String name when name == feedActionSetFilter(context).name =>
-            feedFilterSelect(context).options.length,
-          String name when name == feedActionSetView(context).name =>
-            feedViewSelect(context).options.length,
-          _ => 0,
-        },
+        length: tabsAction == null ? 0 : _getFeedTabs(ac, tabsAction).length,
         child: DefaultTabControllerListener(
           onTabSelected: (newIndex) {
             setState(() {
               if (tabsAction?.name == feedActionSetView(context).name) {
-                switch (newIndex) {
-                  case 0:
-                    _view = FeedView.threads;
-                    break;
-                  case 1:
-                    _view = FeedView.microblog;
-                    break;
-                  case 2:
-                    _view = FeedView.combined;
-                    break;
-                  default:
+                if (newIndex < ac.profile.feedViewOrder.length) {
+                  _view = ac.profile.feedViewOrder[newIndex];
                 }
               }
             });
@@ -428,37 +484,7 @@ class _FeedScreenState extends State<FeedScreen>
                         .toList(),
                     bottom: tabsAction == null
                         ? null
-                        : TabBar(
-                            tabs: switch (tabsAction.name) {
-                              String name
-                                  when name ==
-                                      feedActionSetFilter(context).name =>
-                                feedFilterSelect(context).options
-                                    .map(
-                                      (option) => Tab(
-                                        text: option.title.substring(0, 3),
-                                        icon: ac.profile.compactMode
-                                            ? null
-                                            : Icon(option.icon),
-                                      ),
-                                    )
-                                    .toList(),
-                              String name
-                                  when name ==
-                                      feedActionSetView(context).name =>
-                                feedViewSelect(context).options
-                                    .map(
-                                      (option) => Tab(
-                                        text: option.title,
-                                        icon: ac.profile.compactMode
-                                            ? null
-                                            : Icon(option.icon),
-                                      ),
-                                    )
-                                    .toList(),
-                              _ => [],
-                            },
-                          ),
+                        : TabBar(tabs: _getFeedTabs(ac, tabsAction)),
                   ),
                 ];
               },
@@ -481,115 +507,12 @@ class _FeedScreenState extends State<FeedScreen>
                         )
                       : TabBarView(
                           physics: appTabViewPhysics(context),
-                          children: switch (tabsAction.name) {
-                            String name
-                                when name ==
-                                    feedActionSetFilter(context).name =>
-                              [
-                                FeedScreenBody(
-                                  key: _getFeedKey(0),
-                                  feed: widget.feed,
-                                  source: FeedSource.subscribed,
-                                  sort: sort,
-                                  view: _view,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 0,
-                                ),
-                                FeedScreenBody(
-                                  key: _getFeedKey(1),
-                                  feed: widget.feed,
-                                  source: FeedSource.moderated,
-                                  sort: sort,
-                                  view: _view,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 1,
-                                ),
-                                FeedScreenBody(
-                                  key: _getFeedKey(2),
-                                  feed: widget.feed,
-                                  source: FeedSource.favorited,
-                                  sort: sort,
-                                  view: _view,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 2,
-                                ),
-                                FeedScreenBody(
-                                  key: _getFeedKey(3),
-                                  feed: widget.feed,
-                                  source: FeedSource.all,
-                                  sort: sort,
-                                  view: _view,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 3,
-                                ),
-                                FeedScreenBody(
-                                  key: _getFeedKey(4),
-                                  feed: widget.feed,
-                                  source: FeedSource.local,
-                                  sort: sort,
-                                  view: _view,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 4,
-                                ),
-                              ],
-                            String name
-                                when name == feedActionSetView(context).name =>
-                              [
-                                FeedScreenBody(
-                                  key: _getFeedKey(0),
-                                  feed: widget.feed,
-                                  source: widget.source ?? _filter,
-                                  sourceId: widget.sourceId,
-                                  sort:
-                                      _sort ??
-                                      _defaultSortFromMode(FeedView.threads),
-                                  view: FeedView.threads,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 0,
-                                ),
-                                FeedScreenBody(
-                                  key: _getFeedKey(1),
-                                  feed: widget.feed,
-                                  source: widget.source ?? _filter,
-                                  sourceId: widget.sourceId,
-                                  sort:
-                                      _sort ??
-                                      _defaultSortFromMode(FeedView.microblog),
-                                  view: FeedView.microblog,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 1,
-                                ),
-                                FeedScreenBody(
-                                  key: _getFeedKey(2),
-                                  feed: widget.feed,
-                                  source: widget.source ?? _filter,
-                                  sourceId: widget.sourceId,
-                                  sort:
-                                      _sort ??
-                                      _defaultSortFromMode(FeedView.combined),
-                                  view: FeedView.combined,
-                                  details: widget.details,
-                                  userCanModerate: userCanModerate,
-                                  hideReadPosts: _hideReadPosts,
-                                  isActive: controller?.index == 2,
-                                ),
-                              ],
-                            _ => [],
-                          },
+                          children: _getFeedBodies(
+                            ac,
+                            tabsAction,
+                            userCanModerate,
+                            controller,
+                          ),
                         );
                 },
               ),
@@ -646,26 +569,21 @@ class _FeedScreenState extends State<FeedScreen>
   }
 }
 
-enum FeedView { threads, microblog, combined }
-
-SelectionMenu<FeedView> feedViewSelect(BuildContext context) =>
-    SelectionMenu(l(context).feedView, [
-      SelectionMenuItem(
-        value: FeedView.threads,
-        title: l(context).threads,
-        icon: Symbols.feed_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedView.microblog,
-        title: l(context).microblog,
-        icon: Symbols.chat_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedView.combined,
-        title: l(context).combined,
-        icon: Symbols.view_timeline_rounded,
-      ),
-    ]);
+SelectionMenu<FeedView> feedViewSelect(BuildContext context) => SelectionMenu(
+  l(context).feedView,
+  context
+      .read<AppController>()
+      .profile
+      .feedViewOrder
+      .map(
+        (view) => SelectionMenuItem(
+          value: view,
+          title: view.title(context),
+          icon: view.icon,
+        ),
+      )
+      .toList(),
+);
 
 SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
   final isLemmy =
@@ -820,33 +738,21 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
 }
 
 SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
-    SelectionMenu(l(context).filter, [
-      SelectionMenuItem(
-        value: FeedSource.subscribed,
-        title: l(context).filter_subscribed,
-        icon: Symbols.group_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedSource.moderated,
-        title: l(context).filter_moderated,
-        icon: Symbols.lock_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedSource.favorited,
-        title: l(context).filter_favorited,
-        icon: Symbols.favorite_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedSource.all,
-        title: l(context).filter_all,
-        icon: Symbols.newspaper_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedSource.local,
-        title: l(context).filter_local,
-        icon: Symbols.home_pin_rounded,
-      ),
-    ]);
+    SelectionMenu(
+      l(context).filter,
+      context
+          .read<AppController>()
+          .profile
+          .feedSourceOrder
+          .map(
+            (source) => SelectionMenuItem(
+              value: source,
+              title: source.title(context),
+              icon: source.icon,
+            ),
+          )
+          .toList(),
+    );
 
 class FeedScreenBody extends StatefulWidget {
   final FeedAggregator? feed;

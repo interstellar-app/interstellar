@@ -71,6 +71,8 @@ abstract class ProfileRequired with _$ProfileRequired {
     required FeedSort feedDefaultExploreSort,
     required CommentSort feedDefaultCommentSort,
     required bool feedDefaultHideReadPosts,
+    required List<FeedView> feedViewOrder,
+    required List<FeedSource> feedSourceOrder,
     // Feed actions
     required ActionLocation feedActionBackToTop,
     required ActionLocation feedActionCreateNew,
@@ -169,6 +171,8 @@ abstract class ProfileRequired with _$ProfileRequired {
     feedDefaultHideReadPosts:
         profile?.feedDefaultHideReadPosts ??
         defaultProfile.feedDefaultHideReadPosts,
+    feedViewOrder: profile?.feedViewOrder ?? defaultProfile.feedViewOrder,
+    feedSourceOrder: profile?.feedSourceOrder ?? defaultProfile.feedSourceOrder,
     feedActionBackToTop:
         profile?.feedActionBackToTop ?? defaultProfile.feedActionBackToTop,
     feedActionCreateNew:
@@ -239,6 +243,14 @@ abstract class ProfileRequired with _$ProfileRequired {
     feedDefaultExploreSort: FeedSort.newest,
     feedDefaultCommentSort: CommentSort.hot,
     feedDefaultHideReadPosts: false,
+    feedViewOrder: [FeedView.threads, FeedView.microblog, FeedView.combined],
+    feedSourceOrder: [
+      FeedSource.subscribed,
+      FeedSource.moderated,
+      FeedSource.favorited,
+      FeedSource.all,
+      FeedSource.local,
+    ],
     feedActionBackToTop: ActionLocation.fabMenu,
     feedActionCreateNew: ActionLocation.fabMenu,
     feedActionExpandFab: ActionLocation.fabTap,
@@ -308,6 +320,8 @@ abstract class ProfileOptional
     required FeedSort? feedDefaultExploreSort,
     required CommentSort? feedDefaultCommentSort,
     required bool? feedDefaultHideReadPosts,
+    required List<FeedView>? feedViewOrder,
+    required List<FeedSource>? feedSourceOrder,
     // Feed actions
     required ActionLocation? feedActionBackToTop,
     required ActionLocation? feedActionCreateNew,
@@ -374,6 +388,8 @@ abstract class ProfileOptional
       feedDefaultExploreSort: Value(feedDefaultExploreSort),
       feedDefaultCommentSort: Value(feedDefaultCommentSort),
       feedDefaultHideReadPosts: Value(feedDefaultHideReadPosts),
+      feedViewOrder: Value(feedViewOrder),
+      feedSourceOrder: Value(feedSourceOrder),
       // Feed actions
       feedActionBackToTop: Value(feedActionBackToTop),
       feedActionCreateNew: Value(feedActionCreateNew),
@@ -434,6 +450,8 @@ abstract class ProfileOptional
     feedDefaultExploreSort: null,
     feedDefaultCommentSort: null,
     feedDefaultHideReadPosts: null,
+    feedViewOrder: null,
+    feedSourceOrder: null,
     feedActionBackToTop: null,
     feedActionCreateNew: null,
     feedActionExpandFab: null,
@@ -507,6 +525,8 @@ abstract class ProfileOptional
           other.feedDefaultCommentSort ?? feedDefaultCommentSort,
       feedDefaultHideReadPosts:
           other.feedDefaultHideReadPosts ?? feedDefaultHideReadPosts,
+      feedViewOrder: other.feedViewOrder ?? feedViewOrder,
+      feedSourceOrder: other.feedSourceOrder ?? feedSourceOrder,
       feedActionBackToTop:
           other.feedActionBackToTop ?? this.feedActionBackToTop,
       feedActionCreateNew:

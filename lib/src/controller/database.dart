@@ -175,6 +175,38 @@ class FilterListActivationConverter
   }
 }
 
+class FeedViewListConverter extends TypeConverter<List<FeedView>, String> {
+  const FeedViewListConverter();
+
+  @override
+  List<FeedView> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>)
+        .map((item) => FeedView.values.byName(item))
+        .toList();
+  }
+
+  @override
+  String toSql(List<FeedView> enums) {
+    return jsonEncode(enums.map((item) => item.name).toList());
+  }
+}
+
+class FeedSourceListConverter extends TypeConverter<List<FeedSource>, String> {
+  const FeedSourceListConverter();
+
+  @override
+  List<FeedSource> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>)
+        .map((item) => FeedSource.values.byName(item))
+        .toList();
+  }
+
+  @override
+  String toSql(List<FeedSource> enums) {
+    return jsonEncode(enums.map((item) => item.name).toList());
+  }
+}
+
 @UseRowClass(ProfileOptional)
 class Profiles extends Table {
   TextColumn get name => text().clientDefault(() => 'Default')();
@@ -223,6 +255,10 @@ class Profiles extends Table {
   TextColumn get feedDefaultExploreSort => textEnum<FeedSort>().nullable()();
   TextColumn get feedDefaultCommentSort => textEnum<CommentSort>().nullable()();
   BoolColumn get feedDefaultHideReadPosts => boolean().nullable()();
+  TextColumn get feedViewOrder =>
+      text().map(const FeedViewListConverter()).nullable()();
+  TextColumn get feedSourceOrder =>
+      text().map(const FeedSourceListConverter()).nullable()();
   // Feed actions
   TextColumn get feedActionBackToTop => textEnum<ActionLocation>().nullable()();
   TextColumn get feedActionCreateNew => textEnum<ActionLocation>().nullable()();
