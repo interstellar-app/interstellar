@@ -119,6 +119,14 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
+      String name when name == feedActionSetSort(context).name => FeedSort.match(values: ac.profile.feedSortOrder, software: switch (ac.serverSoftware) {
+        ServerSoftware.mbin => FeedSort.mbin,
+        ServerSoftware.lemmy => FeedSort.lemmy,
+        ServerSoftware.piefed => FeedSort.piefed,
+      }).map((sort) => Tab(
+        text: sort.title(context),
+        icon: ac.profile.compactMode ? null : Icon(sort.icon),
+      )).toList(),
       String() => throw UnimplementedError(),
     };
   }
@@ -163,6 +171,22 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
+      String name when name == feedActionSetSort(context).name => FeedSort.match(values: ac.profile.feedSortOrder, software: switch (context.read<AppController>().serverSoftware) {
+        ServerSoftware.mbin => FeedSort.mbin,
+        ServerSoftware.lemmy => FeedSort.lemmy,
+        ServerSoftware.piefed => FeedSort.piefed,
+      }).mapIndexed((index, sort) => FeedScreenBody(
+        key: _getFeedKey(index),
+        feed: widget.feed,
+        source: widget.source ?? _filter,
+        sourceId: widget.sourceId,
+        sort: sort,
+        view: _view,
+        details: widget.details,
+        userCanModerate: userCanModerate,
+        hideReadPosts: _hideReadPosts,
+        isActive: controller?.index == index,
+      )).toList(),
       String() => throw UnimplementedError(),
     };
   }
@@ -350,6 +374,8 @@ class _FeedScreenState extends State<FeedScreen>
         actions.firstWhere(
           (action) => action.name == feedActionSetView(context).name,
         ),
+      if (context.watch<AppController>().profile.feedActionSetSort == ActionLocationWithTabs.tabs)
+        actions.firstWhere((action) => action.name == feedActionSetSort(context).name)
     ].firstOrNull;
 
     return Wrapper(
@@ -484,7 +510,10 @@ class _FeedScreenState extends State<FeedScreen>
                         .toList(),
                     bottom: tabsAction == null
                         ? null
-                        : TabBar(tabs: _getFeedTabs(ac, tabsAction)),
+                        : TabBar(
+                      isScrollable: _getFeedTabs(ac, tabsAction).length > 5,
+                        tabs: _getFeedTabs(ac, tabsAction)
+                    ),
                   ),
                 ];
               },
@@ -585,156 +614,23 @@ SelectionMenu<FeedView> feedViewSelect(BuildContext context) => SelectionMenu(
       .toList(),
 );
 
+List<SelectionMenuItem<FeedSort>> getSortItemsSelect(BuildContext context, int software, FeedSort? sort) {
+  return FeedSort.match(values: context.read<AppController>().profile.feedSortOrder, software: software, parent: sort, flat: false).map((item) => SelectionMenuItem<FeedSort>(
+    title: item.title(context),
+    value: item,
+    icon: item.icon,
+    subItems: getSortItemsSelect(context, software, item)
+  )).toList();
+}
+
 SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
-  final isLemmy =
-      context.read<AppController>().serverSoftware == ServerSoftware.lemmy;
-  final isPiefed =
-      context.read<AppController>().serverSoftware == ServerSoftware.piefed;
+  final software = switch (context.read<AppController>().serverSoftware) {
+    ServerSoftware.mbin => FeedSort.mbin,
+    ServerSoftware.lemmy => FeedSort.lemmy,
+    ServerSoftware.piefed => FeedSort.piefed,
+  };
 
-  return SelectionMenu(l(context).sort, [
-    SelectionMenuItem(
-      value: FeedSort.hot,
-      title: l(context).sort_hot,
-      icon: Symbols.local_fire_department_rounded,
-    ),
-    SelectionMenuItem(
-      value: FeedSort.top,
-      title: l(context).sort_top,
-      icon: Symbols.trending_up_rounded,
-      subItems: [
-        if (isLemmy || isPiefed)
-          SelectionMenuItem(
-            value: FeedSort.topHour,
-            title: l(context).sort_top_1h,
-          ),
-        if (!isLemmy && !isPiefed)
-          SelectionMenuItem(
-            value: FeedSort.topThreeHour,
-            title: l(context).sort_top_3h,
-          ),
-        SelectionMenuItem(
-          value: FeedSort.topSixHour,
-          title: l(context).sort_top_6h,
-        ),
-        SelectionMenuItem(
-          value: FeedSort.topTwelveHour,
-          title: l(context).sort_top_12h,
-        ),
-        SelectionMenuItem(
-          value: FeedSort.topDay,
-          title: l(context).sort_top_1d,
-        ),
-        SelectionMenuItem(
-          value: FeedSort.topWeek,
-          title: l(context).sort_top_1w,
-        ),
-        SelectionMenuItem(
-          value: FeedSort.topMonth,
-          title: l(context).sort_top_1m,
-        ),
-        if (isLemmy || isPiefed) ...[
-          SelectionMenuItem(
-            value: FeedSort.topThreeMonths,
-            title: l(context).sort_top_3m,
-          ),
-          SelectionMenuItem(
-            value: FeedSort.topSixMonths,
-            title: l(context).sort_top_6m,
-          ),
-          SelectionMenuItem(
-            value: FeedSort.topNineMonths,
-            title: l(context).sort_top_9m,
-          ),
-        ],
-        SelectionMenuItem(
-          value: FeedSort.topYear,
-          title: l(context).sort_top_1y,
-        ),
-        SelectionMenuItem(value: FeedSort.top, title: l(context).sort_top_all),
-      ],
-    ),
-    SelectionMenuItem(
-      value: FeedSort.newest,
-      title: l(context).sort_newest,
-      icon: Symbols.nest_eco_leaf_rounded,
-    ),
-    SelectionMenuItem(
-      value: FeedSort.active,
-      title: l(context).sort_active,
-      icon: Symbols.rocket_launch_rounded,
-    ),
-
-    // Not in PieFed
-    if (!isPiefed) ...[
-      SelectionMenuItem(
-        value: FeedSort.commented,
-        title: l(context).sort_commented,
-        icon: Symbols.chat_rounded,
-        subItems: isLemmy || isPiefed
-            ? null
-            : [
-                SelectionMenuItem(
-                  value: FeedSort.commentedThreeHour,
-                  title: l(context).sort_commented_3h,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commentedSixHour,
-                  title: l(context).sort_commented_6h,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commentedTwelveHour,
-                  title: l(context).sort_commented_12h,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commentedDay,
-                  title: l(context).sort_commented_1d,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commentedWeek,
-                  title: l(context).sort_commented_1w,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commentedMonth,
-                  title: l(context).sort_commented_1m,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commentedYear,
-                  title: l(context).sort_commented_1y,
-                ),
-                SelectionMenuItem(
-                  value: FeedSort.commented,
-                  title: l(context).sort_commented_all,
-                ),
-              ],
-      ),
-      SelectionMenuItem(
-        value: FeedSort.oldest,
-        title: l(context).sort_oldest,
-        icon: Symbols.access_time_rounded,
-      ),
-    ],
-
-    if (isLemmy || isPiefed)
-      SelectionMenuItem(
-        value: FeedSort.scaled,
-        title: l(context).sort_scaled,
-        icon: Symbols.scale_rounded,
-      ),
-
-    // lemmy specific
-    if (isLemmy) ...[
-      SelectionMenuItem(
-        value: FeedSort.newComments,
-        title: l(context).sort_newComments,
-        icon: Symbols.mark_chat_unread_rounded,
-      ),
-      SelectionMenuItem(
-        value: FeedSort.controversial,
-        title: l(context).sort_controversial,
-        icon: Symbols.thumbs_up_down_rounded,
-      ),
-    ],
-  ]);
+  return SelectionMenu(l(context).sort, getSortItemsSelect(context, software, null));
 }
 
 SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>

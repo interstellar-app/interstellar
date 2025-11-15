@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
-import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart'
     hide
@@ -73,13 +72,14 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool feedDefaultHideReadPosts,
     required List<FeedView> feedViewOrder,
     required List<FeedSource> feedSourceOrder,
+    required List<FeedSort> feedSortOrder,
     // Feed actions
     required ActionLocation feedActionBackToTop,
     required ActionLocation feedActionCreateNew,
     required ActionLocation feedActionExpandFab,
     required ActionLocation feedActionRefresh,
     required ActionLocationWithTabs feedActionSetFilter,
-    required ActionLocation feedActionSetSort,
+    required ActionLocationWithTabs feedActionSetSort,
     required ActionLocationWithTabs feedActionSetView,
     required ActionLocation feedActionHideReadPosts,
     // Swipe Actions
@@ -173,6 +173,7 @@ abstract class ProfileRequired with _$ProfileRequired {
         defaultProfile.feedDefaultHideReadPosts,
     feedViewOrder: profile?.feedViewOrder ?? defaultProfile.feedViewOrder,
     feedSourceOrder: profile?.feedSourceOrder ?? defaultProfile.feedSourceOrder,
+    feedSortOrder: profile?.feedSortOrder ?? defaultProfile.feedSortOrder,
     feedActionBackToTop:
         profile?.feedActionBackToTop ?? defaultProfile.feedActionBackToTop,
     feedActionCreateNew:
@@ -251,12 +252,13 @@ abstract class ProfileRequired with _$ProfileRequired {
       FeedSource.all,
       FeedSource.local,
     ],
+    feedSortOrder: FeedSort.values,
     feedActionBackToTop: ActionLocation.fabMenu,
     feedActionCreateNew: ActionLocation.fabMenu,
     feedActionExpandFab: ActionLocation.fabTap,
     feedActionRefresh: ActionLocation.fabMenu,
     feedActionSetFilter: ActionLocationWithTabs.tabs,
-    feedActionSetSort: ActionLocation.appBar,
+    feedActionSetSort: ActionLocationWithTabs.appBar,
     feedActionSetView: ActionLocationWithTabs.appBar,
     feedActionHideReadPosts: ActionLocation.fabMenu,
     enableSwipeActions: false,
@@ -322,13 +324,14 @@ abstract class ProfileOptional
     required bool? feedDefaultHideReadPosts,
     required List<FeedView>? feedViewOrder,
     required List<FeedSource>? feedSourceOrder,
+    required List<FeedSort>? feedSortOrder,
     // Feed actions
     required ActionLocation? feedActionBackToTop,
     required ActionLocation? feedActionCreateNew,
     required ActionLocation? feedActionExpandFab,
     required ActionLocation? feedActionRefresh,
     required ActionLocationWithTabs? feedActionSetFilter,
-    required ActionLocation? feedActionSetSort,
+    required ActionLocationWithTabs? feedActionSetSort,
     required ActionLocationWithTabs? feedActionSetView,
     required ActionLocation? feedActionHideReadPosts,
     required bool? enableSwipeActions,
@@ -390,6 +393,7 @@ abstract class ProfileOptional
       feedDefaultHideReadPosts: Value(feedDefaultHideReadPosts),
       feedViewOrder: Value(feedViewOrder),
       feedSourceOrder: Value(feedSourceOrder),
+      feedSortOrder: Value(feedSortOrder),
       // Feed actions
       feedActionBackToTop: Value(feedActionBackToTop),
       feedActionCreateNew: Value(feedActionCreateNew),
@@ -452,6 +456,7 @@ abstract class ProfileOptional
     feedDefaultHideReadPosts: null,
     feedViewOrder: null,
     feedSourceOrder: null,
+    feedSortOrder: null,
     feedActionBackToTop: null,
     feedActionCreateNew: null,
     feedActionExpandFab: null,
@@ -527,6 +532,7 @@ abstract class ProfileOptional
           other.feedDefaultHideReadPosts ?? feedDefaultHideReadPosts,
       feedViewOrder: other.feedViewOrder ?? feedViewOrder,
       feedSourceOrder: other.feedSourceOrder ?? feedSourceOrder,
+      feedSortOrder: other.feedSortOrder ?? feedSortOrder,
       feedActionBackToTop:
           other.feedActionBackToTop ?? this.feedActionBackToTop,
       feedActionCreateNew:
@@ -588,7 +594,7 @@ abstract class ProfileOptional
           ? ActionLocationWithTabs.hide
           : this.feedActionSetFilter,
       feedActionSetSort: builtProfile.feedActionSetSort.name == actionName
-          ? ActionLocation.hide
+          ? ActionLocationWithTabs.hide
           : this.feedActionSetSort,
       feedActionSetView: builtProfile.feedActionSetView.name == actionName
           ? ActionLocationWithTabs.hide

@@ -3,6 +3,7 @@ import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/screens/settings/feed_defaults/feed_sort_order.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults/feed_source_order.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults/feed_view_order.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -116,11 +117,24 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
           ),
           ListTile(
             title: Text(l(context).settings_feedSourceOrder),
-            onTap: () => pushRoute(context, builder: (context) => FeedSourceOrderSettingsScreen()),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => FeedSourceOrderSettingsScreen(),
+            ),
           ),
           ListTile(
             title: Text(l(context).settings_feedViewOrder),
-            onTap: () => pushRoute(context, builder: (context) => FeedViewOrderSettingsScreen()),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => FeedViewOrderSettingsScreen(),
+            ),
+          ),
+          ListTile(
+            title: Text(l(context).settings_feedViewOrder),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => FeedSortOrderSettingsScreen(),
+            ),
           ),
         ],
       ),

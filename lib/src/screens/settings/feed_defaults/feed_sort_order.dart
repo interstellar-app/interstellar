@@ -9,25 +9,24 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-class FeedSourceOrderSettingsScreen extends StatefulWidget {
-  const FeedSourceOrderSettingsScreen({super.key});
+class FeedSortOrderSettingsScreen extends StatefulWidget {
+  const FeedSortOrderSettingsScreen({super.key});
 
   @override
-  State<FeedSourceOrderSettingsScreen> createState() =>
-      _FeedSourceOrderSettingsScreen();
+  State<FeedSortOrderSettingsScreen> createState() =>
+      _FeedSortOrderSettingsScreen();
 }
 
-class _FeedSourceOrderSettingsScreen
-    extends State<FeedSourceOrderSettingsScreen> {
-  late List<FeedSource> _feedSourceOrder;
+class _FeedSortOrderSettingsScreen extends State<FeedSortOrderSettingsScreen> {
+  late List<FeedSort> _feedSortOrder;
 
   @override
   void initState() {
     super.initState();
-    _feedSourceOrder = context
+    _feedSortOrder = context
         .read<AppController>()
         .profile
-        .feedSourceOrder
+        .feedSortOrder
         .toList();
   }
 
@@ -41,12 +40,10 @@ class _FeedSourceOrderSettingsScreen
         actions: [
           IconButton(
             onPressed: () => setState(() {
-              _feedSourceOrder = ProfileRequired.defaultProfile.feedSourceOrder
+              _feedSortOrder = ProfileRequired.defaultProfile.feedSortOrder
                   .toList();
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(
-                  feedSourceOrder: _feedSourceOrder,
-                ),
+                ac.selectedProfileValue.copyWith(feedSortOrder: _feedSortOrder),
               );
             }),
             icon: const Icon(Symbols.restore),
@@ -54,7 +51,7 @@ class _FeedSourceOrderSettingsScreen
         ],
       ),
       body: ReorderableListView(
-        children: _feedSourceOrder
+        children: _feedSortOrder
             .mapIndexed(
               (index, item) => ListTile(
                 key: Key(item.index.toString()),
@@ -70,10 +67,10 @@ class _FeedSourceOrderSettingsScreen
           if (oldIndex < newIndex) {
             newIndex -= 1;
           }
-          final item = _feedSourceOrder.removeAt(oldIndex);
-          _feedSourceOrder.insert(newIndex, item);
+          final item = _feedSortOrder.removeAt(oldIndex);
+          _feedSortOrder.insert(newIndex, item);
           ac.updateProfile(
-            ac.selectedProfileValue.copyWith(feedSourceOrder: _feedSourceOrder),
+            ac.selectedProfileValue.copyWith(feedSortOrder: _feedSortOrder),
           );
         }),
       ),
