@@ -15,6 +15,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/jwt_http_client.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
@@ -682,10 +683,23 @@ class AppController with ChangeNotifier {
             .insertOnConflictUpdate(
               FeedInputsCompanion.insert(
                 feed: name,
-                name: input.name,
+                name: normalizeName(input.name, instanceHost),
                 source: input.sourceType,
               ),
             );
+        if (input.sourceType == FeedSource.feed ||
+            input.sourceType == FeedSource.topic) {
+          await database
+              .into(database.feedSourceCache)
+              .insertOnConflictUpdate(
+                FeedSourceCacheCompanion.insert(
+                  name: normalizeName(input.name, instanceHost),
+                  server: instanceHost,
+                  sourceId: Value(input.serverId),
+                  source: input.sourceType,
+                ),
+              );
+        }
       }
     });
   }
@@ -849,10 +863,11 @@ class AppController with ChangeNotifier {
   }
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
+    final normalisedName = normalizeName(name, instanceHost);
     final cachedValue =
         (await (database.select(database.feedSourceCache)..where(
                   (t) =>
-                      t.name.equals(name) &
+                      t.name.equals(normalisedName) &
                       t.server.equals(instanceHost) &
                       t.source.equals(source.name),
                 ))
@@ -883,7 +898,7 @@ class AppController with ChangeNotifier {
             .into(database.feedSourceCache)
             .insertOnConflictUpdate(
               FeedSourceCacheCompanion.insert(
-                name: name,
+                name: normalisedName,
                 server: instanceHost,
                 sourceId: Value(newValue),
                 source: source,
