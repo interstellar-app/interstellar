@@ -1,5 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:oauth2/oauth2.dart';
+import 'package:provider/provider.dart';
+
+class AuthErrorPage extends StatelessWidget {
+  const AuthErrorPage({super.key, required this.error});
+
+  final AuthorizationException error;
+
+  void relogin(BuildContext context) async {
+    final ac = context.read<AppController>();
+    final software = ac.serverSoftware;
+    final server = ac.instanceHost;
+
+    await ac.login(software: software, server: server, context: context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            l(context).errorPage_authError,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 16),
+          Text(error.toString(), textAlign: TextAlign.center),
+          const SizedBox(height: 48),
+          ElevatedButton.icon(
+            onPressed: () => relogin(context),
+            label: Text(
+              l(context).refreshAuth,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class FirstPageErrorIndicator extends StatelessWidget {
   const FirstPageErrorIndicator({
@@ -13,6 +56,10 @@ class FirstPageErrorIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (error is AuthorizationException) {
+      return AuthErrorPage(error: error);
+    }
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
@@ -113,7 +160,7 @@ class _NoItemsFoundIndicatorState extends State<NoItemsFoundIndicator> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'You\'re all caught up.\nLoad older items?',
+                  l(context).errorPage_caughtUp,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 4),

@@ -1,19 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:interstellar/src/api/api.dart';
-import 'package:interstellar/src/api/client.dart';
-import 'package:interstellar/src/api/oauth.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/utils/jwt_http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/password_editor.dart';
-import 'package:interstellar/src/widgets/redirect_listen.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
-import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/database.dart';
 
@@ -86,7 +77,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                     ],
                   ],
                 ),
-              )
+              ),
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -113,124 +104,15 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                             _passwordTextController.text.isEmpty)
                     ? null
                     : () async {
-                        if (widget.software == ServerSoftware.lemmy ||
-                            widget.software == ServerSoftware.piefed) {
-                          final loginPath =
-                              '${widget.software.apiPathPrefix}/user/login';
+                        await context.read<AppController>().login(
+                          software: widget.software,
+                          server: widget.server,
+                          username: _usernameEmailTextController.text,
+                          password: _passwordTextController.text,
+                          context: context,
+                        );
 
-                          final loginEndpoint = Uri.https(
-                            widget.server,
-                            loginPath,
-                          );
-
-                          final response = await http.post(
-                            loginEndpoint,
-                            headers: {'Content-Type': 'application/json'},
-                            body: jsonEncode({
-                              switch (widget.software) {
-                                ServerSoftware.lemmy => 'username_or_email',
-                                ServerSoftware.piefed => 'username',
-                                ServerSoftware.mbin => throw Exception(
-                                  'unreachable',
-                                ),
-                              }: _usernameEmailTextController.text,
-                              'password': _passwordTextController.text,
-                              if (widget.software == ServerSoftware.lemmy)
-                                'totp_2fa_token': nullIfEmpty(
-                                  _totpTokenTextController.text,
-                                ),
-                            }),
-                          );
-                          ServerClient.checkResponseSuccess(
-                            loginEndpoint,
-                            response,
-                          );
-
-                          final jwt = response.bodyJson['jwt'] as String;
-                          final user = await API(
-                            ServerClient(
-                              httpClient: JwtHttpClient(jwt),
-                              software: widget.software,
-                              domain: widget.server,
-                            ),
-                          ).users.getMe();
-
-                          // Check BuildContext
-                          if (!context.mounted) return;
-                          context.read<AppController>().setAccount(
-                            '${user.name}@${widget.server}',
-                            Account(handle: '${user.name}@${widget.server}', jwt: response.bodyJson['jwt'] as String, isPushRegistered: false),
-                          );
-                        } else {
-                          final authorizationEndpoint = Uri.https(
-                            widget.server,
-                            '/authorize',
-                          );
-                          final tokenEndpoint = Uri.https(
-                            widget.server,
-                            '/token',
-                          );
-
-                          String identifier = await context
-                              .read<AppController>()
-                              .getMbinOAuthIdentifier(
-                                widget.software,
-                                widget.server,
-                              );
-
-                          final grant = oauth2.AuthorizationCodeGrant(
-                            identifier,
-                            authorizationEndpoint,
-                            tokenEndpoint,
-                          );
-
-                          Uri authorizationUrl = grant.getAuthorizationUrl(
-                            Uri.parse(redirectUri),
-                            scopes: oauthScopes,
-                          );
-
-                          // Check BuildContext
-                          if (!context.mounted) return;
-
-                          Map<String, String>? result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RedirectListener(
-                                authorizationUrl,
-                                title: widget.server,
-                              ),
-                            ),
-                          );
-
-                          if (result == null || !result.containsKey('code')) {
-                            throw Exception(
-                              result?['message'] != null
-                                  ? result!['message']
-                                  : 'unsuccessful login',
-                            );
-                          }
-
-                          var client = await grant.handleAuthorizationResponse(
-                            result,
-                          );
-
-                          var user = await API(
-                            ServerClient(
-                              httpClient: client,
-                              software: widget.software,
-                              domain: widget.server,
-                            ),
-                          ).users.getMe();
-
-                          // Check BuildContext
-                          if (!context.mounted) return;
-
-                          context.read<AppController>().setAccount(
-                            '${user.name}@${widget.server}',
-                            Account(handle: '${user.name}@${widget.server}', oauth: client.credentials, isPushRegistered: false),
-                            switchNow: true,
-                          );
-                        }
+                        if (!context.mounted) return;
 
                         Navigator.pop(context, true);
                       },
