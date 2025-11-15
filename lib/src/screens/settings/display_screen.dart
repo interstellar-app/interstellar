@@ -1,18 +1,39 @@
+import 'dart:io';
 import 'dart:math';
-
+import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/screens/settings/post_layout.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class DisplaySettingsScreen extends StatelessWidget {
+class DisplaySettingsScreen extends StatefulWidget {
   const DisplaySettingsScreen({super.key});
+
+  @override
+  State<DisplaySettingsScreen> createState() => _DisplaySettingsState();
+}
+
+class _DisplaySettingsState extends State<DisplaySettingsScreen> {
+  late final List<PostComponent> _postComponentOrder;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _postComponentOrder = context
+        .read<AppController>()
+        .profile
+        .postComponentOrder
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,12 +110,25 @@ class DisplaySettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTileSwitch(
-            leading: const Icon(Symbols.view_agenda_rounded),
+            leading: const Icon(Symbols.table_rows_rounded),
             title: Text(l(context).settings_compactMode),
             value: ac.profile.compactMode,
             onChanged: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(compactMode: newValue),
             ),
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.view_agenda_rounded),
+            title: Text(l(context).settings_postsAsCards),
+            value: ac.profile.showPostsCards,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(showPostsCards: newValue),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.vertical_split_rounded),
+            title: Text(l(context).settings_postLayoutOrder),
+            onTap: () => pushRoute(context, builder: (context) => PostLayoutSettingsScreen()),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.view_day_rounded),

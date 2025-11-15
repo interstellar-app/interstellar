@@ -63,6 +63,8 @@ class AdvancedImage extends StatelessWidget {
             ExtendedImage.network(
               image.src,
               fit: fit,
+              borderRadius: BorderRadius.circular(15),
+              shape: BoxShape.rectangle,
               enableSlideOutPage: true,
               heroBuilderForSlidingPage: (child) {
                 return SuperHero(
@@ -79,6 +81,8 @@ class AdvancedImage extends StatelessWidget {
                   if (image.blurHash != null) {
                     return ExtendedImage(
                       fit: fit,
+                      borderRadius: BorderRadius.circular(15),
+                      shape: BoxShape.rectangle,
                       image: BlurhashFfiImage(
                         image.blurHash!,
                         decodingWidth:
