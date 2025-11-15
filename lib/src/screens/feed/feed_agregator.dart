@@ -1,11 +1,11 @@
 import 'dart:math';
+import 'package:collection/collection.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'feed_screen.dart';
 
 double calcLemmyRanking(PostModel post, DateTime time) {
   final scaleFactor = 10000;
@@ -44,7 +44,8 @@ double calcMbinRanking(PostModel post) {
   final maxAdvantage = 86400;
   final maxPenalty = 43200;
 
-  final score = (post.boosts ?? 0) + (post.upvotes ?? 0) - (post.downvotes ?? 0);
+  final score =
+      (post.boosts ?? 0) + (post.upvotes ?? 0) - (post.downvotes ?? 0);
   final scoreAdvantage = score * netscoreMultiplier;
 
   var commentAdvantage = 0;
@@ -249,7 +250,7 @@ class FeedInputState {
               )
             : Future.value();
         final microblogFuture =
-        _combinedPage != null && _combinedMicroblogsLeftover.length < 25
+            _combinedPage != null && _combinedMicroblogsLeftover.length < 25
             ? ac.api.microblogs.list(
                 source,
                 sourceId: sourceId,
@@ -264,14 +265,10 @@ class FeedInputState {
         final postLists = results
             .map((postListModel) => postListModel?.items ?? <PostModel>[])
             .toList();
-        final merged = merge(
-          ac.serverSoftware,
-          [
-            [..._combinedThreadsLeftover, ...postLists[0]],
-            [..._combinedMicroblogsLeftover, ...postLists[1]]
-          ],
-          sort,
-        );
+        final merged = merge(ac.serverSoftware, [
+          [..._combinedThreadsLeftover, ...postLists[0]],
+          [..._combinedMicroblogsLeftover, ...postLists[1]],
+        ], sort);
 
         // get next page if new request was sent
         if (_combinedMicroblogsLeftover.length < 25) {
@@ -282,7 +279,9 @@ class FeedInputState {
         }
 
         _combinedThreadsLeftover = merged.$2.isNotEmpty ? merged.$2.first : [];
-        _combinedMicroblogsLeftover = merged.$2.length > 1 ? merged.$2.last : [];
+        _combinedMicroblogsLeftover = merged.$2.length > 1
+            ? merged.$2.last
+            : [];
 
         // if final page of input also return leftover posts
         var result = [..._leftover, ...merged.$1];
@@ -308,10 +307,28 @@ class FeedAggregator {
 
   const FeedAggregator({required this.name, required this.inputs});
 
-  static Future<FeedAggregator> create(AppController ac, String name, Feed feed) async {
+  factory FeedAggregator.fromSingleSource(
+    AppController ac, {
+    required String name,
+    required FeedSource source,
+    int? sourceId,
+  }) => FeedAggregator(
+    name: name,
+    inputs: [
+      FeedInputState(title: source.name, source: source, sourceId: sourceId),
+    ],
+  );
+
+  static Future<FeedAggregator> create(
+    AppController ac,
+    String name,
+    Feed feed,
+  ) async {
     final inputs = await feed.inputs.map((input) async {
       final name = denormalizeName(input.name, ac.instanceHost);
-      final source = input.serverId?? await ac.fetchCachedFeedInput(name, input.sourceType);
+      final source =
+          input.serverId ??
+          await ac.fetchCachedFeedInput(name, input.sourceType);
       if (source == null) return null;
       return FeedInputState(
         title: input.name,
@@ -385,4 +402,21 @@ class FeedAggregator {
       inputs: inputs.map((input) => input.clone()).toList(),
     );
   }
+
+  @override
+  bool operator ==(covariant FeedAggregator other) {
+    if (name != other.name || inputs.length != other.inputs.length)
+      return false;
+
+    for (final pair in IterableZip([inputs, other.inputs])) {
+      if (pair[0].source != pair[1].source ||
+          pair[0].sourceId != pair[1].sourceId)
+        return false;
+    }
+
+    return true;
+  }
+
+  @override
+  int get hashCode => name.hashCode + inputs.hashCode;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -46,9 +47,12 @@ class _DomainScreenState extends State<DomainScreen> {
   @override
   Widget build(BuildContext context) {
     return FeedScreen(
-      source: FeedSource.domain,
-      sourceId: widget.domainId,
-      title: _data?.name ?? '',
+      feed: FeedAggregator.fromSingleSource(
+        context.read<AppController>(),
+        name: _data?.name ?? '',
+        source: FeedSource.domain,
+        sourceId: widget.domainId,
+      ),
       details: _data != null
           ? Padding(
               padding: const EdgeInsets.all(12),

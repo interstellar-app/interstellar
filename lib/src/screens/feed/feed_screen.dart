@@ -31,9 +31,6 @@ import 'package:collection/collection.dart';
 
 class FeedScreen extends StatefulWidget {
   final FeedAggregator? feed;
-  final FeedSource? source;
-  final int? sourceId;
-  final String? title;
   final Widget? details;
   final DetailedCommunityModel? createPostCommunity;
   final ScrollController? scrollController;
@@ -41,9 +38,6 @@ class FeedScreen extends StatefulWidget {
   const FeedScreen({
     super.key,
     this.feed,
-    this.source,
-    this.sourceId,
-    this.title,
     this.details,
     this.createPostCommunity,
     this.scrollController,
@@ -78,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen>
     return _feedKeyList[index];
   }
 
-  FeedSort _defaultSortFromMode(FeedView view) => widget.source != null
+  FeedSort _defaultSortFromMode(FeedView view) => widget.feed != null
       ? context.read<AppController>().profile.feedDefaultExploreSort
       : switch (view) {
           FeedView.threads =>
@@ -119,14 +113,22 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
-      String name when name == feedActionSetSort(context).name => FeedSort.match(values: ac.profile.feedSortOrder, software: switch (ac.serverSoftware) {
-        ServerSoftware.mbin => FeedSort.mbin,
-        ServerSoftware.lemmy => FeedSort.lemmy,
-        ServerSoftware.piefed => FeedSort.piefed,
-      }).map((sort) => Tab(
-        text: sort.title(context),
-        icon: ac.profile.compactMode ? null : Icon(sort.icon),
-      )).toList(),
+      String name when name == feedActionSetSort(context).name =>
+        FeedSort.match(
+              values: ac.profile.feedSortOrder,
+              software: switch (ac.serverSoftware) {
+                ServerSoftware.mbin => FeedSort.mbin,
+                ServerSoftware.lemmy => FeedSort.lemmy,
+                ServerSoftware.piefed => FeedSort.piefed,
+              },
+            )
+            .map(
+              (sort) => Tab(
+                text: sort.title(context),
+                icon: ac.profile.compactMode ? null : Icon(sort.icon),
+              ),
+            )
+            .toList(),
       String() => throw UnimplementedError(),
     };
   }
@@ -143,8 +145,13 @@ class _FeedScreenState extends State<FeedScreen>
             .mapIndexed(
               (index, feed) => FeedScreenBody(
                 key: _getFeedKey(index),
-                feed: widget.feed,
-                source: feed,
+                feed:
+                    widget.feed ??
+                    FeedAggregator.fromSingleSource(
+                      ac,
+                      name: name,
+                      source: feed,
+                    ),
                 sort: _sort ?? _defaultSortFromMode(_view),
                 view: _view,
                 details: widget.details,
@@ -159,9 +166,13 @@ class _FeedScreenState extends State<FeedScreen>
             .mapIndexed(
               (index, view) => FeedScreenBody(
                 key: _getFeedKey(index),
-                feed: widget.feed,
-                source: widget.source ?? _filter,
-                sourceId: widget.sourceId,
+                feed:
+                    widget.feed ??
+                    FeedAggregator.fromSingleSource(
+                      ac,
+                      name: name,
+                      source: _filter,
+                    ),
                 sort: _sort ?? _defaultSortFromMode(view),
                 view: view,
                 details: widget.details,
@@ -171,22 +182,34 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
-      String name when name == feedActionSetSort(context).name => FeedSort.match(values: ac.profile.feedSortOrder, software: switch (context.read<AppController>().serverSoftware) {
-        ServerSoftware.mbin => FeedSort.mbin,
-        ServerSoftware.lemmy => FeedSort.lemmy,
-        ServerSoftware.piefed => FeedSort.piefed,
-      }).mapIndexed((index, sort) => FeedScreenBody(
-        key: _getFeedKey(index),
-        feed: widget.feed,
-        source: widget.source ?? _filter,
-        sourceId: widget.sourceId,
-        sort: sort,
-        view: _view,
-        details: widget.details,
-        userCanModerate: userCanModerate,
-        hideReadPosts: _hideReadPosts,
-        isActive: controller?.index == index,
-      )).toList(),
+      String name when name == feedActionSetSort(context).name =>
+        FeedSort.match(
+              values: ac.profile.feedSortOrder,
+              software: switch (context.read<AppController>().serverSoftware) {
+                ServerSoftware.mbin => FeedSort.mbin,
+                ServerSoftware.lemmy => FeedSort.lemmy,
+                ServerSoftware.piefed => FeedSort.piefed,
+              },
+            )
+            .mapIndexed(
+              (index, sort) => FeedScreenBody(
+                key: _getFeedKey(index),
+                feed:
+                    widget.feed ??
+                    FeedAggregator.fromSingleSource(
+                      ac,
+                      name: name,
+                      source: _filter,
+                    ),
+                sort: sort,
+                view: _view,
+                details: widget.details,
+                userCanModerate: userCanModerate,
+                hideReadPosts: _hideReadPosts,
+                isActive: controller?.index == index,
+              ),
+            )
+            .toList(),
       String() => throw UnimplementedError(),
     };
   }
@@ -236,7 +259,7 @@ class _FeedScreenState extends State<FeedScreen>
     // don't really need for mbin since mbin api returns
     // canAuthUserModerate with content items
     // lemmy and piefed don't return this info
-    final localUserPart = context.read<AppController>().localName;
+    final localUserPart = ac.localName;
     final userCanModerate = widget.createPostCommunity == null
         ? false
         : widget.createPostCommunity!.moderators.any(
@@ -245,9 +268,7 @@ class _FeedScreenState extends State<FeedScreen>
 
     final actions = [
       feedActionCreateNew(context).withProps(
-        context.watch<AppController>().isLoggedIn
-            ? context.watch<AppController>().profile.feedActionCreateNew
-            : ActionLocation.hide,
+        ac.isLoggedIn ? ac.profile.feedActionCreateNew : ActionLocation.hide,
         () async {
           await pushRoute(
             context,
@@ -257,13 +278,12 @@ class _FeedScreenState extends State<FeedScreen>
         },
       ),
       feedActionSetFilter(context).withProps(
-        whenLoggedIn(context, widget.source != null || widget.feed != null) ??
-                true
+        whenLoggedIn(context, widget.feed != null) ?? true
             ? ActionLocation.hide
             : parseEnum(
                 ActionLocation.values,
                 ActionLocation.hide,
-                context.watch<AppController>().profile.feedActionSetFilter.name,
+                ac.profile.feedActionSetFilter.name,
               ),
         () async {
           final newFilter = await feedFilterSelect(
@@ -281,7 +301,7 @@ class _FeedScreenState extends State<FeedScreen>
         parseEnum(
           ActionLocation.values,
           ActionLocation.hide,
-          context.watch<AppController>().profile.feedActionSetSort.name,
+          ac.profile.feedActionSetSort.name,
         ),
         () async {
           final newSort = await feedSortSelect(
@@ -296,13 +316,13 @@ class _FeedScreenState extends State<FeedScreen>
         },
       ),
       feedActionSetView(context).withProps(
-        context.watch<AppController>().serverSoftware != ServerSoftware.mbin ||
-                widget.source == FeedSource.domain
+        ac.serverSoftware != ServerSoftware.mbin ||
+                widget.feed?.inputs.firstOrNull?.source == FeedSource.domain
             ? ActionLocation.hide
             : parseEnum(
                 ActionLocation.values,
                 ActionLocation.hide,
-                context.watch<AppController>().profile.feedActionSetView.name,
+                ac.profile.feedActionSetView.name,
               ),
         () async {
           final newMode = await feedViewSelect(
@@ -316,16 +336,13 @@ class _FeedScreenState extends State<FeedScreen>
           }
         },
       ),
-      feedActionRefresh(context).withProps(
-        context.watch<AppController>().profile.feedActionRefresh,
-        () {
-          for (var key in _feedKeyList) {
-            key.currentState?.refresh();
-          }
-        },
-      ),
+      feedActionRefresh(context).withProps(ac.profile.feedActionRefresh, () {
+        for (var key in _feedKeyList) {
+          key.currentState?.refresh();
+        }
+      }),
       feedActionBackToTop(context).withProps(
-        context.watch<AppController>().profile.feedActionBackToTop,
+        ac.profile.feedActionBackToTop,
         () {
           for (var key in _feedKeyList) {
             key.currentState?.backToTop();
@@ -333,14 +350,14 @@ class _FeedScreenState extends State<FeedScreen>
         },
       ),
       feedActionExpandFab(context).withProps(
-        context.watch<AppController>().profile.feedActionExpandFab,
+        ac.profile.feedActionExpandFab,
         () {
           _fabKey.currentState?.toggle();
         },
       ),
       _hideReadPosts
           ? feedActionShowReadPosts(context).withProps(
-              context.watch<AppController>().profile.feedActionHideReadPosts,
+              ac.profile.feedActionHideReadPosts,
               () => setState(() {
                 _hideReadPosts = !_hideReadPosts;
                 for (var key in _feedKeyList) {
@@ -349,7 +366,7 @@ class _FeedScreenState extends State<FeedScreen>
               }),
             )
           : feedActionHideReadPosts(context).withProps(
-              context.watch<AppController>().profile.feedActionHideReadPosts,
+              ac.profile.feedActionHideReadPosts,
               () => setState(() {
                 _hideReadPosts = !_hideReadPosts;
                 for (var key in _feedKeyList) {
@@ -360,22 +377,21 @@ class _FeedScreenState extends State<FeedScreen>
     ];
 
     final tabsAction = [
-      if (context.watch<AppController>().profile.feedActionSetFilter ==
-              ActionLocationWithTabs.tabs &&
-          widget.source == null &&
+      if (ac.profile.feedActionSetFilter == ActionLocationWithTabs.tabs &&
           widget.feed == null &&
-          context.watch<AppController>().isLoggedIn)
+          ac.isLoggedIn)
         actions.firstWhere(
           (action) => action.name == feedActionSetFilter(context).name,
         ),
-      if (context.watch<AppController>().profile.feedActionSetView ==
-              ActionLocationWithTabs.tabs &&
-          context.watch<AppController>().serverSoftware == ServerSoftware.mbin)
+      if (ac.profile.feedActionSetView == ActionLocationWithTabs.tabs &&
+          ac.serverSoftware == ServerSoftware.mbin)
         actions.firstWhere(
           (action) => action.name == feedActionSetView(context).name,
         ),
-      if (context.watch<AppController>().profile.feedActionSetSort == ActionLocationWithTabs.tabs)
-        actions.firstWhere((action) => action.name == feedActionSetSort(context).name)
+      if (ac.profile.feedActionSetSort == ActionLocationWithTabs.tabs)
+        actions.firstWhere(
+          (action) => action.name == feedActionSetSort(context).name,
+        ),
     ].firstOrNull;
 
     return Wrapper(
@@ -387,9 +403,7 @@ class _FeedScreenState extends State<FeedScreen>
                 .asMap()
                 .entries
                 .firstWhere(
-                  (entry) =>
-                      entry.value.value ==
-                      context.watch<AppController>().profile.feedDefaultFilter,
+                  (entry) => entry.value.value == ac.profile.feedDefaultFilter,
                 )
                 .key,
           String name when name == feedActionSetView(context).name =>
@@ -399,12 +413,8 @@ class _FeedScreenState extends State<FeedScreen>
                 .firstWhere(
                   (entry) =>
                       entry.value.value ==
-                      (context.watch<AppController>().serverSoftware ==
-                              ServerSoftware.mbin
-                          ? context
-                                .watch<AppController>()
-                                .profile
-                                .feedDefaultView
+                      (ac.serverSoftware == ServerSoftware.mbin
+                          ? ac.profile.feedDefaultView
                           : FeedView.threads),
                 )
                 .key,
@@ -444,14 +454,10 @@ class _FeedScreenState extends State<FeedScreen>
               controller: widget.scrollController,
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, isScrolled) {
-                final ac = context.read<AppController>();
-
                 return [
                   SliverAppBar(
                     leading:
-                        widget.sourceId == null &&
-                            widget.feed == null &&
-                            Breakpoints.isExpanded(context)
+                        widget.feed == null && Breakpoints.isExpanded(context)
                         ? IconButton(
                             onPressed: () {
                               setState(() {
@@ -470,13 +476,10 @@ class _FeedScreenState extends State<FeedScreen>
                       title: Text(
                         widget.feed != null
                             ? widget.feed!.name
-                            : widget.title ??
-                                  context
-                                          .watch<AppController>()
-                                          .selectedAccount +
-                                      (context.watch<AppController>().isLoggedIn
-                                          ? ''
-                                          : ' (${l(context).guest})'),
+                            : ac.selectedAccount +
+                                  (ac.isLoggedIn
+                                      ? ''
+                                      : ' (${l(context).guest})'),
                         softWrap: false,
                         overflow: TextOverflow.fade,
                       ),
@@ -511,9 +514,10 @@ class _FeedScreenState extends State<FeedScreen>
                     bottom: tabsAction == null
                         ? null
                         : TabBar(
-                      isScrollable: _getFeedTabs(ac, tabsAction).length > 5,
-                        tabs: _getFeedTabs(ac, tabsAction)
-                    ),
+                            isScrollable:
+                                _getFeedTabs(ac, tabsAction).length > 5,
+                            tabs: _getFeedTabs(ac, tabsAction),
+                          ),
                   ),
                 ];
               },
@@ -525,9 +529,13 @@ class _FeedScreenState extends State<FeedScreen>
                   return tabsAction == null
                       ? FeedScreenBody(
                           key: _getFeedKey(0),
-                          feed: widget.feed,
-                          source: widget.source ?? _filter,
-                          sourceId: widget.sourceId,
+                          feed:
+                              widget.feed ??
+                              FeedAggregator.fromSingleSource(
+                                ac,
+                                name: widget.feed?.name ?? '',
+                                source: _filter,
+                              ),
                           sort: sort,
                           view: _view,
                           details: widget.details,
@@ -549,21 +557,13 @@ class _FeedScreenState extends State<FeedScreen>
           ),
         ),
         floatingActionButton: AnimatedSlide(
-          offset:
-              _isHidden &&
-                  context.read<AppController>().profile.hideFeedUIOnScroll
+          offset: _isHidden && ac.profile.hideFeedUIOnScroll
               ? Offset(0, 0.2)
               : Offset.zero,
-          duration: context.read<AppController>().profile.animationSpeed == 0
+          duration: ac.profile.animationSpeed == 0
               ? Duration.zero
               : Duration(
-                  milliseconds:
-                      (300 /
-                              context
-                                  .read<AppController>()
-                                  .profile
-                                  .animationSpeed)
-                          .toInt(),
+                  milliseconds: (300 / ac.profile.animationSpeed).toInt(),
                 ),
           child: FloatingMenu(
             key: _fabKey,
@@ -578,14 +578,12 @@ class _FeedScreenState extends State<FeedScreen>
                 .toList(),
           ),
         ),
-        drawer: (widget.sourceId != null || widget.feed != null)
+        drawer: (widget.feed != null)
             ? null
             : NavDrawer(
                 drawerState: _navDrawPersistentState,
                 updateState: (NavDrawPersistentState? drawerState) async {
-                  drawerState ??= await fetchNavDrawerState(
-                    context.read<AppController>(),
-                  );
+                  drawerState ??= await fetchNavDrawerState(ac);
 
                   if (!mounted) return;
                   setState(() {
@@ -614,13 +612,26 @@ SelectionMenu<FeedView> feedViewSelect(BuildContext context) => SelectionMenu(
       .toList(),
 );
 
-List<SelectionMenuItem<FeedSort>> getSortItemsSelect(BuildContext context, int software, FeedSort? sort) {
-  return FeedSort.match(values: context.read<AppController>().profile.feedSortOrder, software: software, parent: sort, flat: false).map((item) => SelectionMenuItem<FeedSort>(
-    title: item.title(context),
-    value: item,
-    icon: item.icon,
-    subItems: getSortItemsSelect(context, software, item)
-  )).toList();
+List<SelectionMenuItem<FeedSort>> getSortItemsSelect(
+  BuildContext context,
+  int software,
+  FeedSort? sort,
+) {
+  return FeedSort.match(
+        values: context.read<AppController>().profile.feedSortOrder,
+        software: software,
+        parent: sort,
+        flat: false,
+      )
+      .map(
+        (item) => SelectionMenuItem<FeedSort>(
+          title: item.title(context),
+          value: item,
+          icon: item.icon,
+          subItems: getSortItemsSelect(context, software, item),
+        ),
+      )
+      .toList();
 }
 
 SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
@@ -630,7 +641,10 @@ SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
     ServerSoftware.piefed => FeedSort.piefed,
   };
 
-  return SelectionMenu(l(context).sort, getSortItemsSelect(context, software, null));
+  return SelectionMenu(
+    l(context).sort,
+    getSortItemsSelect(context, software, null),
+  );
 }
 
 SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
@@ -651,9 +665,7 @@ SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
     );
 
 class FeedScreenBody extends StatefulWidget {
-  final FeedAggregator? feed;
-  final FeedSource source;
-  final int? sourceId;
+  final FeedAggregator feed;
   final FeedSort sort;
   final FeedView view;
   final Widget? details;
@@ -663,9 +675,7 @@ class FeedScreenBody extends StatefulWidget {
 
   const FeedScreenBody({
     super.key,
-    this.feed,
-    required this.source,
-    this.sourceId,
+    required this.feed,
     required this.sort,
     required this.view,
     this.details,
@@ -721,18 +731,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   void initState() {
     super.initState();
 
-    _aggregator =
-        widget.feed?.clone() ??
-        FeedAggregator(
-          name: '',
-          inputs: [
-            FeedInputState(
-              title: '',
-              source: widget.source,
-              sourceId: widget.sourceId,
-            ),
-          ],
-        );
+    _aggregator = widget.feed.clone();
 
     _scrollController?.addListener(getScrollDirection);
   }
@@ -765,7 +764,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     final filterListActivations = ac.profile.filterLists;
     final items = newItems.where((post) {
       // Skip feed filters if it's an explore page
-      if (widget.sourceId != null) return true;
+      // if (widget.sourceId != null) return true;
 
       for (var filterListEntry in ac.filterLists.entries) {
         if (filterListActivations[filterListEntry.key] == true) {
@@ -827,21 +826,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     super.didUpdateWidget(oldWidget);
     if (widget.view != oldWidget.view ||
         widget.sort != oldWidget.sort ||
-        widget.source != oldWidget.source ||
-        widget.sourceId != oldWidget.sourceId ||
         widget.feed != oldWidget.feed) {
-      _aggregator =
-          widget.feed?.clone() ??
-          FeedAggregator(
-            name: '',
-            inputs: [
-              FeedInputState(
-                title: '',
-                source: widget.source,
-                sourceId: widget.sourceId,
-              ),
-            ],
-          );
+      _aggregator = widget.feed.clone();
       refresh();
     }
     _scrollController?.isActive = widget.isActive;
@@ -849,6 +835,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
   @override
   Widget build(BuildContext context) {
+    final ac = context.read<AppController>();
     super.build(context);
     return RefreshIndicator(
       onRefresh: () => Future.sync(() => refresh()),
@@ -895,15 +882,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
                   return Wrapper(
                     shouldWrap:
-                        (context
-                                .read<AppController>()
-                                .profile
-                                .markThreadsReadOnScroll &&
+                        (ac.profile.markThreadsReadOnScroll &&
                             widget.view == FeedView.threads) ||
-                        (context
-                                .read<AppController>()
-                                .profile
-                                .markMicroblogsReadOnScroll &&
+                        (ac.profile.markMicroblogsReadOnScroll &&
                             widget.view == FeedView.microblog),
                     parentBuilder: (child) {
                       return VisibilityDetector(
@@ -925,9 +906,10 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                 readPosts.add(post);
                               }
                               if (readPosts.isNotEmpty) {
-                                var postsMarkedAsRead = await context
-                                    .read<AppController>()
-                                    .markAsRead(readPosts, true);
+                                var postsMarkedAsRead = await ac.markAsRead(
+                                  readPosts,
+                                  true,
+                                );
 
                                 _pagingController.mapItems(
                                   (oldItem) => postsMarkedAsRead.firstWhere(
@@ -950,7 +932,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                         child: child,
                       );
                     },
-                    child: context.watch<AppController>().profile.compactMode
+                    child: ac.profile.compactMode
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -970,16 +952,12 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                     body,
                                     lang,
                                   ) async {
-                                    await context
-                                        .read<AppController>()
-                                        .api
-                                        .comments
-                                        .create(
-                                          item.type,
-                                          item.id,
-                                          body,
-                                          lang: lang,
-                                        );
+                                    await ac.api.comments.create(
+                                      item.type,
+                                      item.id,
+                                      body,
+                                      lang: lang,
+                                    );
                                   }),
                                   onTap: onPostTap,
                                   filterListWarnings:
@@ -1011,16 +989,12 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                 body,
                                 lang,
                               ) async {
-                                await context
-                                    .read<AppController>()
-                                    .api
-                                    .comments
-                                    .create(
-                                      item.type,
-                                      item.id,
-                                      body,
-                                      lang: lang,
-                                    );
+                                await ac.api.comments.create(
+                                  item.type,
+                                  item.id,
+                                  body,
+                                  lang: lang,
+                                );
                               }),
                               filterListWarnings:
                                   _filterListWarnings[(item.type, item.id)],
