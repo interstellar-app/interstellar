@@ -49,7 +49,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   final draftDebounce = Debouncer(duration: const Duration(milliseconds: 1000));
   final ScrollController _scrollController = ScrollController();
 
-  void execAction(_MarkdownEditorActionBase action) async {
+  Future<void> execAction(_MarkdownEditorActionBase action) async {
     final input = _MarkdownEditorData(
       text: widget.controller.text,
       selectionStart: widget.controller.selection.start,
@@ -171,12 +171,12 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                           child: SizedBox(
                                             width: 40,
                                             height: 40,
-                                            child: IconButton(
-                                              onPressed: () {
+                                            child: LoadingIconButton(
+                                              onPressed: () async {
                                                 _focusNodeTextField
                                                     .requestFocus();
 
-                                                execAction(action.action);
+                                                await execAction(action.action);
                                               },
                                               icon: Icon(action.icon),
                                               tooltip:

@@ -60,7 +60,7 @@ class APIImages {
 
             final request = http.MultipartRequest(
               'POST',
-              Uri.https(client.domain, path),
+              Uri.https(client.domain, client.software.apiPathPrefix + path),
             );
             final file = http.MultipartFile.fromBytes(
               'file',
