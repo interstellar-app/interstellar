@@ -5,6 +5,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
+import 'package:interstellar/src/api/images.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/profile.dart';
@@ -201,6 +202,7 @@ class Profiles extends Table {
   BoolColumn get inlineReplies => boolean().nullable()();
   BoolColumn get showCrosspostComments => boolean().nullable()();
   BoolColumn get markCrosspostsAsRead => boolean().nullable()();
+  TextColumn get defaultImageStore => textEnum<ImageStore>().nullable()();
   // Display
   TextColumn get appLanguage => text().nullable()();
   TextColumn get themeMode => textEnum<ThemeMode>().nullable()();

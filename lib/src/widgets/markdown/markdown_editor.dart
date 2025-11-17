@@ -760,6 +760,7 @@ class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
       String url = '';
       if (image != null && context.mounted) {
         url = await context.read<AppController>().api.images.uploadImage(
+          store: context.read<AppController>().profile.defaultImageStore,
           image: image,
         );
       }
