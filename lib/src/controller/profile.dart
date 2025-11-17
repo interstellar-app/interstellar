@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
+import 'package:interstellar/src/api/images.dart' show ImageStore;
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart'
@@ -48,6 +49,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool inlineReplies,
     required bool showCrosspostComments,
     required bool markCrosspostsAsRead,
+    required ImageStore defaultImageStore,
     // Display settings
     required String appLanguage,
     required ThemeMode themeMode,
@@ -128,6 +130,7 @@ abstract class ProfileRequired with _$ProfileRequired {
         profile?.showCrosspostComments ?? defaultProfile.showCrosspostComments,
     markCrosspostsAsRead:
         profile?.markCrosspostsAsRead ?? defaultProfile.markCrosspostsAsRead,
+    defaultImageStore: profile?.defaultImageStore ?? defaultProfile.defaultImageStore,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
     themeMode: profile?.themeMode ?? defaultProfile.themeMode,
     colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -219,6 +222,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     inlineReplies: true,
     showCrosspostComments: true,
     markCrosspostsAsRead: false,
+    defaultImageStore: ImageStore.platform,
     appLanguage: '',
     themeMode: ThemeMode.system,
     colorScheme: FlexScheme.custom,
@@ -285,6 +289,7 @@ abstract class ProfileOptional
     required bool? inlineReplies,
     required bool? showCrosspostComments,
     required bool? markCrosspostsAsRead,
+    required ImageStore? defaultImageStore,
     // Display settings
     required String? appLanguage,
     required ThemeMode? themeMode,
@@ -352,6 +357,7 @@ abstract class ProfileOptional
       inlineReplies: Value(inlineReplies),
       showCrosspostComments: Value(showCrosspostComments),
       markCrosspostsAsRead: Value(markCrosspostsAsRead),
+        defaultImageStore: Value(defaultImageStore),
       // Display
       appLanguage: Value(appLanguage),
       themeMode: Value(themeMode),
@@ -414,6 +420,7 @@ abstract class ProfileOptional
     inlineReplies: null,
     showCrosspostComments: null,
     markCrosspostsAsRead: null,
+    defaultImageStore: null,
     appLanguage: null,
     themeMode: null,
     colorScheme: null,
@@ -479,6 +486,7 @@ abstract class ProfileOptional
       showCrosspostComments:
           other.showCrosspostComments ?? showCrosspostComments,
       markCrosspostsAsRead: other.markCrosspostsAsRead ?? markCrosspostsAsRead,
+      defaultImageStore: other.defaultImageStore ?? defaultImageStore,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
       colorScheme: other.colorScheme ?? colorScheme,

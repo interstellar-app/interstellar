@@ -6,6 +6,7 @@ import 'package:interstellar/src/api/domains.dart';
 import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/api/feed.dart';
+import 'package:interstellar/src/api/images.dart';
 import 'package:interstellar/src/api/messages.dart';
 import 'package:interstellar/src/api/microblogs.dart';
 import 'package:interstellar/src/api/moderation.dart';
@@ -32,6 +33,7 @@ class API {
   final APISearch search;
   final APIUsers users;
   final APIBookmark bookmark;
+  final APIImages images;
 
   API(this.client)
     : comments = APIComments(client),
@@ -46,7 +48,8 @@ class API {
       microblogs = MbinAPIMicroblogs(client),
       search = APISearch(client),
       users = APIUsers(client),
-      bookmark = APIBookmark(client);
+      bookmark = APIBookmark(client),
+      images = APIImages(client);
 }
 
 Future<ServerSoftware?> getServerSoftware(String server) async {
