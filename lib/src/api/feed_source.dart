@@ -2,14 +2,16 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/controller/server.dart';
 
 enum FeedView {
   threads(icon: Symbols.feed_rounded),
-  microblog(icon: Symbols.chat_rounded),
-  combined(icon: Symbols.view_timeline_rounded);
+  microblog(software: ServerSoftware.mbinFlag, icon: Symbols.chat_rounded),
+  combined(software: ServerSoftware.mbinFlag, icon: Symbols.view_timeline_rounded);
 
-  const FeedView({this.icon});
+  const FeedView({this.software = ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, this.icon});
 
+  final int software;
   final IconData? icon;
 
   String title(BuildContext context) => switch (this) {
@@ -17,6 +19,14 @@ enum FeedView {
     FeedView.microblog => l(context).microblog,
     FeedView.combined => l(context).combined,
   };
+
+  static List<FeedView> match({
+    List<FeedView> values = FeedView.values,
+    required int software,
+  }) {
+    return values.where(
+          (item) => (item.software & software) == software,).toList();
+  }
 }
 
 enum FeedSource {
@@ -54,42 +64,37 @@ enum FeedSort {
   top(icon: Symbols.trending_up_rounded),
   newest(icon: Symbols.nest_eco_leaf_rounded),
   active(icon: Symbols.rocket_launch_rounded),
-  commented(software: mbin | lemmy, icon: Symbols.chat_rounded),
-  oldest(software: mbin | lemmy, icon: Symbols.access_time_rounded),
-  scaled(software: piefed | lemmy, icon: Symbols.scale_rounded),
-  newComments(software: lemmy, icon: Symbols.mark_chat_unread_rounded),
-  controversial(software: lemmy, icon: Symbols.thumbs_up_down_rounded),
+  commented(software: ServerSoftware.mbinFlag | ServerSoftware.lemmyFlag, icon: Symbols.chat_rounded),
+  oldest(software: ServerSoftware.mbinFlag | ServerSoftware.lemmyFlag, icon: Symbols.access_time_rounded),
+  scaled(software: ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, icon: Symbols.scale_rounded),
+  newComments(software: ServerSoftware.lemmyFlag, icon: Symbols.mark_chat_unread_rounded),
+  controversial(software: ServerSoftware.lemmyFlag, icon: Symbols.thumbs_up_down_rounded),
 
-  topHour(software: piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topThreeHour(software: mbin, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topSixHour(software: mbin | piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topTwelveHour(software: mbin | piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topDay(software: mbin | piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topWeek(software: mbin | piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topMonth(software: mbin | piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topThreeMonths(software: piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topSixMonths(software: piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topNineMonths(software: piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
-  topYear(software: mbin | piefed | lemmy, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topHour(software: ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topThreeHour(software: ServerSoftware.mbinFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topSixHour(software: ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topTwelveHour(software: ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topDay(software: ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topWeek(software: ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topMonth(software: ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topThreeMonths(software: ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topSixMonths(software: ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topNineMonths(software: ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topYear(software: ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag, parent: FeedSort.top, icon: Symbols.trending_up_rounded),
 
-  commentedThreeHour(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded),
-  commentedSixHour(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded),
-  commentedTwelveHour(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded),
-  commentedDay(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded),
-  commentedWeek(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded),
-  commentedMonth(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded),
-  commentedYear(software: mbin, parent: FeedSort.commented, icon: Symbols.chat_rounded);
+  commentedThreeHour(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded),
+  commentedSixHour(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded),
+  commentedTwelveHour(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded),
+  commentedDay(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded),
+  commentedWeek(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded),
+  commentedMonth(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded),
+  commentedYear(software: ServerSoftware.mbinFlag, parent: FeedSort.commented, icon: Symbols.chat_rounded);
 
   const FeedSort({
-    this.software = mbin | piefed | lemmy,
+    this.software = ServerSoftware.mbinFlag | ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag,
     this.parent,
     this.icon,
   });
-
-  // use ints since using enums as bitflags in dart is a bit weird
-  static const int mbin = 1;
-  static const int piefed = 2;
-  static const int lemmy = 4;
 
   final int software;
   final FeedSort? parent;

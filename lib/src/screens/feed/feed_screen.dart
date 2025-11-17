@@ -105,7 +105,10 @@ class _FeedScreenState extends State<FeedScreen>
             )
             .toList(),
       String name when name == feedActionSetView(context).name =>
-        ac.profile.feedViewOrder
+        FeedView.match(
+              values: ac.profile.feedViewOrder,
+              software: ac.serverSoftware.bitFlag,
+            )
             .map(
               (option) => Tab(
                 text: option.title(context),
@@ -116,11 +119,7 @@ class _FeedScreenState extends State<FeedScreen>
       String name when name == feedActionSetSort(context).name =>
         FeedSort.match(
               values: ac.profile.feedSortOrder,
-              software: switch (ac.serverSoftware) {
-                ServerSoftware.mbin => FeedSort.mbin,
-                ServerSoftware.lemmy => FeedSort.lemmy,
-                ServerSoftware.piefed => FeedSort.piefed,
-              },
+              software: ac.serverSoftware.bitFlag,
             )
             .map(
               (sort) => Tab(
@@ -162,7 +161,10 @@ class _FeedScreenState extends State<FeedScreen>
             )
             .toList(),
       String name when name == feedActionSetView(context).name =>
-        ac.profile.feedViewOrder
+        FeedView.match(
+              values: ac.profile.feedViewOrder,
+              software: ac.serverSoftware.bitFlag,
+            )
             .mapIndexed(
               (index, view) => FeedScreenBody(
                 key: _getFeedKey(index),
@@ -185,11 +187,7 @@ class _FeedScreenState extends State<FeedScreen>
       String name when name == feedActionSetSort(context).name =>
         FeedSort.match(
               values: ac.profile.feedSortOrder,
-              software: switch (context.read<AppController>().serverSoftware) {
-                ServerSoftware.mbin => FeedSort.mbin,
-                ServerSoftware.lemmy => FeedSort.lemmy,
-                ServerSoftware.piefed => FeedSort.piefed,
-              },
+              software: context.read<AppController>().serverSoftware.bitFlag,
             )
             .mapIndexed(
               (index, sort) => FeedScreenBody(
@@ -224,7 +222,10 @@ class _FeedScreenState extends State<FeedScreen>
           context.read<AppController>().profile.feedSourceOrder.first,
         ) ??
         FeedSource.all;
-    _view = context.read<AppController>().profile.feedViewOrder.first;
+    _view = FeedView.match(
+      values: context.read<AppController>().profile.feedViewOrder,
+      software: context.read<AppController>().serverSoftware.bitFlag,
+    ).first;
     _hideReadPosts = context
         .read<AppController>()
         .profile
@@ -440,9 +441,10 @@ class _FeedScreenState extends State<FeedScreen>
               headerSliverBuilder: (context, isScrolled) {
                 final currentFeedViewOption =
                     tabsAction?.name == feedActionSetView(context).name
-                    ? ac.profile.feedViewOrder[DefaultTabController.of(
-                        context,
-                      ).index]
+                    ? FeedView.match(
+                        values: ac.profile.feedViewOrder,
+                        software: ac.serverSoftware.bitFlag,
+                      )[DefaultTabController.of(context).index]
                     : feedViewSelect(context).getOption(_view).value;
                 final currentFeedSortOption =
                     tabsAction?.name == feedActionSetSort(context).name
@@ -596,10 +598,10 @@ class _FeedScreenState extends State<FeedScreen>
 
 SelectionMenu<FeedView> feedViewSelect(BuildContext context) => SelectionMenu(
   l(context).feedView,
-  context
-      .read<AppController>()
-      .profile
-      .feedViewOrder
+  FeedView.match(
+        values: context.read<AppController>().profile.feedViewOrder,
+        software: context.read<AppController>().serverSoftware.bitFlag,
+      )
       .map(
         (view) => SelectionMenuItem(
           value: view,
@@ -633,11 +635,7 @@ List<SelectionMenuItem<FeedSort>> getSortItemsSelect(
 }
 
 SelectionMenu<FeedSort> feedSortSelect(BuildContext context) {
-  final software = switch (context.read<AppController>().serverSoftware) {
-    ServerSoftware.mbin => FeedSort.mbin,
-    ServerSoftware.lemmy => FeedSort.lemmy,
-    ServerSoftware.piefed => FeedSort.piefed,
-  };
+  final software = context.read<AppController>().serverSoftware.bitFlag;
 
   return SelectionMenu(
     l(context).sort,
