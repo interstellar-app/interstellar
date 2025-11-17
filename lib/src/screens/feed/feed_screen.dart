@@ -99,7 +99,7 @@ class _FeedScreenState extends State<FeedScreen>
         ac.profile.feedSourceOrder
             .map(
               (option) => Tab(
-                text: option.title(context).substring(0, 3),
+                text: option.title(context),
                 icon: ac.profile.compactMode ? null : Icon(option.icon),
               ),
             )
@@ -221,12 +221,10 @@ class _FeedScreenState extends State<FeedScreen>
     _filter =
         whenLoggedIn(
           context,
-          context.read<AppController>().profile.feedDefaultFilter,
+          context.read<AppController>().profile.feedSourceOrder.first,
         ) ??
         FeedSource.all;
-    _view = context.read<AppController>().serverSoftware == ServerSoftware.mbin
-        ? context.read<AppController>().profile.feedDefaultView
-        : FeedView.threads;
+    _view = context.read<AppController>().profile.feedViewOrder.first;
     _hideReadPosts = context
         .read<AppController>()
         .profile
@@ -249,9 +247,6 @@ class _FeedScreenState extends State<FeedScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final sort = _sort ?? _defaultSortFromMode(_view);
-
-    final currentFeedModeOption = feedViewSelect(context).getOption(_view);
-    final currentFeedSortOption = feedSortSelect(context).getOption(sort);
 
     final ac = context.watch<AppController>();
 
@@ -394,42 +389,31 @@ class _FeedScreenState extends State<FeedScreen>
         ),
     ].firstOrNull;
 
+    final tabs = tabsAction == null ? null : _getFeedTabs(ac, tabsAction);
+
     return Wrapper(
       shouldWrap: tabsAction != null,
       parentBuilder: (child) => DefaultTabController(
         initialIndex: switch (tabsAction?.name) {
-          String name when name == feedActionSetFilter(context).name =>
-            feedFilterSelect(context).options
-                .asMap()
-                .entries
-                .firstWhere(
-                  (entry) => entry.value.value == ac.profile.feedDefaultFilter,
-                )
-                .key,
-          String name when name == feedActionSetView(context).name =>
-            feedViewSelect(context).options
-                .asMap()
-                .entries
-                .firstWhere(
-                  (entry) =>
-                      entry.value.value ==
-                      (ac.serverSoftware == ServerSoftware.mbin
-                          ? ac.profile.feedDefaultView
-                          : FeedView.threads),
-                )
-                .key,
+          String name when name == feedActionSetSort(context).name =>
+            tabs
+                    ?.asMap()
+                    .entries
+                    .firstWhereOrNull(
+                      (sort) =>
+                          sort.value.text?.toLowerCase() ==
+                          (_view == FeedView.threads
+                              ? ac.profile.feedDefaultThreadsSort.name
+                              : ac.profile.feedDefaultMicroblogSort.name),
+                    )
+                    ?.key ??
+                0,
           _ => 0,
         },
-        length: tabsAction == null ? 0 : _getFeedTabs(ac, tabsAction).length,
+        length: tabs?.length ?? 0,
         child: DefaultTabControllerListener(
           onTabSelected: (newIndex) {
-            setState(() {
-              if (tabsAction?.name == feedActionSetView(context).name) {
-                if (newIndex < ac.profile.feedViewOrder.length) {
-                  _view = ac.profile.feedViewOrder[newIndex];
-                }
-              }
-            });
+            setState(() {});
           },
           child: child,
         ),
@@ -454,6 +438,18 @@ class _FeedScreenState extends State<FeedScreen>
               controller: widget.scrollController,
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, isScrolled) {
+                final currentFeedViewOption =
+                    tabsAction?.name == feedActionSetView(context).name
+                    ? ac.profile.feedViewOrder[DefaultTabController.of(
+                        context,
+                      ).index]
+                    : feedViewSelect(context).getOption(_view).value;
+                final currentFeedSortOption =
+                    tabsAction?.name == feedActionSetSort(context).name
+                    ? ac.profile.feedSortOrder[DefaultTabController.of(
+                        context,
+                      ).index]
+                    : feedSortSelect(context).getOption(sort).value;
                 return [
                   SliverAppBar(
                     leading:
@@ -485,14 +481,14 @@ class _FeedScreenState extends State<FeedScreen>
                       ),
                       subtitle: Row(
                         children: [
-                          Text(currentFeedModeOption.title),
+                          Text(currentFeedViewOption.title(context)),
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             child: Text('•'),
                           ),
                           Icon(currentFeedSortOption.icon, size: 20),
                           const SizedBox(width: 2),
-                          Text(currentFeedSortOption.title),
+                          Text(currentFeedSortOption.title(context)),
                         ],
                       ),
                     ),
@@ -511,12 +507,14 @@ class _FeedScreenState extends State<FeedScreen>
                           ),
                         )
                         .toList(),
-                    bottom: tabsAction == null
+                    bottom: tabsAction == null || tabs == null
                         ? null
                         : TabBar(
-                            isScrollable:
-                                _getFeedTabs(ac, tabsAction).length > 5,
-                            tabs: _getFeedTabs(ac, tabsAction),
+                            tabAlignment: tabs.length > 5
+                                ? TabAlignment.start
+                                : null,
+                            isScrollable: tabs.length > 5,
+                            tabs: tabs,
                           ),
                   ),
                 ];

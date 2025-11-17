@@ -61,8 +61,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool fullImageSizeThreads,
     required bool fullImageSizeMicroblogs,
     // Feed defaults
-    @FeedViewConverter() required FeedView feedDefaultView,
-    required FeedSource feedDefaultFilter,
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
     @JsonKey(readValue: _parseFeedDefaultCombinedSort)
@@ -150,9 +148,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     fullImageSizeMicroblogs:
         profile?.fullImageSizeMicroblogs ??
         defaultProfile.fullImageSizeMicroblogs,
-    feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
-    feedDefaultFilter:
-        profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
     feedDefaultThreadsSort:
         profile?.feedDefaultThreadsSort ??
         defaultProfile.feedDefaultThreadsSort,
@@ -236,8 +231,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     coverMediaMarkedSensitive: true,
     fullImageSizeThreads: false,
     fullImageSizeMicroblogs: false,
-    feedDefaultView: FeedView.threads,
-    feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
     feedDefaultMicroblogSort: FeedSort.hot,
     feedDefaultCombinedSort: FeedSort.hot,
@@ -313,8 +306,6 @@ abstract class ProfileOptional
     required bool? fullImageSizeThreads,
     required bool? fullImageSizeMicroblogs,
     // Feed defaults
-    @FeedViewConverter() required FeedView? feedDefaultView,
-    required FeedSource? feedDefaultFilter,
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
     @JsonKey(readValue: _parseFeedDefaultCombinedSort)
@@ -383,8 +374,6 @@ abstract class ProfileOptional
       fullImageSizeThreads: Value(fullImageSizeThreads),
       fullImageSizeMicroblogs: Value(fullImageSizeMicroblogs),
       // Feed defaults
-      feedDefaultView: Value(feedDefaultView),
-      feedDefaultFilter: Value(feedDefaultFilter),
       feedDefaultThreadsSort: Value(feedDefaultThreadsSort),
       feedDefaultMicroblogSort: Value(feedDefaultMicroblogSort),
       feedDefaultCombinedSort: Value(feedDefaultCombinedSort),
@@ -446,8 +435,6 @@ abstract class ProfileOptional
     coverMediaMarkedSensitive: null,
     fullImageSizeThreads: null,
     fullImageSizeMicroblogs: null,
-    feedDefaultView: null,
-    feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
     feedDefaultMicroblogSort: null,
     feedDefaultCombinedSort: null,
@@ -516,8 +503,6 @@ abstract class ProfileOptional
       fullImageSizeThreads: other.fullImageSizeThreads ?? fullImageSizeThreads,
       fullImageSizeMicroblogs:
           other.fullImageSizeMicroblogs ?? fullImageSizeMicroblogs,
-      feedDefaultView: other.feedDefaultView ?? feedDefaultView,
-      feedDefaultFilter: other.feedDefaultFilter ?? feedDefaultFilter,
       feedDefaultThreadsSort:
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:

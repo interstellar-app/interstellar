@@ -36,7 +36,7 @@ class _FeedSortOrderSettingsScreen extends State<FeedSortOrderSettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l(context).settings_feedSourceOrder),
+        title: Text(l(context).settings_feedSortOrder),
         actions: [
           IconButton(
             onPressed: () => setState(() {

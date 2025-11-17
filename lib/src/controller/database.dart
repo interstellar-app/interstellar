@@ -262,20 +262,18 @@ class Profiles extends Table {
   BoolColumn get fullImageSizeThreads => boolean().nullable()();
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
   // Feed defaults
-  TextColumn get feedDefaultView => textEnum<FeedView>().nullable()();
-  TextColumn get feedDefaultFilter => textEnum<FeedSource>().nullable()();
-  TextColumn get feedDefaultThreadsSort => textEnum<FeedSort>().nullable()();
-  TextColumn get feedDefaultMicroblogSort => textEnum<FeedSort>().nullable()();
-  TextColumn get feedDefaultCombinedSort => textEnum<FeedSort>().nullable()();
-  TextColumn get feedDefaultExploreSort => textEnum<FeedSort>().nullable()();
-  TextColumn get feedDefaultCommentSort => textEnum<CommentSort>().nullable()();
-  BoolColumn get feedDefaultHideReadPosts => boolean().nullable()();
   TextColumn get feedViewOrder =>
       text().map(const FeedViewListConverter()).nullable()();
   TextColumn get feedSourceOrder =>
       text().map(const FeedSourceListConverter()).nullable()();
   TextColumn get feedSortOrder =>
       text().map(const FeedSortListConverter()).nullable()();
+  TextColumn get feedDefaultThreadsSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultMicroblogSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultCombinedSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultExploreSort => textEnum<FeedSort>().nullable()();
+  TextColumn get feedDefaultCommentSort => textEnum<CommentSort>().nullable()();
+  BoolColumn get feedDefaultHideReadPosts => boolean().nullable()();
   // Feed actions
   TextColumn get feedActionBackToTop => textEnum<ActionLocation>().nullable()();
   TextColumn get feedActionCreateNew => textEnum<ActionLocation>().nullable()();

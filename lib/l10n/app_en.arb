@@ -349,6 +349,7 @@
   "settings_feedDefaults_hideReadPosts": "Hide read posts",
   "settings_feedSourceOrder": "Feed source order",
   "settings_feedViewOrder": "Feed view order",
+  "settings_feedSortOrder": "Feed sort order",
   "settings_swipeActionLeftShort": "Left Short",
   "settings_swipeActionLeftLong": "Left Long",
   "settings_swipeActionRightShort": "Right Short",
