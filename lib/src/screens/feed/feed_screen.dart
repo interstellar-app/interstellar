@@ -72,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen>
     return _feedKeyList[index];
   }
 
-  FeedSort _defaultSortFromMode(FeedView view) => widget.feed != null
+  FeedSort _defaultSortFromMode(FeedView view) => widget.details != null
       ? context.read<AppController>().profile.feedDefaultExploreSort
       : switch (view) {
           FeedView.threads =>
