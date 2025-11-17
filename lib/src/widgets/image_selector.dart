@@ -11,12 +11,14 @@ class ImageSelector extends StatefulWidget {
     this.selected,
     this.onSelected, {
     this.enabled = true,
+    this.inline = false,
     super.key,
   });
 
   final XFile? selected;
   final void Function(XFile?, String?) onSelected;
   final bool enabled;
+  final bool inline;
 
   @override
   State<ImageSelector> createState() => _ImageSelectorState();
@@ -69,6 +71,13 @@ class _ImageSelectorState extends State<ImageSelector> {
                   ),
               ],
             ),
+          )
+        : widget.inline
+        ? IconButton(
+            onPressed: () {
+              widget.onSelected(null, null);
+            },
+            icon: const Icon(Symbols.cancel_rounded),
           )
         : Card.outlined(
             margin: EdgeInsets.zero,

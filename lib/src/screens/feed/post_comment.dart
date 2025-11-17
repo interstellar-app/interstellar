@@ -1,5 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -140,7 +141,8 @@ class _PostCommentState extends State<PostComment> {
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
       user: widget.comment.user,
-      updateUser: (user) async => widget.onUpdate(widget.comment.copyWith(user: user)),
+      updateUser: (user) async =>
+          widget.onUpdate(widget.comment.copyWith(user: user)),
       opUserId: widget.opUserId,
       boosts: widget.comment.boosts,
       isBoosted: widget.comment.myBoost == true,
@@ -189,13 +191,20 @@ class _PostCommentState extends State<PostComment> {
         );
       }),
       contentTypeName: l(context).comment,
-      onReply: whenLoggedIn(context, (body, lang) async {
+      onReply: whenLoggedIn(context, (
+        body,
+        lang, {
+        XFile? image,
+        String? alt,
+      }) async {
         var newSubComment = await ac.api.comments.create(
           widget.comment.postType,
           widget.comment.postId,
           body,
           parentCommentId: widget.comment.id,
           lang: lang,
+          image: image,
+          alt: alt,
         );
 
         widget.onUpdate(

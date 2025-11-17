@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -1166,8 +1167,10 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                   ),
                                   onReply: whenLoggedIn(context, (
                                     body,
-                                    lang,
-                                  ) async {
+                                    lang, {
+                                    XFile? image,
+                                    String? alt,
+                                  }) async {
                                     await context
                                         .read<AppController>()
                                         .api
@@ -1177,6 +1180,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                           item.id,
                                           body,
                                           lang: lang,
+                                          image: image,
+                                          alt: alt,
                                         );
                                   }),
                                   onTap: onPostTap,
@@ -1207,8 +1212,10 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                               isPreview: true,
                               onReply: whenLoggedIn(context, (
                                 body,
-                                lang,
-                              ) async {
+                                lang, {
+                                XFile? image,
+                                String? alt,
+                              }) async {
                                 await context
                                     .read<AppController>()
                                     .api
@@ -1218,6 +1225,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                       item.id,
                                       body,
                                       lang: lang,
+                                      image: image,
+                                      alt: alt,
                                     );
                               }),
                               filterListWarnings:

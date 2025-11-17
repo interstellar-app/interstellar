@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/comment.dart';
@@ -376,12 +377,24 @@ class _PostPageState extends State<PostPage> {
                 child: PostItem(
                   post,
                   _onUpdate,
-                  onReply: whenLoggedIn(context, (body, lang) async {
+                  onReply: whenLoggedIn(context, (
+                    body,
+                    lang, {
+                    XFile? image,
+                    String? alt,
+                  }) async {
                     var newComment = await context
                         .read<AppController>()
                         .api
                         .comments
-                        .create(post.type, post.id, body, lang: lang);
+                        .create(
+                          post.type,
+                          post.id,
+                          body,
+                          lang: lang,
+                          image: image,
+                          alt: alt,
+                        );
 
                     _mainCommentSectionKey.currentState?._pagingController
                         .prependPage('', [newComment]);
