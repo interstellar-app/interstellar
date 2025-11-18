@@ -359,7 +359,7 @@ class _ContentItemState extends State<ContentItem> {
                       index == (components.nonNulls.length - 1)
                       ? component
                       : Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.only(bottom: 10),
                               child: component,
                             )
                             as Widget?,
@@ -484,6 +484,8 @@ class _ContentItemState extends State<ContentItem> {
             widget.title!,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: widget.read ? FontWeight.w100 : null,
+              // letterSpacing: 0,
+              height: 0
             ),
             overflow:
                 widget.isPreview &&
@@ -659,17 +661,7 @@ class _ContentItemState extends State<ContentItem> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.title ?? '',
-                            style: Theme.of(context).textTheme.titleMedium!
-                                .copyWith(
-                                  fontWeight: widget.read
-                                      ? FontWeight.w100
-                                      : null,
-                                ),
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          ?contentTitle(context, null),
                           const SizedBox(height: 4),
                           ContentInfo(
                             user: widget.user,
