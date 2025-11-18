@@ -45,7 +45,7 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
                   .toList();
               ac.updateProfile(
                 ac.selectedProfileValue.copyWith(
-                  postComponentOrder: _postComponentOrder,
+                  postComponentOrder: null,
                 ),
               );
             }),

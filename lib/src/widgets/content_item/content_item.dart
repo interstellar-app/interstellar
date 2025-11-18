@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -316,7 +317,9 @@ class _ContentItemState extends State<ContentItem> {
                 : null;
 
             List<Widget?> components = [];
-            final order = profile.postComponentOrder;
+            final order = widget.contentTypeName == l(context).comment
+                ? ProfileRequired.defaultProfile.postComponentOrder
+                : profile.postComponentOrder;
 
             for (final component in order) {
               components.add(switch (component) {
@@ -424,7 +427,7 @@ class _ContentItemState extends State<ContentItem> {
             return Padding(
               padding: widget.contentTypeName == l(context).comment
                   ? const EdgeInsets.fromLTRB(12, 0, 12, 8)
-                  : const EdgeInsets.fromLTRB(12, 8, 12 ,8),
+                  : const EdgeInsets.fromLTRB(12, 8, 12, 8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
