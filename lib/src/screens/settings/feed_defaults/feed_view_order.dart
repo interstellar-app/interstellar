@@ -4,7 +4,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/profile.dart';
-import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -44,7 +43,7 @@ class _FeedViewOrderSettingsScreen extends State<FeedViewOrderSettingsScreen> {
               _feedViewOrder = ProfileRequired.defaultProfile.feedViewOrder
                   .toList();
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(feedViewOrder: _feedViewOrder),
+                ac.selectedProfileValue.copyWith(feedViewOrder: null),
               );
             }),
             icon: const Icon(Symbols.restore),

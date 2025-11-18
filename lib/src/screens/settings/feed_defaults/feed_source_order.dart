@@ -45,7 +45,7 @@ class _FeedSourceOrderSettingsScreen
                   .toList();
               ac.updateProfile(
                 ac.selectedProfileValue.copyWith(
-                  feedSourceOrder: _feedSourceOrder,
+                  feedSourceOrder: null,
                 ),
               );
             }),

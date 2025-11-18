@@ -43,7 +43,7 @@ class _FeedSortOrderSettingsScreen extends State<FeedSortOrderSettingsScreen> {
               _feedSortOrder = ProfileRequired.defaultProfile.feedSortOrder
                   .toList();
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(feedSortOrder: _feedSortOrder),
+                ac.selectedProfileValue.copyWith(feedSortOrder: null),
               );
             }),
             icon: const Icon(Symbols.restore),

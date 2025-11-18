@@ -401,11 +401,18 @@ class _FeedScreenState extends State<FeedScreen>
                     ?.asMap()
                     .entries
                     .firstWhereOrNull(
-                      (sort) =>
-                          sort.value.text?.toLowerCase() ==
-                          (_view == FeedView.threads
-                              ? ac.profile.feedDefaultThreadsSort.name
-                              : ac.profile.feedDefaultMicroblogSort.name),
+                      (sort) => widget.details != null
+                          ? sort.value.text?.toLowerCase() ==
+                                ac.profile.feedDefaultExploreSort.name
+                          : sort.value.text?.toLowerCase() ==
+                                (switch (_view) {
+                                  FeedView.threads =>
+                                    ac.profile.feedDefaultThreadsSort.name,
+                                  FeedView.microblog =>
+                                    ac.profile.feedDefaultMicroblogSort.name,
+                                  FeedView.combined =>
+                                    ac.profile.feedDefaultCombinedSort.name,
+                                }),
                     )
                     ?.key ??
                 0,
