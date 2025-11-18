@@ -30,23 +30,33 @@ class AdvancedImage extends StatelessWidget {
     this.hero,
   });
 
+  static String getHeroTag() {
+    final rng = Random();
+    final tagLength = 64;
+    return String.fromCharCodes(
+      List.generate(tagLength, (index) => rng.nextInt(33) + 89),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final blurHashSizeFactor = image.blurHash == null
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
+    final tag = getHeroTag();
+
     return Wrapper(
       shouldWrap: openTitle != null,
       parentBuilder: (child) => SuperHero(
-        tag: image.toString() + (hero ?? ''),
+        tag: hero ?? tag,
         child: GestureDetector(
           onTap: () => pushRoute(
             context,
             builder: (context) => AdvancedImagePage(
               image,
               title: openTitle!,
-              hero: hero,
+              hero: hero ?? tag,
               fit: fit,
             ),
           ),
@@ -67,10 +77,7 @@ class AdvancedImage extends StatelessWidget {
               shape: BoxShape.rectangle,
               enableSlideOutPage: true,
               heroBuilderForSlidingPage: (child) {
-                return SuperHero(
-                  tag: image.toString() + (hero ?? ''),
-                  child: child,
-                );
+                return SuperHero(tag: hero ?? tag, child: child);
               },
               cache: true,
               mode: openTitle != null
@@ -86,25 +93,25 @@ class AdvancedImage extends StatelessWidget {
                       image: BlurhashFfiImage(
                         image.blurHash!,
                         decodingWidth:
-                        (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
+                            (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
                         decodingHeight:
-                        (blurHashSizeFactor * image.blurHashHeight!).ceil(),
+                            (blurHashSizeFactor * image.blurHashHeight!).ceil(),
                         scale: blurHashSizeFactor,
                       ),
                       enableSlideOutPage: true,
                     );
-                  } else if (image.blurHashWidth != null
-                      && image.blurHashHeight != null) {
+                  } else if (image.blurHashWidth != null &&
+                      image.blurHashHeight != null) {
                     return SizedBox(
                       height: image.blurHashHeight?.toDouble(),
                       width: image.blurHashWidth?.toDouble(),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Center(child: CircularProgressIndicator()),
                     );
                   }
                 } else if (state.extendedImageLoadState == LoadState.failed) {
-                  context.read<AppController>().logger.w('Image failed to load: ${image.src}');
+                  context.read<AppController>().logger.w(
+                    'Image failed to load: ${image.src}',
+                  );
                 }
                 return null;
               },
@@ -163,13 +170,13 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
               await downloadFile(
                 Uri.parse(widget.image.src),
                 widget.image.src.split('/').last,
-                defaultDir: context.read<AppController>().defaultDownloadDir
+                defaultDir: context.read<AppController>().defaultDownloadDir,
               );
             },
             onLongPress: () async {
               await downloadFile(
-                  Uri.parse(widget.image.src),
-                  widget.image.src.split('/').last,
+                Uri.parse(widget.image.src),
+                widget.image.src.split('/').last,
               );
             },
             icon: const Icon(Symbols.download_rounded),
@@ -193,7 +200,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                 child: AdvancedImage(
                   widget.image,
                   hero: widget.hero,
-                  // fit: widget.fit,
+                  fit: widget.fit,
                 ),
               ),
             ),

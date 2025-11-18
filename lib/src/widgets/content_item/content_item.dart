@@ -578,8 +578,9 @@ class _ContentItemState extends State<ContentItem> {
     final image = AdvancedImage(
       widget.image!,
       openTitle: imageOpenTitle,
-      fit: BoxFit.cover,
+      fit: widget.fullImageSize ? BoxFit.scaleDown : BoxFit.fitWidth,
       enableBlur: enableBlur,
+      hero: AdvancedImage.getHeroTag(),
     );
 
     if (fullImage) {
