@@ -233,6 +233,7 @@ class Profiles extends Table {
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
   BoolColumn get showPostsCards => boolean().nullable()();
   TextColumn get postComponentOrder => text().map(const PostComponentConverter()).nullable()();
+  RealColumn get dividerThickness => real().nullable()();
   // Feed defaults
   TextColumn get feedDefaultView => textEnum<FeedView>().nullable()();
   TextColumn get feedDefaultFilter => textEnum<FeedSource>().nullable()();

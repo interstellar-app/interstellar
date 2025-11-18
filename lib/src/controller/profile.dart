@@ -55,6 +55,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool fullImageSizeMicroblogs,
     required bool showPostsCards,
     required List<PostComponent> postComponentOrder,
+    required double dividerThickness,
     // Feed defaults
     @FeedViewConverter() required FeedView feedDefaultView,
     required FeedSource feedDefaultFilter,
@@ -145,6 +146,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     showPostsCards: profile?.showPostsCards ?? defaultProfile.showPostsCards,
     postComponentOrder:
         profile?.postComponentOrder ?? defaultProfile.postComponentOrder,
+    dividerThickness: profile?.dividerThickness ?? defaultProfile.dividerThickness,
     feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
     feedDefaultFilter:
         profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
@@ -236,6 +238,7 @@ abstract class ProfileRequired with _$ProfileRequired {
       PostComponent.info,
       PostComponent.body,
     ],
+    dividerThickness: 1,
     feedDefaultView: FeedView.threads,
     feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
@@ -305,6 +308,7 @@ abstract class ProfileOptional
     required bool? fullImageSizeMicroblogs,
     required bool? showPostsCards,
     required List<PostComponent>? postComponentOrder,
+    required double? dividerThickness,
     // Feed defaults
     @FeedViewConverter() required FeedView? feedDefaultView,
     required FeedSource? feedDefaultFilter,
@@ -374,6 +378,7 @@ abstract class ProfileOptional
       fullImageSizeMicroblogs: Value(fullImageSizeMicroblogs),
       showPostsCards: Value(showPostsCards),
       postComponentOrder: Value(postComponentOrder),
+      dividerThickness: Value(dividerThickness),
       // Feed defaults
       feedDefaultView: Value(feedDefaultView),
       feedDefaultFilter: Value(feedDefaultFilter),
@@ -437,6 +442,7 @@ abstract class ProfileOptional
     fullImageSizeMicroblogs: null,
     showPostsCards: null,
     postComponentOrder: null,
+    dividerThickness: null,
     feedDefaultView: null,
     feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
@@ -506,6 +512,7 @@ abstract class ProfileOptional
           other.fullImageSizeMicroblogs ?? fullImageSizeMicroblogs,
       showPostsCards: other.showPostsCards ?? showPostsCards,
       postComponentOrder: other.postComponentOrder ?? postComponentOrder,
+      dividerThickness: other.dividerThickness ?? dividerThickness,
       feedDefaultView: other.feedDefaultView ?? feedDefaultView,
       feedDefaultFilter: other.feedDefaultFilter ?? feedDefaultFilter,
       feedDefaultThreadsSort:

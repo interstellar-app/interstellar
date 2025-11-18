@@ -122,6 +122,28 @@ class DisplaySettingsScreen extends StatelessWidget {
               ac.selectedProfileValue.copyWith(hideActionButtons: newValue),
             ),
           ),
+          ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${l(context).settings_dividerThickness} : '
+                      '${ac.profile.dividerThickness.toStringAsFixed(1)}',
+                ),
+                Slider(
+                  value: ac.profile.dividerThickness,
+                  max: 10,
+                  min: 0,
+                  onChanged: (newValue) => ac.updateProfile(
+                    ac.selectedProfileValue.copyWith(
+                      dividerThickness: newValue,
+                    ),
+                  ),
+                  divisions: 50,
+                ),
+              ],
+            ),
+          ),
           ListTileSwitch(
             leading: const Icon(Symbols.system_security_update_rounded),
             title: Text(l(context).settings_hideFeedUIOnScroll),

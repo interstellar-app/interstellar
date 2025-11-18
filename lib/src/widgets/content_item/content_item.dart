@@ -220,7 +220,21 @@ class _ContentItemState extends State<ContentItem> {
             color: widget.read
                 ? Theme.of(context).cardColor.darken(3)
                 : Colors.transparent,
-            child: post(),
+            child: Column(
+              children: [
+                post(),
+                Divider(
+                  height: context
+                      .read<AppController>()
+                      .profile
+                      .dividerThickness,
+                  thickness: context
+                      .read<AppController>()
+                      .profile
+                      .dividerThickness,
+                ),
+              ],
+            ),
           );
   }
 
@@ -486,8 +500,7 @@ class _ContentItemState extends State<ContentItem> {
             widget.title!,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: widget.read ? FontWeight.w100 : null,
-              // letterSpacing: 0,
-              height: 0
+              height: 0,
             ),
             overflow:
                 widget.isPreview &&
@@ -602,6 +615,7 @@ class _ContentItemState extends State<ContentItem> {
   Widget compact() {
     // TODO: Figure out how to use full existing height of row, instead of fixed value.
     final imageWidget = getImage(context, isThumbnail: true, compact: true);
+    final ac = context.read<AppController>();
 
     return Column(
       children: [
@@ -630,10 +644,7 @@ class _ContentItemState extends State<ContentItem> {
               );
             },
             child: Wrapper(
-              shouldWrap: context
-                  .watch<AppController>()
-                  .profile
-                  .enableSwipeActions,
+              shouldWrap: ac.profile.enableSwipeActions,
               parentBuilder: (child) => SwipeItem(
                 onUpVote: widget.onUpVote,
                 onDownVote: widget.onDownVote,
@@ -711,7 +722,10 @@ class _ContentItemState extends State<ContentItem> {
             ),
           ),
         ),
-        const Divider(height: 1, thickness: 1),
+        Divider(
+          height: ac.profile.dividerThickness,
+          thickness: ac.profile.dividerThickness,
+        ),
       ],
     );
   }
