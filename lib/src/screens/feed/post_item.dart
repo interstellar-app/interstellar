@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -29,7 +30,13 @@ class PostItem extends StatefulWidget {
 
   final PostModel item;
   final void Function(PostModel) onUpdate;
-  final Future<void> Function(String body, String lang)? onReply;
+  final Future<void> Function(
+    String body,
+    String lang, {
+    XFile? image,
+    String? alt,
+  })?
+  onReply;
   final Future<void> Function(String)? onEdit;
   final Future<void> Function()? onDelete;
   final void Function()? onTap;
@@ -115,7 +122,8 @@ class _PostItemState extends State<PostItem> {
           isNSFW: widget.item.isNSFW,
           isOC: widget.item.isOC == true,
           user: widget.item.user,
-          updateUser: (user) async => widget.onUpdate(widget.item.copyWith(user: user)),
+          updateUser: (user) async =>
+              widget.onUpdate(widget.item.copyWith(user: user)),
           community: widget.item.community,
           domain: widget.item.domain?.name,
           domainIdOnClick: widget.item.domain?.id,

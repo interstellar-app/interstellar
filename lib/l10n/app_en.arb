@@ -10,6 +10,7 @@
   "usernameOrEmail": "Username or Email",
   "password": "Password",
   "login": "Login",
+  "refreshAuth": "Refresh login",
   "totpToken": "TOTP Token (if needed)",
   "cancel": "Cancel",
   "rename": "Rename",
@@ -158,6 +159,14 @@
     }
   },
   "search": "Search",
+  "searchSource": "Search {source}",
+  "@searchSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "communities": "Communities",
   "people": "People",
   "domains": "Domains",
@@ -267,6 +276,7 @@
   "settings_inlineReplies": "Reply inline",
   "settings_crosspostComments": "Show crosspost comment sections",
   "settings_crossPostMarkAsRead": "Mark crossposts as read",
+  "settings_imageStore": "Default image store",
   "settings_defaultDownloadDir": "Default download directory",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
@@ -733,6 +743,7 @@
   "errorPage_firstPage_button": "Try Again",
   "errorPage_newPage": "Something went wrong. Tap to try again.",
   "errorPage_caughtUp": "You're all caught up.\nLoad older items?",
+  "errorPage_authError": "Looks like there was an issue with account authorization.\nPress the button below to refresh auth.",
   "exitMessage": "Press BACK again to exit.",
   "pushNotificationsDialog_title": "Push Notifications",
   "pushNotificationsDialog_noDistributor": "You need to install a UnifiedPush distributor for push notifications to work.\nYou can find more information at: {url}",

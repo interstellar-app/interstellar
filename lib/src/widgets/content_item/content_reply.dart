@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/widgets/image_selector.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +25,13 @@ class ContentReply extends StatefulWidget {
 
   final bool inline;
   final ContentItem content;
-  final Future<void> Function(String body, String lang) onReply;
+  final Future<void> Function(
+    String body,
+    String lang, {
+    XFile? image,
+    String? alt,
+  })
+  onReply;
   final Function() onComplete;
   final String draftResourceId;
 
@@ -33,6 +42,9 @@ class ContentReply extends StatefulWidget {
 class _ContentReplyState extends State<ContentReply> {
   final TextEditingController _textController = TextEditingController();
   late String _replyLanguage;
+
+  XFile? _imageFile;
+  String? _altText;
 
   @override
   void initState() {
@@ -69,6 +81,16 @@ class _ContentReplyState extends State<ContentReply> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              if (context.read<AppController>().serverSoftware ==
+                  ServerSoftware.mbin)
+                ImageSelector(
+                  _imageFile,
+                  (file, altText) => setState(() {
+                    _imageFile = file;
+                    _altText = altText;
+                  }),
+                  inline: true,
+                ),
               IconButton(
                 onPressed: () async {
                   final newLang = await languageSelectionMenu(
@@ -92,7 +114,12 @@ class _ContentReplyState extends State<ContentReply> {
               const SizedBox(width: 8),
               LoadingFilledButton(
                 onPressed: () async {
-                  await widget.onReply(_textController.text, _replyLanguage);
+                  await widget.onReply(
+                    _textController.text,
+                    _replyLanguage,
+                    image: _imageFile,
+                    alt: _altText,
+                  );
 
                   await replyDraftController.discard();
                   widget.onComplete();

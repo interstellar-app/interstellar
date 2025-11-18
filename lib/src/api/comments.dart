@@ -1,4 +1,7 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -8,6 +11,8 @@ import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 enum CommentSort { hot, top, newest, active, oldest }
@@ -190,7 +195,7 @@ class APIComments {
 
       case ServerSoftware.lemmy:
         const path = '/comment/list';
-        final query = {'parent_id': commentId.toString()};
+        final query = {'parent_id': commentId.toString(), 'type_': 'All'};
 
         final response = await client.get(path, queryParams: query);
 
@@ -284,18 +289,46 @@ class APIComments {
     String body, {
     int? parentCommentId,
     required String lang,
+    XFile? image,
+    String? alt,
+    bool isAdult = false,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path =
-            '/${_postTypeMbin[postType]}/$postId/comments${parentCommentId != null ? '/$parentCommentId/reply' : ''}';
+        if (image == null) {
+          final path =
+              '/${_postTypeMbin[postType]}/$postId/comments${parentCommentId != null ? '/$parentCommentId/reply' : ''}';
 
-        final response = await client.post(
-          path,
-          body: {'body': body, 'lang': lang},
-        );
+          final response = await client.post(
+            path,
+            body: {'body': body, 'lang': lang},
+          );
 
-        return CommentModel.fromMbin(response.bodyJson);
+          return CommentModel.fromMbin(response.bodyJson);
+        } else {
+          final path =
+              '/${_postTypeMbin[postType]}/$postId/comments${parentCommentId != null ? '/$parentCommentId/reply' : ''}/image';
+
+          final request = http.MultipartRequest(
+            'POST',
+            Uri.https(client.domain, client.software.apiPathPrefix + path),
+          );
+          final file = http.MultipartFile.fromBytes(
+            'uploadImage',
+            await image.readAsBytes(),
+            filename: basename(image.path),
+            contentType: MediaType.parse(lookupMimeType(image.path)!),
+          );
+          request.files.add(file);
+          request.fields['body'] = body;
+          request.fields['lang'] = lang;
+          request.fields['isAdult'] = isAdult.toString();
+          request.fields['alt'] = alt ?? '';
+
+          final response = await client.sendRequest(request);
+
+          return CommentModel.fromMbin(response.bodyJson);
+        }
 
       case ServerSoftware.lemmy:
         const path = '/comment';
@@ -323,8 +356,7 @@ class APIComments {
           body: {
             'body': body,
             'post_id': postId,
-            if (parentCommentId != null)
-              'parent_id': parentCommentId,
+            if (parentCommentId != null) 'parent_id': parentCommentId,
             'language_id': await client.languageIdFromCode(lang),
           },
         );
