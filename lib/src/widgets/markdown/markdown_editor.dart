@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
@@ -49,13 +49,13 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   final draftDebounce = Debouncer(duration: const Duration(milliseconds: 1000));
   final ScrollController _scrollController = ScrollController();
 
-  void execAction(_MarkdownEditorActionBase action) {
+  Future<void> execAction(_MarkdownEditorActionBase action) async {
     final input = _MarkdownEditorData(
       text: widget.controller.text,
       selectionStart: widget.controller.selection.start,
       selectionEnd: widget.controller.selection.end,
     );
-    final output = action.run(input);
+    final output = await action.run(input);
 
     widget.controller.text = output.text;
     widget.controller.selection = widget.controller.selection.copyWith(
@@ -171,12 +171,12 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                           child: SizedBox(
                                             width: 40,
                                             height: 40,
-                                            child: IconButton(
-                                              onPressed: () {
+                                            child: LoadingIconButton(
+                                              onPressed: () async {
                                                 _focusNodeTextField
                                                     .requestFocus();
 
-                                                execAction(action.action);
+                                                await execAction(action.action);
                                               },
                                               icon: Icon(action.icon),
                                               tooltip:
@@ -461,7 +461,7 @@ List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
     shortcut: const SingleActivator(LogicalKeyboardKey.keyK, control: true),
   ),
   _MarkdownEditorActionInfo(
-    action: const _MarkdownEditorActionLink(isImage: true),
+    action: _MarkdownEditorActionImage(context: context),
     icon: Symbols.image_rounded,
     tooltip: l(context).markdownEditor_image,
     shortcut: const SingleActivator(
@@ -557,7 +557,7 @@ class _MarkdownEditorActionInfo {
 abstract class _MarkdownEditorActionBase {
   const _MarkdownEditorActionBase();
 
-  _MarkdownEditorData run(_MarkdownEditorData input);
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input);
 
   _MarkdownEditorData getCurrentLine(_MarkdownEditorData input) {
     final endIndex = input.text.indexOf('\n', input.selectionStart);
@@ -599,7 +599,7 @@ class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
     : endChars = endChars ?? startChars;
 
   @override
-  _MarkdownEditorData run(_MarkdownEditorData input) {
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
     final contextStart = input.selectionStart - startChars.length;
@@ -642,7 +642,7 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
   const _MarkdownEditorActionBlock(this.startChars, [this.endChars = '']);
 
   @override
-  _MarkdownEditorData run(_MarkdownEditorData input) {
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
     _MarkdownEditorData line = getCurrentLine(input);
@@ -686,7 +686,7 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
   const _MarkdownEditorActionLink({this.isImage = false});
 
   @override
-  _MarkdownEditorData run(_MarkdownEditorData input) {
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     final imageStartChar = isImage ? '!' : '';
 
     final helpMessage = isImage ? 'altr' : 'text';
@@ -741,13 +741,84 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
   }
 }
 
+class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
+  final BuildContext context;
+
+  const _MarkdownEditorActionImage({required this.context});
+
+  @override
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
+    final imageStartChar = '!';
+
+    final helpMessage = 'altr';
+
+    var text = input.text;
+
+    if (input.selectionText.isEmpty) {
+      XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      String url = '';
+      if (image != null && context.mounted) {
+        url = await context.read<AppController>().api.images.uploadImage(
+          store: context.read<AppController>().profile.defaultImageStore,
+          image: image,
+        );
+      }
+
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        '$imageStartChar[$helpMessage]($url)',
+      );
+
+      return _MarkdownEditorData(
+        text: text,
+        selectionStart: input.selectionStart + 7 + imageStartChar.length,
+        selectionEnd: input.selectionStart + 10 + imageStartChar.length,
+      );
+    }
+
+    if (isValidUrl(input.selectionText)) {
+      text = text.replaceRange(input.selectionEnd, input.selectionEnd, ')');
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        '$imageStartChar[$helpMessage](',
+      );
+
+      return _MarkdownEditorData(
+        text: text,
+        selectionStart: input.selectionStart + 1 + imageStartChar.length,
+        selectionEnd: input.selectionStart + 5 + imageStartChar.length,
+      );
+    } else {
+      text = text.replaceRange(
+        input.selectionEnd,
+        input.selectionEnd,
+        '](url)',
+      );
+      text = text.replaceRange(
+        input.selectionStart,
+        input.selectionStart,
+        '$imageStartChar[',
+      );
+
+      return _MarkdownEditorData(
+        text: text,
+        selectionStart: input.selectionEnd + 3 + imageStartChar.length,
+        selectionEnd: input.selectionEnd + 6 + imageStartChar.length,
+      );
+    }
+  }
+}
+
 class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
   final String sectionText;
 
   const _MarkdownEditorActionInsertSection(this.sectionText);
 
   @override
-  _MarkdownEditorData run(_MarkdownEditorData input) {
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
     int prefixNewlines = 2;
@@ -793,7 +864,7 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
   const _MarkdownEditorActionEnter();
 
   @override
-  _MarkdownEditorData run(_MarkdownEditorData input) {
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
     final line = getCurrentLine(input);
@@ -1081,12 +1152,10 @@ class _MarkdownEditorConfigShareDialogState
             child: Text(l(context).filterLists),
           ),
           ..._feeds!.map(
-                (feedName) => SimpleDialogOption(
+            (feedName) => SimpleDialogOption(
               child: Text(feedName),
               onPressed: () async {
-                final feed = context
-                    .read<AppController>()
-                    .feeds[feedName]!;
+                final feed = context.read<AppController>().feeds[feedName]!;
 
                 final config = await ConfigShare.create(
                   type: ConfigShareType.feed,

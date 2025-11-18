@@ -276,6 +276,7 @@
   "settings_inlineReplies": "Reply inline",
   "settings_crosspostComments": "Show crosspost comment sections",
   "settings_crossPostMarkAsRead": "Mark crossposts as read",
+  "settings_imageStore": "Default image store",
   "settings_defaultDownloadDir": "Default download directory",
   "settings_themeMode": "Theme mode",
   "settings_themeMode_system": "System",
