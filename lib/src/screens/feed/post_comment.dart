@@ -140,6 +140,7 @@ class _PostCommentState extends State<PostComment> {
       lang: widget.comment.lang,
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
+      fullImageSize: true,
       user: widget.comment.user,
       updateUser: (user) async =>
           widget.onUpdate(widget.comment.copyWith(user: user)),
