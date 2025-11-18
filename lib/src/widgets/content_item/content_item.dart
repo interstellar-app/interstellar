@@ -235,6 +235,8 @@ class _ContentItemState extends State<ContentItem> {
         widget.link != null && isSupportedYouTubeVideo(widget.link!);
 
     final menuWidget = IconButton(
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints(),
       icon: const Icon(Symbols.more_vert_rounded),
       onPressed: () {
         showContentMenu(
