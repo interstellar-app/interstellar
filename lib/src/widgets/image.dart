@@ -44,19 +44,19 @@ class AdvancedImage extends StatelessWidget {
         ? null
         : sqrt(1080 / (image.blurHashWidth! * image.blurHashHeight!));
 
-    final tag = getHeroTag();
+    final tag = hero ?? image.toString();
 
     return Wrapper(
       shouldWrap: openTitle != null,
       parentBuilder: (child) => SuperHero(
-        tag: hero ?? tag,
+        tag: tag,
         child: GestureDetector(
           onTap: () => pushRoute(
             context,
             builder: (context) => AdvancedImagePage(
               image,
               title: openTitle!,
-              hero: hero ?? tag,
+              hero: tag,
               fit: fit,
             ),
           ),
@@ -77,7 +77,7 @@ class AdvancedImage extends StatelessWidget {
               shape: BoxShape.rectangle,
               enableSlideOutPage: true,
               heroBuilderForSlidingPage: (child) {
-                return SuperHero(tag: hero ?? tag, child: child);
+                return SuperHero(tag: tag, child: child);
               },
               cache: true,
               mode: openTitle != null
