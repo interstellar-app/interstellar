@@ -4,6 +4,7 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
@@ -65,16 +66,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
         ? '!${_data!.name}'
         : '!${_data!.name}@${ac.instanceHost}';
 
-    final loggedInUser = ac.localName;
-
-    final isModerator = _data == null
-        ? false
-        : _data!.moderators.any((mod) => mod.name == loggedInUser);
-
     return FeedScreen(
-      source: FeedSource.community,
-      sourceId: widget.communityId,
-      title: _data?.name ?? '',
+      feed: FeedAggregator.fromSingleSource(
+        ac,
+        name: _data?.name ?? '',
+        source: FeedSource.community,
+        sourceId: widget.communityId,
+      ),
       createPostCommunity: _data,
       details: _data == null
           ? null

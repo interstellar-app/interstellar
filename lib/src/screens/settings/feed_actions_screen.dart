@@ -81,7 +81,7 @@ class FeedActionsSettingsScreen extends StatelessWidget {
           ListTileSelect(
             title: l(context).action_setSort,
             icon: Symbols.sort_rounded,
-            selectionMenu: actionLocationSelect(context),
+            selectionMenu: actionLocationWithTabsSelect(context),
             value: ac.profile.feedActionSetSort,
             oldValue: ac.selectedProfileValue.feedActionSetSort,
             onChange: (newValue) => ac.updateProfile(

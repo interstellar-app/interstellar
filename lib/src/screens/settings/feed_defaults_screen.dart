@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/screens/settings/feed_defaults/feed_sort_order.dart';
+import 'package:interstellar/src/screens/settings/feed_defaults/feed_source_order.dart';
+import 'package:interstellar/src/screens/settings/feed_defaults/feed_view_order.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import '../../widgets/list_tile_switch.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 
 class FeedDefaultSettingsScreen extends StatelessWidget {
   const FeedDefaultSettingsScreen({super.key});
@@ -21,25 +22,28 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
       appBar: AppBar(title: Text(l(context).settings_feedDefaults)),
       body: ListView(
         children: [
-          ListTileSelect(
-            title: l(context).settings_feedDefaults_view,
-            icon: Symbols.tab,
-            selectionMenu: feedViewSelect(context),
-            value: ac.profile.feedDefaultView,
-            oldValue: ac.selectedProfileValue.feedDefaultView,
-            onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(feedDefaultView: newValue),
+          ListTile(
+            leading: const Icon(Symbols.filter_list_rounded),
+            title: Text(l(context).settings_feedSourceOrder),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => FeedSourceOrderSettingsScreen(),
             ),
-            enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
-          ListTileSelect(
-            title: l(context).settings_feedDefaults_filter,
-            icon: Symbols.filter_list_rounded,
-            selectionMenu: feedFilterSelect(context),
-            value: ac.profile.feedDefaultFilter,
-            oldValue: ac.selectedProfileValue.feedDefaultFilter,
-            onChange: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(feedDefaultFilter: newValue),
+          ListTile(
+            leading: const Icon(Symbols.tab_rounded),
+            title: Text(l(context).settings_feedViewOrder),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => FeedViewOrderSettingsScreen(),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.sort_rounded),
+            title: Text(l(context).settings_feedSortOrder),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => FeedSortOrderSettingsScreen(),
             ),
           ),
           ListTileSelect(
