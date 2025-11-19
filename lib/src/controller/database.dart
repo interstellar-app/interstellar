@@ -11,7 +11,6 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
@@ -193,6 +192,54 @@ class PostComponentConverter extends TypeConverter<List<PostComponent>, String> 
   }
 }
 
+class FeedViewListConverter extends TypeConverter<List<FeedView>, String> {
+  const FeedViewListConverter();
+
+  @override
+  List<FeedView> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>)
+        .map((item) => FeedView.values.byName(item))
+        .toList();
+  }
+
+  @override
+  String toSql(List<FeedView> enums) {
+    return jsonEncode(enums.map((item) => item.name).toList());
+  }
+}
+
+class FeedSourceListConverter extends TypeConverter<List<FeedSource>, String> {
+  const FeedSourceListConverter();
+
+  @override
+  List<FeedSource> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>)
+        .map((item) => FeedSource.values.byName(item))
+        .toList();
+  }
+
+  @override
+  String toSql(List<FeedSource> enums) {
+    return jsonEncode(enums.map((item) => item.name).toList());
+  }
+}
+
+class FeedSortListConverter extends TypeConverter<List<FeedSort>, String> {
+  const FeedSortListConverter();
+
+  @override
+  List<FeedSort> fromSql(String fromDb) {
+    return (jsonDecode(fromDb) as List<dynamic>)
+        .map((item) => FeedSort.values.byName(item))
+        .toList();
+  }
+
+  @override
+  String toSql(List<FeedSort> enums) {
+    return jsonEncode(enums.map((item) => item.name).toList());
+  }
+}
+
 @UseRowClass(ProfileOptional)
 class Profiles extends Table {
   TextColumn get name => text().clientDefault(() => 'Default')();
@@ -237,8 +284,12 @@ class Profiles extends Table {
   TextColumn get postComponentOrder => text().map(const PostComponentConverter()).nullable()();
   RealColumn get dividerThickness => real().nullable()();
   // Feed defaults
-  TextColumn get feedDefaultView => textEnum<FeedView>().nullable()();
-  TextColumn get feedDefaultFilter => textEnum<FeedSource>().nullable()();
+  TextColumn get feedViewOrder =>
+      text().map(const FeedViewListConverter()).nullable()();
+  TextColumn get feedSourceOrder =>
+      text().map(const FeedSourceListConverter()).nullable()();
+  TextColumn get feedSortOrder =>
+      text().map(const FeedSortListConverter()).nullable()();
   TextColumn get feedDefaultThreadsSort => textEnum<FeedSort>().nullable()();
   TextColumn get feedDefaultMicroblogSort => textEnum<FeedSort>().nullable()();
   TextColumn get feedDefaultCombinedSort => textEnum<FeedSort>().nullable()();
@@ -252,7 +303,8 @@ class Profiles extends Table {
   TextColumn get feedActionRefresh => textEnum<ActionLocation>().nullable()();
   TextColumn get feedActionSetFilter =>
       textEnum<ActionLocationWithTabs>().nullable()();
-  TextColumn get feedActionSetSort => textEnum<ActionLocation>().nullable()();
+  TextColumn get feedActionSetSort =>
+      textEnum<ActionLocationWithTabs>().nullable()();
   TextColumn get feedActionSetView =>
       textEnum<ActionLocationWithTabs>().nullable()();
   TextColumn get feedActionHideReadPosts =>
@@ -282,16 +334,22 @@ class Stars extends Table {
 class MiscCache extends Table {
   IntColumn get id => integer().check(id.equals(1))();
   @ReferenceName('mainProfile')
-  TextColumn get mainProfile =>
-      text().references(Profiles, #name, onDelete: KeyAction.setDefault).clientDefault(() => 'Default')();
+  TextColumn get mainProfile => text()
+      .references(Profiles, #name, onDelete: KeyAction.setDefault)
+      .clientDefault(() => 'Default')();
   @ReferenceName('selectedProfile')
-  TextColumn get selectedProfile =>
-      text().references(Profiles, #name, onDelete: KeyAction.setDefault).clientDefault(() => 'Default')();
+  TextColumn get selectedProfile => text()
+      .references(Profiles, #name, onDelete: KeyAction.setDefault)
+      .clientDefault(() => 'Default')();
   @ReferenceName('autoSelectProfile')
-  TextColumn get autoSelectProfile =>
-      text().nullable().references(Profiles, #name, onDelete: KeyAction.setNull)();
-  TextColumn get selectedAccount =>
-      text().references(Accounts, #handle, onDelete: KeyAction.setDefault).clientDefault(() => '@kbin.earth')();
+  TextColumn get autoSelectProfile => text().nullable().references(
+    Profiles,
+    #name,
+    onDelete: KeyAction.setNull,
+  )();
+  TextColumn get selectedAccount => text()
+      .references(Accounts, #handle, onDelete: KeyAction.setDefault)
+      .clientDefault(() => '@kbin.earth')();
   TextColumn get webPushKeys => text().nullable()();
   TextColumn get downloadsDir => text().nullable()();
   BoolColumn get expandNavDrawer => boolean().withDefault(Constant(true))();

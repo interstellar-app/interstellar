@@ -59,8 +59,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     required List<PostComponent> postComponentOrder,
     required double dividerThickness,
     // Feed defaults
-    @FeedViewConverter() required FeedView feedDefaultView,
-    required FeedSource feedDefaultFilter,
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
     @JsonKey(readValue: _parseFeedDefaultCombinedSort)
@@ -68,13 +66,16 @@ abstract class ProfileRequired with _$ProfileRequired {
     required FeedSort feedDefaultExploreSort,
     required CommentSort feedDefaultCommentSort,
     required bool feedDefaultHideReadPosts,
+    required List<FeedView> feedViewOrder,
+    required List<FeedSource> feedSourceOrder,
+    required List<FeedSort> feedSortOrder,
     // Feed actions
     required ActionLocation feedActionBackToTop,
     required ActionLocation feedActionCreateNew,
     required ActionLocation feedActionExpandFab,
     required ActionLocation feedActionRefresh,
     required ActionLocationWithTabs feedActionSetFilter,
-    required ActionLocation feedActionSetSort,
+    required ActionLocationWithTabs feedActionSetSort,
     required ActionLocationWithTabs feedActionSetView,
     required ActionLocation feedActionHideReadPosts,
     // Swipe Actions
@@ -150,9 +151,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     postComponentOrder:
         profile?.postComponentOrder ?? defaultProfile.postComponentOrder,
     dividerThickness: profile?.dividerThickness ?? defaultProfile.dividerThickness,
-    feedDefaultView: profile?.feedDefaultView ?? defaultProfile.feedDefaultView,
-    feedDefaultFilter:
-        profile?.feedDefaultFilter ?? defaultProfile.feedDefaultFilter,
     feedDefaultThreadsSort:
         profile?.feedDefaultThreadsSort ??
         defaultProfile.feedDefaultThreadsSort,
@@ -171,6 +169,9 @@ abstract class ProfileRequired with _$ProfileRequired {
     feedDefaultHideReadPosts:
         profile?.feedDefaultHideReadPosts ??
         defaultProfile.feedDefaultHideReadPosts,
+    feedViewOrder: profile?.feedViewOrder ?? defaultProfile.feedViewOrder,
+    feedSourceOrder: profile?.feedSourceOrder ?? defaultProfile.feedSourceOrder,
+    feedSortOrder: profile?.feedSortOrder ?? defaultProfile.feedSortOrder,
     feedActionBackToTop:
         profile?.feedActionBackToTop ?? defaultProfile.feedActionBackToTop,
     feedActionCreateNew:
@@ -243,20 +244,27 @@ abstract class ProfileRequired with _$ProfileRequired {
       PostComponent.body,
     ],
     dividerThickness: 1,
-    feedDefaultView: FeedView.threads,
-    feedDefaultFilter: FeedSource.subscribed,
     feedDefaultThreadsSort: FeedSort.hot,
     feedDefaultMicroblogSort: FeedSort.hot,
     feedDefaultCombinedSort: FeedSort.hot,
     feedDefaultExploreSort: FeedSort.newest,
     feedDefaultCommentSort: CommentSort.hot,
     feedDefaultHideReadPosts: false,
+    feedViewOrder: [FeedView.threads, FeedView.microblog, FeedView.combined],
+    feedSourceOrder: [
+      FeedSource.subscribed,
+      FeedSource.moderated,
+      FeedSource.favorited,
+      FeedSource.all,
+      FeedSource.local,
+    ],
+    feedSortOrder: FeedSort.values,
     feedActionBackToTop: ActionLocation.fabMenu,
     feedActionCreateNew: ActionLocation.fabMenu,
     feedActionExpandFab: ActionLocation.fabTap,
     feedActionRefresh: ActionLocation.fabMenu,
     feedActionSetFilter: ActionLocationWithTabs.tabs,
-    feedActionSetSort: ActionLocation.appBar,
+    feedActionSetSort: ActionLocationWithTabs.appBar,
     feedActionSetView: ActionLocationWithTabs.appBar,
     feedActionHideReadPosts: ActionLocation.fabMenu,
     enableSwipeActions: false,
@@ -315,8 +323,6 @@ abstract class ProfileOptional
     required List<PostComponent>? postComponentOrder,
     required double? dividerThickness,
     // Feed defaults
-    @FeedViewConverter() required FeedView? feedDefaultView,
-    required FeedSource? feedDefaultFilter,
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
     @JsonKey(readValue: _parseFeedDefaultCombinedSort)
@@ -324,13 +330,16 @@ abstract class ProfileOptional
     required FeedSort? feedDefaultExploreSort,
     required CommentSort? feedDefaultCommentSort,
     required bool? feedDefaultHideReadPosts,
+    required List<FeedView>? feedViewOrder,
+    required List<FeedSource>? feedSourceOrder,
+    required List<FeedSort>? feedSortOrder,
     // Feed actions
     required ActionLocation? feedActionBackToTop,
     required ActionLocation? feedActionCreateNew,
     required ActionLocation? feedActionExpandFab,
     required ActionLocation? feedActionRefresh,
     required ActionLocationWithTabs? feedActionSetFilter,
-    required ActionLocation? feedActionSetSort,
+    required ActionLocationWithTabs? feedActionSetSort,
     required ActionLocationWithTabs? feedActionSetView,
     required ActionLocation? feedActionHideReadPosts,
     required bool? enableSwipeActions,
@@ -386,14 +395,15 @@ abstract class ProfileOptional
       postComponentOrder: Value(postComponentOrder),
       dividerThickness: Value(dividerThickness),
       // Feed defaults
-      feedDefaultView: Value(feedDefaultView),
-      feedDefaultFilter: Value(feedDefaultFilter),
       feedDefaultThreadsSort: Value(feedDefaultThreadsSort),
       feedDefaultMicroblogSort: Value(feedDefaultMicroblogSort),
       feedDefaultCombinedSort: Value(feedDefaultCombinedSort),
       feedDefaultExploreSort: Value(feedDefaultExploreSort),
       feedDefaultCommentSort: Value(feedDefaultCommentSort),
       feedDefaultHideReadPosts: Value(feedDefaultHideReadPosts),
+      feedViewOrder: Value(feedViewOrder),
+      feedSourceOrder: Value(feedSourceOrder),
+      feedSortOrder: Value(feedSortOrder),
       // Feed actions
       feedActionBackToTop: Value(feedActionBackToTop),
       feedActionCreateNew: Value(feedActionCreateNew),
@@ -450,14 +460,15 @@ abstract class ProfileOptional
     showPostsCards: null,
     postComponentOrder: null,
     dividerThickness: null,
-    feedDefaultView: null,
-    feedDefaultFilter: null,
     feedDefaultThreadsSort: null,
     feedDefaultMicroblogSort: null,
     feedDefaultCombinedSort: null,
     feedDefaultExploreSort: null,
     feedDefaultCommentSort: null,
     feedDefaultHideReadPosts: null,
+    feedViewOrder: null,
+    feedSourceOrder: null,
+    feedSortOrder: null,
     feedActionBackToTop: null,
     feedActionCreateNew: null,
     feedActionExpandFab: null,
@@ -521,8 +532,6 @@ abstract class ProfileOptional
       showPostsCards: other.showPostsCards ?? showPostsCards,
       postComponentOrder: other.postComponentOrder ?? postComponentOrder,
       dividerThickness: other.dividerThickness ?? dividerThickness,
-      feedDefaultView: other.feedDefaultView ?? feedDefaultView,
-      feedDefaultFilter: other.feedDefaultFilter ?? feedDefaultFilter,
       feedDefaultThreadsSort:
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:
@@ -535,6 +544,9 @@ abstract class ProfileOptional
           other.feedDefaultCommentSort ?? feedDefaultCommentSort,
       feedDefaultHideReadPosts:
           other.feedDefaultHideReadPosts ?? feedDefaultHideReadPosts,
+      feedViewOrder: other.feedViewOrder ?? feedViewOrder,
+      feedSourceOrder: other.feedSourceOrder ?? feedSourceOrder,
+      feedSortOrder: other.feedSortOrder ?? feedSortOrder,
       feedActionBackToTop:
           other.feedActionBackToTop ?? this.feedActionBackToTop,
       feedActionCreateNew:
@@ -596,7 +608,7 @@ abstract class ProfileOptional
           ? ActionLocationWithTabs.hide
           : this.feedActionSetFilter,
       feedActionSetSort: builtProfile.feedActionSetSort.name == actionName
-          ? ActionLocation.hide
+          ? ActionLocationWithTabs.hide
           : this.feedActionSetSort,
       feedActionSetView: builtProfile.feedActionSetView.name == actionName
           ? ActionLocationWithTabs.hide
