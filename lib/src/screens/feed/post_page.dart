@@ -69,6 +69,7 @@ class _PostPageState extends State<PostPage> {
           widget.postId ?? _data!.id,
         ),
       };
+      if (!mounted) return;
       setState(() {
         _data = newPost;
       });
