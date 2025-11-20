@@ -230,16 +230,17 @@ class _ContentItemState extends State<ContentItem> {
             child: Column(
               children: [
                 post(),
-                Divider(
-                  height: context
-                      .read<AppController>()
-                      .profile
-                      .dividerThickness,
-                  thickness: context
-                      .read<AppController>()
-                      .profile
-                      .dividerThickness,
-                ),
+                if (widget.feedView)
+                  Divider(
+                    height: context
+                        .read<AppController>()
+                        .profile
+                        .dividerThickness,
+                    thickness: context
+                        .read<AppController>()
+                        .profile
+                        .dividerThickness,
+                  ),
               ],
             ),
           );
