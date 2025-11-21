@@ -18,7 +18,7 @@ String dateOnlyFormat(DateTime input) {
 }
 
 String dateTimeFormat(DateTime input) {
-  return DateFormat().format(input);
+  return DateFormat().format(input.toLocal());
 }
 
 String timeOnlyFormat(DateTime input) {

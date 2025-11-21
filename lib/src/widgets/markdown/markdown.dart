@@ -58,6 +58,7 @@ class Markdown extends StatelessWidget {
             blurHashHeight: null,
           ),
           openTitle: title ?? '',
+          fit: BoxFit.scaleDown,
           enableBlur: nsfw,
         );
       },

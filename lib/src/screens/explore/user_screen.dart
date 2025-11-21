@@ -605,23 +605,23 @@ class _UserScreenBodyState extends State<UserScreenBody>
       scrollController: _scrollController,
       itemBuilder: (context, item, index) {
         return switch (widget.mode) {
-          UserFeedType.thread || UserFeedType.microblog => Card(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            clipBehavior: Clip.antiAlias,
-            child: PostItem(
-              item,
-              (newValue) => _pagingController.updateItem(item, newValue),
-              onTap: () => pushRoute(
-                context,
-                builder: (context) => PostPage(
-                  initData: item,
-                  onUpdate: (newValue) =>
-                      _pagingController.updateItem(item, newValue),
-                ),
+          UserFeedType.thread || UserFeedType.microblog => PostItem(
+            item,
+            (newValue) => _pagingController.updateItem(item, newValue),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => PostPage(
+                initData: item,
+                onUpdate: (newValue) =>
+                    _pagingController.updateItem(item, newValue),
               ),
-              isPreview: item.type == PostType.thread,
-              isTopLevel: true,
             ),
+            isPreview: true,
+            isTopLevel: true,
+            isCompact: context
+                .watch<AppController>()
+                .profile
+                .compactMode,
           ),
           UserFeedType.comment || UserFeedType.reply => Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),

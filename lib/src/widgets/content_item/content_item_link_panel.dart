@@ -64,109 +64,104 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Card.outlined(
-        clipBehavior: Clip.antiAlias,
-        margin: EdgeInsets.zero,
-        child: Row(
-          children: [
-            MenuAnchor(
-              builder:
-                  (
-                    BuildContext context,
-                    MenuController controller,
-                    Widget? child,
-                  ) {
-                    return SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: IconButton(
-                        icon: Icon(
-                          _youtubeVideoId != null
-                              ? Symbols.play_circle_rounded
-                              : Symbols.link_rounded,
-                        ),
-                        onPressed: () {
-                          if (controller.isOpen) {
-                            controller.close();
-                          } else {
-                            controller.open();
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          shape: const LinearBorder(),
-                        ),
+    return Card.outlined(
+      clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.zero,
+      child: Row(
+        children: [
+          MenuAnchor(
+            builder:
+                (
+                  BuildContext context,
+                  MenuController controller,
+                  Widget? child,
+                ) {
+                  return SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: IconButton(
+                      icon: Icon(
+                        _youtubeVideoId != null
+                            ? Symbols.play_circle_rounded
+                            : Symbols.link_rounded,
                       ),
-                    );
-                  },
-              menuChildren: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(l(context).alternativeSources),
-                ),
-                ...(_youtubeVideoId != null
-                        ? _youtubeAltSources
-                        : _linkAltSources)
-                    .map(
-                      (source) => MenuItemButton(
-                        onPressed: () => openWebpagePrimary(
-                          context,
-                          Uri.parse(
-                            source.urlPrefix +
-                                (_youtubeVideoId ?? widget.link.toString()),
-                          ),
-                        ),
-                        child: Text(source.name),
-                      ),
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      style: TextButton.styleFrom(shape: const LinearBorder()),
                     ),
-              ],
-            ),
-            Expanded(
-              child: SizedBox(
-                height: 40,
-                child: InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text.rich(
-                      TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: widget.link.host,
-                            style: Theme.of(context).textTheme.bodyMedium!
-                                .apply(
-                                  decoration: TextDecoration.underline,
-                                  fontWeightDelta: 100,
-                                ),
-                          ),
-                          TextSpan(
-                            text: widget.link.toString().substring(
-                              ('${widget.link.scheme}://${widget.link.host}')
-                                  .length,
-                            ),
-                            style: Theme.of(context).textTheme.bodyMedium!
-                                .apply(decoration: TextDecoration.underline),
-                          ),
-                        ],
+                  );
+                },
+            menuChildren: [
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(l(context).alternativeSources),
+              ),
+              ...(_youtubeVideoId != null
+                      ? _youtubeAltSources
+                      : _linkAltSources)
+                  .map(
+                    (source) => MenuItemButton(
+                      onPressed: () => openWebpagePrimary(
+                        context,
+                        Uri.parse(
+                          source.urlPrefix +
+                              (_youtubeVideoId ?? widget.link.toString()),
+                        ),
                       ),
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
+                      child: Text(source.name),
                     ),
                   ),
-                  onTap: () {
-                    openWebpagePrimary(context, widget.link);
-                  },
-                  onLongPress: () {
-                    openWebpageSecondary(context, widget.link);
-                  },
-                  onSecondaryTap: () {
-                    openWebpageSecondary(context, widget.link);
-                  },
+            ],
+          ),
+          Expanded(
+            child: SizedBox(
+              height: 40,
+              child: InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text.rich(
+                    TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: widget.link.host,
+                          style: Theme.of(context).textTheme.bodyMedium!.apply(
+                            decoration: TextDecoration.underline,
+                            fontWeightDelta: 100,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.link.toString().substring(
+                            ('${widget.link.scheme}://${widget.link.host}')
+                                .length,
+                          ),
+                          style: Theme.of(context).textTheme.bodyMedium!.apply(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                  ),
                 ),
+                onTap: () {
+                  openWebpagePrimary(context, widget.link);
+                },
+                onLongPress: () {
+                  openWebpageSecondary(context, widget.link);
+                },
+                onSecondaryTap: () {
+                  openWebpageSecondary(context, widget.link);
+                },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:expandable/expandable.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
@@ -936,86 +935,28 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                         child: child,
                       );
                     },
-                    child: ac.profile.compactMode
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: item.read
-                                      ? Theme.of(context).cardColor.darken(3)
-                                      : null,
-                                ),
-                                child: PostItem(
-                                  item,
-                                  (newValue) => _pagingController.updateItem(
-                                    item,
-                                    newValue,
-                                  ),
-                                  onReply: whenLoggedIn(context, (
-                                    body,
-                                    lang, {
-                                    XFile? image,
-                                    String? alt,
-                                  }
-                                  ) async {
-                                    await ac.api.comments.create(
-                                      item.type,
-                                      item.id,
-                                      body,
-                                      lang: lang,
-                                      image: image,
-                                      alt: alt,
-                                    );
-                                  }),
-                                  onTap: onPostTap,
-                                  filterListWarnings:
-                                      _filterListWarnings[(item.type, item.id)],
-                                  userCanModerate: widget.userCanModerate,
-                                  isTopLevel: true,
-                                  isCompact: true,
-                                ),
-                              ),
-                              const Divider(height: 1, thickness: 1),
-                            ],
-                          )
-                        : Card(
-                            color: item.read
-                                ? Theme.of(context).cardColor.darken(3)
-                                : null,
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: PostItem(
-                              item,
-                              (newValue) =>
-                                  _pagingController.updateItem(item, newValue),
-                              onTap: onPostTap,
-                              isPreview: true,
-                              onReply: whenLoggedIn(context, (
-                                body,
-                                lang, {
-                                XFile? image,
-                                String? alt,
-                              }
-                              ) async {
-                                await ac.api.comments.create(
-                                  item.type,
-                                  item.id,
-                                  body,
-                                  lang: lang,
-                                  image: image,
-                                  alt: alt,
-                                );
-                              }),
-                              filterListWarnings:
-                                  _filterListWarnings[(item.type, item.id)],
-                              userCanModerate: widget.userCanModerate,
-                              isTopLevel: true,
-                            ),
-                          ),
+                    child: PostItem(
+                      item,
+                      (newValue) =>
+                          _pagingController.updateItem(item, newValue),
+                      onTap: onPostTap,
+                      isPreview: true,
+                      onReply: whenLoggedIn(context, (body, lang, {XFile? image, String? alt}) async {
+                        await ac.api.comments.create(
+                          item.type,
+                          item.id,
+                          body,
+                          lang: lang,
+                          image: image,
+                          alt: alt,
+                        );
+                      }),
+                      filterListWarnings:
+                          _filterListWarnings[(item.type, item.id)],
+                      userCanModerate: widget.userCanModerate,
+                      isTopLevel: true,
+                      isCompact: ac.profile.compactMode,
+                    ),
                   );
                 },
               ),

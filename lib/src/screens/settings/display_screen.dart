@@ -1,9 +1,9 @@
 import 'dart:math';
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/screens/settings/post_layout.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -89,11 +89,28 @@ class DisplaySettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTileSwitch(
-            leading: const Icon(Symbols.view_agenda_rounded),
+            leading: const Icon(Symbols.table_rows_rounded),
             title: Text(l(context).settings_compactMode),
             value: ac.profile.compactMode,
             onChanged: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(compactMode: newValue),
+            ),
+          ),
+          ListTileSwitch(
+            enabled: !ac.profile.compactMode,
+            leading: const Icon(Symbols.view_agenda_rounded),
+            title: Text(l(context).settings_postsAsCards),
+            value: ac.profile.showPostsCards,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(showPostsCards: newValue),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.vertical_split_rounded),
+            title: Text(l(context).settings_postLayoutOrder),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => PostLayoutSettingsScreen(),
             ),
           ),
           ListTileSwitch(
@@ -103,6 +120,30 @@ class DisplaySettingsScreen extends StatelessWidget {
             value: ac.profile.hideActionButtons,
             onChanged: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(hideActionButtons: newValue),
+            ),
+          ),
+          ListTile(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${l(context).settings_dividerThickness} : '
+                  '${ac.profile.dividerThickness.toStringAsFixed(1)}',
+                ),
+                Slider(
+                  value: ac.profile.dividerThickness,
+                  max: 10,
+                  min: 0,
+                  onChanged: ac.profile.showPostsCards && !ac.profile.compactMode
+                      ? null
+                      : (newValue) => ac.updateProfile(
+                          ac.selectedProfileValue.copyWith(
+                            dividerThickness: newValue,
+                          ),
+                        ),
+                  divisions: 50,
+                ),
+              ],
             ),
           ),
           ListTileSwitch(

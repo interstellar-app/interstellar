@@ -114,7 +114,7 @@ class _PostCommentState extends State<PostComment> {
             ),
             if (widget.opUserId == widget.comment.user.id)
               Padding(
-                padding: const EdgeInsets.only(left: 5),
+                padding: const EdgeInsets.only(left: 8),
                 child: Tooltip(
                   message: l(context).originalPoster_long,
                   triggerMode: TooltipTriggerMode.tap,
@@ -140,6 +140,7 @@ class _PostCommentState extends State<PostComment> {
       lang: widget.comment.lang,
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
+      fullImageSize: true,
       user: widget.comment.user,
       updateUser: (user) async =>
           widget.onUpdate(widget.comment.copyWith(user: user)),
@@ -367,6 +368,8 @@ class _PostCommentState extends State<PostComment> {
     );
 
     final menuWidget = IconButton(
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints(),
       icon: const Icon(Symbols.more_vert_rounded),
       onPressed: () {
         showContentMenu(
@@ -382,7 +385,7 @@ class _PostCommentState extends State<PostComment> {
     return Expandable(
       controller: _expandableController,
       collapsed: Card(
-        margin: const EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: widget.onClick ?? collapse,
@@ -401,7 +404,7 @@ class _PostCommentState extends State<PostComment> {
             },
           ),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(12, 0, 8, 0),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -437,11 +440,7 @@ class _PostCommentState extends State<PostComment> {
       ),
       expanded: Column(
         children: [
-          Card(
-            margin: const EdgeInsets.only(top: 8),
-            clipBehavior: Clip.antiAlias,
-            child: contentItem,
-          ),
+          contentItem,
           if (widget.showChildren) ...[
             if (widget.comment.childCount > 0 &&
                 _expandableController.expanded &&

@@ -585,7 +585,7 @@ class _CommentSectionState extends State<CommentSection> {
     return AdvancedPagedSliverList(
       controller: _pagingController,
       itemBuilder: (context, item, index) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: PostComment(
           item,
           (newValue) => _pagingController.updateItem(item, newValue),
