@@ -1216,5 +1216,25 @@
     "user": "Користувач",
     "@user": {},
     "subscribe": "Підписатися",
-    "@subscribe": {}
+    "@subscribe": {},
+    "refreshAuth": "Оновити вхід",
+    "@refreshAuth": {},
+    "searchSource": "Пошук {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_imageStore": "Сховище зображень за замовчуванням",
+    "@settings_imageStore": {},
+    "settings_feedSourceOrder": "Порядок джерела каналу",
+    "@settings_feedSourceOrder": {},
+    "settings_feedViewOrder": "Порядок перегляду стрічки",
+    "@settings_feedViewOrder": {},
+    "settings_feedSortOrder": "Порядок сортування стрічки",
+    "@settings_feedSortOrder": {},
+    "errorPage_authError": "Схоже, виникла проблема з авторизацією облікового запису.\nНатисніть кнопку нижче, щоб оновити авторизацію.",
+    "@errorPage_authError": {}
 }
