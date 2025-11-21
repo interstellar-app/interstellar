@@ -128,17 +128,19 @@ class DisplaySettingsScreen extends StatelessWidget {
               children: [
                 Text(
                   '${l(context).settings_dividerThickness} : '
-                      '${ac.profile.dividerThickness.toStringAsFixed(1)}',
+                  '${ac.profile.dividerThickness.toStringAsFixed(1)}',
                 ),
                 Slider(
                   value: ac.profile.dividerThickness,
                   max: 10,
                   min: 0,
-                  onChanged: (newValue) => ac.updateProfile(
-                    ac.selectedProfileValue.copyWith(
-                      dividerThickness: newValue,
-                    ),
-                  ),
+                  onChanged: ac.profile.showPostsCards && !ac.profile.compactMode
+                      ? null
+                      : (newValue) => ac.updateProfile(
+                          ac.selectedProfileValue.copyWith(
+                            dividerThickness: newValue,
+                          ),
+                        ),
                   divisions: 50,
                 ),
               ],

@@ -368,6 +368,8 @@ class _PostCommentState extends State<PostComment> {
     );
 
     final menuWidget = IconButton(
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints(),
       icon: const Icon(Symbols.more_vert_rounded),
       onPressed: () {
         showContentMenu(
@@ -402,7 +404,7 @@ class _PostCommentState extends State<PostComment> {
             },
           ),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

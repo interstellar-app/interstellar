@@ -449,9 +449,7 @@ class _ContentItemState extends State<ContentItem> {
             }
 
             return Padding(
-              padding: widget.contentTypeName == l(context).comment
-                  ? const EdgeInsets.fromLTRB(12, 0, 12, 8)
-                  : const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
