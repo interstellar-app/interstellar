@@ -1236,5 +1236,11 @@
     "settings_feedSortOrder": "Порядок сортування стрічки",
     "@settings_feedSortOrder": {},
     "errorPage_authError": "Схоже, виникла проблема з авторизацією облікового запису.\nНатисніть кнопку нижче, щоб оновити авторизацію.",
-    "@errorPage_authError": {}
+    "@errorPage_authError": {},
+    "settings_dividerThickness": "Товщина роздільника",
+    "@settings_dividerThickness": {},
+    "settings_postsAsCards": "Показувати публікації як картки",
+    "@settings_postsAsCards": {},
+    "settings_postLayoutOrder": "Порядок макета публікації",
+    "@settings_postLayoutOrder": {}
 }
