@@ -478,5 +478,559 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "refreshAuth": "Uuenda sisselogimist",
+    "@refreshAuth": {},
+    "settings_postLayoutOrder": "Postituse paigutuse järjestus",
+    "@settings_postLayoutOrder": {},
+    "settings_postsAsCards": "Näota postitust kaartidena",
+    "@settings_postsAsCards": {},
+    "settings_dividerThickness": "Eraldaja paksus",
+    "@settings_dividerThickness": {},
+    "errorPage_authError": "Tundub, et kasutajakonto volitamisel tekkis viga.\nAutentimise uuendamiseks klõpsa järgnevat nuppu.",
+    "@errorPage_authError": {},
+    "settings_feedSortOrder": "Sisuvoogude järjestus",
+    "@settings_feedSortOrder": {},
+    "settings_feedViewOrder": "Sisuvoogude vaatamise järjestus",
+    "@settings_feedViewOrder": {},
+    "settings_feedSourceOrder": "Sisuvoogude allika järjestus",
+    "@settings_feedSourceOrder": {},
+    "settings_imageStore": "Piltide vaikimisi salvestamine",
+    "@settings_imageStore": {},
+    "searchSource": "Otsi: {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_selectDistributor": "Vali tõuketeenuste levitaja",
+    "@pushNotificationsDialog_selectDistributor": {},
+    "pushNotificationsDialog_noDistributor": "Selleks, et teavitused toimiks tõuketeenustega, pead paigaldama UnifiedPushi levitaja.\nLisateavet leiad siit lehelt: {url}",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_title": "Teavitused tõuketeenustega",
+    "@pushNotificationsDialog_title": {},
+    "exitMessage": "Väljumiseks klõpsa uuesti TAGASI nuppu.",
+    "@exitMessage": {},
+    "errorPage_caughtUp": "Kõik ongi valmis.\nKas laadime vanemaid kirjeid?",
+    "@errorPage_caughtUp": {},
+    "errorPage_newPage": "Midagi läks valesti. Klõpsa uuesti proovimiseks.",
+    "@errorPage_newPage": {},
+    "errorPage_firstPage_button": "Proovi uuesti",
+    "@errorPage_firstPage_button": {},
+    "errorPage_firstPage": "Midagi läks valesti",
+    "@errorPage_firstPage": {},
+    "configShare_created": "Loodud {date} rakenduse versiooniga {version}",
+    "@configShare_created": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            },
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "configShare_feed_info": "Sisaldab {count} sisendit",
+    "@configShare_feed_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_feed_title": "Interstellari sisuvoog",
+    "@configShare_feed_title": {},
+    "configShare_filterList_info": "Sisaldab {count} fraasi",
+    "@configShare_filterList_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_filterList_title": "Interstellari filtriloend",
+    "@configShare_filterList_title": {},
+    "settings_display": "Ekraanivaade",
+    "@settings_display": {},
+    "settings_notifications": "Teavitused",
+    "@settings_notifications": {},
+    "settings_debug": "Veaotsing",
+    "@settings_debug": {},
+    "settings_about": "Rakenduse teave",
+    "@settings_about": {},
+    "settings_animationDisabled": "Pole kasutusel",
+    "@settings_animationDisabled": {},
+    "settings_donate": "Toeta meid rahaliselt",
+    "@settings_donate": {},
+    "settings_contribute": "Kaastöö võimalused",
+    "@settings_contribute": {},
+    "settings_translate": "Tõlgi",
+    "@settings_translate": {},
+    "settings_colorScheme_barossa": "Barossa",
+    "@settings_colorScheme_barossa": {},
+    "settings_colorScheme_shark": "Haikala",
+    "@settings_colorScheme_shark": {},
+    "settings_colorScheme_damask": "Tuhmpunane",
+    "@settings_colorScheme_damask": {},
+    "settings_colorScheme_espresso": "Espresso",
+    "@settings_colorScheme_espresso": {},
+    "settings_colorScheme_rosewood": "Palisander",
+    "@settings_colorScheme_rosewood": {},
+    "settings_feedDefaults_view": "Vaata",
+    "@settings_feedDefaults_view": {},
+    "settings_feedDefaults_filter": "Filtreeri",
+    "@settings_feedDefaults_filter": {},
+    "settings_debug_log": "Logi",
+    "@settings_debug_log": {},
+    "profiles": "Profiilid",
+    "@profiles": {},
+    "profile_name": "Nimi",
+    "@profile_name": {},
+    "profile_autoSelectAccount_none": "Määramata",
+    "@profile_autoSelectAccount_none": {},
+    "originalPoster_short": "AP",
+    "@originalPoster_short": {},
+    "pin": "Tõsta esile",
+    "@pin": {},
+    "notSafeForWork_short": "Ebasobilik sisu",
+    "@notSafeForWork_short": {},
+    "originalContent_short": "OS",
+    "@originalContent_short": {},
+    "expand": "Laienda vaadet",
+    "@expand": {},
+    "collapse": "Ahenda vaadet",
+    "@collapse": {},
+    "report": "Teata haldajale",
+    "@report": {},
+    "edit": "Muuda",
+    "@edit": {},
+    "delete": "Kustuta",
+    "@delete": {},
+    "close": "Sulge",
+    "@close": {},
+    "status": "Olek",
+    "@status": {},
+    "reason": "Põhjus",
+    "@reason": {},
+    "moderate": "Modereeri",
+    "@moderate": {},
+    "submit": "Saada",
+    "@submit": {},
+    "markdownEditor_heading": "Vahepealkiri",
+    "@markdownEditor_heading": {},
+    "markdownEditor_bold": "Paks kiri",
+    "@markdownEditor_bold": {},
+    "markdownEditor_italic": "Kaldkiri",
+    "@markdownEditor_italic": {},
+    "markdownEditor_strikethrough": "Läbikriipsutatud kiri",
+    "@markdownEditor_strikethrough": {},
+    "markdownEditor_link": "Link",
+    "@markdownEditor_link": {},
+    "markdownEditor_image": "Pilt",
+    "@markdownEditor_image": {},
+    "markdownEditor_subscript": "Alaindeks",
+    "@markdownEditor_subscript": {},
+    "markdownEditor_superscript": "Ülaindeks",
+    "@markdownEditor_superscript": {},
+    "markdownEditor_quote": "Tsiteeri",
+    "@markdownEditor_quote": {},
+    "markdownEditor_spoiler": "Sisurikkuja/spoiler",
+    "@markdownEditor_spoiler": {},
+    "markdownEditor_edit": "Muuda",
+    "@markdownEditor_edit": {},
+    "markdownEditor_preview": "Eelvaade",
+    "@markdownEditor_preview": {},
+    "markdownEditor_drafts": "Kavandid",
+    "@markdownEditor_drafts": {},
+    "webView": "Webview sisemine brauser",
+    "@webView": {},
+    "browser": "Veebibrauser",
+    "@browser": {},
+    "create_text": "Tekst",
+    "@create_text": {},
+    "create_image": "Pilt",
+    "@create_image": {},
+    "create_link": "Link",
+    "@create_link": {},
+    "create_microblog": "Mikroblogi",
+    "@create_microblog": {},
+    "create_community": "Kogukond",
+    "@create_community": {},
+    "title": "Pealkiri",
+    "@title": {},
+    "body": "Sisutekst",
+    "@body": {},
+    "link": "Link",
+    "@link": {},
+    "tags": "Sildid",
+    "@tags": {},
+    "language": "Keel",
+    "@language": {},
+    "community": "Kogukond",
+    "@community": {},
+    "translate": "Tõlgi",
+    "@translate": {},
+    "user": "Kasutaja",
+    "@user": {},
+    "subscribe": "Telli",
+    "@subscribe": {},
+    "action_hide": "Peida",
+    "@action_hide": {},
+    "action_tabs": "Vahekaardid",
+    "@action_tabs": {},
+    "action_refresh": "Värskenda andmeid",
+    "@action_refresh": {},
+    "action_upvote": "Hääleta pooldavalt",
+    "@action_upvote": {},
+    "action_downvote": "Hääleta eitavalt",
+    "@action_downvote": {},
+    "action_boost": "Anna hoogu",
+    "@action_boost": {},
+    "action_bookmark": "Lisa järjehoidjaks",
+    "@action_bookmark": {},
+    "action_reply": "Vasta",
+    "@action_reply": {},
+    "action_markRead": "Märgi loetuks",
+    "@action_markRead": {},
+    "action_markUnread": "Märgi mitteloetuks",
+    "@action_markUnread": {},
+    "action_moderatePin": "Tõsta postitus esile",
+    "@action_moderatePin": {},
+    "action_moderateMarkNSFW": "Märgi sisu mittesobilikuks",
+    "@action_moderateMarkNSFW": {},
+    "action_moderateDelete": "Kustuta moderaatorina",
+    "@action_moderateDelete": {},
+    "action_moderateBan": "Määra suhtluskeeld",
+    "@action_moderateBan": {},
+    "save": "Salvesta",
+    "@save": {},
+    "saveChanges": "Salvesta muudatused",
+    "@saveChanges": {},
+    "searchTheFediverse": "Otsi födiversumist",
+    "@searchTheFediverse": {},
+    "languages": "Keeled",
+    "@languages": {},
+    "systemLanguage": "Süsteemi keel",
+    "@systemLanguage": {},
+    "settings_appLanguage": "Rakenduse keel",
+    "@settings_appLanguage": {},
+    "pointsX": "{num} punkti",
+    "@pointsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "commentsX": "{num} kommentaari",
+    "@commentsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "filterLists": "Filtriloendid",
+    "@filterLists": {},
+    "filterList_activateFilter": "Aktiveeri filter",
+    "@filterList_activateFilter": {},
+    "filterList_new": "Uus filtriloend",
+    "@filterList_new": {},
+    "filterList_edit": "Muuda filtriloendit",
+    "@filterList_edit": {},
+    "filterList_import": "Impordi filtriloend",
+    "@filterList_import": {},
+    "filterList_delete": "Kustuta filtriloend",
+    "@filterList_delete": {},
+    "filterList_name": "Nimi",
+    "@filterList_name": {},
+    "filterList_phrases": "Fraasid",
+    "@filterList_phrases": {},
+    "filterList_addPhrase": "Lisa fraas",
+    "@filterList_addPhrase": {},
+    "filterList_showWithContentWarning": "Näita koos sisuhoiatusega",
+    "@filterList_showWithContentWarning": {},
+    "account_settings_notifyOnThread": "Teavita uutest jutulõngadest tellitud kogukondades",
+    "@account_settings_notifyOnThread": {},
+    "account_settings_notifyOnMicroblog": "Teavita uutest mikroblogidest tellitud kogukondades",
+    "@account_settings_notifyOnMicroblog": {},
+    "account_settings_notifyOnThreadReply": "Teata vastustest loodud jutulõngades",
+    "@account_settings_notifyOnThreadReply": {},
+    "account_settings_notifyOnThreadCommentReply": "Teavita kommentaari vastusest jutulõngas",
+    "@account_settings_notifyOnThreadCommentReply": {},
+    "account_settings_notifyOnMicroblogReply": "Teabita kommentaaridest loodud mikroblogides",
+    "@account_settings_notifyOnMicroblogReply": {},
+    "account_settings_notifyOnMicroblogCommentReply": "Teavita mikroblogi kommentaari vastusest",
+    "@account_settings_notifyOnMicroblogCommentReply": {},
+    "inbox": "Sisendkaust",
+    "@inbox": {},
+    "settings_notificationsForX": "{account} kasutajakonto teavitused",
+    "@settings_notificationsForX": {
+        "placeholders": {
+            "account": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_defaultDownloadDir": "Allalaadimiste vaikimisi kaust",
+    "@settings_defaultDownloadDir": {},
+    "settings_aboutInterstellar": "Rakenduse teave: Interstellar",
+    "@settings_aboutInterstellar": {},
+    "settings_markThreadsReadOnScroll": "Märgi jutulõngad kerimisel loetuks",
+    "@settings_markThreadsReadOnScroll": {},
+    "settings_markMicroblogsReadOnScroll": "Märgi mikroblogid kerimisel loetuks",
+    "@settings_markMicroblogsReadOnScroll": {},
+    "settings_animationSpeed": "Animatsiooni kiirus",
+    "@settings_animationSpeed": {},
+    "settings_crossPostMarkAsRead": "Märgi ristpostitused loetuks",
+    "@settings_crossPostMarkAsRead": {},
+    "settings_reportIssue": "Teata veast või probleemist",
+    "@settings_reportIssue": {},
+    "settings_matrixSpace": "Matrixi kogukond",
+    "@settings_matrixSpace": {},
+    "settings_mbinCommunity": "Mbini kogukond",
+    "@settings_mbinCommunity": {},
+    "settings_colorScheme_vesuviusBurn": "Vesuuvi põletus",
+    "@settings_colorScheme_vesuviusBurn": {},
+    "settings_colorScheme_deepPurple": "Sügavpurpur",
+    "@settings_colorScheme_deepPurple": {},
+    "settings_colorScheme_ebonyClay": "Eebenmust",
+    "@settings_colorScheme_ebonyClay": {},
+    "settings_colorScheme_bigStone": "Suur kivi",
+    "@settings_colorScheme_bigStone": {},
+    "settings_colorScheme_bahamaBlue": "Bahama sinine",
+    "@settings_colorScheme_bahamaBlue": {},
+    "settings_colorScheme_mallardGreen": "Sinikael-pardi roheline",
+    "@settings_colorScheme_mallardGreen": {},
+    "settings_colorScheme_outerSpace": "Avakosmos",
+    "@settings_colorScheme_outerSpace": {},
+    "settings_colorScheme_blueWhale": "Sinivaal",
+    "@settings_colorScheme_blueWhale": {},
+    "settings_colorScheme_sanJuanBlue": "San Juani sinine",
+    "@settings_colorScheme_sanJuanBlue": {},
+    "settings_colorScheme_blumineBlue": "Blumiinsinine",
+    "@settings_colorScheme_blumineBlue": {},
+    "settings_feedDefaults_threadsSort": "Jutulõngade järjestus",
+    "@settings_feedDefaults_threadsSort": {},
+    "settings_feedDefaults_microblogSort": "Mikroblogide järjestus",
+    "@settings_feedDefaults_microblogSort": {},
+    "settings_feedDefaults_combinedSort": "Kombineeritud järjestus",
+    "@settings_feedDefaults_combinedSort": {},
+    "settings_feedDefaults_exploreSort": "Järjestus uue sisu otsimisel",
+    "@settings_feedDefaults_exploreSort": {},
+    "settings_feedDefaults_commentSort": "Kommentaaride järjestus",
+    "@settings_feedDefaults_commentSort": {},
+    "settings_feedDefaults_hideReadPosts": "Peida loetud postitused",
+    "@settings_feedDefaults_hideReadPosts": {},
+    "cakeDay": "Koogipäev",
+    "@cakeDay": {},
+    "settings_autoTranslate": "Tõlgi postitused ja kommentaarid automaatselt",
+    "@settings_autoTranslate": {},
+    "settings_autoPlayVideos": "Esita videoid automaatselt",
+    "@settings_autoPlayVideos": {},
+    "settings_hapticFeedback": "Haptiline tagasiside",
+    "@settings_hapticFeedback": {},
+    "settings_askBeforeUnsubscribing": "Küsi kinnitust enne tellimuse ja jälgimise lõpetamist",
+    "@settings_askBeforeUnsubscribing": {},
+    "settings_askBeforeDeleting": "Küsi kinnitust enne kustutamist",
+    "@settings_askBeforeDeleting": {},
+    "settings_defaultCreateLanguage": "Postituse või kommentaari koostamise vaikimisi keel",
+    "@settings_defaultCreateLanguage": {},
+    "settings_useAccountLanguageFilter": "Kasuta kontokeelte filtrit",
+    "@settings_useAccountLanguageFilter": {},
+    "settings_alwaysShowInstance": "Näita alati serverit",
+    "@settings_alwaysShowInstance": {},
+    "settings_alwaysShowInstance_help": "Kui see eelistus on kasutusel, siis näidatakse kasutajanimi järel alati kasutaja või kogukonna serverit",
+    "@settings_alwaysShowInstance_help": {},
+    "settings_coverMediaMarkedSensitive": "Peida tundlikuks märgitud meedium",
+    "@settings_coverMediaMarkedSensitive": {},
+    "settings_fullImageSizeThreads": "Piltide täismõõdud jutulõngades",
+    "@settings_fullImageSizeThreads": {},
+    "settings_fullImageSizeMicroblogs": "Piltide täismõõdud mikroblogides",
+    "@settings_fullImageSizeMicroblogs": {},
+    "settings_reduceAnimationMotion": "Vähenda animatsioonides liikumist",
+    "@settings_reduceAnimationMotion": {},
+    "settings_enableSwipeActions": "Lülita sisse viibates tehtavad toimingud",
+    "@settings_enableSwipeActions": {},
+    "settings_swipeThreshold": "Viibates tehtavate toimingute lävi",
+    "@settings_swipeThreshold": {},
+    "settings_debug_clearAccounts": "Tühjenda kasutajakontode andmed",
+    "@settings_debug_clearAccounts": {},
+    "settings_debug_clearProfiles": "Tühjenda profiilide andmed",
+    "@settings_debug_clearProfiles": {},
+    "settings_debug_clearReadPosts": "Tühjenda loetud postitused",
+    "@settings_debug_clearReadPosts": {},
+    "settings_debug_clearFeedCache": "Tühjenda sisuvoogudest puhverdatud andmed",
+    "@settings_debug_clearFeedCache": {},
+    "profile_switch": "Vaheta profiile",
+    "@profile_switch": {},
+    "profile_main": "Põhiprofiil",
+    "@profile_main": {},
+    "profile_new": "Uus profiil",
+    "@profile_new": {},
+    "profile_edit": "Muuda profiili",
+    "@profile_edit": {},
+    "profile_import": "Impordi profiil",
+    "@profile_import": {},
+    "profile_delete": "Kustuta profiil",
+    "@profile_delete": {},
+    "profile_setAsMain": "Määra põhiprofiiliks",
+    "@profile_setAsMain": {},
+    "profile_setAsMain_help": "Profiil on kõikide teiste profiilide alus. Kui just mõni konkreetne seadistus pole sürjutatud, siis kõik seal tehtud muudatused kehtivad kõikides teistes profiilides.",
+    "@profile_setAsMain_help": {},
+    "profile_autoSelect": "Vali rakenduse käivitamisel automaatselt",
+    "@profile_autoSelect": {},
+    "profile_about_title": "Teave profiilide kohta",
+    "@profile_about_title": {},
+    "originalPoster_long": "Algne postitaja",
+    "@originalPoster_long": {},
+    "unsupportedSoftware": "{host} kasutab mittetoetatud tarkvara",
+    "@unsupportedSoftware": {
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "pinnedInCommunity": "Kogukonnas esiletõstetud",
+    "@pinnedInCommunity": {},
+    "notSafeForWork_mark": "Märgi ebasobilikuks sisuks",
+    "@notSafeForWork_mark": {},
+    "notSafeForWork_long": "Töökohas ja avalikus ruumis ebasobilik sisu",
+    "@notSafeForWork_long": {},
+    "originalContent_long": "Algne sisu",
+    "@originalContent_long": {},
+    "createdAt": "Loodud {datetime}",
+    "@createdAt": {
+        "placeholders": {
+            "datetime": {
+                "type": "String"
+            }
+        }
+    },
+    "editedAt": "Muudetud {datetime}",
+    "@editedAt": {
+        "placeholders": {
+            "datetime": {
+                "type": "String"
+            }
+        }
+    },
+    "moreFrom": "Täiendav sisu kasutajalt {name}",
+    "@moreFrom": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "reportX": "Teata kasutajast {name}",
+    "@reportX": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteX": "Kustuta kasutaja {name}",
+    "@deleteX": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "viewSource": "Näita allikat",
+    "@viewSource": {},
+    "banUser": "Määra kasutajale suhtluskeeld",
+    "@banUser": {},
+    "banUserX": "Määra suhtluskeeld kasutajale {user}",
+    "@banUserX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "banUser_help": "Sa oled määramas {community} kogukonna kasutajale {user} suhtluskeeldu.",
+    "@banUser_help": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            },
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "alternativeSources": "Alternatiivsed allikad",
+    "@alternativeSources": {},
+    "markdownEditor_codeBlock": "Koodiplokk",
+    "@markdownEditor_codeBlock": {},
+    "markdownEditor_horizontalRule": "Rõhttriip",
+    "@markdownEditor_horizontalRule": {},
+    "markdownEditor_bulletedList": "Mummudega loend",
+    "@markdownEditor_bulletedList": {},
+    "markdownEditor_numberedList": "Nummerdatud loend",
+    "@markdownEditor_numberedList": {},
+    "markdownEditor_drafts_manuallySave": "Salvesta käsitsi",
+    "@markdownEditor_drafts_manuallySave": {},
+    "markdownEditor_drafts_discardAll": "Loobu kõigest",
+    "@markdownEditor_drafts_discardAll": {},
+    "create_link_invalid": "Võrguaadress on vigane",
+    "@create_link_invalid": {},
+    "selectCommunity": "Vali kogukond...",
+    "@selectCommunity": {},
+    "action_createNew": "Loo uus...",
+    "@action_createNew": {},
+    "settings_accountMigration_foundXItems": "Leidsin {count} objekti",
+    "@settings_accountMigration_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "bookmarkLists": "Järjehoidjate loendid",
+    "@bookmarkLists": {},
+    "bookmarks": "Järjehoidjad",
+    "@bookmarks": {},
+    "settings_feedActions": "Sisuvoo tegevused",
+    "@settings_feedActions": {},
+    "settings_feedDefaults": "Sisuvoo vaikimisi väärtused",
+    "@settings_feedDefaults": {},
+    "settings_disableTabSwiping": "Lülita vahekaartide viipamine välja",
+    "@settings_disableTabSwiping": {},
+    "settings_hideFeedUIOnScroll": "Kerimisel peida sisuvoo kasutajaliides",
+    "@settings_hideFeedUIOnScroll": {},
+    "settings_globalTextScale": "Teksti üldine skaleerimine",
+    "@settings_globalTextScale": {},
+    "markdownEditor_drafts_savedManually": "Käsitsi salvestatud",
+    "@markdownEditor_drafts_savedManually": {},
+    "uploadFromGallery": "Laadi galeriist üles",
+    "@uploadFromGallery": {},
+    "uploadFromCamera": "Laadi kaamerast üles",
+    "@uploadFromCamera": {},
+    "openLink": "Ava link",
+    "@openLink": {},
+    "continueInBrowser": "Jätka veebibrauseris",
+    "@continueInBrowser": {},
+    "continueInBrowser_manual": "Kui veebibrauser ei käivitu, siis kopeerimiseks klõpsa linki ja aseta brauserisse käsitsi",
+    "@continueInBrowser_manual": {},
+    "redirectReceivedMessage": "Ümbersuunamine on olemas. Sa võid selle vahekaardi nüüd sulgeda ja rakenduse juurde tagasi minna.",
+    "@redirectReceivedMessage": {},
+    "confirmUnsubscribe": "Sa oled lõpetamas tellimust. Kas tahad jätkata?",
+    "@confirmUnsubscribe": {},
+    "confirmUnfollow": "Sa oled lõpetamas jälgimist. Kas tahad jätkata?",
+    "@confirmUnfollow": {},
+    "altText": "Pildi selgitustekst",
+    "@altText": {}
 }
