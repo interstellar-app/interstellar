@@ -61,14 +61,23 @@ class _PostPageState extends State<PostPage> {
     // Crossposts are only returned on fetching single post not on list
     // so need to fetch full post info.
     if (widget.postType != null && widget.postId != null || _data != null) {
-      final newPost = await switch (widget.postType ?? _data!.type) {
-        PostType.thread => context.read<AppController>().api.threads.get(
-          widget.postId ?? _data!.id,
-        ),
-        PostType.microblog => context.read<AppController>().api.microblogs.get(
-          widget.postId ?? _data!.id,
-        ),
-      };
+      final ac = context.read<AppController>();
+      final newPost =
+          await switch (widget.postType ?? _data!.type) {
+            PostType.thread => ac.api.threads.get(widget.postId ?? _data!.id),
+            PostType.microblog => ac.api.microblogs.get(
+              widget.postId ?? _data!.id,
+            ),
+          }.then(
+            (post) async => post.copyWith(
+              user: post.user.copyWith(
+                tags: [
+                  ...post.user.tags,
+                  ...(await ac.getUserTags(post.user.name)),
+                ],
+              ),
+            ),
+          );
       if (!mounted) return;
       setState(() {
         _data = newPost;
@@ -576,7 +585,22 @@ class _CommentSectionState extends State<CommentSection> {
             langs: ac.profile.customLanguageFilter.toList(),
           );
 
-          return (newPage.items, newPage.nextPage);
+          final newItems = await Future.wait(
+            newPage.items.map(
+              (item) async => item.copyWith(
+                user: item.user.copyWith(
+                  tags: [
+                    ...item.user.tags,
+                    ...(await ac.getUserTags(
+                      normalizeName(item.user.name, ac.instanceHost),
+                    )),
+                  ],
+                ),
+              ),
+            ),
+          );
+
+          return (newItems, newPage.nextPage);
         },
       );
 
