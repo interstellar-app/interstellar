@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -371,6 +372,33 @@ class Drafts extends Table {
   DateTimeColumn get at => dateTime().withDefault(currentDateAndTime)();
 }
 
+class ColorConverter extends TypeConverter<Color, int> {
+  const ColorConverter();
+
+  @override
+  Color fromSql(int fromDb) {
+    return Color(fromDb);
+  }
+
+  @override
+  int toSql(Color color) {
+    return color.value32bit;
+  }
+}
+
+class Tags extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get tag => text()();
+  IntColumn get backgroundColor => integer().map(const ColorConverter()).clientDefault(() => Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit)();
+  IntColumn get textColor => integer().map(const ColorConverter()).clientDefault(() => Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit)();
+}
+
+class UserTags extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get user => text()();
+  IntColumn get tagId => integer().references(Tags, #id, onDelete: KeyAction.cascade)();
+}
+
 @DriftDatabase(
   tables: [
     Accounts,
@@ -384,6 +412,8 @@ class Drafts extends Table {
     Stars,
     MiscCache,
     Drafts,
+    Tags,
+    UserTags,
   ],
 )
 class InterstellarDatabase extends _$InterstellarDatabase {

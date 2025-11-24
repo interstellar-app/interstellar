@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -277,6 +278,8 @@ class AppController with ChangeNotifier {
 
     _defaultDownloadsDir = await getDefaultDownloadDir();
 
+    print(Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit);
+    print(Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit);
     await _updateAPI();
     logger.i('Finished init');
   }
@@ -1036,5 +1039,15 @@ class AppController with ChangeNotifier {
         .update(database.miscCache)
         .write(MiscCacheCompanion(downloadsDir: Value(path)));
     _defaultDownloadsDir = path;
+  }
+
+  Future<List<Tag>> getUserTags(String username) async {
+    final query = database.select(database.tags).join([innerJoin(database.userTags, database.userTags.tagId.equalsExp(database.tags.id))]);
+    
+    final t = await (query..where(database.userTags.user.equals(username))).get();
+
+    return t.map((tag) => tag.readTable(database.tags)).toList();
+
+    return await (database.select(database.tags)..where((f) => f.id.equals(username.length))).get();
   }
 }

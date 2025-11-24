@@ -3,6 +3,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
@@ -112,6 +113,8 @@ class ContentItem extends StatefulWidget {
 
   final void Function()? onClick;
 
+  final List<Tag> flairs;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -171,6 +174,7 @@ class ContentItem extends StatefulWidget {
     this.onNotificationControlStatusChange,
     this.isCompact = false,
     this.onClick,
+    this.flairs = const [],
     super.key,
   });
 
@@ -375,6 +379,21 @@ class _ContentItemState extends State<ContentItem> {
                       : ContentItemLinkPanel(link: widget.link!),
               });
             }
+
+            components.add(Wrap(
+              children: widget.flairs.map((flair) => Container(
+                margin: const EdgeInsets.only(right: 5),
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: flair.backgroundColor,
+                ),
+                child: Text(
+                    flair.tag,
+                    style: TextStyle(color: flair.textColor, fontSize: 10)),
+                )
+              ).toList(),
+            ));
 
             // add bottom padding to all except last component
             components = components.nonNulls

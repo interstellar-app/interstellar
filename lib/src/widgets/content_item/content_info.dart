@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
@@ -145,8 +146,7 @@ class ContentInfo extends StatelessWidget {
 
     final userWidget = user == null
         ? null
-        : Flexible(
-            child: Padding(
+            : Padding(
               padding: const EdgeInsets.only(right: 10),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -177,16 +177,23 @@ class ContentInfo extends StatelessWidget {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                  ...?user?.tags.map((tag) => Container(
+                    margin: const EdgeInsets.only(right: 5),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: tag.backgroundColor,
+                    ),
+                    child: Text(tag.tag, style: TextStyle(color: tag.textColor, fontSize: 10)),
+                  ))
                 ],
               ),
-            ),
           );
 
     final communityWidget = community == null
         ? null
-        : Flexible(
-            child: Padding(
+            : Padding(
               padding: const EdgeInsets.only(right: 10),
               child: DisplayName(
                 community!.name,
@@ -196,13 +203,12 @@ class ContentInfo extends StatelessWidget {
                   builder: (context) => CommunityScreen(community!.id),
                 ),
               ),
-            ),
           );
 
     return Row(
       children: [
         Expanded(
-          child: Row(
+          child: Wrap(
             children: [
               ?warning,
               ?pinned,
