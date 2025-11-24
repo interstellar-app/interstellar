@@ -29,7 +29,7 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
-enum PostComponent { title, image, info, body, link }
+enum PostComponent { title, image, info, body, link, flairs }
 
 class ContentItem extends StatefulWidget {
   final String originInstance;
@@ -378,13 +378,12 @@ class _ContentItemState extends State<ContentItem> {
                   widget.link == null
                       ? null
                       : ContentItemLinkPanel(link: widget.link!),
+                PostComponent.flairs => Wrap(
+                  children: widget.flairs.map((flair) =>
+                      TagWidget(tag: flair, size: 10)).toList(),
+                ),
               });
             }
-
-            components.add(Wrap(
-              children: widget.flairs.map((flair) => TagWidget(tag: flair, size: 10)
-              ).toList(),
-            ));
 
             // add bottom padding to all except last component
             components = components.nonNulls

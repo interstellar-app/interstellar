@@ -64,6 +64,7 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
                   PostComponent.info => Symbols.info_rounded,
                   PostComponent.body => Symbols.article_rounded,
                   PostComponent.link => Symbols.link_rounded,
+                  PostComponent.flairs => Symbols.flag_rounded,
                 }),
                 title: Text(item.name.capitalize),
                 trailing: Platform.isIOS || Platform.isAndroid

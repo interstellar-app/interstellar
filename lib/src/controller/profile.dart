@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/images.dart' show ImageStore;
-import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart' show ActionLocation, ActionLocationWithTabs, SwipeAction;
 import 'package:drift/drift.dart' show Insertable, Value, Expression;
@@ -239,6 +238,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     postComponentOrder: [
       PostComponent.image,
       PostComponent.title,
+      PostComponent.flairs,
       PostComponent.link,
       PostComponent.info,
       PostComponent.body,
