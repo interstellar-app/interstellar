@@ -139,6 +139,7 @@ class _TagEditorState extends State<TagEditor> {
                     onPressed: () async {
                       await ac.removeTag(widget.tag);
                       if (!context.mounted) return;
+                      widget.onUpdate(null);
                       Navigator.pop(context);
                     },
                     child: Text('Delete'),

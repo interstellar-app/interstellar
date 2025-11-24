@@ -91,11 +91,26 @@ class _UserTagsState extends State<UserTags> {
                 ),
                 FilledButton(
                   onPressed: () async {
-                    final tag = await ac.addTag();
-                    await ac.assignTagToUser(tag, widget.user);
-                    setState(() {
-                      _tags.add(tag);
-                    });
+                    var tag = await ac.addTag();
+                    if (!context.mounted) return;
+                    bool cancelled = true;
+                    await pushRoute(context, builder: (context) => TagEditor(
+                        tag: tag,
+                        onUpdate: (newTag) async {
+                          cancelled = false;
+                          if (newTag == null) {
+                            await ac.removeTag(tag);
+                            return;
+                          }
+                          await ac.assignTagToUser(tag, widget.user);
+                          setState(() {
+                            _tags.add(tag);
+                          });
+                        }
+                    ));
+                    if (cancelled) {
+                      await ac.removeTag(tag);
+                    }
                   },
                   child: Text('Add new'),
                 ),

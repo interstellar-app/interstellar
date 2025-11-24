@@ -35,17 +35,6 @@ class _TagsScreenState extends State<TagsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tags'),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              final tag = await ac.addTag();
-              setState(() {
-                _tags.add(tag);
-              });
-            },
-            icon: const Icon(Symbols.add_rounded),
-          ),
-        ],
       ),
       body: CustomScrollView(
         slivers: [
@@ -87,10 +76,24 @@ class _TagsScreenState extends State<TagsScreen> {
           SliverToBoxAdapter(
             child: FilledButton(
               onPressed: () async {
-                final tag = await ac.addTag();
-                setState(() {
-                  _tags.add(tag);
-                });
+                var tag = await ac.addTag();
+                if (!context.mounted) return;
+                bool cancelled = true;
+                await pushRoute(context, builder: (context) => TagEditor(
+                    tag: tag,
+                    onUpdate: (newTag) async {
+                      if (newTag == null) {
+                        await ac.removeTag(tag);
+                        return;
+                      }
+                      setState(() {
+                        _tags.add(newTag);
+                      });
+                    }
+                ));
+                if (cancelled) {
+                  await ac.removeTag(tag);
+                }
               },
               child: Text('Add new'),
             ),
