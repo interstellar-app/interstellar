@@ -201,6 +201,7 @@ class ContentInfo extends StatelessWidget {
       children: [
         Expanded(
           child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               ?warning,
               ?pinned,
