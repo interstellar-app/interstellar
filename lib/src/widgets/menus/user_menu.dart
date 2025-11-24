@@ -128,7 +128,7 @@ Future<void> showUserMenu(
           ),
         ),
       ContextMenuItem(
-        title: 'Tags',
+        title: l(context).tags,
         onTap: () => pushRoute(
             context,
             builder: (context) => UserTags(user: user.name)

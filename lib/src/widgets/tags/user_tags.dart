@@ -87,7 +87,7 @@ class _UserTagsState extends State<UserTags> {
                       },
                     ),
                   ),
-                  child: Text('Add existing'),
+                  child: Text(l(context).tags_addExisting),
                 ),
                 FilledButton(
                   onPressed: () async {
@@ -112,7 +112,7 @@ class _UserTagsState extends State<UserTags> {
                       await ac.removeTag(tag);
                     }
                   },
-                  child: Text('Add new'),
+                  child: Text(l(context).tags_addNew),
                 ),
               ],
             ),

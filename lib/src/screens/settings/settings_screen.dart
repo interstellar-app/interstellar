@@ -72,7 +72,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Symbols.palette_rounded),
-            title: Text('Tags'),
+            title: Text(l(context).tags),
             onTap: () => pushRoute(
               context,
               builder: (context) => const TagsScreen(),

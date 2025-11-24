@@ -34,7 +34,7 @@ class _TagsScreenState extends State<TagsScreen> {
     final ac = context.read<AppController>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tags'),
+        title: Text(l(context).tags),
       ),
       body: CustomScrollView(
         slivers: [
@@ -95,7 +95,7 @@ class _TagsScreenState extends State<TagsScreen> {
                   await ac.removeTag(tag);
                 }
               },
-              child: Text('Add new'),
+              child: Text(l(context).tags_addNew),
             ),
           ),
         ],

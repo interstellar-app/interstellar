@@ -278,8 +278,6 @@ class AppController with ChangeNotifier {
 
     _defaultDownloadsDir = await getDefaultDownloadDir();
 
-    print(Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit);
-    print(Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit);
     await _updateAPI();
     logger.i('Finished init');
   }

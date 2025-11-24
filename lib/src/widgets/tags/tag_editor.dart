@@ -50,13 +50,13 @@ class _TagEditorState extends State<TagEditor> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                title: Text('Text Color'),
+                title: Text(l(context).tags_textColor),
                 onTap: () {
                   Color c = _textColor;
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Pick a colour!'),
+                      title: Text(l(context).pickColor),
                       content: ColorPicker(
                         pickerColor: c,
                         onColorChanged: (color) {
@@ -90,13 +90,13 @@ class _TagEditorState extends State<TagEditor> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                title: Text('Background Color'),
+                title: Text(l(context).tags_backgroundColor),
                 onTap: () {
                   Color c = _backgroundColor;
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Pick a colour!'),
+                      title: Text(l(context).pickColor),
                       content: ColorPicker(
                         pickerColor: c,
                         onColorChanged: (color) {
@@ -130,7 +130,7 @@ class _TagEditorState extends State<TagEditor> {
                   padding: const EdgeInsets.only(right: 8),
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel'),
+                    child: Text(l(context).cancel),
                   ),
                 ),
                 Padding(
@@ -142,7 +142,7 @@ class _TagEditorState extends State<TagEditor> {
                       widget.onUpdate(null);
                       Navigator.pop(context);
                     },
-                    child: Text('Delete'),
+                    child: Text(l(context).delete),
                   ),
                 ),
                 Padding(
@@ -161,7 +161,7 @@ class _TagEditorState extends State<TagEditor> {
                       if (!context.mounted) return;
                       Navigator.pop(context);
                     },
-                    child: Text('Save'),
+                    child: Text(l(context).save),
                   ),
                 ),
               ],
