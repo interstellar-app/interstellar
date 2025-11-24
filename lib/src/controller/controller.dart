@@ -1041,13 +1041,65 @@ class AppController with ChangeNotifier {
     _defaultDownloadsDir = path;
   }
 
+  Future<Tag> addTag() async {
+    return await database
+        .into(database.tags)
+        .insertReturning(TagsCompanion.insert(tag: 'Tag'));
+  }
+
+  Future<Tag> setTag(Tag tag) async {
+    return await database
+        .into(database.tags)
+        .insertReturning(tag, onConflict: DoUpdate((_) => tag));
+  }
+
+  Future<void> removeTag(Tag tag) async {
+    await (database.delete(
+      database.tags,
+    )..where((f) => f.id.equals(tag.id))).go();
+  }
+
+  Future<void> assignTagToUser(Tag tag, String user) async {
+    await database
+        .into(database.userTags)
+        .insertOnConflictUpdate(
+          UserTagsCompanion.insert(
+            user: normalizeName(user, instanceHost),
+            tagId: tag.id,
+          ),
+        );
+  }
+
+  Future<void> removeTagFromUser(Tag tag, String user) async {
+    await (database.delete(database.userTags)..where(
+          (f) =>
+              f.tagId.equals(tag.id) &
+              f.user.equals(normalizeName(user, instanceHost)),
+        ))
+        .go();
+  }
+
   Future<List<Tag>> getUserTags(String username) async {
-    final query = database.select(database.tags).join([innerJoin(database.userTags, database.userTags.tagId.equalsExp(database.tags.id))]);
-    
-    final t = await (query..where(database.userTags.user.equals(username))).get();
+    final query = database.select(database.tags).join([
+      innerJoin(
+        database.userTags,
+        database.userTags.tagId.equalsExp(database.tags.id),
+      ),
+    ]);
+
+    final t =
+        await (query..where(
+              database.userTags.user.equals(
+                normalizeName(username, instanceHost),
+              ),
+            ))
+            .get();
 
     return t.map((tag) => tag.readTable(database.tags)).toList();
+  }
 
-    return await (database.select(database.tags)..where((f) => f.id.equals(username.length))).get();
+  Future<List<Tag>> getTags() async {
+    final query = database.select(database.tags);
+    return query.get();
   }
 }

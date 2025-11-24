@@ -20,6 +20,7 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/video.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/utils/language.dart';
@@ -381,17 +382,7 @@ class _ContentItemState extends State<ContentItem> {
             }
 
             components.add(Wrap(
-              children: widget.flairs.map((flair) => Container(
-                margin: const EdgeInsets.only(right: 5),
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: flair.backgroundColor,
-                ),
-                child: Text(
-                    flair.tag,
-                    style: TextStyle(color: flair.textColor, fontSize: 10)),
-                )
+              children: widget.flairs.map((flair) => TagWidget(tag: flair, size: 10)
               ).toList(),
             ));
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
@@ -8,6 +7,7 @@ import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -178,15 +178,7 @@ class ContentInfo extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ...?user?.tags.map((tag) => Container(
-                    margin: const EdgeInsets.only(right: 5),
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: tag.backgroundColor,
-                    ),
-                    child: Text(tag.tag, style: TextStyle(color: tag.textColor, fontSize: 10)),
-                  ))
+                  ...?user?.tags.map((tag) => TagWidget(tag: tag, size: 10))
                 ],
               ),
           );

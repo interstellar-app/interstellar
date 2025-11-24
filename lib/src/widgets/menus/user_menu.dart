@@ -13,6 +13,8 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
+import 'package:interstellar/src/widgets/tags/tag_editor.dart';
+import 'package:interstellar/src/widgets/tags/user_tags.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:provider/provider.dart';
@@ -125,6 +127,13 @@ Future<void> showUserMenu(
             ),
           ),
         ),
+      ContextMenuItem(
+        title: 'Tags',
+        onTap: () => pushRoute(
+            context,
+            builder: (context) => UserTags(user: user.name)
+        )
+      ),
     ],
   ).openMenu(context);
 }
