@@ -92,6 +92,7 @@ class _UserTagsState extends State<UserTags> {
                 FilledButton(
                   onPressed: () async {
                     final tag = await ac.addTag();
+                    await ac.assignTagToUser(tag, widget.user);
                     setState(() {
                       _tags.add(tag);
                     });
