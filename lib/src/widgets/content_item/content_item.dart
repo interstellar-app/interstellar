@@ -378,10 +378,10 @@ class _ContentItemState extends State<ContentItem> {
                   widget.link == null
                       ? null
                       : ContentItemLinkPanel(link: widget.link!),
-                PostComponent.flairs => Wrap(
+                PostComponent.flairs => widget.flairs.isNotEmpty ? Wrap(
                   children: widget.flairs.map((flair) =>
                       TagWidget(tag: flair, size: 10)).toList(),
-                ),
+                ) : null,
               });
             }
 
