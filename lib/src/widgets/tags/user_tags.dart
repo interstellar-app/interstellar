@@ -102,9 +102,9 @@ class _UserTagsState extends State<UserTags> {
                             await ac.removeTag(tag);
                             return;
                           }
-                          await ac.assignTagToUser(tag, widget.user);
+                          await ac.assignTagToUser(newTag, widget.user);
                           setState(() {
-                            _tags.add(tag);
+                            _tags.add(newTag);
                           });
                         }
                     ));
