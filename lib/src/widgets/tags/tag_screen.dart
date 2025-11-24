@@ -74,7 +74,9 @@ class _TagsScreenState extends State<TagsScreen> {
             ),
           ),
           SliverToBoxAdapter(
-            child: FilledButton(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: FilledButton(
               onPressed: () async {
                 var tag = await ac.addTag();
                 if (!context.mounted) return;
@@ -96,7 +98,7 @@ class _TagsScreenState extends State<TagsScreen> {
                 }
               },
               child: Text(l(context).tags_addNew),
-            ),
+            )),
           ),
         ],
       ),
