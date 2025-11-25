@@ -146,75 +146,79 @@ class ContentInfo extends StatelessWidget {
 
     final userWidget = user == null
         ? null
-            : Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: DisplayName(
-                      user!.name,
-                      displayName: user!.displayName,
-                      icon: user!.avatar,
-                      onTap: () => pushRoute(
-                        context,
-                        builder: (context) => UserScreen(user!.id),
-                      ),
+        : Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: DisplayName(
+                    user!.name,
+                    displayName: user!.displayName,
+                    icon: user!.avatar,
+                    onTap: () => pushRoute(
+                      context,
+                      builder: (context) => UserScreen(user!.id),
                     ),
                   ),
-                  UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
-                  if (isOp)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Tooltip(
-                        message: l(context).originalPoster_long,
-                        triggerMode: TooltipTriggerMode.tap,
-                        child: Text(
-                          l(context).originalPoster_short,
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
+                ),
+                UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
+                if (isOp)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Tooltip(
+                      message: l(context).originalPoster_long,
+                      triggerMode: TooltipTriggerMode.tap,
+                      child: Text(
+                        l(context).originalPoster_short,
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ...?user?.tags.map((tag) => TagWidget(tag: tag, size: 10))
-                ],
-              ),
+                  ),
+              ],
+            ),
           );
 
     final communityWidget = community == null
         ? null
-            : Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: DisplayName(
-                community!.name,
-                icon: community!.icon,
-                onTap: () => pushRoute(
-                  context,
-                  builder: (context) => CommunityScreen(community!.id),
-                ),
+        : Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: DisplayName(
+              community!.name,
+              icon: community!.icon,
+              onTap: () => pushRoute(
+                context,
+                builder: (context) => CommunityScreen(community!.id),
               ),
+            ),
           );
 
-    return Row(
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Expanded(
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              ?warning,
-              ?pinned,
-              ?nsfw,
-              ?oc,
-              ?langWidget,
-              if (showCommunityFirst) ?communityWidget,
-              if (!showCommunityFirst) ?userWidget,
-              ?created,
-              if (!showCommunityFirst) ?communityWidget,
-              if (showCommunityFirst) ?userWidget,
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            ?warning,
+            ?pinned,
+            ?nsfw,
+            ?oc,
+            ?langWidget,
+            if (showCommunityFirst) ?communityWidget,
+            if (!showCommunityFirst) ...[
+              ?userWidget,
+              ...?user?.tags.map((tag) => TagWidget(tag: tag, size: 10)),
             ],
-          ),
+            ?created,
+            if (!showCommunityFirst) ?communityWidget,
+            if (showCommunityFirst) ...[
+              ?userWidget,
+              ...?user?.tags.map((tag) => TagWidget(tag: tag, size: 10)),
+            ],
+          ],
         ),
         ?menuWidget,
       ],
