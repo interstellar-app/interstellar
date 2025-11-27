@@ -385,16 +385,7 @@ class FeedAggregator {
 
     newItems = await Future.wait(
       newItems.map(
-        (item) async => item.copyWith(
-          user: item.user.copyWith(
-            tags: [
-              ...item.user.tags,
-              ...(await ac.getUserTags(
-                normalizeName(item.user.name, ac.instanceHost),
-              )),
-            ],
-          ),
-        ),
+        (item) async => applyUserTagsPost(ac, item),
       ),
     );
 

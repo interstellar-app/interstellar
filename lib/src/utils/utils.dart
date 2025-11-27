@@ -6,6 +6,8 @@ import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -322,6 +324,32 @@ Future<void> pushRoute(
       transitionDuration: adjustedDuration,
       reverseTransitionDuration: adjustedDuration,
       builder: builder,
+    ),
+  );
+}
+
+Future<PostModel> applyUserTagsPost(AppController ac, PostModel post) async {
+  return post.copyWith(
+    user: post.user.copyWith(
+      tags: [
+        ...post.user.tags,
+        ...(await ac.getUserTags(
+          normalizeName(post.user.name, ac.instanceHost),
+        )),
+      ],
+    ),
+  );
+}
+
+Future<CommentModel> applyUserTagsComment(AppController ac, CommentModel post) async {
+  return post.copyWith(
+    user: post.user.copyWith(
+      tags: [
+        ...post.user.tags,
+        ...(await ac.getUserTags(
+          normalizeName(post.user.name, ac.instanceHost),
+        )),
+      ],
     ),
   );
 }

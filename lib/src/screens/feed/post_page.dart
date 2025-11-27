@@ -587,16 +587,7 @@ class _CommentSectionState extends State<CommentSection> {
 
           final newItems = await Future.wait(
             newPage.items.map(
-              (item) async => item.copyWith(
-                user: item.user.copyWith(
-                  tags: [
-                    ...item.user.tags,
-                    ...(await ac.getUserTags(
-                      normalizeName(item.user.name, ac.instanceHost),
-                    )),
-                  ],
-                ),
-              ),
+              (item) async => applyUserTagsComment(ac, item),
             ),
           );
 

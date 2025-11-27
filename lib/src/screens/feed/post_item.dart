@@ -146,37 +146,43 @@ class _PostItemState extends State<PostItem> {
           isUpVoted: widget.item.myVote == 1,
           onUpVote: whenLoggedIn(context, () async {
             widget.onUpdate(
-              (await ac.markAsRead([
-                await switch (widget.item.type) {
-                  PostType.thread => ac.api.threads.vote(
-                    widget.item.id,
-                    1,
-                    widget.item.myVote == 1 ? 0 : 1,
-                  ),
-                  PostType.microblog => ac.api.microblogs.putFavorite(
-                    widget.item.id,
-                  ),
-                },
-              ], true)).first,
+              await applyUserTagsPost(
+                ac,
+                (await ac.markAsRead([
+                  await switch (widget.item.type) {
+                    PostType.thread => ac.api.threads.vote(
+                      widget.item.id,
+                      1,
+                      widget.item.myVote == 1 ? 0 : 1,
+                    ),
+                    PostType.microblog => ac.api.microblogs.putFavorite(
+                      widget.item.id,
+                    ),
+                  },
+                ], true)).first,
+              ),
             );
           }),
           downVotes: widget.item.downvotes,
           isDownVoted: widget.item.myVote == -1,
           onDownVote: whenLoggedIn(context, () async {
             widget.onUpdate(
-              (await ac.markAsRead([
-                await switch (widget.item.type) {
-                  PostType.thread => ac.api.threads.vote(
-                    widget.item.id,
-                    -1,
-                    widget.item.myVote == -1 ? 0 : -1,
-                  ),
-                  PostType.microblog => ac.api.microblogs.putVote(
-                    widget.item.id,
-                    -1,
-                  ),
-                },
-              ], true)).first,
+              await applyUserTagsPost(
+                ac,
+                (await ac.markAsRead([
+                  await switch (widget.item.type) {
+                    PostType.thread => ac.api.threads.vote(
+                      widget.item.id,
+                      -1,
+                      widget.item.myVote == -1 ? 0 : -1,
+                    ),
+                    PostType.microblog => ac.api.microblogs.putVote(
+                      widget.item.id,
+                      -1,
+                    ),
+                  },
+                ], true)).first,
+              ),
             );
           }),
           contentTypeName: l(context).post,
@@ -194,16 +200,22 @@ class _PostItemState extends State<PostItem> {
           onDelete: widget.onDelete,
           onMarkAsRead: () async {
             widget.onUpdate(
-              (await ac.markAsRead([widget.item], !widget.item.read)).first,
+              await applyUserTagsPost(
+                ac,
+                (await ac.markAsRead([widget.item], !widget.item.read)).first,
+              ),
             );
           },
           onModeratePin: !canModerate
               ? null
               : () async {
                   widget.onUpdate(
-                    await ac.api.moderation.postPin(
-                      widget.item.type,
-                      widget.item.id,
+                    await applyUserTagsPost(
+                      ac,
+                      await ac.api.moderation.postPin(
+                        widget.item.type,
+                        widget.item.id,
+                      ),
                     ),
                   );
                 },
@@ -211,10 +223,13 @@ class _PostItemState extends State<PostItem> {
               ? null
               : () async {
                   widget.onUpdate(
-                    await ac.api.moderation.postMarkNSFW(
-                      widget.item.type,
-                      widget.item.id,
-                      !widget.item.isNSFW,
+                    await applyUserTagsPost(
+                      ac,
+                      await ac.api.moderation.postMarkNSFW(
+                        widget.item.type,
+                        widget.item.id,
+                        !widget.item.isNSFW,
+                      ),
                     ),
                   );
                 },
@@ -222,10 +237,13 @@ class _PostItemState extends State<PostItem> {
               ? null
               : () async {
                   widget.onUpdate(
-                    await ac.api.moderation.postDelete(
-                      widget.item.type,
-                      widget.item.id,
-                      true,
+                    await applyUserTagsPost(
+                      ac,
+                      await ac.api.moderation.postDelete(
+                        widget.item.type,
+                        widget.item.id,
+                        true,
+                      ),
                     ),
                   );
                 },
@@ -269,7 +287,12 @@ class _PostItemState extends State<PostItem> {
               ),
               subjectId: widget.item.id,
             );
-            widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
+            widget.onUpdate(
+              await applyUserTagsPost(
+                ac,
+                widget.item.copyWith(bookmarks: newBookmarks),
+              ),
+            );
           }),
           onAddBookmarkToList: whenLoggedIn(context, (String listName) async {
             final newBookmarks = await ac.api.bookmark.addBookmarkToList(
@@ -280,7 +303,12 @@ class _PostItemState extends State<PostItem> {
               subjectId: widget.item.id,
               listName: listName,
             );
-            widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
+            widget.onUpdate(
+              await applyUserTagsPost(
+                ac,
+                widget.item.copyWith(bookmarks: newBookmarks),
+              ),
+            );
           }, matchesSoftware: ServerSoftware.mbin),
           onRemoveBookmark: whenLoggedIn(context, () async {
             final newBookmarks = await ac.api.bookmark.removeBookmarkFromAll(
@@ -290,7 +318,12 @@ class _PostItemState extends State<PostItem> {
               ),
               subjectId: widget.item.id,
             );
-            widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
+            widget.onUpdate(
+              await applyUserTagsPost(
+                ac,
+                widget.item.copyWith(bookmarks: newBookmarks),
+              ),
+            );
           }),
           onRemoveBookmarkFromList: whenLoggedIn(context, (
             String listName,
@@ -303,7 +336,12 @@ class _PostItemState extends State<PostItem> {
               subjectId: widget.item.id,
               listName: listName,
             );
-            widget.onUpdate(widget.item.copyWith(bookmarks: newBookmarks));
+            widget.onUpdate(
+              await applyUserTagsPost(
+                ac,
+                widget.item.copyWith(bookmarks: newBookmarks),
+              ),
+            );
           }, matchesSoftware: ServerSoftware.mbin),
           notificationControlStatus: widget.item.notificationControlStatus,
           onNotificationControlStatusChange:
@@ -322,7 +360,12 @@ class _PostItemState extends State<PostItem> {
                   );
 
                   widget.onUpdate(
-                    widget.item.copyWith(notificationControlStatus: newStatus),
+                    await applyUserTagsPost(
+                      ac,
+                      widget.item.copyWith(
+                        notificationControlStatus: newStatus,
+                      ),
+                    ),
                   );
                 },
           isCompact: widget.isCompact,
