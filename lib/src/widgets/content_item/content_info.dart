@@ -196,11 +196,11 @@ class ContentInfo extends StatelessWidget {
             ),
           );
 
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
+    // return Row(
+    final internal = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
+        Row(
           children: [
             ?warning,
             ?pinned,
@@ -208,19 +208,31 @@ class ContentInfo extends StatelessWidget {
             ?oc,
             ?langWidget,
             if (showCommunityFirst) ?communityWidget,
-            if (!showCommunityFirst) ...[
-              ?userWidget,
-              ...?user?.tags.map((tag) => TagWidget(tag: tag, size: 10)),
-            ],
+            if (!showCommunityFirst) ?userWidget,
             ?created,
             if (!showCommunityFirst) ?communityWidget,
-            if (showCommunityFirst) ...[
-              ?userWidget,
-              ...?user?.tags.map((tag) => TagWidget(tag: tag, size: 10)),
-            ],
+            if (showCommunityFirst) ?userWidget,
           ],
         ),
         ?menuWidget,
+      ],
+    );
+
+    if (user?.tags.isEmpty ?? true) {
+      return internal;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        internal,
+        Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Wrap(
+            runSpacing: 5,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: user!.tags.map((tag) => TagWidget(tag: tag, size: 10)).toList(),
+          ),
+        ),
       ],
     );
   }
