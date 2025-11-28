@@ -341,15 +341,25 @@ Future<PostModel> applyUserTagsPost(AppController ac, PostModel post) async {
   );
 }
 
-Future<CommentModel> applyUserTagsComment(AppController ac, CommentModel post) async {
-  return post.copyWith(
-    user: post.user.copyWith(
+Future<CommentModel> applyUserTagsComment(
+  AppController ac,
+  CommentModel comment,
+) async {
+  return comment.copyWith(
+    user: comment.user.copyWith(
       tags: [
-        ...post.user.tags,
+        ...comment.user.tags,
         ...(await ac.getUserTags(
-          normalizeName(post.user.name, ac.instanceHost),
+          normalizeName(comment.user.name, ac.instanceHost),
         )),
       ],
     ),
+    children: comment.children == null
+        ? null
+        : await Future.wait(
+            comment.children!.map(
+              (child) async => await applyUserTagsComment(ac, child),
+            ),
+          ),
   );
 }
