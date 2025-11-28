@@ -84,6 +84,7 @@ class _TagsScreenState extends State<TagsScreen> {
                 await pushRoute(context, builder: (context) => TagEditor(
                     tag: tag,
                     onUpdate: (newTag) async {
+                      cancelled = false;
                       if (newTag == null) {
                         await ac.removeTag(tag);
                         return;
