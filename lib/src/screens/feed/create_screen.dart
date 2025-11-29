@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
@@ -19,12 +20,14 @@ import 'package:provider/provider.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({
+    this.crossPost,
     this.initCommunity,
     this.initTitle,
     this.initBody,
     super.key,
   });
 
+  final PostModel? crossPost;
   final DetailedCommunityModel? initCommunity;
   final String? initTitle;
   final String? initBody;
@@ -34,6 +37,7 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
+  int _defaultTab = 0;
   DetailedCommunityModel? _community;
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _bodyTextController = TextEditingController();
@@ -51,6 +55,33 @@ class _CreateScreenState extends State<CreateScreen> {
 
     _lang = context.read<AppController>().profile.defaultCreateLanguage;
 
+    if (widget.crossPost != null) {
+      final post = widget.crossPost!;
+
+      if (post.type == PostType.microblog) {
+        _defaultTab = 3;
+      }
+
+      if (post.title != null) {
+        _titleTextController.text = post.title!;
+      }
+
+      String body = 'Cross posted from ';
+      body += post.apId ?? genPostUrl(context, post).toString();
+      if (post.body != null && post.body!.trim().isNotEmpty) {
+        body += '\n\n';
+        // Wrap original body with markdown quote
+        body += post.body!.split('\n').map((line) => '> $line').join('\n');
+      }
+      _bodyTextController.text = body;
+
+      final link = post.url ?? post.image?.src;
+      if (link != null) {
+        _urlTextController.text = link;
+        _defaultTab = 2;
+      }
+    }
+
     if (widget.initCommunity != null) _community = widget.initCommunity;
     if (widget.initTitle != null) _titleTextController.text = widget.initTitle!;
     if (widget.initBody != null) _bodyTextController.text = widget.initBody!;
@@ -61,7 +92,9 @@ class _CreateScreenState extends State<CreateScreen> {
     final ac = context.watch<AppController>();
 
     final bodyDraftController = context.watch<DraftsController>().auto(
-      'create:${widget.initCommunity == null ? '' : ':${ac.instanceHost}:${widget.initCommunity!.name}'}',
+      widget.crossPost != null
+          ? 'crossPost:${ac.instanceHost}:${widget.crossPost!.type.name}:${widget.crossPost!.id}'
+          : 'create${widget.initCommunity == null ? '' : ':${ac.instanceHost}:${widget.initCommunity!.name}'}',
     );
 
     Widget listViewWidget(List<Widget> children) =>
@@ -205,6 +238,7 @@ class _CreateScreenState extends State<CreateScreen> {
     );
 
     return DefaultTabController(
+      initialIndex: _defaultTab,
       length: switch (ac.serverSoftware) {
         ServerSoftware.mbin => 5,
         // Microblog tab only for Mbin

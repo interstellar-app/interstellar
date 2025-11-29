@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
@@ -101,6 +102,15 @@ Future<void> showContentMenu(
         title: l(context).share,
         onTap: () => shareUri(widget.openLinkUri!),
       ),
+      if (widget.crossPost != null && context.read<AppController>().isLoggedIn)
+        ContextMenuItem(
+          title: l(context).crossPost,
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CreateScreen(crossPost: widget.crossPost!),
+            ),
+          ),
+        ),
       if (widget.domain != null)
         ContextMenuItem(
           title: l(context).moreFrom(widget.domain!),

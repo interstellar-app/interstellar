@@ -61,10 +61,10 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
             subtitle: Text(l(context).settings_useAccountLanguageFilter_help),
             value: ac.profile.useAccountLanguageFilter,
             onChanged: (newValue) => ac.updateProfile(
-                    ac.selectedProfileValue.copyWith(
-                      useAccountLanguageFilter: newValue,
-                    ),
-                  ),
+              ac.selectedProfileValue.copyWith(
+                useAccountLanguageFilter: newValue,
+              ),
+            ),
             enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
           Row(
@@ -226,9 +226,7 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
                       ? l(context).settings_animationDisabled
                       : ac.profile.animationSpeed.toString(),
                   onChanged: (newValue) => ac.updateProfile(
-                    ac.selectedProfileValue.copyWith(
-                      animationSpeed: newValue
-                    )
+                    ac.selectedProfileValue.copyWith(animationSpeed: newValue),
                   ),
                 ),
               ],
@@ -239,21 +237,23 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
             title: Text(l(context).settings_inlineReplies),
             value: ac.profile.inlineReplies,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(
-                inlineReplies: newValue,
-              ),
+              ac.selectedProfileValue.copyWith(inlineReplies: newValue),
             ),
           ),
           ListTile(
             title: Text(l(context).settings_defaultDownloadDir),
-            subtitle: ac.defaultDownloadDir != null ? Text(ac.defaultDownloadDir!.path) : null,
-            trailing: ac.defaultDownloadDir != null ? LoadingIconButton(
-                onPressed: () async {
-                  ac.setDefaultDownloadDir(null);
-                  setState(() {});
-                },
-                icon: Icon(Symbols.clear_rounded)
-            ) : null,
+            subtitle: ac.defaultDownloadDir != null
+                ? Text(ac.defaultDownloadDir!.path)
+                : null,
+            trailing: ac.defaultDownloadDir != null
+                ? LoadingIconButton(
+                    onPressed: () async {
+                      ac.setDefaultDownloadDir(null);
+                      setState(() {});
+                    },
+                    icon: Icon(Symbols.clear_rounded),
+                  )
+                : null,
             onTap: () async {
               try {
                 final path = await FilePicker.platform.getDirectoryPath();
@@ -268,17 +268,17 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
           ListTileSwitch(
             leading: const Icon(Symbols.web_stories_rounded),
             title: Text(l(context).settings_crosspostComments),
-            value: ac.profile.showCrosspostComments,
+            value: ac.profile.showCrossPostComments,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(showCrosspostComments: newValue),
+              ac.selectedProfileValue.copyWith(showCrossPostComments: newValue),
             ),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.subdirectory_arrow_right_rounded),
             title: Text(l(context).settings_crossPostMarkAsRead),
-            value: ac.profile.markCrosspostsAsRead,
+            value: ac.profile.markCrossPostsAsRead,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(markCrosspostsAsRead: newValue),
+              ac.selectedProfileValue.copyWith(markCrossPostsAsRead: newValue),
             ),
           ),
           ListTileSelect(
