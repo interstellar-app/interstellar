@@ -97,6 +97,7 @@ abstract class PostModel with _$PostModel {
     required List<String>? bookmarks,
     required bool read,
     required List<PostModel> crossPosts,
+    required String? apId,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -143,6 +144,7 @@ abstract class PostModel with _$PostModel {
             ?.map((post) => PostModel.fromMbinEntry(post))
             .toList() ??
         [],
+    apId: json['apId'] as String?,
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -180,6 +182,7 @@ abstract class PostModel with _$PostModel {
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
     crossPosts: [],
+    apId: json['apId'] as String?,
   );
 
   factory PostModel.fromLemmy(
@@ -253,6 +256,7 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
+      apId: lemmyPost['ap_id'] as String,
     );
   }
 
@@ -331,6 +335,7 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
+      apId: piefedPost['ap_id'] as String,
     );
   }
 }

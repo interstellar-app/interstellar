@@ -239,15 +239,7 @@ class _PostItemState extends State<PostItem> {
                   );
                 },
           numComments: widget.item.numComments,
-          openLinkUri: Uri.https(
-            ac.instanceHost,
-            ac.serverSoftware == ServerSoftware.mbin
-                ? '/m/${widget.item.community.name}/${switch (widget.item.type) {
-                    PostType.thread => 't',
-                    PostType.microblog => 'p',
-                  }}/${widget.item.id}'
-                : '/post/${widget.item.id}',
-          ),
+          openLinkUri: genPostUrl(context, widget.item),
           editDraftResourceId:
               'edit:${widget.item.type.name}:${ac.instanceHost}:${widget.item.id}',
           replyDraftResourceId:
@@ -327,6 +319,7 @@ class _PostItemState extends State<PostItem> {
                 },
           isCompact: widget.isCompact,
           onClick: widget.isTopLevel ? widget.onTap : null,
+          crossPost: widget.item,
         ),
       ),
     );
