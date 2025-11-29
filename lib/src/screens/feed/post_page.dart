@@ -569,11 +569,6 @@ class _CommentSectionState extends State<CommentSection> {
             widget.id,
             page: nullIfEmpty(pageKey),
             sort: widget.sort,
-            usePreferredLangs: whenLoggedIn(
-              context,
-              ac.profile.useAccountLanguageFilter,
-            ),
-            langs: ac.profile.customLanguageFilter.toList(),
           );
 
           return (newPage.items, newPage.nextPage);

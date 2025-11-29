@@ -72,18 +72,11 @@ class APIComments {
     int postId, {
     String? page,
     CommentSort? sort,
-    List<String>? langs,
-    bool? usePreferredLangs,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/${_postTypeMbin[postType]}/$postId/comments';
-        final query = {
-          'p': page,
-          'sortBy': sort?.name,
-          'lang': langs?.join(','),
-          'usePreferredLangs': (usePreferredLangs ?? false).toString(),
-        };
+        final query = {'p': page, 'sortBy': sort?.name};
 
         final response = await client.get(path, queryParams: query);
 
@@ -128,18 +121,11 @@ class APIComments {
     int userId, {
     String? page,
     CommentSort? sort,
-    List<String>? langs,
-    bool? usePreferredLangs,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/users/$userId/${_postTypeMbinComment[postType]}';
-        final query = {
-          'p': page,
-          'sort': sort?.name,
-          'lang': langs?.join(','),
-          'usePreferredLangs': (usePreferredLangs ?? false).toString(),
-        };
+        final query = {'p': page, 'sort': sort?.name};
 
         final response = await client.get(path, queryParams: query);
 

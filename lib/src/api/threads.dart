@@ -42,8 +42,6 @@ class APIThreads {
     int? sourceId,
     String? page,
     FeedSort? sort,
-    List<String>? langs,
-    bool? usePreferredLangs,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
@@ -67,8 +65,6 @@ class APIThreads {
           'p': page,
           'sort': mbinGetSort(sort)?.name,
           'time': mbinGetSortTime(sort),
-          'lang': langs?.join(','),
-          'usePreferredLangs': (usePreferredLangs ?? false).toString(),
           if (source == FeedSource.local) 'federation': 'local',
         };
 
