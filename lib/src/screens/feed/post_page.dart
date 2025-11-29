@@ -587,7 +587,8 @@ class _CommentSectionState extends State<CommentSection> {
 
           final newItems = await Future.wait(
             newPage.items.map(
-              (item) async => applyUserTagsComment(ac, item),
+              (item) async =>
+                  applyUserTagsComment(ac, item, applyToChildren: true),
             ),
           );
 

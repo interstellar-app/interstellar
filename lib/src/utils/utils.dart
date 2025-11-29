@@ -343,8 +343,9 @@ Future<PostModel> applyUserTagsPost(AppController ac, PostModel post) async {
 
 Future<CommentModel> applyUserTagsComment(
   AppController ac,
-  CommentModel comment,
-) async {
+  CommentModel comment, {
+  bool applyToChildren = false,
+}) async {
   return comment.copyWith(
     user: comment.user.copyWith(
       tags: [
@@ -354,12 +355,14 @@ Future<CommentModel> applyUserTagsComment(
         )),
       ],
     ),
-    children: comment.children == null
-        ? null
-        : await Future.wait(
-            comment.children!.map(
-              (child) async => await applyUserTagsComment(ac, child),
-            ),
-          ),
+    children: !applyToChildren
+        ? comment.children
+        : (comment.children == null
+              ? null
+              : await Future.wait(
+                  comment.children!.map(
+                    (child) async => await applyUserTagsComment(ac, child),
+                  ),
+                )),
   );
 }
