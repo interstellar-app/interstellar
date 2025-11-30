@@ -243,6 +243,32 @@ class DebugSettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Symbols.label_rounded),
+            title: Text(l(context).settings_debug_clearTags),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l(context).settings_debug_clearTags),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l(context).cancel),
+                  ),
+                  FilledButton(
+                    onPressed: () async {
+                      await database.delete(database.userTags).go();
+                      await database.delete(database.tags).go();
+                      ac.logger.i('Cleared user tags');
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    },
+                    child: Text(l(context).remove),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
             leading: const Icon(Symbols.list_rounded),
             title: Text(l(context).settings_debug_log),
             onTap: () => pushRoute(context, builder: (context) => LogConsole()),

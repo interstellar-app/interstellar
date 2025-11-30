@@ -366,7 +366,7 @@ class FeedAggregator {
     }
 
     // check for read status
-    final newItems = ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
+    var newItems = ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
         ? result
         : await Future.wait(
             result.map(
@@ -374,6 +374,12 @@ class FeedAggregator {
                   (await ac.isRead(item)) ? item.copyWith(read: true) : item,
             ),
           );
+
+    newItems = await Future.wait(
+      newItems.map(
+        (item) async => applyUserTagsPost(ac, item),
+      ),
+    );
 
     return (newItems, nextPage);
   }
@@ -397,13 +403,15 @@ class FeedAggregator {
 
   @override
   bool operator ==(covariant FeedAggregator other) {
-    if (name != other.name || inputs.length != other.inputs.length)
+    if (name != other.name || inputs.length != other.inputs.length) {
       return false;
+    }
 
     for (final pair in IterableZip([inputs, other.inputs])) {
       if (pair[0].source != pair[1].source ||
-          pair[0].sourceId != pair[1].sourceId)
+          pair[0].sourceId != pair[1].sourceId) {
         return false;
+      }
     }
 
     return true;

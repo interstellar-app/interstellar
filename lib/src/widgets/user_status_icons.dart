@@ -58,6 +58,7 @@ class UserStatusIcons extends StatelessWidget {
     }
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [?botWidget, ?cakeDayWidget]
           .map(
             (widget) =>

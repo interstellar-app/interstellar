@@ -142,8 +142,9 @@ class _PostCommentState extends State<PostComment> {
       editedAt: widget.comment.editedAt,
       fullImageSize: true,
       user: widget.comment.user,
-      updateUser: (user) async =>
-          widget.onUpdate(widget.comment.copyWith(user: user)),
+      updateUser: (user) async => widget.onUpdate(
+        await applyUserTagsComment(ac, widget.comment.copyWith(user: user)),
+      ),
       opUserId: widget.opUserId,
       boosts: widget.comment.boosts,
       isBoosted: widget.comment.myBoost == true,
@@ -153,9 +154,12 @@ class _PostCommentState extends State<PostComment> {
           widget.comment.id,
         );
         widget.onUpdate(
-          newValue.copyWith(
-            childCount: widget.comment.childCount,
-            children: widget.comment.children,
+          await applyUserTagsComment(
+            ac,
+            newValue.copyWith(
+              childCount: widget.comment.childCount,
+              children: widget.comment.children,
+            ),
           ),
         );
       }),
@@ -168,9 +172,12 @@ class _PostCommentState extends State<PostComment> {
           widget.comment.myVote == 1 ? 0 : 1,
         );
         widget.onUpdate(
-          newValue.copyWith(
-            childCount: widget.comment.childCount,
-            children: widget.comment.children,
+          await applyUserTagsComment(
+            ac,
+            newValue.copyWith(
+              childCount: widget.comment.childCount,
+              children: widget.comment.children,
+            ),
           ),
         );
       }),
@@ -185,9 +192,12 @@ class _PostCommentState extends State<PostComment> {
           widget.comment.myVote == -1 ? 0 : -1,
         );
         widget.onUpdate(
-          newValue.copyWith(
-            childCount: widget.comment.childCount,
-            children: widget.comment.children,
+          await applyUserTagsComment(
+            ac,
+            newValue.copyWith(
+              childCount: widget.comment.childCount,
+              children: widget.comment.children,
+            ),
           ),
         );
       }),
@@ -209,9 +219,12 @@ class _PostCommentState extends State<PostComment> {
         );
 
         widget.onUpdate(
-          widget.comment.copyWith(
-            childCount: widget.comment.childCount + 1,
-            children: [newSubComment, ...widget.comment.children!],
+          await applyUserTagsComment(
+            ac,
+            widget.comment.copyWith(
+              childCount: widget.comment.childCount + 1,
+              children: [newSubComment, ...widget.comment.children!],
+            ),
           ),
         );
       }),
@@ -231,9 +244,12 @@ class _PostCommentState extends State<PostComment> {
               );
 
               widget.onUpdate(
-                newValue.copyWith(
-                  childCount: widget.comment.childCount,
-                  children: widget.comment.children,
+                await applyUserTagsComment(
+                  ac,
+                  newValue.copyWith(
+                    childCount: widget.comment.childCount,
+                    children: widget.comment.children,
+                  ),
                 ),
               );
             }, matchesUsername: widget.comment.user.name)
@@ -248,12 +264,15 @@ class _PostCommentState extends State<PostComment> {
               if (!context.mounted) return;
 
               widget.onUpdate(
-                widget.comment.copyWith(
-                  body: '_${l(context).commentDeleted}_',
-                  upvotes: null,
-                  downvotes: null,
-                  boosts: null,
-                  visibility: 'soft_deleted',
+                await applyUserTagsComment(
+                  ac,
+                  widget.comment.copyWith(
+                    body: '_${l(context).commentDeleted}_',
+                    upvotes: null,
+                    downvotes: null,
+                    boosts: null,
+                    visibility: 'soft_deleted',
+                  ),
                 ),
               );
             }, matchesUsername: widget.comment.user.name)
@@ -268,9 +287,12 @@ class _PostCommentState extends State<PostComment> {
               );
 
               widget.onUpdate(
-                newValue.copyWith(
-                  childCount: widget.comment.childCount,
-                  children: widget.comment.children,
+                await applyUserTagsComment(
+                  ac,
+                  newValue.copyWith(
+                    childCount: widget.comment.childCount,
+                    children: widget.comment.children,
+                  ),
                 ),
               );
             },
@@ -315,7 +337,12 @@ class _PostCommentState extends State<PostComment> {
           ),
           subjectId: widget.comment.id,
         );
-        widget.onUpdate(widget.comment.copyWith(bookmarks: newBookmarks));
+        widget.onUpdate(
+          await applyUserTagsComment(
+            ac,
+            widget.comment.copyWith(bookmarks: newBookmarks),
+          ),
+        );
       })),
       onAddBookmarkToList: whenLoggedIn(context, (String listName) async {
         final newBookmarks = await ac.api.bookmark.addBookmarkToList(
@@ -326,7 +353,12 @@ class _PostCommentState extends State<PostComment> {
           subjectId: widget.comment.id,
           listName: listName,
         );
-        widget.onUpdate(widget.comment.copyWith(bookmarks: newBookmarks));
+        widget.onUpdate(
+          await applyUserTagsComment(
+            ac,
+            widget.comment.copyWith(bookmarks: newBookmarks),
+          ),
+        );
       }, matchesSoftware: ServerSoftware.mbin),
       onRemoveBookmark: whenLoggedIn(context, () async {
         final newBookmarks = await ac.api.bookmark.removeBookmarkFromAll(
@@ -336,7 +368,12 @@ class _PostCommentState extends State<PostComment> {
           ),
           subjectId: widget.comment.id,
         );
-        widget.onUpdate(widget.comment.copyWith(bookmarks: newBookmarks));
+        widget.onUpdate(
+          await applyUserTagsComment(
+            ac,
+            widget.comment.copyWith(bookmarks: newBookmarks),
+          ),
+        );
       }),
       onRemoveBookmarkFromList: whenLoggedIn(context, (String listName) async {
         final newBookmarks = await ac.api.bookmark.removeBookmarkFromList(
@@ -347,7 +384,12 @@ class _PostCommentState extends State<PostComment> {
           subjectId: widget.comment.id,
           listName: listName,
         );
-        widget.onUpdate(widget.comment.copyWith(bookmarks: newBookmarks));
+        widget.onUpdate(
+          await applyUserTagsComment(
+            ac,
+            widget.comment.copyWith(bookmarks: newBookmarks),
+          ),
+        );
       }, matchesSoftware: ServerSoftware.mbin),
       notificationControlStatus: widget.comment.notificationControlStatus,
       onNotificationControlStatusChange:
@@ -361,7 +403,10 @@ class _PostCommentState extends State<PostComment> {
               );
 
               widget.onUpdate(
-                widget.comment.copyWith(notificationControlStatus: newStatus),
+                await applyUserTagsComment(
+                  ac,
+                  widget.comment.copyWith(notificationControlStatus: newStatus),
+                ),
               );
             },
       onClick: widget.onClick ?? collapse,

@@ -7,6 +7,7 @@ import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -145,79 +146,93 @@ class ContentInfo extends StatelessWidget {
 
     final userWidget = user == null
         ? null
-        : Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: DisplayName(
-                      user!.name,
-                      displayName: user!.displayName,
-                      icon: user!.avatar,
-                      onTap: () => pushRoute(
-                        context,
-                        builder: (context) => UserScreen(user!.id),
+        : Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: DisplayName(
+                    user!.name,
+                    displayName: user!.displayName,
+                    icon: user!.avatar,
+                    onTap: () => pushRoute(
+                      context,
+                      builder: (context) => UserScreen(user!.id),
+                    ),
+                  ),
+                ),
+                UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
+                if (isOp)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Tooltip(
+                      message: l(context).originalPoster_long,
+                      triggerMode: TooltipTriggerMode.tap,
+                      child: Text(
+                        l(context).originalPoster_short,
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                  UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
-                  if (isOp)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Tooltip(
-                        message: l(context).originalPoster_long,
-                        triggerMode: TooltipTriggerMode.tap,
-                        child: Text(
-                          l(context).originalPoster_short,
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    )
-                ],
-              ),
+              ],
             ),
           );
 
     final communityWidget = community == null
         ? null
-        : Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: DisplayName(
-                community!.name,
-                icon: community!.icon,
-                onTap: () => pushRoute(
-                  context,
-                  builder: (context) => CommunityScreen(community!.id),
-                ),
+        : Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: DisplayName(
+              community!.name,
+              icon: community!.icon,
+              onTap: () => pushRoute(
+                context,
+                builder: (context) => CommunityScreen(community!.id),
               ),
             ),
           );
 
-    return Row(
+    // return Row(
+    final internal = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: Row(
-            children: [
-              ?warning,
-              ?pinned,
-              ?nsfw,
-              ?oc,
-              ?langWidget,
-              if (showCommunityFirst) ?communityWidget,
-              if (!showCommunityFirst) ?userWidget,
-              ?created,
-              if (!showCommunityFirst) ?communityWidget,
-              if (showCommunityFirst) ?userWidget,
-            ],
-          ),
+        Row(
+          children: [
+            ?warning,
+            ?pinned,
+            ?nsfw,
+            ?oc,
+            ?langWidget,
+            if (showCommunityFirst) ?communityWidget,
+            if (!showCommunityFirst) ?userWidget,
+            ?created,
+            if (!showCommunityFirst) ?communityWidget,
+            if (showCommunityFirst) ?userWidget,
+          ],
         ),
         ?menuWidget,
+      ],
+    );
+
+    if (user?.tags.isEmpty ?? true) {
+      return internal;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        internal,
+        Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Wrap(
+            runSpacing: 5,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: user!.tags.map((tag) => TagWidget(tag: tag, size: 10)).toList(),
+          ),
+        ),
       ],
     );
   }

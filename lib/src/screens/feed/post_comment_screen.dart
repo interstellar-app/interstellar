@@ -36,6 +36,7 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
         .api
         .comments
         .get(widget.postType, widget.commentId)
+        .then((value) => applyUserTagsComment(context.read<AppController>(), value))
         .then(
           (value) => setState(() {
             _comment = value;

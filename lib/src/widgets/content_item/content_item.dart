@@ -3,6 +3,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
@@ -19,6 +20,7 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/video.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/utils/language.dart';
@@ -27,7 +29,7 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
-enum PostComponent { title, image, info, body, link }
+enum PostComponent { title, image, info, body, link, flairs }
 
 class ContentItem extends StatefulWidget {
   final String originInstance;
@@ -112,6 +114,8 @@ class ContentItem extends StatefulWidget {
 
   final void Function()? onClick;
 
+  final List<Tag> flairs;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -171,6 +175,7 @@ class ContentItem extends StatefulWidget {
     this.onNotificationControlStatusChange,
     this.isCompact = false,
     this.onClick,
+    this.flairs = const [],
     super.key,
   });
 
@@ -373,6 +378,10 @@ class _ContentItemState extends State<ContentItem> {
                   widget.link == null
                       ? null
                       : ContentItemLinkPanel(link: widget.link!),
+                PostComponent.flairs => widget.flairs.isNotEmpty ? Wrap(
+                  children: widget.flairs.map((flair) =>
+                      TagWidget(tag: flair, size: 10)).toList(),
+                ) : null,
               });
             }
 
