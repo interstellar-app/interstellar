@@ -6,7 +6,8 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/images.dart' show ImageStore;
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/actions.dart' show ActionLocation, ActionLocationWithTabs, SwipeAction;
+import 'package:interstellar/src/widgets/actions.dart'
+    show ActionLocation, ActionLocationWithTabs, SwipeAction;
 import 'package:drift/drift.dart' show Insertable, Value, Expression;
 import 'database.dart' show ProfilesCompanion;
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
@@ -27,8 +28,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     required String? autoSwitchAccount,
     // Behavior settings
     required String defaultCreateLanguage,
-    required bool useAccountLanguageFilter,
-    required List<String> customLanguageFilter,
     required bool disableTabSwiping,
     required bool askBeforeUnsubscribing,
     required bool askBeforeDeleting,
@@ -99,11 +98,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     autoSwitchAccount: profile?.autoSwitchAccount,
     defaultCreateLanguage:
         profile?.defaultCreateLanguage ?? defaultProfile.defaultCreateLanguage,
-    useAccountLanguageFilter:
-        profile?.useAccountLanguageFilter ??
-        defaultProfile.useAccountLanguageFilter,
-    customLanguageFilter:
-        profile?.customLanguageFilter ?? defaultProfile.customLanguageFilter,
     disableTabSwiping:
         profile?.disableTabSwiping ?? defaultProfile.disableTabSwiping,
     askBeforeUnsubscribing:
@@ -126,7 +120,8 @@ abstract class ProfileRequired with _$ProfileRequired {
         profile?.showCrosspostComments ?? defaultProfile.showCrosspostComments,
     markCrosspostsAsRead:
         profile?.markCrosspostsAsRead ?? defaultProfile.markCrosspostsAsRead,
-    defaultImageStore: profile?.defaultImageStore ?? defaultProfile.defaultImageStore,
+    defaultImageStore:
+        profile?.defaultImageStore ?? defaultProfile.defaultImageStore,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
     themeMode: profile?.themeMode ?? defaultProfile.themeMode,
     colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -150,7 +145,8 @@ abstract class ProfileRequired with _$ProfileRequired {
     showPostsCards: profile?.showPostsCards ?? defaultProfile.showPostsCards,
     postComponentOrder:
         profile?.postComponentOrder ?? defaultProfile.postComponentOrder,
-    dividerThickness: profile?.dividerThickness ?? defaultProfile.dividerThickness,
+    dividerThickness:
+        profile?.dividerThickness ?? defaultProfile.dividerThickness,
     feedDefaultThreadsSort:
         profile?.feedDefaultThreadsSort ??
         defaultProfile.feedDefaultThreadsSort,
@@ -208,8 +204,6 @@ abstract class ProfileRequired with _$ProfileRequired {
   static const defaultProfile = ProfileRequired(
     autoSwitchAccount: null,
     defaultCreateLanguage: 'en',
-    useAccountLanguageFilter: true,
-    customLanguageFilter: [],
     disableTabSwiping: false,
     askBeforeUnsubscribing: false,
     askBeforeDeleting: true,
@@ -291,8 +285,6 @@ abstract class ProfileOptional
     required String? autoSwitchAccount,
     // Behavior settings
     required String? defaultCreateLanguage,
-    required bool? useAccountLanguageFilter,
-    required List<String>? customLanguageFilter,
     required bool? disableTabSwiping,
     required bool? askBeforeUnsubscribing,
     required bool? askBeforeDeleting,
@@ -363,8 +355,6 @@ abstract class ProfileOptional
       autoSwitchAccount: Value(autoSwitchAccount),
       // Behaviour
       defaultCreateLanguage: Value(defaultCreateLanguage),
-      useAccountLanguageFilter: Value(useAccountLanguageFilter),
-      customLanguageFilter: Value(customLanguageFilter),
       disableTabSwiping: Value(disableTabSwiping),
       askBeforeUnsubscribing: Value(askBeforeUnsubscribing),
       askBeforeDeleting: Value(askBeforeDeleting),
@@ -377,7 +367,7 @@ abstract class ProfileOptional
       inlineReplies: Value(inlineReplies),
       showCrosspostComments: Value(showCrosspostComments),
       markCrosspostsAsRead: Value(markCrosspostsAsRead),
-        defaultImageStore: Value(defaultImageStore),
+      defaultImageStore: Value(defaultImageStore),
       // Display
       appLanguage: Value(appLanguage),
       themeMode: Value(themeMode),
@@ -430,8 +420,6 @@ abstract class ProfileOptional
     name: '',
     autoSwitchAccount: null,
     defaultCreateLanguage: null,
-    useAccountLanguageFilter: null,
-    customLanguageFilter: null,
     disableTabSwiping: null,
     askBeforeUnsubscribing: null,
     askBeforeDeleting: null,
@@ -495,9 +483,6 @@ abstract class ProfileOptional
       autoSwitchAccount: other.autoSwitchAccount,
       defaultCreateLanguage:
           other.defaultCreateLanguage ?? defaultCreateLanguage,
-      useAccountLanguageFilter:
-          other.useAccountLanguageFilter ?? useAccountLanguageFilter,
-      customLanguageFilter: other.customLanguageFilter ?? customLanguageFilter,
       disableTabSwiping: other.disableTabSwiping ?? disableTabSwiping,
       askBeforeUnsubscribing:
           other.askBeforeUnsubscribing ?? askBeforeUnsubscribing,

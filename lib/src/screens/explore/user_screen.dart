@@ -507,44 +507,24 @@ class _UserScreenBodyState extends State<UserScreenBody>
           sourceId: widget.data!.id,
           page: nullIfEmpty(pageKey),
           sort: widget.sort,
-          usePreferredLangs: whenLoggedIn(
-            context,
-            ac.profile.useAccountLanguageFilter,
-          ),
-          langs: ac.profile.customLanguageFilter,
         ),
         UserFeedType.microblog => ac.api.microblogs.list(
           FeedSource.user,
           sourceId: widget.data!.id,
           page: nullIfEmpty(pageKey),
           sort: widget.sort,
-          usePreferredLangs: whenLoggedIn(
-            context,
-            ac.profile.useAccountLanguageFilter,
-          ),
-          langs: ac.profile.customLanguageFilter,
         ),
         UserFeedType.comment => ac.api.comments.listFromUser(
           PostType.thread,
           widget.data!.id,
           page: nullIfEmpty(pageKey),
           sort: feedToCommentSortMap[widget.sort],
-          usePreferredLangs: whenLoggedIn(
-            context,
-            ac.profile.useAccountLanguageFilter,
-          ),
-          langs: ac.profile.customLanguageFilter,
         ),
         UserFeedType.reply => ac.api.comments.listFromUser(
           PostType.microblog,
           widget.data!.id,
           page: nullIfEmpty(pageKey),
           sort: feedToCommentSortMap[widget.sort],
-          usePreferredLangs: whenLoggedIn(
-            context,
-            ac.profile.useAccountLanguageFilter,
-          ),
-          langs: ac.profile.customLanguageFilter,
         ),
         UserFeedType.follower => ac.api.users.listFollowers(
           widget.data!.id,
@@ -618,10 +598,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
             ),
             isPreview: true,
             isTopLevel: true,
-            isCompact: context
-                .watch<AppController>()
-                .profile
-                .compactMode,
+            isCompact: context.watch<AppController>().profile.compactMode,
           ),
           UserFeedType.comment || UserFeedType.reply => Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),

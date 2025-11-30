@@ -176,7 +176,8 @@ class FilterListActivationConverter
   }
 }
 
-class PostComponentConverter extends TypeConverter<List<PostComponent>, String> {
+class PostComponentConverter
+    extends TypeConverter<List<PostComponent>, String> {
   const PostComponentConverter();
 
   @override
@@ -251,9 +252,6 @@ class Profiles extends Table {
   )();
   // Behaviour
   TextColumn get defaultCreateLanguage => text().nullable()();
-  BoolColumn get useAccountLanguageFilter => boolean().nullable()();
-  TextColumn get customLanguageFilter =>
-      text().map(const StringListConverter()).nullable()();
   BoolColumn get disableTabSwiping => boolean().nullable()();
   BoolColumn get askBeforeUnsubscribing => boolean().nullable()();
   BoolColumn get askBeforeDeleting => boolean().nullable()();
@@ -281,7 +279,8 @@ class Profiles extends Table {
   BoolColumn get fullImageSizeThreads => boolean().nullable()();
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
   BoolColumn get showPostsCards => boolean().nullable()();
-  TextColumn get postComponentOrder => text().map(const PostComponentConverter()).nullable()();
+  TextColumn get postComponentOrder =>
+      text().map(const PostComponentConverter()).nullable()();
   RealColumn get dividerThickness => real().nullable()();
   // Feed defaults
   TextColumn get feedViewOrder =>

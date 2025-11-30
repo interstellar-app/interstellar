@@ -18,8 +18,6 @@ class MbinAPIMicroblogs {
     int? sourceId,
     String? page,
     FeedSort? sort,
-    List<String>? langs,
-    bool? usePreferredLangs,
   }) async {
     final path = switch (source) {
       FeedSource.all => '/posts',
@@ -32,20 +30,14 @@ class MbinAPIMicroblogs {
       FeedSource.domain => throw Exception(
         'Domain source not allowed for microblog',
       ),
-      FeedSource.feed => throw Exception(
-          'Feeds source not allowed for mbin'
-      ),
-      FeedSource.topic => throw Exception(
-          'Topics source not allowed for mbin'
-      ),
+      FeedSource.feed => throw Exception('Feeds source not allowed for mbin'),
+      FeedSource.topic => throw Exception('Topics source not allowed for mbin'),
     };
 
     final query = {
       'p': page,
       'sort': mbinGetSort(sort)?.name,
       'time': mbinGetSortTime(sort),
-      'lang': langs?.join(','),
-      'usePreferredLangs': (usePreferredLangs ?? false).toString(),
       if (source == FeedSource.local) 'federation': 'local',
     };
 
