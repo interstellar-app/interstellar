@@ -3,6 +3,7 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -97,6 +98,7 @@ abstract class PostModel with _$PostModel {
     required List<String>? bookmarks,
     required bool read,
     required List<PostModel> crossPosts,
+    required PollModel? poll,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -143,6 +145,7 @@ abstract class PostModel with _$PostModel {
             ?.map((post) => PostModel.fromMbinEntry(post))
             .toList() ??
         [],
+    poll: null,
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -180,6 +183,7 @@ abstract class PostModel with _$PostModel {
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
     crossPosts: [],
+    poll: null,
   );
 
   factory PostModel.fromLemmy(
@@ -253,6 +257,7 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
+      poll: null,
     );
   }
 
@@ -331,6 +336,10 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
+      poll: piefedPost['post_type'] == 'Poll' ? PollModel.fromPiefed(
+          piefedPost['id'] as int,
+          piefedPost['poll'] as Map<String, Object?>
+      ) : null,
     );
   }
 }

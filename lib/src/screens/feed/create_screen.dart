@@ -13,6 +13,7 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/community_picker.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,11 @@ class _CreateScreenState extends State<CreateScreen> {
   XFile? _imageFile;
   String? _altText = '';
   String _lang = '';
+  final List<TextEditingController> _pollOptions = [
+    TextEditingController(text: 'Option 0'),
+  ];
+  String _pollMode = 'single';
+  Duration _pollDuration = Duration();
 
   @override
   void initState() {
@@ -194,6 +200,61 @@ class _CreateScreenState extends State<CreateScreen> {
       ),
     );
 
+    Widget pollOptionsWidget() => Column(
+      children: [
+        ..._pollOptions.map(
+          (option) => Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              children: [
+                Expanded(child: TextEditor(option)),
+                IconButton(
+                  onPressed: () => setState(() {
+                    _pollOptions.remove(option);
+                  }),
+                  icon: const Icon(Symbols.delete_rounded),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () => setState(() {
+            _pollOptions.add(
+              TextEditingController(text: 'Option ${_pollOptions.length}'),
+            );
+          }),
+          child: Text(l(context).addChoice),
+        ),
+        ListTile(
+          title: Text(l(context).pollMode),
+          onTap: () async {
+            final mode = await pollMode(
+              context,
+            ).askSelection(context, _pollMode);
+            if (mode == null) return;
+            setState(() {
+              _pollMode = mode;
+            });
+          },
+          trailing: Text(pollMode(context).getOption(_pollMode).title),
+        ),
+        ListTile(
+          title: Text(l(context).pollDuration),
+          onTap: () async {
+            final duration = await pollDuration(
+              context,
+            ).askSelection(context, _pollDuration);
+            if (duration == null) return;
+            setState(() {
+              _pollDuration = duration;
+            });
+          },
+          trailing: Text(pollDuration(context).getOption(_pollDuration).title),
+        ),
+      ],
+    );
+
     Widget submitButtonWidget(Future<void> Function()? onPressed) => Padding(
       padding: const EdgeInsets.all(8),
       child: LoadingFilledButton(
@@ -209,7 +270,8 @@ class _CreateScreenState extends State<CreateScreen> {
         ServerSoftware.mbin => 5,
         // Microblog tab only for Mbin
         ServerSoftware.lemmy => 4,
-        ServerSoftware.piefed => 4,
+        ServerSoftware.piefed => 5,
+        // Poll tab only for Piefed
       },
       child: Scaffold(
         appBar: AppBar(
@@ -232,6 +294,11 @@ class _CreateScreenState extends State<CreateScreen> {
                 Tab(
                   text: l(context).create_microblog,
                   icon: Icon(Symbols.edit_note_rounded),
+                ),
+              if (ac.serverSoftware == ServerSoftware.piefed)
+                Tab(
+                  text: l(context).poll,
+                  icon: Icon(Symbols.poll_rounded)
                 ),
               Tab(
                 text: l(context).create_community,
@@ -385,6 +452,41 @@ class _CreateScreenState extends State<CreateScreen> {
                   Navigator.pop(context);
                 }),
               ]),
+            if (ac.serverSoftware == ServerSoftware.piefed)
+              listViewWidget([
+                communityPickerWidget(),
+                titleEditorWidget(),
+                bodyEditorWidget(),
+                pollOptionsWidget(),
+                nsfwToggleWidget(),
+                languagePickerWidget(),
+                submitButtonWidget(
+                  _community == null
+                      ? null
+                      : () async {
+                          final endDate = _pollDuration == Duration()
+                              ? null
+                              : DateTime.now().add(_pollDuration);
+
+                          await ac.api.threads.createPoll(
+                            _community!.id,
+                            title: _titleTextController.text,
+                            isOc: _isOc,
+                            body: _bodyTextController.text,
+                            lang: _lang,
+                            isAdult: _isAdult,
+                            choices: _pollOptions
+                                .map((choice) => choice.text)
+                                .toList(),
+                            endDate: endDate,
+                            mode: _pollMode,
+                          );
+
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                        },
+                ),
+              ]),
             CommunityOwnerPanelGeneral(
               data: null,
               onUpdate: (newCommunity) {
@@ -403,3 +505,21 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 }
+
+SelectionMenu<String> pollMode(BuildContext context) =>
+    SelectionMenu(l(context).pollMode, [
+      SelectionMenuItem(value: 'single', title: l(context).pollMode_single),
+      SelectionMenuItem(value: 'multiple', title: l(context).pollMode_multiple),
+    ]);
+
+SelectionMenu<Duration?> pollDuration(BuildContext context) =>
+    SelectionMenu(l(context).pollDuration, [
+      SelectionMenuItem(value: Duration(minutes: 30), title: '30 minutes'),
+      SelectionMenuItem(value: Duration(hours: 1), title: '1 hour'),
+      SelectionMenuItem(value: Duration(hours: 6), title: '6 hours'),
+      SelectionMenuItem(value: Duration(hours: 12), title: '12 hours'),
+      SelectionMenuItem(value: Duration(days: 1), title: '1 day'),
+      SelectionMenuItem(value: Duration(days: 3), title: '3 days'),
+      SelectionMenuItem(value: Duration(days: 7), title: '7 days'),
+      SelectionMenuItem(value: Duration(), title: 'Unlimited'),
+    ]);
