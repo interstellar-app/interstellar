@@ -15,7 +15,7 @@ class APIModeration {
 
   APIModeration(this.client);
 
-  Future<PostModel> postPin(PostType postType, int postId) async {
+  Future<PostModel> postPin(PostType postType, int postId, bool pinned) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = '/moderate/${_postTypeMbin[postType]}/$postId/pin';
@@ -37,13 +37,13 @@ class APIModeration {
           path,
           body: {
             'post_id': postId,
-            'featured': true,
+            'featured': pinned,
             'feature_type': 'Community',
           },
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -111,7 +111,7 @@ class APIModeration {
         );
 
         return PostModel.fromPiefed(
-          response.bodyJson['post_view'] as JsonMap,
+          response.bodyJson,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
