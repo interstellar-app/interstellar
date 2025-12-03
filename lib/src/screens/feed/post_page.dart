@@ -178,7 +178,11 @@ class _PostPageState extends State<PostPage> {
           ? null
           : () async {
               _updateCrossPost(
-                await ac.api.moderation.postPin(crossPost.type, crossPost.id),
+                await ac.api.moderation.postPin(
+                  crossPost.type,
+                  crossPost.id,
+                  !crossPost.isPinned,
+                ),
               );
             },
       onModerateMarkNSFW: !canModerate
