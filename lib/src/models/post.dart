@@ -146,7 +146,7 @@ abstract class PostModel with _$PostModel {
             ?.map((post) => PostModel.fromMbinEntry(post))
             .toList() ??
         [],
-    flairs: []
+    flairs: [],
     apId: json['apId'] as String?,
   );
 
@@ -185,7 +185,7 @@ abstract class PostModel with _$PostModel {
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
     crossPosts: [],
-    flairs: []
+    flairs: [],
     apId: json['apId'] as String?,
   );
 
@@ -260,7 +260,7 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
-      flairs: []
+      flairs: [],
       apId: lemmyPost['ap_id'] as String,
     );
   }
@@ -345,7 +345,7 @@ abstract class PostModel with _$PostModel {
         tag: flair['flair_title'] as String,
         textColor: getColorFromHex(flair['text_color'] as String),
         backgroundColor: getColorFromHex(flair['background_color'] as String),
-      )).toList() ?? []
+      )).toList() ?? [],
       apId: piefedPost['ap_id'] as String,
     );
   }
