@@ -62,22 +62,10 @@ class _PostPageState extends State<PostPage> {
     // so need to fetch full post info.
     if (widget.postType != null && widget.postId != null || _data != null) {
       final ac = context.read<AppController>();
-      final newPost =
-          await switch (widget.postType ?? _data!.type) {
-            PostType.thread => ac.api.threads.get(widget.postId ?? _data!.id),
-            PostType.microblog => ac.api.microblogs.get(
-              widget.postId ?? _data!.id,
-            ),
-          }.then(
-            (post) async => post.copyWith(
-              user: post.user.copyWith(
-                tags: [
-                  ...post.user.tags,
-                  ...(await ac.getUserTags(post.user.name)),
-                ],
-              ),
-            ),
-          );
+      final newPost = await switch (widget.postType ?? _data!.type) {
+        PostType.thread => ac.api.threads.get(widget.postId ?? _data!.id),
+        PostType.microblog => ac.api.microblogs.get(widget.postId ?? _data!.id),
+      };
       if (!mounted) return;
       setState(() {
         _data = newPost;
