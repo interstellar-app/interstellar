@@ -63,7 +63,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     required bool? isBlockedByUser,
     required bool isPostingRestrictedToMods,
     required NotificationControlStatus? notificationControlStatus,
-    required String apId,
+    required String? apId,
   }) = _DetailedCommunityModel;
 
   factory DetailedCommunityModel.fromMbin(JsonMap json) {
@@ -94,7 +94,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
           : NotificationControlStatus.fromJson(
               json['notificationStatus'] as String,
             ),
-      apId: json['apProfileId'] as String,
+      apId: json['apProfileId'] as String?,
     );
 
     communityMentionCache[community.name] = community;
@@ -188,14 +188,14 @@ abstract class CommunityModel with _$CommunityModel {
     required int id,
     required String name,
     required ImageModel? icon,
-    required String apId,
+    required String? apId,
   }) = _CommunityModel;
 
   factory CommunityModel.fromMbin(JsonMap json) => CommunityModel(
     id: json['magazineId'] as int,
     name: json['name'] as String,
     icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
-    apId: json['apProfileId'] as String,
+    apId: json['apProfileId'] as String?,
   );
 
   factory CommunityModel.fromLemmy(JsonMap json) => CommunityModel(

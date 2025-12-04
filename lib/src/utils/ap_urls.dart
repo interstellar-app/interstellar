@@ -60,7 +60,7 @@ List<Uri> genCommentUrls(BuildContext context, CommentModel comment) {
 List<Uri> genCommunityUrls(BuildContext context, CommunityModel community) {
   final ac = context.read<AppController>();
 
-  final apUrl = Uri.tryParse(community.apId);
+  final apUrl = community.apId == null ? null : Uri.tryParse(community.apId!);
 
   return [
     if (apUrl == null || apUrl.host != ac.instanceHost)
@@ -79,7 +79,7 @@ List<Uri> genCommunityUrls(BuildContext context, CommunityModel community) {
 List<Uri> genUserUrls(BuildContext context, UserModel user) {
   final ac = context.read<AppController>();
 
-  final apUrl = Uri.tryParse(user.apId);
+  final apUrl = user.apId == null ? null : Uri.tryParse(user.apId!);
 
   return [
     if (apUrl == null || apUrl.host != ac.instanceHost)

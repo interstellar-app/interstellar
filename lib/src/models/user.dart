@@ -54,7 +54,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     required bool? isFollowerOfUser,
     required bool? isBlockedByUser,
     required NotificationControlStatus? notificationControlStatus,
-    required String apId,
+    required String? apId,
   }) = _DetailedUserModel;
 
   factory DetailedUserModel.fromMbin(JsonMap json) {
@@ -76,7 +76,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
           : NotificationControlStatus.fromJson(
               json['notificationStatus'] as String,
             ),
-      apId: json['apProfileId'] as String,
+      apId: json['apProfileId'] as String?,
     );
 
     userMentionCache[user.name] = user;
@@ -139,7 +139,7 @@ abstract class UserModel with _$UserModel {
     required ImageModel? avatar,
     required DateTime? createdAt,
     required bool isBot,
-    required String apId,
+    required String? apId,
   }) = _UserModel;
 
   factory UserModel.fromMbin(JsonMap json) => UserModel(
@@ -148,7 +148,7 @@ abstract class UserModel with _$UserModel {
     avatar: mbinGetOptionalImage(json['avatar'] as JsonMap?),
     createdAt: optionalDateTime(json['createdAt'] as String?),
     isBot: (json['isBot'] ?? false) as bool,
-    apId: json['apProfileId'] as String,
+    apId: json['apProfileId'] as String?,
   );
 
   factory UserModel.fromLemmy(JsonMap json) => UserModel(
