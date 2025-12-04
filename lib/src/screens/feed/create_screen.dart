@@ -7,6 +7,7 @@ import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/image_selector.dart';
@@ -74,7 +75,7 @@ class _CreateScreenState extends State<CreateScreen> {
       }
 
       String body = 'Cross posted from ';
-      body += post.apId ?? genPostUrl(context, post).toString();
+      body += genPostUrls(context, post).last.toString();
       if (post.body != null && post.body!.trim().isNotEmpty) {
         body += '\n\n';
         // Wrap original body with markdown quote

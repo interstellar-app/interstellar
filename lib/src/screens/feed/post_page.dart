@@ -6,6 +6,7 @@ import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
@@ -217,7 +218,6 @@ class _PostPageState extends State<PostPage> {
               );
             },
       numComments: crossPost.numComments,
-      openLinkUri: genPostUrl(context, crossPost),
       editDraftResourceId:
           'edit:${crossPost.type.name}:${ac.instanceHost}:${crossPost.id}',
       replyDraftResourceId:
@@ -300,6 +300,7 @@ class _PostPageState extends State<PostPage> {
               );
             },
       crossPost: crossPost,
+      shareLinks: genPostUrls(context, crossPost),
     );
     showContentMenu(context, contentItem);
   }

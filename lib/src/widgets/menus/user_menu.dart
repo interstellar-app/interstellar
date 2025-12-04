@@ -5,12 +5,12 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -86,6 +86,7 @@ Future<void> showUserMenu(
           ),
         ),
     ],
+    links: genUserUrls(context, UserModel.fromDetailedUser(user)),
     items: [
       if (navigateOption)
         ContextMenuItem(
@@ -95,11 +96,6 @@ Future<void> showUserMenu(
             builder: (context) => UserScreen(user.id, initData: user),
           ),
         ),
-      ContextMenuItem(
-        title: l(context).openInBrowser,
-        onTap: () async =>
-            openWebpagePrimary(context, genUserUrl(context, user.name)),
-      ),
       ContextMenuItem(
         title: l(context).feeds_addTo,
         onTap: () async => showAddToFeedMenu(
