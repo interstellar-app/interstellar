@@ -585,14 +585,7 @@ class _CommentSectionState extends State<CommentSection> {
             langs: ac.profile.customLanguageFilter.toList(),
           );
 
-          final newItems = await Future.wait(
-            newPage.items.map(
-              (item) async =>
-                  applyUserTagsComment(ac, item, applyToChildren: true),
-            ),
-          );
-
-          return (newItems, newPage.nextPage);
+          return (newPage.items, newPage.nextPage);
         },
       );
 

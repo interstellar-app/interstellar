@@ -374,7 +374,7 @@ class FeedAggregator {
     }
 
     // check for read status
-    var newItems = ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
+    final newItems = ac.serverSoftware == ServerSoftware.lemmy && ac.isLoggedIn
         ? result
         : await Future.wait(
             result.map(
@@ -382,12 +382,6 @@ class FeedAggregator {
                   (await ac.isRead(item)) ? item.copyWith(read: true) : item,
             ),
           );
-
-    newItems = await Future.wait(
-      newItems.map(
-        (item) async => applyUserTagsPost(ac, item),
-      ),
-    );
 
     return (newItems, nextPage);
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
@@ -26,6 +27,7 @@ class ContentInfo extends StatelessWidget {
     this.lang,
     this.createdAt,
     this.editedAt,
+    this.userTags = const [],
     this.menuWidget,
   });
 
@@ -41,6 +43,8 @@ class ContentInfo extends StatelessWidget {
   final String? lang;
   final DateTime? createdAt;
   final DateTime? editedAt;
+
+  final List<Tag> userTags;
 
   final Widget? menuWidget;
 
@@ -218,7 +222,7 @@ class ContentInfo extends StatelessWidget {
       ],
     );
 
-    if (user?.tags.isEmpty ?? true) {
+    if (userTags.isEmpty) {
       return internal;
     }
     return Column(
@@ -230,7 +234,9 @@ class ContentInfo extends StatelessWidget {
           child: Wrap(
             runSpacing: 5,
             crossAxisAlignment: WrapCrossAlignment.center,
-            children: user!.tags.map((tag) => TagWidget(tag: tag, size: 10)).toList(),
+            children: userTags
+                .map((tag) => TagWidget(tag: tag, size: 10))
+                .toList(),
           ),
         ),
       ],

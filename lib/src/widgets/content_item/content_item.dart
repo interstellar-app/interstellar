@@ -187,6 +187,23 @@ class _ContentItemState extends State<ContentItem> {
   bool _isReplying = false;
   TextEditingController? _editTextController;
 
+  List<Tag> _userTags = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.user != null) {
+      context
+          .read<AppController>()
+          .getUserTags(widget.user!.name)
+          .then(
+            (tags) => setState(() {
+              _userTags = [...widget.user!.tags, ...tags];
+            }),
+          );
+    }
+  }
+
   void _reply() {
     if (widget.onReply == null) return;
 
@@ -366,6 +383,7 @@ class _ContentItemState extends State<ContentItem> {
                   lang: widget.lang,
                   createdAt: widget.createdAt,
                   editedAt: widget.editedAt,
+                  userTags: _userTags,
                   menuWidget: widget.title == null ? menuWidget : null,
                 ),
                 PostComponent.body =>
@@ -378,10 +396,14 @@ class _ContentItemState extends State<ContentItem> {
                   widget.link == null
                       ? null
                       : ContentItemLinkPanel(link: widget.link!),
-                PostComponent.flairs => widget.flairs.isNotEmpty ? Wrap(
-                  children: widget.flairs.map((flair) =>
-                      TagWidget(tag: flair, size: 10)).toList(),
-                ) : null,
+                PostComponent.flairs =>
+                  widget.flairs.isNotEmpty
+                      ? Wrap(
+                          children: widget.flairs
+                              .map((flair) => TagWidget(tag: flair, size: 10))
+                              .toList(),
+                        )
+                      : null,
               });
             }
 

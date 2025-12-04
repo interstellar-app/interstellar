@@ -6,8 +6,6 @@ import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/post.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -325,44 +323,5 @@ Future<void> pushRoute(
       reverseTransitionDuration: adjustedDuration,
       builder: builder,
     ),
-  );
-}
-
-Future<PostModel> applyUserTagsPost(AppController ac, PostModel post) async {
-  return post.copyWith(
-    user: post.user.copyWith(
-      tags: [
-        ...post.user.tags,
-        ...(await ac.getUserTags(
-          normalizeName(post.user.name, ac.instanceHost),
-        )),
-      ],
-    ),
-  );
-}
-
-Future<CommentModel> applyUserTagsComment(
-  AppController ac,
-  CommentModel comment, {
-  bool applyToChildren = false,
-}) async {
-  return comment.copyWith(
-    user: comment.user.copyWith(
-      tags: [
-        ...comment.user.tags,
-        ...(await ac.getUserTags(
-          normalizeName(comment.user.name, ac.instanceHost),
-        )),
-      ],
-    ),
-    children: !applyToChildren
-        ? comment.children
-        : (comment.children == null
-              ? null
-              : await Future.wait(
-                  comment.children!.map(
-                    (child) async => await applyUserTagsComment(ac, child),
-                  ),
-                )),
   );
 }
