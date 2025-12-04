@@ -94,8 +94,10 @@ class ContextMenu {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: links
+                    .asMap()
+                    .entries
                     .map(
-                      (link) => Flexible(
+                      (entry) => Flexible(
                         child: Card.outlined(
                           clipBehavior: Clip.antiAlias,
                           child: SizedBox(
@@ -106,30 +108,56 @@ class ContextMenu {
                                   horizontal: 12,
                                   vertical: 8,
                                 ),
-                                child: Text(
-                                  link.host,
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .apply(
-                                        decoration: TextDecoration.underline,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (entry.key == 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 4,
+                                        ),
+                                        child: const Icon(Symbols.home_rounded),
                                       ),
-                                  softWrap: false,
-                                  overflow: TextOverflow.fade,
+                                    if (entry.key == links.length - 1)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 4,
+                                        ),
+                                        child: const ImageIcon(
+                                          AssetImage(
+                                            'assets/icons/fediverse.png',
+                                          ),
+                                        ),
+                                      ),
+                                    Text(
+                                      entry.value.host,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .apply(
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                      softWrap: false,
+                                      overflow: TextOverflow.fade,
+                                    ),
+                                  ],
                                 ),
                               ),
                               onTap: () {
                                 Navigator.of(context).pop();
 
-                                openWebpagePrimary(context, link);
+                                openWebpagePrimary(context, entry.value);
                               },
                               onLongPress: () {
                                 Navigator.of(context).pop();
 
-                                openWebpageSecondary(context, link);
+                                openWebpageSecondary(context, entry.value);
                               },
                               onSecondaryTap: () {
                                 Navigator.of(context).pop();
 
-                                openWebpageSecondary(context, link);
+                                openWebpageSecondary(context, entry.value);
                               },
                             ),
                           ),
