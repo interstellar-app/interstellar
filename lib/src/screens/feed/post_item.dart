@@ -106,6 +106,7 @@ class _PostItemState extends State<PostItem> {
           },
           createdAt: widget.item.createdAt,
           editedAt: widget.item.editedAt,
+          poll: widget.item.poll,
           isPreview: widget.item.type == PostType.microblog
               ? false
               : widget.isPreview,

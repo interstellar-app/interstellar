@@ -7,12 +7,14 @@ import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/action_buttons.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
+import 'package:interstellar/src/widgets/content_item/poll.dart';
 import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/content_item/content_reply.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
@@ -44,6 +46,7 @@ class ContentItem extends StatefulWidget {
   final Future<void> Function(String lang)? onTranslate;
   final DateTime? createdAt;
   final DateTime? editedAt;
+  final PollModel? poll;
 
   final bool isPreview;
   final bool fullImageSize;
@@ -130,6 +133,7 @@ class ContentItem extends StatefulWidget {
     this.onTranslate,
     this.createdAt,
     this.editedAt,
+    this.poll,
     this.isPreview = false,
     this.fullImageSize = false,
     this.showCommunityFirst = false,
@@ -394,7 +398,17 @@ class _ContentItemState extends State<ContentItem> {
                   (widget.body != null &&
                           widget.body!.isNotEmpty &&
                           !(widget.isPreview && profile.compactMode))
-                      ? contentBody(context)
+                      ? widget.poll != null
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  contentBody(context),
+                                  Poll(poll: widget.poll!),
+                                ],
+                              )
+                            : contentBody(context)
+                      : widget.poll != null
+                      ? Poll(poll: widget.poll!)
                       : null,
                 PostComponent.link =>
                   widget.link == null

@@ -4,6 +4,7 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -99,6 +100,7 @@ abstract class PostModel with _$PostModel {
     required bool read,
     required List<PostModel> crossPosts,
     required List<Tag> flairs,
+    required PollModel? poll,
     required String? apId,
   }) = _PostModel;
 
@@ -147,6 +149,7 @@ abstract class PostModel with _$PostModel {
             .toList() ??
         [],
     flairs: [],
+    poll: null,
     apId: json['apId'] as String?,
   );
 
@@ -186,6 +189,7 @@ abstract class PostModel with _$PostModel {
     read: false,
     crossPosts: [],
     flairs: [],
+    poll: null,
     apId: json['apId'] as String?,
   );
 
@@ -261,6 +265,7 @@ abstract class PostModel with _$PostModel {
               .toList() ??
           [],
       flairs: [],
+      poll: null,
       apId: lemmyPost['ap_id'] as String,
     );
   }
@@ -346,6 +351,10 @@ abstract class PostModel with _$PostModel {
         textColor: getColorFromHex(flair['text_color'] as String),
         backgroundColor: getColorFromHex(flair['background_color'] as String),
       )).toList() ?? [],
+      poll: piefedPost['post_type'] == 'Poll' ? PollModel.fromPiefed(
+          piefedPost['id'] as int,
+          piefedPost['poll'] as Map<String, Object?>
+      ) : null,
       apId: piefedPost['ap_id'] as String,
     );
   }
