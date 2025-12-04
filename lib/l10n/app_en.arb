@@ -120,6 +120,7 @@
   "tags_addNew": "Add new tag",
   "tags_backgroundColor": "Background color",
   "tags_exist": "Tag exists",
+  "tags_users": "Tagged users",
   "pickColor": "Pick a color",
   "post": "Post",
   "postDeleted": "Post Deleted",

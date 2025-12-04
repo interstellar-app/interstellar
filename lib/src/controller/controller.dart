@@ -1099,4 +1099,9 @@ class AppController with ChangeNotifier {
     final query = database.select(database.tags);
     return query.get();
   }
+  
+  Future<List<String>> getTaggedUsers() async {
+    final query = database.select(database.userTags).map((u) => u.user);
+    return (await query.get()).toSet().toList();
+  }
 }
