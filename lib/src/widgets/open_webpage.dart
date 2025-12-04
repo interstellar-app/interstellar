@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/variables.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -27,6 +29,15 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
             shareUri(uri);
           },
           child: Text(l(context).share),
+        ),
+        LoadingTonalButton(
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: uri.toString()));
+
+            if (!context.mounted) return;
+            Navigator.pop(context);
+          },
+          label: Text(l(context).copy),
         ),
         if (isWebViewSupported)
           FilledButton.tonal(

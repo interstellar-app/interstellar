@@ -133,6 +133,7 @@ abstract class CommentModel with _$CommentModel {
     required bool? canAuthUserModerate,
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
+    required String? apId,
   }) = _CommentModel;
 
   factory CommentModel.fromMbin(JsonMap json) => CommentModel(
@@ -163,6 +164,7 @@ abstract class CommentModel with _$CommentModel {
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: null,
     bookmarks: optionalStringList(json['bookmarks']),
+    apId: json['apId'] as String?,
   );
 
   factory CommentModel.fromLemmy(
@@ -230,6 +232,7 @@ abstract class CommentModel with _$CommentModel {
         // Empty string indicates comment is saved. No string indicates comment is not saved.
         if (json['saved'] as bool) '',
       ],
+      apId: lemmyComment['ap_id'] as String,
     );
   }
 
@@ -324,6 +327,7 @@ abstract class CommentModel with _$CommentModel {
         // Empty string indicates comment is saved. No string indicates comment is not saved.
         if (json['saved'] as bool) '',
       ],
+      apId: piefedComment['ap_id'] as String,
     );
   }
 }
