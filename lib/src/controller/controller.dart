@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as http;
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -15,7 +14,8 @@ import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/utils/jwt_http_client.dart';
+import 'package:interstellar/src/utils/globals.dart';
+import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
 import 'package:interstellar/src/widgets/redirect_listen.dart';
@@ -456,7 +456,7 @@ class AppController with ChangeNotifier {
 
         final loginEndpoint = Uri.https(server, loginPath);
 
-        final response = await http.post(
+        final response = await appHttpClient.post(
           loginEndpoint,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
@@ -474,7 +474,7 @@ class AppController with ChangeNotifier {
         final jwt = response.bodyJson['jwt'] as String;
         final user = await API(
           ServerClient(
-            httpClient: JwtHttpClient(jwt),
+            httpClient: JwtHttpClient(jwt, appHttpClient),
             software: software,
             domain: server,
           ),
@@ -654,7 +654,7 @@ class AppController with ChangeNotifier {
     final instance = account.split('@').last;
     final software = _servers[instance]!.software;
 
-    http.Client httpClient = http.Client();
+    var httpClient = appHttpClient;
 
     switch (software) {
       case ServerSoftware.mbin:
@@ -670,6 +670,7 @@ class AppController with ChangeNotifier {
                 _accounts[account]!.copyWith(oauth: Value(newCredentials)),
               );
             },
+            httpClient: appHttpClient,
           );
         }
         break;
@@ -677,7 +678,7 @@ class AppController with ChangeNotifier {
       case ServerSoftware.piefed:
         String? jwt = _accounts[account]!.jwt;
         if (jwt != null) {
-          httpClient = JwtHttpClient(jwt);
+          httpClient = JwtHttpClient(jwt, appHttpClient);
         }
         break;
     }

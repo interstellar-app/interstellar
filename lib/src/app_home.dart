@@ -13,7 +13,7 @@ import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/utils/variables.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';

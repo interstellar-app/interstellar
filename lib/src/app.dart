@@ -7,7 +7,7 @@ import 'package:interstellar/src/app_home.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/utils/variables.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:intl/locale.dart' as intl_locale;
 import 'package:provider/provider.dart';
 
