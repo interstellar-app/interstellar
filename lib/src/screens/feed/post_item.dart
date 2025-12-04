@@ -5,6 +5,7 @@ import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
@@ -240,7 +241,6 @@ class _PostItemState extends State<PostItem> {
                   );
                 },
           numComments: widget.item.numComments,
-          openLinkUri: genPostUrl(context, widget.item),
           editDraftResourceId:
               'edit:${widget.item.type.name}:${ac.instanceHost}:${widget.item.id}',
           replyDraftResourceId:
@@ -321,6 +321,7 @@ class _PostItemState extends State<PostItem> {
           isCompact: widget.isCompact,
           onClick: widget.isTopLevel ? widget.onTap : null,
           crossPost: widget.item,
+          shareLinks: genPostUrls(context, widget.item),
         ),
       ),
     );

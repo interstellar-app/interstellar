@@ -75,7 +75,6 @@ class ContentItem extends StatefulWidget {
   final void Function()? onDownVote;
 
   final String contentTypeName;
-  final Uri? openLinkUri;
   final int? numComments;
   final Future<void> Function(
     String body,
@@ -114,6 +113,7 @@ class ContentItem extends StatefulWidget {
   final void Function()? onClick;
 
   final PostModel? crossPost;
+  final List<Uri> shareLinks;
 
   const ContentItem({
     required this.originInstance,
@@ -148,7 +148,6 @@ class ContentItem extends StatefulWidget {
     this.downVotes,
     this.isDownVoted = false,
     this.onDownVote,
-    this.openLinkUri,
     this.numComments,
     required this.contentTypeName,
     this.onReply,
@@ -175,6 +174,7 @@ class ContentItem extends StatefulWidget {
     this.isCompact = false,
     this.onClick,
     this.crossPost,
+    this.shareLinks = const [],
     super.key,
   });
 

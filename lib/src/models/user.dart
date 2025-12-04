@@ -54,6 +54,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     required bool? isFollowerOfUser,
     required bool? isBlockedByUser,
     required NotificationControlStatus? notificationControlStatus,
+    required String apId,
   }) = _DetailedUserModel;
 
   factory DetailedUserModel.fromMbin(JsonMap json) {
@@ -75,6 +76,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
           : NotificationControlStatus.fromJson(
               json['notificationStatus'] as String,
             ),
+      apId: json['apProfileId'] as String,
     );
 
     userMentionCache[user.name] = user;
@@ -99,6 +101,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
       isFollowerOfUser: null,
       isBlockedByUser: (json['blocked'] as bool?) ?? false,
       notificationControlStatus: null,
+      apId: lemmyPerson['actor_id'] as String,
     );
   }
 
@@ -123,6 +126,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
           : json['activity_alert'] as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
+      apId: piefedPerson['actor_id'] as String,
     );
   }
 }
@@ -135,6 +139,7 @@ abstract class UserModel with _$UserModel {
     required ImageModel? avatar,
     required DateTime? createdAt,
     required bool isBot,
+    required String apId,
   }) = _UserModel;
 
   factory UserModel.fromMbin(JsonMap json) => UserModel(
@@ -143,6 +148,7 @@ abstract class UserModel with _$UserModel {
     avatar: mbinGetOptionalImage(json['avatar'] as JsonMap?),
     createdAt: optionalDateTime(json['createdAt'] as String?),
     isBot: (json['isBot'] ?? false) as bool,
+    apId: json['apProfileId'] as String,
   );
 
   factory UserModel.fromLemmy(JsonMap json) => UserModel(
@@ -151,6 +157,7 @@ abstract class UserModel with _$UserModel {
     avatar: lemmyGetOptionalImage(json['avatar'] as String?),
     createdAt: DateTime.parse(json['published'] as String),
     isBot: json['bot_account'] as bool,
+    apId: json['actor_id'] as String,
   );
 
   factory UserModel.fromPiefed(JsonMap json) => UserModel(
@@ -159,6 +166,7 @@ abstract class UserModel with _$UserModel {
     avatar: lemmyGetOptionalImage(json['avatar'] as String?),
     createdAt: DateTime.parse(json['published'] as String),
     isBot: json['bot'] as bool,
+    apId: json['actor_id'] as String,
   );
 
   factory UserModel.fromDetailedUser(DetailedUserModel user) => UserModel(
@@ -167,6 +175,7 @@ abstract class UserModel with _$UserModel {
     avatar: user.avatar,
     createdAt: user.createdAt,
     isBot: user.isBot,
+    apId: user.apId,
   );
 }
 

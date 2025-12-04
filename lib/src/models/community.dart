@@ -63,6 +63,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     required bool? isBlockedByUser,
     required bool isPostingRestrictedToMods,
     required NotificationControlStatus? notificationControlStatus,
+    required String apId,
   }) = _DetailedCommunityModel;
 
   factory DetailedCommunityModel.fromMbin(JsonMap json) {
@@ -93,6 +94,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
           : NotificationControlStatus.fromJson(
               json['notificationStatus'] as String,
             ),
+      apId: json['apProfileId'] as String,
     );
 
     communityMentionCache[community.name] = community;
@@ -123,6 +125,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
       isPostingRestrictedToMods:
           (lemmyCommunity['posting_restricted_to_mods']) as bool,
       notificationControlStatus: null,
+      apId: lemmyCommunity['actor_id'] as String,
     );
 
     communityMentionCache[community.name] = community;
@@ -170,6 +173,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
           : communityView['activity_alert'] as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
+      apId: piefedCommunity['actor_id'] as String,
     );
 
     communityMentionCache[community.name] = community;
@@ -184,24 +188,37 @@ abstract class CommunityModel with _$CommunityModel {
     required int id,
     required String name,
     required ImageModel? icon,
+    required String apId,
   }) = _CommunityModel;
 
   factory CommunityModel.fromMbin(JsonMap json) => CommunityModel(
     id: json['magazineId'] as int,
     name: json['name'] as String,
     icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
+    apId: json['apProfileId'] as String,
   );
 
   factory CommunityModel.fromLemmy(JsonMap json) => CommunityModel(
     id: json['id'] as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
+    apId: json['actor_id'] as String,
   );
 
   factory CommunityModel.fromPiefed(JsonMap json) => CommunityModel(
     id: json['id'] as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
+    apId: json['actor_id'] as String,
+  );
+
+  factory CommunityModel.fromDetailedCommunity(
+    DetailedCommunityModel community,
+  ) => CommunityModel(
+    id: community.id,
+    name: community.name,
+    icon: community.icon,
+    apId: community.apId,
   );
 }
 

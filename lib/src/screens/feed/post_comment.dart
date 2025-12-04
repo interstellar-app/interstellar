@@ -6,8 +6,8 @@ import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
@@ -283,7 +283,6 @@ class _PostCommentState extends State<PostComment> {
                 community: widget.comment.community,
               );
             },
-      openLinkUri: genCommentUrl(context, widget.comment),
       editDraftResourceId:
           'edit:${widget.comment.postType.name}:comment:${context.watch<AppController>().instanceHost}:${widget.comment.id}',
       replyDraftResourceId:
@@ -354,6 +353,7 @@ class _PostCommentState extends State<PostComment> {
               );
             },
       onClick: widget.onClick ?? collapse,
+      shareLinks: genCommentUrls(context, widget.comment),
     );
 
     final menuWidget = IconButton(
