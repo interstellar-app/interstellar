@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
@@ -233,6 +234,25 @@ class APIThreads {
 
       case ServerSoftware.piefed:
         throw Exception('Tried to boost on piefed');
+    }
+  }
+
+  Future<PostModel> votePoll(int postId, List<int> choiceIds) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Tried to vote on a poll on mbin');
+      case ServerSoftware.lemmy:
+        throw Exception('Tried to vote on a poll on lemmy');
+      case ServerSoftware.piefed:
+        final path = '/post/poll_vote';
+        final response = await client.post(path, body: {
+          'post_id': postId,
+          'choice_id': choiceIds
+        });
+        return PostModel.fromPiefed(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs()
+        );
     }
   }
 
@@ -567,6 +587,54 @@ class APIThreads {
             'body': body,
             'nsfw': isAdult,
             'language_id': await client.languageIdFromCode(lang),
+          },
+        );
+
+        return PostModel.fromPiefed(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+    }
+  }
+
+  Future<PostModel> createPoll(
+      int communityId, {
+        required String title,
+        required bool isOc,
+        required String body,
+        required String lang,
+        required bool isAdult,
+        required List<String> choices,
+        required DateTime? endDate,
+        required String mode,
+      }) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw UnimplementedError('Polls are unsupported on mbin');
+
+      case ServerSoftware.lemmy:
+        throw UnimplementedError('Polls are unsupported on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/post';
+        final response = await client.post(
+          path,
+          body: {
+            'title': title,
+            'community_id': communityId,
+            'body': body,
+            'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
+            'poll': {
+              if (endDate != null)
+                'end_poll': endDate.toUtc().toIso8601String(),
+              'mode': mode,
+              'choices': choices.mapIndexed((index, choice) => {
+                'id': index,
+                'choice_text': choice,
+                'sort_order': index,
+              }).toList(),
+            }
           },
         );
 

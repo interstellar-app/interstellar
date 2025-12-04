@@ -522,6 +522,21 @@
   "translate": "Translate",
   "user": "User",
   "subscribe": "Subscribe",
+  "poll": "Poll",
+  "addChoice": "Add choice",
+  "pollDuration": "Poll duration",
+  "pollMode": "Allow multiple selections",
+  "pollShowResults": "Show results",
+  "pollHideResults": "Hide results",
+  "pollSubmitError": "Need to select at least one choice before submitting.",
+  "pollVotes": "{count} {count, plural, =1{vote} other{votes}}",
+  "@pollVotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "action_setLocation": "Set Action Location",
   "action_hide": "Hide",
   "action_appBar": "App Bar",
