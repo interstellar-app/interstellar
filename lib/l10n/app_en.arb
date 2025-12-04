@@ -119,7 +119,7 @@
   "serverTopicSubtitle": "Feed inputs are merged on the server. Corresponds to a PieFed topic.",
   "post": "Post",
   "postDeleted": "Post Deleted",
-  "crossPosts": "Crossposts",
+  "crossPosts": "Cross posts",
   "crossPostCount": "{count} cross {count, plural, =1{post} other{posts}}",
   "@crossPostCount": {
     "placeholders": {
@@ -271,8 +271,8 @@
   "settings_animationSpeed": "Animation speed",
   "settings_animationDisabled": "Disabled",
   "settings_inlineReplies": "Reply inline",
-  "settings_crosspostComments": "Show crosspost comment sections",
-  "settings_crossPostMarkAsRead": "Mark crossposts as read",
+  "settings_crosspostComments": "Show cross post comment sections",
+  "settings_crossPostMarkAsRead": "Mark cross posts as read",
   "settings_imageStore": "Default image store",
   "settings_defaultDownloadDir": "Default download directory",
   "settings_themeMode": "Theme mode",
@@ -769,5 +769,6 @@
       }
     }
   },
-  "pushNotificationsDialog_selectDistributor": "Select push distributor"
+  "pushNotificationsDialog_selectDistributor": "Select push distributor",
+  "crossPost": "Cross post"
 }

@@ -96,13 +96,8 @@ Future<void> showCommunityMenu(
         ),
       ContextMenuItem(
         title: l(context).openInBrowser,
-        onTap: () async => openWebpagePrimary(
-          context,
-          Uri.https(
-            ac.instanceHost,
-            ac.serverSoftware == ServerSoftware.mbin ? '/m/$name' : '/c/$name',
-          ),
-        ),
+        onTap: () async =>
+            openWebpagePrimary(context, genCommunityUrl(context, name)),
       ),
       if (detailedCommunity != null)
         ContextMenuItem(

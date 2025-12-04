@@ -7,6 +7,7 @@ import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/action_buttons.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -115,6 +116,8 @@ class ContentItem extends StatefulWidget {
 
   final void Function()? onClick;
 
+  final PostModel? crossPost;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -175,6 +178,7 @@ class ContentItem extends StatefulWidget {
     this.onNotificationControlStatusChange,
     this.isCompact = false,
     this.onClick,
+    this.crossPost,
     super.key,
   });
 

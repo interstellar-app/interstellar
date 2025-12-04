@@ -58,7 +58,7 @@ class _PostPageState extends State<PostPage> {
     if (widget.initData != null) {
       _data = widget.initData!;
     }
-    // Crossposts are only returned on fetching single post not on list
+    // Cross posts are only returned on fetching single post not on list
     // so need to fetch full post info.
     if (widget.postType != null && widget.postId != null || _data != null) {
       final newPost = await switch (widget.postType ?? _data!.type) {
@@ -81,7 +81,7 @@ class _PostPageState extends State<PostPage> {
     _onUpdate(
       (await context.read<AppController>().markAsRead([
         _data!,
-        ...?(context.read<AppController>().profile.markCrosspostsAsRead
+        ...?(context.read<AppController>().profile.markCrossPostsAsRead
             ? _data!.crossPosts
             : null),
       ], true)).first,
@@ -105,7 +105,7 @@ class _PostPageState extends State<PostPage> {
     _onUpdate(_data!.copyWith(crossPosts: newCrossPosts));
   }
 
-  Future<void> showCrosspostMenu(
+  Future<void> showCrossPostMenu(
     BuildContext context,
     PostModel crossPost,
   ) async {
@@ -178,7 +178,11 @@ class _PostPageState extends State<PostPage> {
           ? null
           : () async {
               _updateCrossPost(
-                await ac.api.moderation.postPin(crossPost.type, crossPost.id),
+                await ac.api.moderation.postPin(
+                  crossPost.type,
+                  crossPost.id,
+                  !crossPost.isPinned,
+                ),
               );
             },
       onModerateMarkNSFW: !canModerate
@@ -213,15 +217,7 @@ class _PostPageState extends State<PostPage> {
               );
             },
       numComments: crossPost.numComments,
-      openLinkUri: Uri.https(
-        ac.instanceHost,
-        ac.serverSoftware == ServerSoftware.mbin
-            ? '/m/${crossPost.community.name}/${switch (crossPost.type) {
-                PostType.thread => 't',
-                PostType.microblog => 'p',
-              }}/${crossPost.id}'
-            : '/post/${crossPost.id}',
-      ),
+      openLinkUri: genPostUrl(context, crossPost),
       editDraftResourceId:
           'edit:${crossPost.type.name}:${ac.instanceHost}:${crossPost.id}',
       replyDraftResourceId:
@@ -303,6 +299,7 @@ class _PostPageState extends State<PostPage> {
                 crossPost.copyWith(notificationControlStatus: newStatus),
               );
             },
+      crossPost: crossPost,
     );
     showContentMenu(context, contentItem);
   }
@@ -485,7 +482,7 @@ class _PostPageState extends State<PostPage> {
                 opUserId: post.user.id,
                 key: _mainCommentSectionKey,
               ),
-              if (context.read<AppController>().profile.showCrosspostComments)
+              if (context.read<AppController>().profile.showCrossPostComments)
                 ...post.crossPosts
                     .where((crossPost) => crossPost.numComments > 0)
                     .map(
@@ -502,7 +499,7 @@ class _PostPageState extends State<PostPage> {
                               ),
                               trailing: LoadingIconButton(
                                 onPressed: () =>
-                                    showCrosspostMenu(context, crossPost),
+                                    showCrossPostMenu(context, crossPost),
                                 icon: const Icon(Symbols.more_vert_rounded),
                               ),
                               onTap: () => pushRoute(
@@ -514,7 +511,7 @@ class _PostPageState extends State<PostPage> {
                                 ),
                               ),
                               onLongPress: () =>
-                                  showCrosspostMenu(context, crossPost),
+                                  showCrossPostMenu(context, crossPost),
                             ),
                           ),
                           CommentSection(
