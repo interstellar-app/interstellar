@@ -388,15 +388,17 @@ class ColorConverter extends TypeConverter<Color, int> {
 
 class Tags extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get tag => text()();
+  TextColumn get tag => text().unique()();
   IntColumn get backgroundColor => integer().map(const ColorConverter()).clientDefault(() => Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit)();
   IntColumn get textColor => integer().map(const ColorConverter()).clientDefault(() => Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit)();
 }
 
 class UserTags extends Table {
-  IntColumn get id => integer().autoIncrement()();
   TextColumn get user => text()();
   IntColumn get tagId => integer().references(Tags, #id, onDelete: KeyAction.cascade)();
+
+  @override
+  Set<Column<Object>> get primaryKey => {user, tagId};
 }
 
 @DriftDatabase(

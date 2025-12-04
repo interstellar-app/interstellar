@@ -46,46 +46,6 @@ class _TagEditorState extends State<TagEditor> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: ListTile(
-                tileColor: _textColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                title: Text(l(context).tags_textColor),
-                onTap: () {
-                  Color c = _textColor;
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(l(context).pickColor),
-                      content: ColorPicker(
-                        pickerColor: c,
-                        onColorChanged: (color) {
-                          c = color;
-                        },
-                      ),
-                      actions: [
-                        OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(l(context).cancel),
-                        ),
-                        FilledButton(
-                          onPressed: () {
-                            setState(() {
-                              _textColor = c;
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(l(context).save),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: ListTile(
                 tileColor: _backgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -112,6 +72,7 @@ class _TagEditorState extends State<TagEditor> {
                           onPressed: () {
                             setState(() {
                               _backgroundColor = c;
+                              _textColor = c.computeLuminance() < 0.5 ? Colors.white : Colors.black;
                             });
                             Navigator.pop(context);
                           },

@@ -1038,10 +1038,10 @@ class AppController with ChangeNotifier {
     _defaultDownloadsDir = path;
   }
 
-  Future<Tag> addTag() async {
+  Future<Tag> addTag({String tag = 'Tag'}) async {
     return await database
         .into(database.tags)
-        .insertReturning(TagsCompanion.insert(tag: 'Tag'));
+        .insertReturning(TagsCompanion.insert(tag: tag));
   }
 
   Future<Tag> setTag(Tag tag) async {

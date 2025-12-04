@@ -40,6 +40,26 @@ class _UserTagsState extends State<UserTags> {
       appBar: AppBar(title: Text(widget.user)),
       body: CustomScrollView(
         slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: FilledButton(
+                onPressed: () => pushRoute(
+                  context,
+                  builder: (context) => TagsScreen(
+                    onSelect: (tag) async {
+                      await ac.assignTagToUser(tag, widget.user);
+                      if (!mounted) return;
+                      setState(() {
+                        _tags.add(tag);
+                      });
+                    },
+                  ),
+                ),
+                child: Text(l(context).tags_addNew),
+              ),
+            ),
+          ),
           SliverList.builder(
             itemCount: _tags.length,
             itemBuilder: (context, index) => ListTile(
@@ -68,53 +88,6 @@ class _UserTagsState extends State<UserTags> {
                   },
                 ),
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FilledButton(
-                  onPressed: () => pushRoute(
-                    context,
-                    builder: (context) => TagsScreen(
-                      onSelect: (tag) async {
-                        await ac.assignTagToUser(tag, widget.user);
-                        if (!mounted) return;
-                        setState(() {
-                          _tags.add(tag);
-                        });
-                      },
-                    ),
-                  ),
-                  child: Text(l(context).tags_addExisting),
-                ),
-                FilledButton(
-                  onPressed: () async {
-                    var tag = await ac.addTag();
-                    if (!context.mounted) return;
-                    bool cancelled = true;
-                    await pushRoute(context, builder: (context) => TagEditor(
-                        tag: tag,
-                        onUpdate: (newTag) async {
-                          cancelled = false;
-                          if (newTag == null) {
-                            await ac.removeTag(tag);
-                            return;
-                          }
-                          await ac.assignTagToUser(newTag, widget.user);
-                          setState(() {
-                            _tags.add(newTag);
-                          });
-                        }
-                    ));
-                    if (cancelled) {
-                      await ac.removeTag(tag);
-                    }
-                  },
-                  child: Text(l(context).tags_addNew),
-                ),
-              ],
             ),
           ),
         ],
