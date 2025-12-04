@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database.dart';
-import 'package:interstellar/src/utils/variables.dart';
+import 'package:interstellar/src/utils/http_client.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -16,6 +18,9 @@ import 'src/init_push_notifications.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
+
+  appVersion = (await PackageInfo.fromPlatform()).version;
+  appHttpClient = UserAgentHttpClient('Interstellar/$appVersion');
 
   await initDatabase();
 

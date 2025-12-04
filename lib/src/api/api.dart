@@ -1,4 +1,3 @@
-import 'package:http/http.dart' as http;
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/comments.dart';
@@ -15,6 +14,7 @@ import 'package:interstellar/src/api/search.dart';
 import 'package:interstellar/src/api/threads.dart';
 import 'package:interstellar/src/api/users.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class API {
@@ -53,7 +53,9 @@ class API {
 }
 
 Future<ServerSoftware?> getServerSoftware(String server) async {
-  final response = await http.get(Uri.https(server, '/nodeinfo/2.0.json'));
+  final response = await appHttpClient.get(
+    Uri.https(server, '/nodeinfo/2.0.json'),
+  );
 
   try {
     return ServerSoftware.values.byName(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/utils/variables.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

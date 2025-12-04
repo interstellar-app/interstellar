@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'debug/debug_screen.dart';
@@ -29,23 +29,6 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  PackageInfo? packageInfo;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _initPackageInfo();
-  }
-
-  Future<void> _initPackageInfo() async {
-    final newPackageInfo = await PackageInfo.fromPlatform();
-
-    setState(() {
-      packageInfo = newPackageInfo;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,8 +39,8 @@ class _AboutScreenState extends State<AboutScreen> {
             leading: const Icon(Symbols.bug_report_rounded),
             title: Text(l(context).settings_debug),
             onTap: () => pushRoute(
-                context,
-                builder: (context) => const DebugSettingsScreen()
+              context,
+              builder: (context) => const DebugSettingsScreen(),
             ),
           ),
           ListTile(
@@ -158,11 +141,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 height: 96,
                 child: Image.asset('assets/icons/logo-foreground.png'),
               ),
-              Text(
-                packageInfo == null
-                    ? ''
-                    : '${l(context).interstellar} v${packageInfo!.version}',
-              ),
+              Text('${l(context).interstellar} v$appVersion'),
               const SizedBox(height: 36),
             ],
           ),
