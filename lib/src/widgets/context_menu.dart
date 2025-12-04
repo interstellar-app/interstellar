@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
@@ -39,12 +40,14 @@ class ContextMenuItem {
 class ContextMenu {
   final String? title;
   final List<ContextMenuAction> actions;
+  final List<Uri> links;
   final List<ContextMenuItem> items;
   final double actionSpacing;
 
   const ContextMenu({
     this.title,
     this.actions = const [],
+    this.links = const [],
     this.items = const [],
     this.actionSpacing = 12,
   });
@@ -85,9 +88,88 @@ class ContextMenu {
                   .toList(),
             ),
           ),
+          if (links.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8, left: 4, right: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: links
+                    .asMap()
+                    .entries
+                    .map(
+                      (entry) => Flexible(
+                        child: Card.outlined(
+                          clipBehavior: Clip.antiAlias,
+                          child: SizedBox(
+                            height: 40,
+                            child: InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (entry.key == 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 4,
+                                        ),
+                                        child: const Icon(Symbols.home_rounded),
+                                      ),
+                                    if (entry.key == links.length - 1)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 4,
+                                        ),
+                                        child: const ImageIcon(
+                                          AssetImage(
+                                            'assets/icons/fediverse.png',
+                                          ),
+                                        ),
+                                      ),
+                                    Text(
+                                      entry.value.host,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .apply(
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                      softWrap: false,
+                                      overflow: TextOverflow.fade,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pop();
+
+                                openWebpagePrimary(context, entry.value);
+                              },
+                              onLongPress: () {
+                                Navigator.of(context).pop();
+
+                                openWebpageSecondary(context, entry.value);
+                              },
+                              onSecondaryTap: () {
+                                Navigator.of(context).pop();
+
+                                openWebpageSecondary(context, entry.value);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
           Flexible(
             child: Padding(
-              padding: const EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.only(top: 8),
               child: ListView(
                 shrinkWrap: true,
                 children: items

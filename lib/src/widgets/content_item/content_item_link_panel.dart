@@ -149,15 +149,10 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
                     overflow: TextOverflow.fade,
                   ),
                 ),
-                onTap: () {
-                  openWebpagePrimary(context, widget.link);
-                },
-                onLongPress: () {
-                  openWebpageSecondary(context, widget.link);
-                },
-                onSecondaryTap: () {
-                  openWebpageSecondary(context, widget.link);
-                },
+                onTap: () => openWebpagePrimary(context, widget.link),
+                onLongPress: () => openWebpageSecondary(context, widget.link),
+                onSecondaryTap: () =>
+                    openWebpageSecondary(context, widget.link),
               ),
             ),
           ),

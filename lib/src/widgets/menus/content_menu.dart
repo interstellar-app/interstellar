@@ -4,12 +4,10 @@ import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
-import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/explore/domain_screen.dart';
-import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
@@ -93,15 +91,8 @@ Future<void> showContentMenu(
           ),
         ),
     ],
+    links: widget.shareLinks,
     items: [
-      ContextMenuItem(
-        title: l(context).openInBrowser,
-        onTap: () async => openWebpagePrimary(context, widget.openLinkUri!),
-      ),
-      ContextMenuItem(
-        title: l(context).share,
-        onTap: () => shareUri(widget.openLinkUri!),
-      ),
       if (widget.crossPost != null && context.read<AppController>().isLoggedIn)
         ContextMenuItem(
           title: l(context).crossPost,
