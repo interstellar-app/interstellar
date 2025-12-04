@@ -9,6 +9,7 @@ import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/image_selector.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/community_picker.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
@@ -48,7 +49,7 @@ class _CreateScreenState extends State<CreateScreen> {
   final List<TextEditingController> _pollOptions = [
     TextEditingController(text: 'Option 0'),
   ];
-  String _pollMode = 'single';
+  bool _pollModeMultiple = false;
   Duration _pollDuration = Duration();
 
   @override
@@ -218,6 +219,9 @@ class _CreateScreenState extends State<CreateScreen> {
             ),
           ),
         ),
+        Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child:
         ElevatedButton(
           onPressed: () => setState(() {
             _pollOptions.add(
@@ -225,19 +229,13 @@ class _CreateScreenState extends State<CreateScreen> {
             );
           }),
           child: Text(l(context).addChoice),
-        ),
-        ListTile(
+        )),
+        ListTileSwitch(
+            value: _pollModeMultiple,
+            onChanged: (newValue) => setState(() {
+              _pollModeMultiple = newValue;
+            }),
           title: Text(l(context).pollMode),
-          onTap: () async {
-            final mode = await pollMode(
-              context,
-            ).askSelection(context, _pollMode);
-            if (mode == null) return;
-            setState(() {
-              _pollMode = mode;
-            });
-          },
-          trailing: Text(pollMode(context).getOption(_pollMode).title),
         ),
         ListTile(
           title: Text(l(context).pollDuration),
@@ -479,7 +477,7 @@ class _CreateScreenState extends State<CreateScreen> {
                                 .map((choice) => choice.text)
                                 .toList(),
                             endDate: endDate,
-                            mode: _pollMode,
+                            mode: _pollModeMultiple ? 'multiple' : 'single',
                           );
 
                           if (!context.mounted) return;
@@ -505,12 +503,6 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 }
-
-SelectionMenu<String> pollMode(BuildContext context) =>
-    SelectionMenu(l(context).pollMode, [
-      SelectionMenuItem(value: 'single', title: l(context).pollMode_single),
-      SelectionMenuItem(value: 'multiple', title: l(context).pollMode_multiple),
-    ]);
 
 SelectionMenu<Duration?> pollDuration(BuildContext context) =>
     SelectionMenu(l(context).pollDuration, [

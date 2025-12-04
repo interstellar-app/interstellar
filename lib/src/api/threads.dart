@@ -237,7 +237,7 @@ class APIThreads {
     }
   }
 
-  Future<PostModel> votePoll(int postId, int choiceId) async {
+  Future<PostModel> votePoll(int postId, List<int> choiceIds) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         throw Exception('Tried to vote on a poll on mbin');
@@ -247,7 +247,7 @@ class APIThreads {
         final path = '/post/poll_vote';
         final response = await client.post(path, body: {
           'post_id': postId,
-          'choice_id': [choiceId]
+          'choice_id': choiceIds
         });
         return PostModel.fromPiefed(
           response.bodyJson,

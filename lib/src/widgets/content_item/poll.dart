@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class Poll extends StatefulWidget {
@@ -17,7 +18,7 @@ class Poll extends StatefulWidget {
 
 class _PollState extends State<Poll> {
   bool _showResults = false;
-
+  bool _submitted = false;
   List<PollChoiceModel> _choices = [];
   int? _selectedAnswer;
 
@@ -27,6 +28,7 @@ class _PollState extends State<Poll> {
     _choices = widget.poll.choices.toList();
     final answer = _choices.firstWhereOrNull((choice) => choice.chosen);
     _selectedAnswer = answer?.id;
+    _submitted = whenLoggedIn(context, answer != null) ?? true;
   }
 
   @override
@@ -42,13 +44,9 @@ class _PollState extends State<Poll> {
       parentBuilder: (child) => RadioGroup(
         groupValue: _selectedAnswer,
         onChanged: (newValue) async {
-          if (newValue == null || _selectedAnswer != null) return;
-          final post = await ac.api.threads.votePoll(
-            widget.poll.postId,
-            newValue,
-          );
+          if (newValue == null || _submitted) return;
+
           setState(() {
-            _choices = post.poll?.choices.toList() ?? _choices;
             _selectedAnswer = newValue;
           });
         },
@@ -93,22 +91,24 @@ class _PollState extends State<Poll> {
                         if (widget.poll.multiple)
                           Checkbox(
                             value: choice.chosen,
-                            onChanged: (newValue) async {
-                              final post = await ac.api.threads.votePoll(
-                                widget.poll.postId,
-                                choice.id,
-                              );
-                              setState(() {
-                                _choices =
-                                    post.poll?.choices.toList() ?? _choices;
-                              });
-                            },
+                            onChanged: _submitted
+                                ? null
+                                : (newValue) async {
+                                    if (newValue == null) return;
+
+                                    final index = _choices.indexWhere(
+                                      (c) => c.id == choice.id,
+                                    );
+
+                                    setState(() {
+                                      _choices[index] = choice.copyWith(
+                                        chosen: newValue,
+                                      );
+                                    });
+                                  },
                           ),
                         if (!widget.poll.multiple)
-                          Radio<int>(
-                            value: choice.id,
-                            enabled: _selectedAnswer == null,
-                          ),
+                          Radio<int>(value: choice.id, enabled: !_submitted),
                         Text(choice.text),
                       ],
                     ),
@@ -124,13 +124,56 @@ class _PollState extends State<Poll> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('$totalVotes votes'),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _showResults = !_showResults;
-                }),
-                child: Text('Show results'),
-              ),
+              Text(l(context).pollVotes(totalVotes)),
+              if (!_submitted)
+                ElevatedButton(
+                  onPressed: () async {
+                    final votes = widget.poll.multiple
+                        ? _choices
+                              .map((choice) => choice.chosen ? choice.id : null)
+                              .nonNulls
+                              .toList()
+                        : [_selectedAnswer!];
+
+                    if (votes.isEmpty) {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(l(context).pollSubmitError),
+                          actions: [
+                            OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(l(context).cancel),
+                            ),
+                          ],
+                        ),
+                      );
+                      return;
+                    }
+
+                    final post = await ac.api.threads.votePoll(
+                      widget.poll.postId,
+                      votes,
+                    );
+
+                    setState(() {
+                      _choices = post.poll?.choices.toList() ?? _choices;
+                      _submitted = true;
+                    });
+                  },
+                  child: Text(l(context).submit),
+                ),
+              if (_submitted)
+                ElevatedButton(
+                  onPressed: () => setState(() {
+                    _showResults = !_showResults;
+                  }),
+                  child: Text(
+                    _showResults
+                        ? l(context).pollHideResults
+                        : l(context).pollShowResults,
+                  ),
+                ),
             ],
           ),
         ],
