@@ -72,7 +72,8 @@ class _TagEditorState extends State<TagEditor> {
                           onPressed: () {
                             setState(() {
                               _backgroundColor = c;
-                              _textColor = c.computeLuminance() < 0.5 ? Colors.white : Colors.black;
+                              final tc = ColorScheme.fromSeed(seedColor: c);
+                              _textColor = tc.primaryFixed;
                             });
                             Navigator.pop(context);
                           },
