@@ -714,7 +714,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
           setState(() {
             _lastPageFilteredOut = newItems.isEmpty && nextPageKey != null;
           });
-          return (newItems, newItems.isEmpty ? null : nextPageKey);
+          return (newItems, nextPageKey);
         },
       );
   SubordinateScrollController? _scrollController;
