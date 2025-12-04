@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
@@ -98,6 +99,7 @@ abstract class PostModel with _$PostModel {
     required List<String>? bookmarks,
     required bool read,
     required List<PostModel> crossPosts,
+    required List<Tag> flairs,
     required PollModel? poll,
     required String? apId,
   }) = _PostModel;
@@ -146,6 +148,7 @@ abstract class PostModel with _$PostModel {
             ?.map((post) => PostModel.fromMbinEntry(post))
             .toList() ??
         [],
+    flairs: [],
     poll: null,
     apId: json['apId'] as String?,
   );
@@ -185,6 +188,7 @@ abstract class PostModel with _$PostModel {
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
     crossPosts: [],
+    flairs: [],
     poll: null,
     apId: json['apId'] as String?,
   );
@@ -260,6 +264,7 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
+      flairs: [],
       poll: null,
       apId: lemmyPost['ap_id'] as String,
     );
@@ -340,6 +345,12 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
+      flairs: (postView['flair_list'] as List<dynamic>?)?.map((flair) => Tag(
+        id: -1,
+        tag: flair['flair_title'] as String,
+        textColor: getColorFromHex(flair['text_color'] as String),
+        backgroundColor: getColorFromHex(flair['background_color'] as String),
+      )).toList() ?? [],
       poll: piefedPost['post_type'] == 'Poll' ? PollModel.fromPiefed(
           piefedPost['id'] as int,
           piefedPost['poll'] as Map<String, Object?>

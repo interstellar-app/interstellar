@@ -9,6 +9,14 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+Color getColorFromHex(String hexColor) {
+  hexColor = hexColor.toUpperCase().replaceAll('#', '');
+  if (hexColor.length == 6) {
+    hexColor = 'FF$hexColor';
+  }
+  return Color(int.parse(hexColor, radix: 16));
+}
+
 String intFormat(int input) {
   return NumberFormat.compact().format(input);
 }

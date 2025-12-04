@@ -321,6 +321,7 @@ class _PostItemState extends State<PostItem> {
                 },
           isCompact: widget.isCompact,
           onClick: widget.isTopLevel ? widget.onTap : null,
+          flairs: widget.item.flairs,
           crossPost: widget.item,
           shareLinks: genPostUrls(context, widget.item),
         ),

@@ -28,6 +28,7 @@ import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -72,6 +73,14 @@ class _UserScreenState extends State<UserScreen> {
           .api
           .users
           .get(widget.userId)
+          .then((value) async {
+            if (!context.mounted) return value;
+            final tags = await context.read<AppController>().getUserTags(
+              value.name,
+            );
+
+            return value.copyWith(tags: [...value.tags, ...tags]);
+          })
           .then(
             (value) => setState(() {
               _data = value;
@@ -352,6 +361,15 @@ class _UserScreenState extends State<UserScreen> {
                                 },
                                 child: Text(globalName),
                               ),
+                              if (user.tags.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Wrap(
+                                    children: user.tags
+                                        .map((tag) => TagWidget(tag: tag))
+                                        .toList(),
+                                  ),
+                                ),
                               const SizedBox(height: 8),
                               Row(
                                 children: [

@@ -397,13 +397,15 @@ class FeedAggregator {
 
   @override
   bool operator ==(covariant FeedAggregator other) {
-    if (name != other.name || inputs.length != other.inputs.length)
+    if (name != other.name || inputs.length != other.inputs.length) {
       return false;
+    }
 
     for (final pair in IterableZip([inputs, other.inputs])) {
       if (pair[0].source != pair[1].source ||
-          pair[0].sourceId != pair[1].sourceId)
+          pair[0].sourceId != pair[1].sourceId) {
         return false;
+      }
     }
 
     return true;

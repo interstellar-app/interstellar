@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/utils/models.dart';
@@ -54,6 +57,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     required bool? isFollowerOfUser,
     required bool? isBlockedByUser,
     required NotificationControlStatus? notificationControlStatus,
+    required List<Tag> tags,
     required String? apId,
   }) = _DetailedUserModel;
 
@@ -76,6 +80,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
           : NotificationControlStatus.fromJson(
               json['notificationStatus'] as String,
             ),
+      tags: [],
       apId: json['apProfileId'] as String?,
     );
 
@@ -101,6 +106,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
       isFollowerOfUser: null,
       isBlockedByUser: (json['blocked'] as bool?) ?? false,
       notificationControlStatus: null,
+      tags: [],
       apId: lemmyPerson['actor_id'] as String,
     );
   }
@@ -126,6 +132,24 @@ abstract class DetailedUserModel with _$DetailedUserModel {
           : json['activity_alert'] as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
+      tags: [
+        ?piefedPerson['note'] == null
+            ? null
+            : Tag(
+              id: -1,
+              tag: piefedPerson['note'] as String,
+              backgroundColor: Color.from(alpha: 1, red: 0, green: 0, blue: 0),
+              textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1)
+            ),
+        ?piefedPerson['flair'] == null
+            ? null
+            : Tag(
+              id: -1,
+              tag: piefedPerson['flair'] as String,
+              backgroundColor: Color.from(alpha: 1, red: 0, green: 0, blue: 0),
+              textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1)
+            ),
+      ],
       apId: piefedPerson['actor_id'] as String,
     );
   }

@@ -232,6 +232,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     postComponentOrder: [
       PostComponent.image,
       PostComponent.title,
+      PostComponent.flairs,
       PostComponent.link,
       PostComponent.info,
       PostComponent.body,

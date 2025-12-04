@@ -1039,4 +1039,71 @@ class AppController with ChangeNotifier {
         .write(MiscCacheCompanion(downloadsDir: Value(path)));
     _defaultDownloadsDir = path;
   }
+
+  Future<Tag> addTag({String tag = 'Tag'}) async {
+    return await database
+        .into(database.tags)
+        .insertReturning(TagsCompanion.insert(tag: tag));
+  }
+
+  Future<Tag> setTag(Tag tag) async {
+    return await database
+        .into(database.tags)
+        .insertReturning(tag, onConflict: DoUpdate((_) => tag));
+  }
+
+  Future<void> removeTag(Tag tag) async {
+    await (database.delete(
+      database.tags,
+    )..where((f) => f.id.equals(tag.id))).go();
+  }
+
+  Future<void> assignTagToUser(Tag tag, String user) async {
+    await database
+        .into(database.userTags)
+        .insertOnConflictUpdate(
+          UserTagsCompanion.insert(
+            user: normalizeName(user, instanceHost),
+            tagId: tag.id,
+          ),
+        );
+  }
+
+  Future<void> removeTagFromUser(Tag tag, String user) async {
+    await (database.delete(database.userTags)..where(
+          (f) =>
+              f.tagId.equals(tag.id) &
+              f.user.equals(normalizeName(user, instanceHost)),
+        ))
+        .go();
+  }
+
+  Future<List<Tag>> getUserTags(String username) async {
+    final query = database.select(database.tags).join([
+      innerJoin(
+        database.userTags,
+        database.userTags.tagId.equalsExp(database.tags.id),
+      ),
+    ]);
+
+    final t =
+        await (query..where(
+              database.userTags.user.equals(
+                normalizeName(username, instanceHost),
+              ),
+            ))
+            .get();
+
+    return t.map((tag) => tag.readTable(database.tags)).toList();
+  }
+
+  Future<List<Tag>> getTags() async {
+    final query = database.select(database.tags);
+    return query.get();
+  }
+  
+  Future<List<String>> getTaggedUsers() async {
+    final query = database.select(database.userTags).map((u) => u.user);
+    return (await query.get()).toSet().toList();
+  }
 }

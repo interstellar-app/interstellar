@@ -12,8 +12,11 @@ import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/screens/settings/notification_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
+import 'package:interstellar/src/screens/settings/tag_settings.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
+import 'package:interstellar/src/widgets/tags/tag_screen.dart';
+import 'package:interstellar/src/widgets/tags/tagged_users.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +70,14 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => pushRoute(
               context,
               builder: (context) => const FeedDefaultSettingsScreen(),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.label_rounded),
+            title: Text(l(context).tags),
+            onTap: () => pushRoute(
+              context,
+              builder: (context) => const TagSettingsScreen(),
             ),
           ),
           ListTile(

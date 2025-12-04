@@ -62,13 +62,10 @@ class _PostPageState extends State<PostPage> {
     // Cross posts are only returned on fetching single post not on list
     // so need to fetch full post info.
     if (widget.postType != null && widget.postId != null || _data != null) {
+      final ac = context.read<AppController>();
       final newPost = await switch (widget.postType ?? _data!.type) {
-        PostType.thread => context.read<AppController>().api.threads.get(
-          widget.postId ?? _data!.id,
-        ),
-        PostType.microblog => context.read<AppController>().api.microblogs.get(
-          widget.postId ?? _data!.id,
-        ),
+        PostType.thread => ac.api.threads.get(widget.postId ?? _data!.id),
+        PostType.microblog => ac.api.microblogs.get(widget.postId ?? _data!.id),
       };
       if (!mounted) return;
       setState(() {
