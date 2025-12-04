@@ -99,6 +99,7 @@ abstract class PostModel with _$PostModel {
     required bool read,
     required List<PostModel> crossPosts,
     required List<Tag> flairs,
+    required String? apId,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -146,6 +147,7 @@ abstract class PostModel with _$PostModel {
             .toList() ??
         [],
     flairs: []
+    apId: json['apId'] as String?,
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -184,6 +186,7 @@ abstract class PostModel with _$PostModel {
     read: false,
     crossPosts: [],
     flairs: []
+    apId: json['apId'] as String?,
   );
 
   factory PostModel.fromLemmy(
@@ -258,6 +261,7 @@ abstract class PostModel with _$PostModel {
               .toList() ??
           [],
       flairs: []
+      apId: lemmyPost['ap_id'] as String,
     );
   }
 
@@ -265,7 +269,7 @@ abstract class PostModel with _$PostModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    final postView = json['post_view'] as JsonMap;
+    final postView = json['post_view'] as JsonMap? ?? json;
     final piefedPost = postView['post'] as JsonMap;
     final piefedCounts = postView['counts'] as JsonMap;
 
@@ -342,6 +346,7 @@ abstract class PostModel with _$PostModel {
         textColor: getColorFromHex(flair['text_color'] as String),
         backgroundColor: getColorFromHex(flair['background_color'] as String),
       )).toList() ?? []
+      apId: piefedPost['ap_id'] as String,
     );
   }
 }

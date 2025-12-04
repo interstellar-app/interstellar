@@ -221,8 +221,6 @@ class FeedInputState {
           sourceId: sourceId,
           page: nullIfEmpty(_nextPage!),
           sort: sort,
-          usePreferredLangs: ac.profile.useAccountLanguageFilter,
-          langs: ac.profile.customLanguageFilter.toList(),
         );
         _nextPage = postListModel.nextPage;
         return ([..._leftover, ...postListModel.items], postListModel.nextPage);
@@ -232,8 +230,6 @@ class FeedInputState {
           sourceId: sourceId,
           page: nullIfEmpty(_nextPage!),
           sort: sort,
-          usePreferredLangs: ac.profile.useAccountLanguageFilter,
-          langs: ac.profile.customLanguageFilter.toList(),
         );
         _nextPage = postListModel.nextPage;
         return ([..._leftover, ...postListModel.items], postListModel.nextPage);
@@ -245,8 +241,6 @@ class FeedInputState {
                 sourceId: sourceId,
                 page: nullIfEmpty(_nextPage!),
                 sort: sort,
-                usePreferredLangs: ac.profile.useAccountLanguageFilter,
-                langs: ac.profile.customLanguageFilter.toList(),
               )
             : Future.value();
         final microblogFuture =
@@ -256,8 +250,6 @@ class FeedInputState {
                 sourceId: sourceId,
                 page: nullIfEmpty(_combinedPage!),
                 sort: sort,
-                usePreferredLangs: ac.profile.useAccountLanguageFilter,
-                langs: ac.profile.customLanguageFilter.toList(),
               )
             : Future.value();
         final results = await Future.wait([threadFuture, microblogFuture]);

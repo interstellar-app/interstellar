@@ -177,7 +177,8 @@ class FilterListActivationConverter
   }
 }
 
-class PostComponentConverter extends TypeConverter<List<PostComponent>, String> {
+class PostComponentConverter
+    extends TypeConverter<List<PostComponent>, String> {
   const PostComponentConverter();
 
   @override
@@ -250,11 +251,8 @@ class Profiles extends Table {
     #handle,
     onDelete: KeyAction.setNull,
   )();
-  // Behaviour
+  // Behavior
   TextColumn get defaultCreateLanguage => text().nullable()();
-  BoolColumn get useAccountLanguageFilter => boolean().nullable()();
-  TextColumn get customLanguageFilter =>
-      text().map(const StringListConverter()).nullable()();
   BoolColumn get disableTabSwiping => boolean().nullable()();
   BoolColumn get askBeforeUnsubscribing => boolean().nullable()();
   BoolColumn get askBeforeDeleting => boolean().nullable()();
@@ -265,8 +263,8 @@ class Profiles extends Table {
   BoolColumn get markMicroblogsReadOnScroll => boolean().nullable()();
   RealColumn get animationSpeed => real().nullable()();
   BoolColumn get inlineReplies => boolean().nullable()();
-  BoolColumn get showCrosspostComments => boolean().nullable()();
-  BoolColumn get markCrosspostsAsRead => boolean().nullable()();
+  BoolColumn get showCrossPostComments => boolean().nullable()();
+  BoolColumn get markCrossPostsAsRead => boolean().nullable()();
   TextColumn get defaultImageStore => textEnum<ImageStore>().nullable()();
   // Display
   TextColumn get appLanguage => text().nullable()();
@@ -282,7 +280,8 @@ class Profiles extends Table {
   BoolColumn get fullImageSizeThreads => boolean().nullable()();
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
   BoolColumn get showPostsCards => boolean().nullable()();
-  TextColumn get postComponentOrder => text().map(const PostComponentConverter()).nullable()();
+  TextColumn get postComponentOrder =>
+      text().map(const PostComponentConverter()).nullable()();
   RealColumn get dividerThickness => real().nullable()();
   // Feed defaults
   TextColumn get feedViewOrder =>

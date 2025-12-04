@@ -283,18 +283,7 @@ class _PostCommentState extends State<PostComment> {
                 community: widget.comment.community,
               );
             },
-      openLinkUri: Uri.https(
-        ac.instanceHost,
-        ac.serverSoftware == ServerSoftware.mbin
-            ? '/m/${widget.comment.community.name}/${switch (widget.comment.postType) {
-                PostType.thread => 't',
-                PostType.microblog => 'p',
-              }}/${widget.comment.postId}/-/${switch (widget.comment.postType) {
-                PostType.thread => 'comment',
-                PostType.microblog => 'reply',
-              }}/${widget.comment.id}'
-            : '/comment/${widget.comment.id}',
-      ),
+      openLinkUri: genCommentUrl(context, widget.comment),
       editDraftResourceId:
           'edit:${widget.comment.postType.name}:comment:${context.watch<AppController>().instanceHost}:${widget.comment.id}',
       replyDraftResourceId:

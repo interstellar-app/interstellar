@@ -7,6 +7,7 @@ import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/action_buttons.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -116,6 +117,8 @@ class ContentItem extends StatefulWidget {
 
   final List<Tag> flairs;
 
+  final PostModel? crossPost;
+
   const ContentItem({
     required this.originInstance,
     this.title,
@@ -176,6 +179,7 @@ class ContentItem extends StatefulWidget {
     this.isCompact = false,
     this.onClick,
     this.flairs = const [],
+    this.crossPost,
     super.key,
   });
 

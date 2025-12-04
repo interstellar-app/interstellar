@@ -6,6 +6,8 @@ import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -323,5 +325,54 @@ Future<void> pushRoute(
       reverseTransitionDuration: adjustedDuration,
       builder: builder,
     ),
+  );
+}
+
+Uri genPostUrl(BuildContext context, PostModel post) {
+  final ac = context.read<AppController>();
+
+  return Uri.https(
+    ac.instanceHost,
+    ac.serverSoftware == ServerSoftware.mbin
+        ? '/m/${post.community.name}/${switch (post.type) {
+            PostType.thread => 't',
+            PostType.microblog => 'p',
+          }}/${post.id}'
+        : '/post/${post.id}',
+  );
+}
+
+Uri genCommentUrl(BuildContext context, CommentModel comment) {
+  final ac = context.read<AppController>();
+
+  return Uri.https(
+    ac.instanceHost,
+    ac.serverSoftware == ServerSoftware.mbin
+        ? '/m/${comment.community.name}/${switch (comment.postType) {
+            PostType.thread => 't',
+            PostType.microblog => 'p',
+          }}/${comment.postId}/-/${switch (comment.postType) {
+            PostType.thread => 'comment',
+            PostType.microblog => 'reply',
+          }}/${comment.id}'
+        : '/comment/${comment.id}',
+  );
+}
+
+Uri genCommunityUrl(BuildContext context, String name) {
+  final ac = context.read<AppController>();
+
+  return Uri.https(
+    ac.instanceHost,
+    ac.serverSoftware == ServerSoftware.mbin ? '/m/$name' : '/c/$name',
+  );
+}
+
+Uri genUserUrl(BuildContext context, String name) {
+  final ac = context.read<AppController>();
+
+  return Uri.https(
+    ac.instanceHost,
+    '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, name) != ac.instanceHost ? '@' : ''}$name',
   );
 }

@@ -124,7 +124,7 @@
   "pickColor": "Pick a color",
   "post": "Post",
   "postDeleted": "Post Deleted",
-  "crossPosts": "Crossposts",
+  "crossPosts": "Cross posts",
   "crossPostCount": "{count} cross {count, plural, =1{post} other{posts}}",
   "@crossPostCount": {
     "placeholders": {
@@ -265,9 +265,6 @@
   "settings_debug": "Debug",
   "settings_about": "About",
   "settings_defaultCreateLanguage": "Default post/comment creation language",
-  "settings_useAccountLanguageFilter": "Use account language filter",
-  "settings_useAccountLanguageFilter_help": "Please note: language filters only apply to \"All\" and explore feeds",
-  "settings_customLanguageFilter": "Custom language filter",
   "settings_disableTabSwiping": "Disable tab swiping",
   "settings_askBeforeUnsubscribing": "Ask before unsubscribing/unfollowing",
   "settings_askBeforeDeleting": "Ask before deleting",
@@ -279,8 +276,8 @@
   "settings_animationSpeed": "Animation speed",
   "settings_animationDisabled": "Disabled",
   "settings_inlineReplies": "Reply inline",
-  "settings_crosspostComments": "Show crosspost comment sections",
-  "settings_crossPostMarkAsRead": "Mark crossposts as read",
+  "settings_crosspostComments": "Show cross post comment sections",
+  "settings_crossPostMarkAsRead": "Mark cross posts as read",
   "settings_imageStore": "Default image store",
   "settings_defaultDownloadDir": "Default download directory",
   "settings_themeMode": "Theme mode",
@@ -763,5 +760,6 @@
       }
     }
   },
-  "pushNotificationsDialog_selectDistributor": "Select push distributor"
+  "pushNotificationsDialog_selectDistributor": "Select push distributor",
+  "crossPost": "Cross post"
 }

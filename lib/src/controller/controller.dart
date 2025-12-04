@@ -552,6 +552,7 @@ class AppController with ChangeNotifier {
     bool switchNow = false,
     bool forceSwitch = false,
   }) async {
+    value = value.copyWith(handle: key);
     _accounts[key] = value;
 
     await database.into(database.accounts).insertOnConflictUpdate(value);

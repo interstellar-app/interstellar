@@ -98,13 +98,8 @@ Future<void> showUserMenu(
         ),
       ContextMenuItem(
         title: l(context).openInBrowser,
-        onTap: () async => openWebpagePrimary(
-          context,
-          Uri.https(
-            ac.instanceHost,
-            '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, user.name) != ac.instanceHost ? '@' : ''}${user.name}',
-          ),
-        ),
+        onTap: () async =>
+            openWebpagePrimary(context, genUserUrl(context, user.name)),
       ),
       ContextMenuItem(
         title: l(context).feeds_addTo,
