@@ -27,8 +27,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     required String? autoSwitchAccount,
     // Behavior settings
     required String defaultCreateLanguage,
-    required bool useAccountLanguageFilter,
-    required List<String> customLanguageFilter,
     required bool disableTabSwiping,
     required bool askBeforeUnsubscribing,
     required bool askBeforeDeleting,
@@ -99,11 +97,6 @@ abstract class ProfileRequired with _$ProfileRequired {
     autoSwitchAccount: profile?.autoSwitchAccount,
     defaultCreateLanguage:
         profile?.defaultCreateLanguage ?? defaultProfile.defaultCreateLanguage,
-    useAccountLanguageFilter:
-        profile?.useAccountLanguageFilter ??
-        defaultProfile.useAccountLanguageFilter,
-    customLanguageFilter:
-        profile?.customLanguageFilter ?? defaultProfile.customLanguageFilter,
     disableTabSwiping:
         profile?.disableTabSwiping ?? defaultProfile.disableTabSwiping,
     askBeforeUnsubscribing:
@@ -210,8 +203,6 @@ abstract class ProfileRequired with _$ProfileRequired {
   static const defaultProfile = ProfileRequired(
     autoSwitchAccount: null,
     defaultCreateLanguage: 'en',
-    useAccountLanguageFilter: true,
-    customLanguageFilter: [],
     disableTabSwiping: false,
     askBeforeUnsubscribing: false,
     askBeforeDeleting: true,
@@ -293,8 +284,6 @@ abstract class ProfileOptional
     required String? autoSwitchAccount,
     // Behavior settings
     required String? defaultCreateLanguage,
-    required bool? useAccountLanguageFilter,
-    required List<String>? customLanguageFilter,
     required bool? disableTabSwiping,
     required bool? askBeforeUnsubscribing,
     required bool? askBeforeDeleting,
@@ -365,8 +354,6 @@ abstract class ProfileOptional
       autoSwitchAccount: Value(autoSwitchAccount),
       // Behaviour
       defaultCreateLanguage: Value(defaultCreateLanguage),
-      useAccountLanguageFilter: Value(useAccountLanguageFilter),
-      customLanguageFilter: Value(customLanguageFilter),
       disableTabSwiping: Value(disableTabSwiping),
       askBeforeUnsubscribing: Value(askBeforeUnsubscribing),
       askBeforeDeleting: Value(askBeforeDeleting),
@@ -432,8 +419,6 @@ abstract class ProfileOptional
     name: '',
     autoSwitchAccount: null,
     defaultCreateLanguage: null,
-    useAccountLanguageFilter: null,
-    customLanguageFilter: null,
     disableTabSwiping: null,
     askBeforeUnsubscribing: null,
     askBeforeDeleting: null,
@@ -497,9 +482,6 @@ abstract class ProfileOptional
       autoSwitchAccount: other.autoSwitchAccount,
       defaultCreateLanguage:
           other.defaultCreateLanguage ?? defaultCreateLanguage,
-      useAccountLanguageFilter:
-          other.useAccountLanguageFilter ?? useAccountLanguageFilter,
-      customLanguageFilter: other.customLanguageFilter ?? customLanguageFilter,
       disableTabSwiping: other.disableTabSwiping ?? disableTabSwiping,
       askBeforeUnsubscribing:
           other.askBeforeUnsubscribing ?? askBeforeUnsubscribing,

@@ -204,6 +204,7 @@ class _PostItemState extends State<PostItem> {
                     await ac.api.moderation.postPin(
                       widget.item.type,
                       widget.item.id,
+                      !widget.item.isPinned,
                     ),
                   );
                 },

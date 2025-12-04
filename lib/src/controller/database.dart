@@ -252,9 +252,6 @@ class Profiles extends Table {
   )();
   // Behavior
   TextColumn get defaultCreateLanguage => text().nullable()();
-  BoolColumn get useAccountLanguageFilter => boolean().nullable()();
-  TextColumn get customLanguageFilter =>
-      text().map(const StringListConverter()).nullable()();
   BoolColumn get disableTabSwiping => boolean().nullable()();
   BoolColumn get askBeforeUnsubscribing => boolean().nullable()();
   BoolColumn get askBeforeDeleting => boolean().nullable()();

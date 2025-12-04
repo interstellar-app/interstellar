@@ -178,7 +178,11 @@ class _PostPageState extends State<PostPage> {
           ? null
           : () async {
               _updateCrossPost(
-                await ac.api.moderation.postPin(crossPost.type, crossPost.id),
+                await ac.api.moderation.postPin(
+                  crossPost.type,
+                  crossPost.id,
+                  !crossPost.isPinned,
+                ),
               );
             },
       onModerateMarkNSFW: !canModerate
@@ -562,11 +566,6 @@ class _CommentSectionState extends State<CommentSection> {
             widget.id,
             page: nullIfEmpty(pageKey),
             sort: widget.sort,
-            usePreferredLangs: whenLoggedIn(
-              context,
-              ac.profile.useAccountLanguageFilter,
-            ),
-            langs: ac.profile.customLanguageFilter.toList(),
           );
 
           return (newPage.items, newPage.nextPage);

@@ -25,10 +25,6 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
-    final customLanguageFilterEnabled =
-        ac.serverSoftware == ServerSoftware.mbin &&
-        !ac.profile.useAccountLanguageFilter;
-
     return Scaffold(
       appBar: AppBar(title: Text(l(context).settings_behavior)),
       body: ListView(
@@ -54,92 +50,6 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
                 ),
               );
             },
-          ),
-          ListTileSwitch(
-            leading: const Icon(Symbols.filter_list_rounded),
-            title: Text(l(context).settings_useAccountLanguageFilter),
-            subtitle: Text(l(context).settings_useAccountLanguageFilter_help),
-            value: ac.profile.useAccountLanguageFilter,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(
-                useAccountLanguageFilter: newValue,
-              ),
-            ),
-            enabled: ac.serverSoftware == ServerSoftware.mbin,
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  l(context).settings_customLanguageFilter,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: customLanguageFilterEnabled
-                        ? null
-                        : Theme.of(context).disabledColor,
-                  ),
-                ),
-              ),
-              Flexible(
-                child: Wrap(
-                  children: [
-                    ...(ac.profile.customLanguageFilter.map(
-                      (langCode) => Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: InputChip(
-                          isEnabled: customLanguageFilterEnabled,
-                          label: Text(getLanguageName(context, langCode)),
-                          onDeleted: () async {
-                            final newLanguageFilter = ac
-                                .profile
-                                .customLanguageFilter
-                                .toSet();
-
-                            newLanguageFilter.remove(langCode);
-
-                            ac.updateProfile(
-                              ac.selectedProfileValue.copyWith(
-                                customLanguageFilter: newLanguageFilter
-                                    .toList(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: IconButton(
-                        onPressed: !customLanguageFilterEnabled
-                            ? null
-                            : () async {
-                                final langCode = await languageSelectionMenu(
-                                  context,
-                                ).askSelection(context, null);
-
-                                if (langCode == null) return;
-
-                                final newLanguageFilter = ac
-                                    .profile
-                                    .customLanguageFilter
-                                    .toSet();
-
-                                newLanguageFilter.add(langCode);
-
-                                ac.updateProfile(
-                                  ac.selectedProfileValue.copyWith(
-                                    customLanguageFilter: newLanguageFilter
-                                        .toList(),
-                                  ),
-                                );
-                              },
-                        icon: const Icon(Icons.add),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.tabs_rounded),
