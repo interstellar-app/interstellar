@@ -178,17 +178,17 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
           ListTileSwitch(
             leading: const Icon(Symbols.web_stories_rounded),
             title: Text(l(context).settings_crosspostComments),
-            value: ac.profile.showCrosspostComments,
+            value: ac.profile.showCrossPostComments,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(showCrosspostComments: newValue),
+              ac.selectedProfileValue.copyWith(showCrossPostComments: newValue),
             ),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.subdirectory_arrow_right_rounded),
             title: Text(l(context).settings_crossPostMarkAsRead),
-            value: ac.profile.markCrosspostsAsRead,
+            value: ac.profile.markCrossPostsAsRead,
             onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(markCrosspostsAsRead: newValue),
+              ac.selectedProfileValue.copyWith(markCrossPostsAsRead: newValue),
             ),
           ),
           ListTileSelect(

@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/images.dart' show ImageStore;
-import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart'
     show ActionLocation, ActionLocationWithTabs, SwipeAction;
@@ -38,8 +37,8 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool markMicroblogsReadOnScroll,
     required double animationSpeed,
     required bool inlineReplies,
-    required bool showCrosspostComments,
-    required bool markCrosspostsAsRead,
+    required bool showCrossPostComments,
+    required bool markCrossPostsAsRead,
     required ImageStore defaultImageStore,
     // Display settings
     required String appLanguage,
@@ -116,10 +115,10 @@ abstract class ProfileRequired with _$ProfileRequired {
         defaultProfile.markMicroblogsReadOnScroll,
     animationSpeed: profile?.animationSpeed ?? defaultProfile.animationSpeed,
     inlineReplies: profile?.inlineReplies ?? defaultProfile.inlineReplies,
-    showCrosspostComments:
-        profile?.showCrosspostComments ?? defaultProfile.showCrosspostComments,
-    markCrosspostsAsRead:
-        profile?.markCrosspostsAsRead ?? defaultProfile.markCrosspostsAsRead,
+    showCrossPostComments:
+        profile?.showCrossPostComments ?? defaultProfile.showCrossPostComments,
+    markCrossPostsAsRead:
+        profile?.markCrossPostsAsRead ?? defaultProfile.markCrossPostsAsRead,
     defaultImageStore:
         profile?.defaultImageStore ?? defaultProfile.defaultImageStore,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
@@ -214,8 +213,8 @@ abstract class ProfileRequired with _$ProfileRequired {
     markMicroblogsReadOnScroll: false,
     animationSpeed: 1.0,
     inlineReplies: true,
-    showCrosspostComments: true,
-    markCrosspostsAsRead: false,
+    showCrossPostComments: true,
+    markCrossPostsAsRead: false,
     defaultImageStore: ImageStore.platform,
     appLanguage: '',
     themeMode: ThemeMode.system,
@@ -295,8 +294,8 @@ abstract class ProfileOptional
     required bool? markMicroblogsReadOnScroll,
     required double? animationSpeed,
     required bool? inlineReplies,
-    required bool? showCrosspostComments,
-    required bool? markCrosspostsAsRead,
+    required bool? showCrossPostComments,
+    required bool? markCrossPostsAsRead,
     required ImageStore? defaultImageStore,
     // Display settings
     required String? appLanguage,
@@ -365,8 +364,8 @@ abstract class ProfileOptional
       markMicroblogsReadOnScroll: Value(markMicroblogsReadOnScroll),
       animationSpeed: Value(animationSpeed),
       inlineReplies: Value(inlineReplies),
-      showCrosspostComments: Value(showCrosspostComments),
-      markCrosspostsAsRead: Value(markCrosspostsAsRead),
+      showCrossPostComments: Value(showCrossPostComments),
+      markCrossPostsAsRead: Value(markCrossPostsAsRead),
       defaultImageStore: Value(defaultImageStore),
       // Display
       appLanguage: Value(appLanguage),
@@ -430,8 +429,8 @@ abstract class ProfileOptional
     markMicroblogsReadOnScroll: null,
     animationSpeed: null,
     inlineReplies: null,
-    showCrosspostComments: null,
-    markCrosspostsAsRead: null,
+    showCrossPostComments: null,
+    markCrossPostsAsRead: null,
     defaultImageStore: null,
     appLanguage: null,
     themeMode: null,
@@ -496,9 +495,9 @@ abstract class ProfileOptional
           other.markMicroblogsReadOnScroll ?? markMicroblogsReadOnScroll,
       animationSpeed: other.animationSpeed ?? animationSpeed,
       inlineReplies: other.inlineReplies ?? inlineReplies,
-      showCrosspostComments:
-          other.showCrosspostComments ?? showCrosspostComments,
-      markCrosspostsAsRead: other.markCrosspostsAsRead ?? markCrosspostsAsRead,
+      showCrossPostComments:
+          other.showCrossPostComments ?? showCrossPostComments,
+      markCrossPostsAsRead: other.markCrossPostsAsRead ?? markCrossPostsAsRead,
       defaultImageStore: other.defaultImageStore ?? defaultImageStore,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,

@@ -250,7 +250,7 @@ class Profiles extends Table {
     #handle,
     onDelete: KeyAction.setNull,
   )();
-  // Behaviour
+  // Behavior
   TextColumn get defaultCreateLanguage => text().nullable()();
   BoolColumn get disableTabSwiping => boolean().nullable()();
   BoolColumn get askBeforeUnsubscribing => boolean().nullable()();
@@ -262,8 +262,8 @@ class Profiles extends Table {
   BoolColumn get markMicroblogsReadOnScroll => boolean().nullable()();
   RealColumn get animationSpeed => real().nullable()();
   BoolColumn get inlineReplies => boolean().nullable()();
-  BoolColumn get showCrosspostComments => boolean().nullable()();
-  BoolColumn get markCrosspostsAsRead => boolean().nullable()();
+  BoolColumn get showCrossPostComments => boolean().nullable()();
+  BoolColumn get markCrossPostsAsRead => boolean().nullable()();
   TextColumn get defaultImageStore => textEnum<ImageStore>().nullable()();
   // Display
   TextColumn get appLanguage => text().nullable()();
