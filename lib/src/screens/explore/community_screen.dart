@@ -49,9 +49,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
           .community
           .get(widget.communityId)
           .then(
-            (value) => setState(() {
-              _data = value;
-            }),
+            (value) {
+              if (!mounted) return;
+              setState(() {
+                _data = value;
+              });
+            }
           );
     }
   }

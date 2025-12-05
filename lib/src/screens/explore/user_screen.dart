@@ -82,9 +82,12 @@ class _UserScreenState extends State<UserScreen> {
             return value.copyWith(tags: [...value.tags, ...tags]);
           })
           .then(
-            (value) => setState(() {
-              _data = value;
-            }),
+            (value) {
+              if (!mounted) return;
+              setState(() {
+                _data = value;
+              });
+            }
           );
     }
   }
