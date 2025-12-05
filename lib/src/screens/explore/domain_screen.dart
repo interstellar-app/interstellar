@@ -37,9 +37,12 @@ class _DomainScreenState extends State<DomainScreen> {
           .domains
           .get(widget.domainId)
           .then(
-            (value) => setState(() {
-              _data = value;
-            }),
+            (value) {
+              if (!mounted) return;
+              setState(() {
+                _data = value;
+              });
+            }
           );
     }
   }

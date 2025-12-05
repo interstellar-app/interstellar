@@ -37,9 +37,12 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
         .comments
         .get(widget.postType, widget.commentId)
         .then(
-          (value) => setState(() {
-            _comment = value;
-          }),
+          (value) {
+            if (!mounted) return;
+            setState(() {
+              _comment = value;
+            });
+          }
         );
   }
 

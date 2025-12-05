@@ -205,9 +205,12 @@ class _ContentItemState extends State<ContentItem> {
           .read<AppController>()
           .getUserTags(widget.user!.name)
           .then(
-            (tags) => setState(() {
-              _userTags = [...widget.user!.tags, ...tags];
-            }),
+            (tags) {
+              if (!mounted) return;
+              setState(() {
+                _userTags = [...widget.user!.tags, ...tags];
+              });
+            }
           );
     }
   }
