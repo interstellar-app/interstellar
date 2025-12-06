@@ -29,8 +29,6 @@
     "@account_settings_showSubscribedDomains": {},
     "account_settings_showProfileSubscriptions": "Показать профили подписчиков публично",
     "@account_settings_showProfileSubscriptions": {},
-    "settings_useAccountLanguageFilter": "Использовать фильтр языка аккаунта",
-    "@settings_useAccountLanguageFilter": {},
     "settings_disableTabSwiping": "Отключить перелистывание вкладок",
     "@settings_disableTabSwiping": {},
     "settings_enableTrueBlack_help": "Может сохранить энергию на AMOLED экранах",
@@ -460,8 +458,6 @@
     "@settings_feedDefaults": {},
     "settings_fullImageSizeThreads": "Полный размер фото для лент",
     "@settings_fullImageSizeThreads": {},
-    "settings_useAccountLanguageFilter_help": "Пожалуйста учтите: фильтры языков прилагаются только ко \"Всё\" и просмотреть ленты",
-    "@settings_useAccountLanguageFilter_help": {},
     "settings": "Настройки",
     "@settings": {},
     "settings_colorScheme_sanJuanBlue": "Синий Сае Хуан",
@@ -596,8 +592,6 @@
             }
         }
     },
-    "settings_customLanguageFilter": "Настройки языковых фильтров",
-    "@settings_customLanguageFilter": {},
     "settings_askBeforeDeleting": "Спросить до удаления",
     "@settings_askBeforeDeleting": {},
     "settings_autoPlayVideos": "Автоматически воспроизводить видео",
