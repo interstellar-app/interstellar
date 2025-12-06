@@ -1149,7 +1149,7 @@
     "@serverTopic": {},
     "serverTopicSubtitle": "Вхідні дані стрічки об'єднані на сервері. Відповідає темі PieFed.",
     "@serverTopicSubtitle": {},
-    "crossPosts": "Поперечні стовпи",
+    "crossPosts": "Поперечні публікації",
     "@crossPosts": {},
     "crossPostCount": "{count} хрест {count, plural, =1{пост} other{пости}}",
     "@crossPostCount": {
@@ -1169,7 +1169,7 @@
     },
     "settings_crosspostComments": "Показати розділи коментарів до перехресних публікацій",
     "@settings_crosspostComments": {},
-    "settings_crossPostMarkAsRead": "Позначити перехресні повідомлення як прочитані",
+    "settings_crossPostMarkAsRead": "Позначити перехресні дописи як прочитані",
     "@settings_crossPostMarkAsRead": {},
     "pushNotificationsDialog_title": "Push-сповіщення",
     "@pushNotificationsDialog_title": {},
@@ -1236,5 +1236,41 @@
     "settings_postsAsCards": "Показувати публікації як картки",
     "@settings_postsAsCards": {},
     "settings_postLayoutOrder": "Порядок макета публікації",
-    "@settings_postLayoutOrder": {}
+    "@settings_postLayoutOrder": {},
+    "tags_addNew": "Додати новий тег",
+    "@tags_addNew": {},
+    "tags_backgroundColor": "Колір фону",
+    "@tags_backgroundColor": {},
+    "tags_exist": "Тег існує",
+    "@tags_exist": {},
+    "tags_users": "Позначені користувачі",
+    "@tags_users": {},
+    "pickColor": "Виберіть колір",
+    "@pickColor": {},
+    "settings_debug_clearTags": "Очистити теги користувачів",
+    "@settings_debug_clearTags": {},
+    "poll": "Опитування",
+    "@poll": {},
+    "addChoice": "Додати вибір",
+    "@addChoice": {},
+    "pollDuration": "Тривалість опитування",
+    "@pollDuration": {},
+    "pollMode": "Дозволити кілька варіантів вибору",
+    "@pollMode": {},
+    "pollShowResults": "Показати результати",
+    "@pollShowResults": {},
+    "pollHideResults": "Приховати результати",
+    "@pollHideResults": {},
+    "pollSubmitError": "Перед надсиланням потрібно вибрати хоча б один варіант.",
+    "@pollSubmitError": {},
+    "pollVotes": "{count} {count, plural, =1{голос} other{голоси}}",
+    "@pollVotes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "crossPost": "Поперечний публікацій",
+    "@crossPost": {}
 }
