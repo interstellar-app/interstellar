@@ -134,6 +134,7 @@ class _PostCommentState extends State<PostComment> {
 
     final contentItem = ContentItem(
       originInstance: getNameHost(context, widget.comment.user.name),
+      id: widget.comment.id,
       image: widget.comment.image,
       body: widget.comment.body ?? '_${l(context).commentDeleted}_',
       translation: _translation,

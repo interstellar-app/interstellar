@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/community_moderation.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -63,6 +64,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     required bool? isBlockedByUser,
     required bool isPostingRestrictedToMods,
     required NotificationControlStatus? notificationControlStatus,
+    required List<Tag> flairs,
     required String? apId,
   }) = _DetailedCommunityModel;
 
@@ -94,6 +96,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
           : NotificationControlStatus.fromJson(
               json['notificationStatus'] as String,
             ),
+      flairs: [],
       apId: json['apProfileId'] as String?,
     );
 
@@ -125,6 +128,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
       isPostingRestrictedToMods:
           (lemmyCommunity['posting_restricted_to_mods']) as bool,
       notificationControlStatus: null,
+      flairs: [],
       apId: lemmyCommunity['actor_id'] as String,
     );
 
@@ -173,6 +177,12 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
           : communityView['activity_alert'] as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
+      flairs: (communityView['flair_list'] as List<dynamic>?)?.map((flair) => Tag(
+          id: flair['id'] as int,
+          tag: flair['flair_title'] as String,
+          backgroundColor: getColorFromHex(flair['background_color'] as String),
+          textColor: getColorFromHex(flair['text_color'] as String)
+      )).toList() ?? [],
       apId: piefedCommunity['actor_id'] as String,
     );
 

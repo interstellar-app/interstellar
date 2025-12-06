@@ -9,8 +9,9 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:provider/provider.dart';
 
 class TagsScreen extends StatefulWidget {
-  const TagsScreen({super.key, this.onSelect});
+  const TagsScreen({super.key, this.tags, this.onSelect});
 
+  final List<Tag>? tags;
   final void Function(Tag)? onSelect;
 
   @override
@@ -23,11 +24,17 @@ class _TagsScreenState extends State<TagsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<AppController>().getTags().then(
-      (tags) => setState(() {
-        _tags = tags;
-      }),
-    );
+    if (widget.tags == null) {
+      context.read<AppController>().getTags().then(
+        (tags) => setState(() {
+          _tags = tags;
+        }),
+      );
+    } else {
+      setState(() {
+        _tags = widget.tags!;
+      });
+    }
   }
 
   @override
@@ -37,77 +44,83 @@ class _TagsScreenState extends State<TagsScreen> {
       appBar: AppBar(title: Text(l(context).tags)),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: FilledButton(
-                onPressed: () async {
-                  Tag? tag;
-                  try {
-                    tag = await ac.addTag();
-                  } catch (err) {
-                    if (!context.mounted) return;
-                    await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(l(context).tags_exist),
-                          actions: [
-                            OutlinedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(l(context).cancel),
-                            ),
-                            LoadingFilledButton(
-                              onPressed: () async {
-                                int num = 0;
-                                while (tag == null) {
-                                  try {
-                                    tag = await ac.addTag(tag: 'Tag ${num++}');
-                                  } catch (err) {
-                                    //
+          if (widget.tags == null)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: FilledButton(
+                  onPressed: () async {
+                    Tag? tag;
+                    try {
+                      tag = await ac.addTag();
+                    } catch (err) {
+                      if (!context.mounted) return;
+                      await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(l(context).tags_exist),
+                            actions: [
+                              OutlinedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(l(context).cancel),
+                              ),
+                              LoadingFilledButton(
+                                onPressed: () async {
+                                  int num = 0;
+                                  while (tag == null) {
+                                    try {
+                                      tag = await ac.addTag(
+                                        tag: 'Tag ${num++}',
+                                      );
+                                    } catch (err) {
+                                      //
+                                    }
                                   }
-                                }
-                                if (!context.mounted) return;
-                                Navigator.pop(context);
-                              },
-                              label: Text(l(context).rename),
-                            ),
-                          ],
-                        );
-                      },
+                                  if (!context.mounted) return;
+                                  Navigator.pop(context);
+                                },
+                                label: Text(l(context).rename),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                    if (!context.mounted || tag == null) return;
+                    bool cancelled = true;
+                    await pushRoute(
+                      context,
+                      builder: (context) => TagEditor(
+                        tag: tag!,
+                        onUpdate: (newTag) async {
+                          cancelled = false;
+                          if (newTag == null) {
+                            await ac.removeTag(tag!);
+                            return;
+                          }
+                          if (widget.onSelect != null) {
+                            widget.onSelect!(newTag);
+                          }
+                          setState(() {
+                            _tags.add(newTag);
+                          });
+                        },
+                      ),
                     );
-                  }
-                  if (!context.mounted || tag == null) return;
-                  bool cancelled = true;
-                  await pushRoute(
-                    context,
-                    builder: (context) => TagEditor(
-                      tag: tag!,
-                      onUpdate: (newTag) async {
-                        cancelled = false;
-                        if (newTag == null) {
-                          await ac.removeTag(tag!);
-                          return;
-                        }
-                        if (widget.onSelect != null) {
-                          widget.onSelect!(newTag);
-                        }
-                        setState(() {
-                          _tags.add(newTag);
-                        });
-                      },
-                    ),
-                  );
-                  if (cancelled) {
-                    await ac.removeTag(tag!);
-                  }
-                },
-                child: Text(l(context).tags_addNew),
+                    if (cancelled) {
+                      await ac.removeTag(tag!);
+                    }
+                  },
+                  child: Text(l(context).tags_addNew),
+                ),
               ),
             ),
-          ),
           SliverList.builder(
             itemCount: _tags.length,
             itemBuilder: (context, index) => ListTile(

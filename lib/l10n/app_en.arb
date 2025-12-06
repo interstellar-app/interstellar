@@ -450,6 +450,8 @@
       }
     }
   },
+  "editFlairs": "Edit flairs",
+  "addFlair": "Add flair",
   "viewSource": "View Source",
   "close": "Close",
   "banUser": "Ban User",

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
@@ -14,6 +15,7 @@ import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -43,19 +45,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
     _data = widget.initData;
 
     if (_data == null) {
-      context
-          .read<AppController>()
-          .api
-          .community
-          .get(widget.communityId)
-          .then(
-            (value) {
-              if (!mounted) return;
-              setState(() {
-                _data = value;
-              });
-            }
-          );
+      context.read<AppController>().api.community.get(widget.communityId).then((
+        value,
+      ) {
+        if (!mounted) return;
+        setState(() {
+          _data = value;
+        });
+      });
     }
   }
 
@@ -237,6 +234,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           child: Markdown(
                             _data!.description!,
                             getNameHost(context, _data!.name),
+                          ),
+                        ),
+                      if (ac.serverSoftware == ServerSoftware.piefed &&
+                          _data != null &&
+                          _data!.flairs.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Wrap(
+                            runSpacing: 5,
+                            children: _data!.flairs
+                                .map((tag) => TagWidget(tag: tag))
+                                .toList(),
                           ),
                         ),
                     ],
