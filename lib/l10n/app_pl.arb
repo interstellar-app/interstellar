@@ -341,8 +341,6 @@
     "@settings_colorScheme_blumineBlue": {},
     "settings_colorScheme_flutterDash": "Flutter Dash",
     "@settings_colorScheme_flutterDash": {},
-    "settings_customLanguageFilter": "Filtruj wybrany język",
-    "@settings_customLanguageFilter": {},
     "settings_alwaysShowInstance": "Zawsze pokazuj serwer",
     "@settings_alwaysShowInstance": {},
     "settings_alwaysShowInstance_help": "Po włączeniu, instancja użytkownika/magazynu będzie zawsze wyświetlana zamiast przycisku @",

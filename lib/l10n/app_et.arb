@@ -844,8 +844,6 @@
     "@settings_askBeforeDeleting": {},
     "settings_defaultCreateLanguage": "Postituse või kommentaari koostamise vaikimisi keel",
     "@settings_defaultCreateLanguage": {},
-    "settings_useAccountLanguageFilter": "Kasuta kontokeelte filtrit",
-    "@settings_useAccountLanguageFilter": {},
     "settings_alwaysShowInstance": "Näita alati serverit",
     "@settings_alwaysShowInstance": {},
     "settings_alwaysShowInstance_help": "Kui see eelistus on kasutusel, siis näidatakse kasutajanimi järel alati kasutaja või kogukonna serverit",
