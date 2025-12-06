@@ -346,7 +346,7 @@ abstract class PostModel with _$PostModel {
               .toList() ??
           [],
       flairs: (postView['flair_list'] as List<dynamic>?)?.map((flair) => Tag(
-        id: -1,
+        id: flair['id'] as int,
         tag: flair['flair_title'] as String,
         textColor: getColorFromHex(flair['text_color'] as String),
         backgroundColor: getColorFromHex(flair['background_color'] as String),

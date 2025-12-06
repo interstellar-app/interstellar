@@ -4,6 +4,7 @@ import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
+import 'package:interstellar/src/widgets/tags/post_flairs.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -212,6 +213,29 @@ Future<void> showContentMenu(
                 actionsOverflowAlignment: OverflowBarAlignment.center,
                 actionsOverflowButtonSpacing: 8,
                 actionsOverflowDirection: VerticalDirection.up,
+              ),
+            );
+          },
+        ),
+      if (widget.onUpdateFlairs != null)
+        ContextMenuItem(
+          title: l(context).editFlairs,
+          onTap: () async {
+            final community = await ac.api.community.get(widget.community!.id);
+            if (!context.mounted) return;
+            pushRoute(
+              context,
+              builder: (context) => PostFlairs(
+                flairs: widget.flairs,
+                availableFlairs: community.flairs,
+                onUpdate: (flairs) async {
+                  final post = await ac.api.threads.assignFlairs(
+                    widget.id,
+                    flairs.map((flair) => flair.id).toList(),
+                  );
+                  if (!context.mounted) return;
+                  widget.onUpdateFlairs!(post);
+                },
               ),
             );
           },
