@@ -84,6 +84,23 @@ class APINotifications {
     }
   }
 
+  Future<NotificationModel> get(int id) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/notification/$id';
+
+        final response = await client.get(path);
+
+        return NotificationModel.fromMbin(response.bodyJson);
+
+      case ServerSoftware.lemmy:
+        throw UnimplementedError('Get notification unimplemented for Lemmy');
+
+      case ServerSoftware.piefed:
+        throw UnimplementedError('Get notification unimplemented for PieFed');
+    }
+  }
+
   Future<int> getCount() async {
     switch (client.software) {
       case ServerSoftware.mbin:
