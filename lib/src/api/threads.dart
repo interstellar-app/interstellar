@@ -345,6 +345,29 @@ class APIThreads {
     }
   }
 
+  Future<PostModel> assignFlairs(int postId, List<int> flairIds) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw UnsupportedError('Mbin doesnt support assigning flairs to a post');
+      case ServerSoftware.lemmy:
+        throw UnsupportedError('Lemmy doesnt support assigning flairs to a post');
+      case ServerSoftware.piefed:
+        final path = '/post/assign_flair';
+        final response = await client.post(
+          path,
+          body: {
+            'post_id': postId,
+            'flair_id_list': flairIds
+          }
+        );
+
+        return PostModel.fromPiefed(
+            {'post_view': response.bodyJson},
+            langCodeIdPairs: await client.languageCodeIdPairs()
+        );
+    }
+  }
+
   Future<PostModel> createArticle(
     int communityId, {
     required String title,

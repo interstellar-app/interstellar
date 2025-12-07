@@ -37,6 +37,7 @@ enum PostComponent { title, image, info, body, link, flairs }
 class ContentItem extends StatefulWidget {
   final String originInstance;
 
+  final int id;
   final String? title;
   final ImageModel? image;
   final Uri? link;
@@ -117,6 +118,7 @@ class ContentItem extends StatefulWidget {
 
   final void Function()? onClick;
 
+  final void Function(PostModel)? onUpdateFlairs;
   final List<Tag> flairs;
 
   final PostModel? crossPost;
@@ -124,6 +126,7 @@ class ContentItem extends StatefulWidget {
 
   const ContentItem({
     required this.originInstance,
+    required this.id,
     this.title,
     this.image,
     this.link,
@@ -181,6 +184,7 @@ class ContentItem extends StatefulWidget {
     this.onNotificationControlStatusChange,
     this.isCompact = false,
     this.onClick,
+    this.onUpdateFlairs,
     this.flairs = const [],
     this.crossPost,
     this.shareLinks = const [],

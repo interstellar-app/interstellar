@@ -111,6 +111,7 @@ class _PostPageState extends State<PostPage> {
     final canModerate = crossPost.canAuthUserModerate ?? false;
     final contentItem = ContentItem(
       originInstance: getNameHost(context, crossPost.user.name),
+      id: crossPost.id,
       user: crossPost.user,
       updateUser: (user) async {
         _updateCrossPost(crossPost.copyWith(user: user));

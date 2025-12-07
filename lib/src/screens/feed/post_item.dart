@@ -96,6 +96,7 @@ class _PostItemState extends State<PostItem> {
         color: Colors.transparent,
         child: ContentItem(
           originInstance: getNameHost(context, widget.item.user.name),
+          id: widget.item.id,
           title: widget.item.title,
           image: widget.item.image,
           link: widget.item.url != null ? Uri.parse(widget.item.url!) : null,
@@ -321,6 +322,18 @@ class _PostItemState extends State<PostItem> {
                 },
           isCompact: widget.isCompact,
           onClick: widget.isTopLevel ? widget.onTap : null,
+          onUpdateFlairs:
+              !canModerate ||
+                  !(whenLoggedIn(
+                        context,
+                        true,
+                        matchesUsername: widget.item.user.name,
+                      ) ??
+                      true)
+              ? null
+              : (post) async {
+                  widget.onUpdate(post);
+                },
           flairs: widget.item.flairs,
           crossPost: widget.item,
           shareLinks: genPostUrls(context, widget.item),

@@ -2,6 +2,7 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
@@ -16,6 +17,8 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/community_picker.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/tags/post_flairs.dart';
+import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -51,6 +54,7 @@ class _CreateScreenState extends State<CreateScreen> {
   XFile? _imageFile;
   String? _altText = '';
   String _lang = '';
+  List<Tag> _postFlairs = [];
   final List<TextEditingController> _pollOptions = [
     TextEditingController(text: 'Option 0'),
   ];
@@ -254,21 +258,21 @@ class _CreateScreenState extends State<CreateScreen> {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child:
-        ElevatedButton(
-          onPressed: () => setState(() {
-            _pollOptions.add(
-              TextEditingController(text: 'Option ${_pollOptions.length}'),
-            );
-          }),
-          child: Text(l(context).addChoice),
-        )),
-        ListTileSwitch(
-            value: _pollModeMultiple,
-            onChanged: (newValue) => setState(() {
-              _pollModeMultiple = newValue;
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: ElevatedButton(
+            onPressed: () => setState(() {
+              _pollOptions.add(
+                TextEditingController(text: 'Option ${_pollOptions.length}'),
+              );
             }),
+            child: Text(l(context).addChoice),
+          ),
+        ),
+        ListTileSwitch(
+          value: _pollModeMultiple,
+          onChanged: (newValue) => setState(() {
+            _pollModeMultiple = newValue;
+          }),
           title: Text(l(context).pollMode),
         ),
         ListTile(
@@ -296,6 +300,35 @@ class _CreateScreenState extends State<CreateScreen> {
         uesHaptics: true,
       ),
     );
+
+    Widget? postFlairsWidget() {
+      if (ac.serverSoftware == ServerSoftware.piefed &&
+          (_community?.flairs.isNotEmpty ?? false)) {
+        return ListTile(
+          title: Wrap(
+            children: [
+              ..._postFlairs.map((flair) => TagWidget(tag: flair)),
+              ElevatedButton(
+                onPressed: () => pushRoute(
+                  context,
+                  builder: (context) => PostFlairs(
+                    flairs: _postFlairs,
+                    availableFlairs: _community!.flairs,
+                    onUpdate: (flairs) {
+                      setState(() {
+                        _postFlairs = flairs;
+                      });
+                    },
+                  ),
+                ),
+                child: Text(l(context).editFlairs),
+              ),
+            ],
+          ),
+        );
+      }
+      return null;
+    }
 
     return DefaultTabController(
       initialIndex: _defaultTab,
@@ -329,10 +362,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   icon: Icon(Symbols.edit_note_rounded),
                 ),
               if (ac.serverSoftware == ServerSoftware.piefed)
-                Tab(
-                  text: l(context).poll,
-                  icon: Icon(Symbols.poll_rounded)
-                ),
+                Tab(text: l(context).poll, icon: Icon(Symbols.poll_rounded)),
               Tab(
                 text: l(context).create_community,
                 icon: Icon(Symbols.group_rounded),
@@ -345,6 +375,7 @@ class _CreateScreenState extends State<CreateScreen> {
             listViewWidget([
               communityPickerWidget(),
               titleEditorWidget(),
+              ?postFlairsWidget(),
               bodyEditorWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
@@ -356,7 +387,7 @@ class _CreateScreenState extends State<CreateScreen> {
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
-                        await ac.api.threads.createArticle(
+                        final post = await ac.api.threads.createArticle(
                           _community!.id,
                           title: _titleTextController.text,
                           isOc: _isOc,
@@ -366,6 +397,12 @@ class _CreateScreenState extends State<CreateScreen> {
                           tags: tags,
                         );
 
+                        if (ac.serverSoftware == ServerSoftware.piefed) {
+                          await ac.api.threads.assignFlairs(
+                            post.id,
+                            _postFlairs.map((flair) => flair.id).toList(),
+                          );
+                        }
                         await bodyDraftController.discard();
 
                         // Check BuildContext
@@ -378,6 +415,7 @@ class _CreateScreenState extends State<CreateScreen> {
             listViewWidget([
               communityPickerWidget(),
               titleEditorWidget(),
+              ?postFlairsWidget(),
               imagePickerWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
@@ -389,7 +427,7 @@ class _CreateScreenState extends State<CreateScreen> {
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
-                        await ac.api.threads.createImage(
+                        final post = await ac.api.threads.createImage(
                           _community!.id,
                           title: _titleTextController.text,
                           image: _imageFile!,
@@ -400,6 +438,13 @@ class _CreateScreenState extends State<CreateScreen> {
                           isAdult: _isAdult,
                           tags: tags,
                         );
+
+                        if (ac.serverSoftware == ServerSoftware.piefed) {
+                          await ac.api.threads.assignFlairs(
+                            post.id,
+                            _postFlairs.map((flair) => flair.id).toList(),
+                          );
+                        }
 
                         // Check BuildContext
                         if (!context.mounted) return;
@@ -412,6 +457,7 @@ class _CreateScreenState extends State<CreateScreen> {
               communityPickerWidget(),
               linkEditorWidget(),
               titleEditorWidget(),
+              ?postFlairsWidget(),
               bodyEditorWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) tagsEditorWidget(),
               if (ac.serverSoftware == ServerSoftware.mbin) ocToggleWidget(),
@@ -423,7 +469,7 @@ class _CreateScreenState extends State<CreateScreen> {
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
-                        await ac.api.threads.createLink(
+                        final post = await ac.api.threads.createLink(
                           _community!.id,
                           title: _titleTextController.text,
                           url: _urlTextController.text,
@@ -433,6 +479,13 @@ class _CreateScreenState extends State<CreateScreen> {
                           isAdult: _isAdult,
                           tags: tags,
                         );
+
+                        if (ac.serverSoftware == ServerSoftware.piefed) {
+                          await ac.api.threads.assignFlairs(
+                            post.id,
+                            _postFlairs.map((flair) => flair.id).toList(),
+                          );
+                        }
 
                         await bodyDraftController.discard();
 
@@ -489,6 +542,7 @@ class _CreateScreenState extends State<CreateScreen> {
               listViewWidget([
                 communityPickerWidget(),
                 titleEditorWidget(),
+                ?postFlairsWidget(),
                 bodyEditorWidget(),
                 pollOptionsWidget(),
                 nsfwToggleWidget(),
@@ -501,7 +555,7 @@ class _CreateScreenState extends State<CreateScreen> {
                               ? null
                               : DateTime.now().add(_pollDuration);
 
-                          await ac.api.threads.createPoll(
+                          final post = await ac.api.threads.createPoll(
                             _community!.id,
                             title: _titleTextController.text,
                             isOc: _isOc,
@@ -513,6 +567,10 @@ class _CreateScreenState extends State<CreateScreen> {
                                 .toList(),
                             endDate: endDate,
                             mode: _pollModeMultiple ? 'multiple' : 'single',
+                          );
+                          await ac.api.threads.assignFlairs(
+                            post.id,
+                            _postFlairs.map((flair) => flair.id).toList(),
                           );
 
                           if (!context.mounted) return;
