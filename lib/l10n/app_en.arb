@@ -533,12 +533,76 @@
   "poll": "Poll",
   "addChoice": "Add choice",
   "pollDuration": "Poll duration",
+  "pollDuration_minutes": "{count} {count, plural, =1{minute} other{minutes}}",
+  "@pollDuration_minutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollDuration_hours": "{count} {count, plural, =1{hour} other{hours}}",
+  "@pollDuration_hours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollDuration_days": "{count} {count, plural, =1{day} other{days}}",
+  "@pollDuration_days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pollMode": "Allow multiple selections",
   "pollShowResults": "Show results",
   "pollHideResults": "Hide results",
   "pollSubmitError": "Need to select at least one choice before submitting.",
   "pollVotes": "{count} {count, plural, =1{vote} other{votes}}",
   "@pollVotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollExpiry_years": "{count} {count, plural, =1{year} other{years}} left",
+  "@pollExpiry_years": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollExpiry_days": "{count} {count, plural, =1{day} other{days}} left",
+  "@pollExpiry_days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollExpiry_hours": "{count} {count, plural, =1{hour} other{hours}} left",
+  "@pollExpiry_hours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollExpiry_minutes": "{count} {count, plural, =1{minute} other{minutes}} left",
+  "@pollExpiry_minutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pollExpiry_seconds": "{count} {count, plural, =1{second} other{seconds}} left",
+  "@pollExpiry_seconds": {
     "placeholders": {
       "count": {
         "type": "int"

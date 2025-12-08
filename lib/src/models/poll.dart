@@ -30,7 +30,7 @@ abstract class PollModel with _$PollModel {
     
     return PollModel(
       postId: postId,
-      endPoll: DateTime.parse(json['end_poll'] as String),
+      endPoll: DateTime.parse(json['end_poll'] as String).toLocal(),
       multiple: (json['mode'] as String) == 'multiple',
       localOnly: json['local_only'] as bool,
       choices: choices.map((choice) =>

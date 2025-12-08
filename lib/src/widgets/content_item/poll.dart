@@ -28,7 +28,33 @@ class _PollState extends State<Poll> {
     _choices = widget.poll.choices.toList();
     final answer = _choices.firstWhereOrNull((choice) => choice.chosen);
     _selectedAnswer = answer?.id;
-    _submitted = whenLoggedIn(context, answer != null) ?? true;
+
+    final expired = widget.poll.endPoll.isBefore(DateTime.now());
+    _submitted = (whenLoggedIn(context, answer != null) ?? true) || expired;
+  }
+
+  String getTimeTillExpire() {
+    final diff = widget.poll.endPoll.difference(DateTime.now());
+
+    final years = (diff.inDays / 365).toInt();
+    final days = diff.inDays;
+    final hours = diff.inHours;
+    final minutes = diff.inMinutes;
+    final seconds = diff.inSeconds;
+
+    if (years.abs() != 0) {
+      return l(context).pollExpiry_years(years);
+    }
+    if (days.abs() != 0) {
+      return l(context).pollExpiry_days(days);
+    }
+    if (hours.abs() != 0) {
+      return l(context).pollExpiry_hours(hours);
+    }
+    if (minutes.abs() != 0) {
+      return l(context).pollExpiry_minutes(minutes);
+    }
+    return l(context).pollExpiry_seconds(seconds);
   }
 
   @override
@@ -124,7 +150,13 @@ class _PollState extends State<Poll> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l(context).pollVotes(totalVotes)),
+              Row(
+                children: [
+                  Text(l(context).pollVotes(totalVotes)),
+                  const SizedBox(width: 10),
+                  Text(getTimeTillExpire()),
+                ],
+              ),
               if (!_submitted)
                 ElevatedButton(
                   onPressed: () async {
