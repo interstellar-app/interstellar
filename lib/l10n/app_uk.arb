@@ -1272,5 +1272,9 @@
         }
     },
     "crossPost": "Поперечний публікацій",
-    "@crossPost": {}
+    "@crossPost": {},
+    "editFlairs": "Редагувати стилі",
+    "@editFlairs": {},
+    "addFlair": "Додати родзинку",
+    "@addFlair": {}
 }
