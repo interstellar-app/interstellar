@@ -624,5 +624,5 @@ SelectionMenu<Duration?> pollDuration(BuildContext context) =>
       SelectionMenuItem(value: Duration(days: 1), title: l(context).pollDuration_days(1)),
       SelectionMenuItem(value: Duration(days: 3), title: l(context).pollDuration_days(3)),
       SelectionMenuItem(value: Duration(days: 7), title: l(context).pollDuration_days(7)),
-      SelectionMenuItem(value: Duration(days: 365 * 10), title: 'Unlimited'),
+      SelectionMenuItem(value: Duration(days: 365 * 100), title: 'Unlimited'),
     ]);
