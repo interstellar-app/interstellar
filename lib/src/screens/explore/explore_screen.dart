@@ -41,6 +41,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen>
     with AutomaticKeepAliveClientMixin<ExploreScreen> {
+  late FocusNode _focusNode;
   String search = '';
   final searchDebounce = Debouncer(duration: const Duration(milliseconds: 500));
   Set<String>? _selected;
@@ -127,6 +128,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   @override
   void initState() {
     super.initState();
+    _focusNode = widget.focusNode ?? FocusNode();
 
     _selected = widget.selected;
 
@@ -202,9 +204,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                         filled: true,
                         hintText: l(context).searchTheFediverse,
                       ),
-                      focusNode: widget.focusNode,
+                      focusNode: _focusNode,
                       onTapOutside: (event) {
-                        widget.focusNode?.unfocus();
+                        _focusNode.unfocus();
                       },
                     ),
                     const SizedBox(height: 12),
