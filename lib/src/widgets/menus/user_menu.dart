@@ -119,15 +119,17 @@ Future<void> showUserMenu(
         ),
       ContextMenuItem(
         title: l(context).tags,
-        onTap: () => pushRoute(
-          context,
-          builder: (context) => TagsScreen(
-            username: user.name,
-            onUpdate: (tags) async {
-              await ac.reassignTagsToUser(tags, user.name);
-            },
-          ),
-        ),
+        onTap: () async {
+          showModalBottomSheet(
+              context: context,
+              builder: (context) => TagsList(
+                username: user.name,
+                onUpdate: (tags) async {
+                  await ac.reassignTagsToUser(tags, user.name);
+                },
+              )
+          );
+        }
       ),
     ],
   ).openMenu(context);

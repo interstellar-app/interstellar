@@ -6,11 +6,12 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_editor.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:provider/provider.dart';
 
-class TagsScreen extends StatefulWidget {
-  const TagsScreen({
+class TagsList extends StatefulWidget {
+  const TagsList({
     super.key,
     this.activeTags,
     this.availableTags,
@@ -24,12 +25,22 @@ class TagsScreen extends StatefulWidget {
   final String? username;
 
   @override
-  State<TagsScreen> createState() => _TagsScreenState();
+  State<TagsList> createState() => _TagsListState();
 }
 
-class _TagsScreenState extends State<TagsScreen> {
+class _TagsListState extends State<TagsList> {
   List<Tag> _activeTags = [];
   List<Tag> _availableTags = [];
+
+  @override
+  void didUpdateWidget(covariant TagsList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.availableTags != _availableTags) {
+      setState(() {
+        _availableTags = widget.availableTags!;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -50,7 +61,7 @@ class _TagsScreenState extends State<TagsScreen> {
     }
     if (widget.availableTags != null) {
       setState(() {
-        _availableTags = widget.activeTags!;
+        _availableTags = widget.availableTags!;
       });
     } else {
       ac.getTags().then(
@@ -63,13 +74,41 @@ class _TagsScreenState extends State<TagsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ac = context.read<AppController>();
-
     final activeTagIds = _activeTags.map((tag) => tag.id).toList();
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l(context).tags)),
-      body: ListView.builder(
+    return Wrapper(
+      shouldWrap: widget.onUpdate != null,
+      parentBuilder: (child) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              l(context).tags,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Flexible(
+            child: Stack(
+              children: [
+                child,
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: TagsFloatingButton(
+                    onUpdate: (newTag) => setState(() {
+                      _availableTags = [..._availableTags, newTag];
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      child: ListView.builder(
         itemCount: _availableTags.length,
         itemBuilder: (context, index) {
           final tag = _availableTags[index];
@@ -133,70 +172,6 @@ class _TagsScreenState extends State<TagsScreen> {
                     icon: const Icon(Symbols.edit_rounded),
                   ),
           );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text(l(context).tags_new),
-        icon: Icon(Symbols.add_rounded),
-        onPressed: () async {
-          Tag? tag;
-          try {
-            tag = await ac.addTag();
-          } catch (err) {
-            if (!context.mounted) return;
-            await showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(l(context).tags_exist),
-                  actions: [
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(l(context).cancel),
-                    ),
-                    LoadingFilledButton(
-                      onPressed: () async {
-                        int num = 0;
-                        while (tag == null) {
-                          try {
-                            tag = await ac.addTag(tag: 'Tag ${num++}');
-                          } catch (err) {
-                            //
-                          }
-                        }
-                        if (!context.mounted) return;
-                        Navigator.pop(context);
-                      },
-                      label: Text(l(context).rename),
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-          if (!context.mounted || tag == null) return;
-          bool cancelled = true;
-          await pushRoute(
-            context,
-            builder: (context) => TagEditor(
-              tag: tag!,
-              onUpdate: (newTag) async {
-                cancelled = false;
-                if (newTag == null) {
-                  await ac.removeTag(tag!);
-                  return;
-                }
-                setState(() {
-                  _availableTags = [..._availableTags, newTag];
-                });
-              },
-            ),
-          );
-          if (cancelled) {
-            await ac.removeTag(tag!);
-          }
         },
       ),
     );
@@ -272,6 +247,138 @@ class TagUsersScreenState extends State<TagUsersScreen> {
                   )
                   .toList(),
             ),
+    );
+  }
+}
+
+class TagsFloatingButton extends StatelessWidget {
+  const TagsFloatingButton({super.key, required this.onUpdate});
+
+  final Function(Tag) onUpdate;
+
+  @override
+  Widget build(BuildContext context) {
+    final ac = context.read<AppController>();
+
+    return FloatingActionButton.extended(
+      label: Text(l(context).tags_new),
+      icon: Icon(Symbols.add_rounded),
+      onPressed: () async {
+        Tag? tag;
+        try {
+          tag = await ac.addTag();
+        } catch (err) {
+          if (!context.mounted) return;
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(l(context).tags_exist),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(l(context).cancel),
+                  ),
+                  LoadingFilledButton(
+                    onPressed: () async {
+                      int num = 0;
+                      while (tag == null) {
+                        try {
+                          tag = await ac.addTag(tag: 'Tag ${num++}');
+                        } catch (err) {
+                          //
+                        }
+                      }
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    },
+                    label: Text(l(context).rename),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        if (!context.mounted || tag == null) return;
+        bool cancelled = true;
+        await pushRoute(
+          context,
+          builder: (context) => TagEditor(
+            tag: tag!,
+            onUpdate: (newTag) async {
+              cancelled = false;
+              if (newTag == null) {
+                await ac.removeTag(tag!);
+                return;
+              }
+              onUpdate(newTag);
+            },
+          ),
+        );
+        if (cancelled) {
+          await ac.removeTag(tag!);
+        }
+      },
+    );
+  }
+}
+
+class TagsScreen extends StatefulWidget {
+  const TagsScreen({
+    super.key,
+    this.activeTags,
+    this.availableTags,
+    this.username,
+    this.onUpdate,
+  });
+
+  final List<Tag>? activeTags;
+  final List<Tag>? availableTags;
+  final void Function(List<Tag>)? onUpdate;
+  final String? username;
+
+  @override
+  State<TagsScreen> createState() => _TagsScreenState();
+}
+
+class _TagsScreenState extends State<TagsScreen> {
+  List<Tag> _availableTags = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.availableTags != null) {
+      setState(() {
+        _availableTags = widget.availableTags!;
+      });
+    } else {
+      context.read<AppController>().getTags().then(
+        (tags) => setState(() {
+          _availableTags = tags;
+        }),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(l(context).tags)),
+      body: TagsList(
+        activeTags: widget.activeTags,
+        availableTags: _availableTags,
+        username: widget.username,
+        onUpdate: widget.onUpdate,
+      ),
+      floatingActionButton: TagsFloatingButton(
+        onUpdate: (newTag) {
+          setState(() {
+            _availableTags = [..._availableTags, newTag];
+          });
+        },
+      ),
     );
   }
 }
