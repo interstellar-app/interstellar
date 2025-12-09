@@ -36,15 +36,11 @@ class _PollState extends State<Poll> {
   String getTimeTillExpire() {
     final diff = widget.poll.endPoll.difference(DateTime.now());
 
-    final years = (diff.inDays / 365).toInt();
     final days = diff.inDays;
     final hours = diff.inHours;
     final minutes = diff.inMinutes;
     final seconds = diff.inSeconds;
 
-    if (years.abs() != 0) {
-      return l(context).pollExpiry_years(years);
-    }
     if (days.abs() != 0) {
       return l(context).pollExpiry_days(days);
     }
