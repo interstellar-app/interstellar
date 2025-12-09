@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +23,7 @@ import 'package:interstellar/src/widgets/tags/post_flairs.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +62,7 @@ class _CreateScreenState extends State<CreateScreen> {
     TextEditingController(text: 'Option 0'),
   ];
   bool _pollModeMultiple = false;
-  Duration _pollDuration = Duration();
+  Duration _pollDuration = Duration(days: 3);
 
   @override
   void initState() {
@@ -241,21 +244,36 @@ class _CreateScreenState extends State<CreateScreen> {
 
     Widget pollOptionsWidget() => Column(
       children: [
-        ..._pollOptions.map(
-          (option) => Padding(
-            padding: const EdgeInsets.all(5),
-            child: Row(
-              children: [
-                Expanded(child: TextEditor(option)),
-                IconButton(
-                  onPressed: () => setState(() {
-                    _pollOptions.remove(option);
-                  }),
-                  icon: const Icon(Symbols.delete_rounded),
-                ),
-              ],
+        ReorderableListView.builder(
+            shrinkWrap: true,
+            itemBuilder: (context, index) => ListTile(
+              key: Key(index.toString()),
+              title: TextEditor(_pollOptions[index]),
+              trailing: Wrapper(
+                  shouldWrap: Platform.isIOS || Platform.isAndroid,
+                  parentBuilder: (child) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      child,
+                      const Icon(Symbols.drag_handle_rounded)
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: () => setState(() {
+                      _pollOptions.remove(_pollOptions[index]);
+                    }),
+                    icon: const Icon(Symbols.delete_rounded),
+                  )
+              ),
             ),
-          ),
+            itemCount: _pollOptions.length,
+            onReorder: (int oldIndex, int newIndex) => setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final item = _pollOptions.removeAt(oldIndex);
+              _pollOptions.insert(newIndex, item);
+            })
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -599,12 +617,12 @@ class _CreateScreenState extends State<CreateScreen> {
 
 SelectionMenu<Duration?> pollDuration(BuildContext context) =>
     SelectionMenu(l(context).pollDuration, [
-      SelectionMenuItem(value: Duration(minutes: 30), title: '30 minutes'),
-      SelectionMenuItem(value: Duration(hours: 1), title: '1 hour'),
-      SelectionMenuItem(value: Duration(hours: 6), title: '6 hours'),
-      SelectionMenuItem(value: Duration(hours: 12), title: '12 hours'),
-      SelectionMenuItem(value: Duration(days: 1), title: '1 day'),
-      SelectionMenuItem(value: Duration(days: 3), title: '3 days'),
-      SelectionMenuItem(value: Duration(days: 7), title: '7 days'),
-      SelectionMenuItem(value: Duration(), title: 'Unlimited'),
+      SelectionMenuItem(value: Duration(minutes: 30), title: l(context).pollDuration_minutes(30)),
+      SelectionMenuItem(value: Duration(hours: 1), title: l(context).pollDuration_hours(1)),
+      SelectionMenuItem(value: Duration(hours: 6), title: l(context).pollDuration_hours(6)),
+      SelectionMenuItem(value: Duration(hours: 12), title: l(context).pollDuration_hours(12)),
+      SelectionMenuItem(value: Duration(days: 1), title: l(context).pollDuration_days(1)),
+      SelectionMenuItem(value: Duration(days: 3), title: l(context).pollDuration_days(3)),
+      SelectionMenuItem(value: Duration(days: 7), title: l(context).pollDuration_days(7)),
+      SelectionMenuItem(value: Duration(days: 365), title: l(context).pollDuration_days(365)),
     ]);
