@@ -304,24 +304,23 @@ class _CreateScreenState extends State<CreateScreen> {
     Widget? postFlairsWidget() {
       if (ac.serverSoftware == ServerSoftware.piefed &&
           (_community?.flairs.isNotEmpty ?? false)) {
-        return ListTile(
-          title: Wrap(
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: Wrap(
+            runSpacing: 4,
             children: [
               ..._postFlairs.map((flair) => TagWidget(tag: flair)),
-              ElevatedButton(
-                onPressed: () => pushRoute(
-                  context,
-                  builder: (context) => PostFlairs(
+              OutlinedButton.icon(
+                label: Text(l(context).editFlairs),
+                icon: Icon(Symbols.edit_rounded),
+                onPressed: () => showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) => PostFlairsModal(
                     flairs: _postFlairs,
                     availableFlairs: _community!.flairs,
-                    onUpdate: (flairs) {
-                      setState(() {
-                        _postFlairs = flairs;
-                      });
-                    },
+                    onUpdate: (flairs) => setState(() => _postFlairs = flairs),
                   ),
                 ),
-                child: Text(l(context).editFlairs),
               ),
             ],
           ),

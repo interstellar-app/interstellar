@@ -234,9 +234,7 @@ class ContentInfo extends StatelessWidget {
           child: Wrap(
             runSpacing: 5,
             crossAxisAlignment: WrapCrossAlignment.center,
-            children: userTags
-                .map((tag) => TagWidget(tag: tag, size: 10))
-                .toList(),
+            children: userTags.map((tag) => TagWidget(tag: tag)).toList(),
           ),
         ),
       ],
