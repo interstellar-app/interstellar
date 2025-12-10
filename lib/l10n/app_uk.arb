@@ -1272,5 +1272,67 @@
     "editFlairs": "Редагувати стилі",
     "@editFlairs": {},
     "addFlair": "Додати родзинку",
-    "@addFlair": {}
+    "@addFlair": {},
+    "color": "Колір",
+    "@color": {},
+    "tags_new": "Новий тег",
+    "@tags_new": {},
+    "tags_noUsers": "Користувачів із цим тегом не знайдено. Щоб розпочати, призначте тег користувачеві на сторінці його профілю.",
+    "@tags_noUsers": {},
+    "pollDuration_minutes": "{count} {count, plural, =1{хвилина} other{хвилин}}",
+    "@pollDuration_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_hours": "{count} {count, plural, =1{година} other{години}}",
+    "@pollDuration_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_days": "{count} {count, plural, =1{день} other{дні}}",
+    "@pollDuration_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_days": "{count} {count, plural, =1{день} other{днів}} залишилося",
+    "@pollExpiry_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_hours": "{count} {count, plural, =1{година} other{години}} залишається",
+    "@pollExpiry_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_minutes": "{count} {count, plural, =1{хвилина} other{хвилин}} залишається",
+    "@pollExpiry_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_seconds": "{count} {count, plural, =1{секунда} other{секунд}} залишається",
+    "@pollExpiry_seconds": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    }
 }
