@@ -50,7 +50,7 @@ class _TagEditorState extends State<TagEditor> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                title: Text(l(context).tags_backgroundColor),
+                title: Text(l(context).color),
                 onTap: () {
                   Color c = _backgroundColor;
                   showDialog(

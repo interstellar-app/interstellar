@@ -205,17 +205,12 @@ class _ContentItemState extends State<ContentItem> {
   void initState() {
     super.initState();
     if (widget.user != null) {
-      context
-          .read<AppController>()
-          .getUserTags(widget.user!.name)
-          .then(
-            (tags) {
-              if (!mounted) return;
-              setState(() {
-                _userTags = [...widget.user!.tags, ...tags];
-              });
-            }
-          );
+      context.read<AppController>().getUserTags(widget.user!.name).then((tags) {
+        if (!mounted) return;
+        setState(() {
+          _userTags = [...widget.user!.tags, ...tags];
+        });
+      });
     }
   }
 
@@ -425,7 +420,7 @@ class _ContentItemState extends State<ContentItem> {
                   widget.flairs.isNotEmpty
                       ? Wrap(
                           children: widget.flairs
-                              .map((flair) => TagWidget(tag: flair, size: 10))
+                              .map((flair) => TagWidget(tag: flair))
                               .toList(),
                         )
                       : null,

@@ -223,9 +223,9 @@ Future<void> showContentMenu(
           onTap: () async {
             final community = await ac.api.community.get(widget.community!.id);
             if (!context.mounted) return;
-            pushRoute(
-              context,
-              builder: (context) => PostFlairs(
+            showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) => PostFlairsModal(
                 flairs: widget.flairs,
                 availableFlairs: community.flairs,
                 onUpdate: (flairs) async {

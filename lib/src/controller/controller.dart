@@ -1058,7 +1058,22 @@ class AppController with ChangeNotifier {
     )..where((f) => f.id.equals(tag.id))).go();
   }
 
-  Future<void> assignTagToUser(Tag tag, String user) async {
+  Future<void> reassignTagsToUser(List<Tag> tags, String user) =>
+      database.transaction(() async {
+        final username = normalizeName(user, instanceHost);
+
+        await (database.delete(
+          database.userTags,
+        )..where((userTags) => userTags.user.equals(username))).go();
+
+        for (final tag in tags) {
+          await database
+              .into(database.userTags)
+              .insert(UserTagsCompanion.insert(user: username, tagId: tag.id));
+        }
+      });
+
+  Future<void> addTagToUser(Tag tag, String user) async {
     await database
         .into(database.userTags)
         .insertOnConflictUpdate(
@@ -1097,13 +1112,17 @@ class AppController with ChangeNotifier {
     return t.map((tag) => tag.readTable(database.tags)).toList();
   }
 
+  Future<List<String>> getTagUsers(int tagId) async {
+    final query = database.select(database.userTags);
+
+    final t = await (query..where((userTags) => userTags.tagId.equals(tagId)))
+        .get();
+
+    return t.map((userTag) => userTag.user).toList();
+  }
+
   Future<List<Tag>> getTags() async {
     final query = database.select(database.tags);
     return query.get();
-  }
-  
-  Future<List<String>> getTaggedUsers() async {
-    final query = database.select(database.userTags).map((u) => u.user);
-    return (await query.get()).toSet().toList();
   }
 }
