@@ -753,6 +753,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   bool get wantKeepAlive => true;
 
   Future<(List<PostModel>, String?)> _tryFetchPage(String pageKey) async {
+    if (!mounted) return (<PostModel>[], null);
     final ac = context.read<AppController>();
 
     final page = await _aggregator.fetchPage(
