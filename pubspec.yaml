@@ -3,11 +3,11 @@ name: interstellar
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.10.1+21
+version: 0.11.0+22
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
-  flutter: 3.35.4
+  flutter: 3.38.4
 
 dependencies:
   flutter:
