@@ -35,7 +35,8 @@ class _TagsListState extends State<TagsList> {
   @override
   void didUpdateWidget(covariant TagsList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.availableTags != _availableTags) {
+    if (widget.availableTags != null &&
+        widget.availableTags != _availableTags) {
       setState(() {
         _availableTags = widget.availableTags!;
       });
@@ -147,30 +148,28 @@ class _TagsListState extends State<TagsList> {
                     icon: Icon(Symbols.person_rounded),
                   ),
             onTap: widget.onUpdate != null ? () => toggleTag(!isActive) : null,
-            trailing: widget.availableTags != null
-                ? null
-                : IconButton(
-                    onPressed: () => pushRoute(
-                      context,
-                      builder: (context) => TagEditor(
-                        tag: tag,
-                        onUpdate: (tag) => setState(() {
-                          final newAvailableTags = [..._availableTags];
+            trailing: IconButton(
+              onPressed: () => pushRoute(
+                context,
+                builder: (context) => TagEditor(
+                  tag: tag,
+                  onUpdate: (tag) => setState(() {
+                    final newAvailableTags = [..._availableTags];
 
-                          if (tag == null) {
-                            newAvailableTags.removeAt(index);
-                          } else {
-                            newAvailableTags[index] = tag;
-                          }
+                    if (tag == null) {
+                      newAvailableTags.removeAt(index);
+                    } else {
+                      newAvailableTags[index] = tag;
+                    }
 
-                          setState(() {
-                            _availableTags = newAvailableTags;
-                          });
-                        }),
-                      ),
-                    ),
-                    icon: const Icon(Symbols.edit_rounded),
-                  ),
+                    setState(() {
+                      _availableTags = newAvailableTags;
+                    });
+                  }),
+                ),
+              ),
+              icon: const Icon(Symbols.edit_rounded),
+            ),
           );
         },
       ),
@@ -326,18 +325,7 @@ class TagsFloatingButton extends StatelessWidget {
 }
 
 class TagsScreen extends StatefulWidget {
-  const TagsScreen({
-    super.key,
-    this.activeTags,
-    this.availableTags,
-    this.username,
-    this.onUpdate,
-  });
-
-  final List<Tag>? activeTags;
-  final List<Tag>? availableTags;
-  final void Function(List<Tag>)? onUpdate;
-  final String? username;
+  const TagsScreen({super.key});
 
   @override
   State<TagsScreen> createState() => _TagsScreenState();
@@ -349,29 +337,19 @@ class _TagsScreenState extends State<TagsScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.availableTags != null) {
-      setState(() {
-        _availableTags = widget.availableTags!;
-      });
-    } else {
-      context.read<AppController>().getTags().then(
-        (tags) => setState(() {
-          _availableTags = tags;
-        }),
-      );
-    }
+
+    context.read<AppController>().getTags().then(
+      (tags) => setState(() {
+        _availableTags = tags;
+      }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(l(context).tags)),
-      body: TagsList(
-        activeTags: widget.activeTags,
-        availableTags: _availableTags,
-        username: widget.username,
-        onUpdate: widget.onUpdate,
-      ),
+      body: TagsList(availableTags: _availableTags),
       floatingActionButton: TagsFloatingButton(
         onUpdate: (newTag) {
           setState(() {
