@@ -111,14 +111,32 @@ class _TagEditorState extends State<TagEditor> {
                   padding: const EdgeInsets.only(right: 8),
                   child: FilledButton(
                     onPressed: () async {
-                      final tag = await ac.setTag(
-                        Tag(
-                          id: widget.tag.id,
-                          tag: _tagController.text,
-                          backgroundColor: _backgroundColor,
-                          textColor: _textColor,
-                        ),
-                      );
+                      Tag tag;
+                      try {
+                        tag = await ac.setTag(
+                          Tag(
+                            id: widget.tag.id,
+                            tag: _tagController.text,
+                            backgroundColor: _backgroundColor,
+                            textColor: _textColor,
+                          ),
+                        );
+                      } catch (err) {
+                        if (!context.mounted) return;
+                        await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(l(context).tags_exist),
+                            actions: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(l(context).okay),
+                              ),
+                            ],
+                          ),
+                        );
+                        return;
+                      }
                       widget.onUpdate(tag);
                       if (!context.mounted) return;
                       Navigator.pop(context);

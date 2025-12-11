@@ -13,6 +13,7 @@
   "refreshAuth": "Refresh login",
   "totpToken": "TOTP Token (if needed)",
   "cancel": "Cancel",
+  "okay": "Okay",
   "rename": "Rename",
   "replace": "Replace",
   "continue_": "Continue",
