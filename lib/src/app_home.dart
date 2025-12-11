@@ -38,6 +38,8 @@ class _AppHomeState extends State<AppHome> {
 
   void _changeNav(int newIndex) {
     if (newIndex == _navIndex) {
+      final ac = context.read<AppController>();
+
       switch (newIndex) {
         case 0:
           _feedScrollController.animateTo(
@@ -51,7 +53,6 @@ class _AppHomeState extends State<AppHome> {
           return;
         case 2:
           () async {
-            final ac = context.read<AppController>();
             final newAccount = await switchAccount(context);
             if (newAccount == null || newAccount == ac.selectedAccount) {
               return;
@@ -61,21 +62,23 @@ class _AppHomeState extends State<AppHome> {
           }();
           return;
         case 3:
-          pushRoute(
-            context,
-            builder: (context) => ExploreScreen(
-              mode: ExploreType.people,
-              title: l(context).newChat,
-              onTap: (selected, item) async {
-                Navigator.pop(context);
-                await pushRoute(
-                  context,
-                  builder: (context) =>
-                      MessageThreadScreen(threadId: null, otherUser: item),
-                );
-              },
-            ),
-          );
+          if (ac.isLoggedIn) {
+            pushRoute(
+              context,
+              builder: (context) => ExploreScreen(
+                mode: ExploreType.people,
+                title: l(context).newChat,
+                onTap: (selected, item) async {
+                  Navigator.pop(context);
+                  await pushRoute(
+                    context,
+                    builder: (context) =>
+                        MessageThreadScreen(threadId: null, otherUser: item),
+                  );
+                },
+              ),
+            );
+          }
         case 4:
           switchProfileSelect(context);
           return;
