@@ -89,9 +89,8 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
               ...ac.accounts.keys
                   .where(
                     (account) =>
-                        (!widget.onlyNonGuestAccounts ||
-                            account.split('@').first.isNotEmpty) &&
-                        account.isNotEmpty,
+                        !widget.onlyNonGuestAccounts ||
+                        account.split('@').first.isNotEmpty,
                   )
                   .map(
                     (account) => ListTile(

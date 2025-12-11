@@ -50,7 +50,8 @@ class CredentialsConverter extends TypeConverter<Credentials, String>
 }
 
 class Accounts extends Table {
-  TextColumn get handle => text().clientDefault(() => '@kbin.earth')();
+  TextColumn get handle =>
+      text().withLength(min: 1).clientDefault(() => '@kbin.earth')();
   TextColumn get oauth => text().map(const CredentialsConverter()).nullable()();
   TextColumn get jwt => text().nullable()();
   BoolColumn get isPushRegistered => boolean().withDefault(Constant(false))();
@@ -61,7 +62,7 @@ class Accounts extends Table {
 
 @DataClassName('RawFeed')
 class Feeds extends Table {
-  TextColumn get name => text()();
+  TextColumn get name => text().withLength(min: 1)();
 
   @override
   Set<Column<Object>> get primaryKey => {name};
@@ -75,7 +76,7 @@ class FeedInputs extends Table {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
-  TextColumn get name => text()();
+  TextColumn get name => text().withLength(min: 1)();
   TextColumn get source => textEnum<FeedSource>()();
 
   @override
@@ -98,7 +99,7 @@ class FeedSourceCache extends Table {
 }
 
 class Servers extends Table {
-  TextColumn get name => text()();
+  TextColumn get name => text().withLength(min: 1)();
   TextColumn get software => textEnum<ServerSoftware>()();
   TextColumn get oauthIdentifier => text().nullable()();
 
@@ -134,7 +135,7 @@ class FilterListConverter extends TypeConverter<Set<String>, String> {
 
 @UseRowClass(FilterList)
 class FilterLists extends Table {
-  TextColumn get name => text()();
+  TextColumn get name => text().withLength(min: 1)();
   TextColumn get phrases => text().map(const FilterListConverter())();
   TextColumn get matchMode => textEnum<FilterListMatchMode>()();
   BoolColumn get caseSensitive => boolean()();
@@ -244,7 +245,8 @@ class FeedSortListConverter extends TypeConverter<List<FeedSort>, String> {
 
 @UseRowClass(ProfileOptional)
 class Profiles extends Table {
-  TextColumn get name => text().clientDefault(() => 'Default')();
+  TextColumn get name =>
+      text().withLength(min: 1).clientDefault(() => 'Default')();
 
   TextColumn get autoSwitchAccount => text().nullable().references(
     Accounts,
@@ -327,7 +329,7 @@ class Profiles extends Table {
 
 class Stars extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text()();
+  TextColumn get name => text().withLength(min: 1)();
 }
 
 // Table to store misc data that is either one off or doesn't fit into other tables
@@ -387,14 +389,23 @@ class ColorConverter extends TypeConverter<Color, int> {
 
 class Tags extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get tag => text().unique()();
-  IntColumn get backgroundColor => integer().map(const ColorConverter()).clientDefault(() => Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit)();
-  IntColumn get textColor => integer().map(const ColorConverter()).clientDefault(() => Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit)();
+  TextColumn get tag => text().unique().withLength(min: 1)();
+  IntColumn get backgroundColor => integer()
+      .map(const ColorConverter())
+      .clientDefault(
+        () => Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit,
+      )();
+  IntColumn get textColor => integer()
+      .map(const ColorConverter())
+      .clientDefault(
+        () => Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit,
+      )();
 }
 
 class UserTags extends Table {
   TextColumn get user => text()();
-  IntColumn get tagId => integer().references(Tags, #id, onDelete: KeyAction.cascade)();
+  IntColumn get tagId =>
+      integer().references(Tags, #id, onDelete: KeyAction.cascade)();
 
   @override
   Set<Column<Object>> get primaryKey => {user, tagId};
