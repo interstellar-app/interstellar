@@ -55,11 +55,11 @@
     "@threads": {},
     "microblog": "Мікроблог",
     "@microblog": {},
-    "feed": "Годувати",
+    "feed": "Стрічка",
     "@feed": {},
     "explore": "Дослідити",
     "@explore": {},
-    "accounts": "Рахунки",
+    "accounts": "Облікові записи",
     "@accounts": {},
     "instanceHost": "Вузол екземпляра",
     "@instanceHost": {},
@@ -167,8 +167,6 @@
     "@settings_colorScheme_mallardGreen": {},
     "settings_colorScheme_outerSpace": "Космічний простір",
     "@settings_colorScheme_outerSpace": {},
-    "settings_customLanguageFilter": "Фільтр власної мови",
-    "@settings_customLanguageFilter": {},
     "originalPoster_long": "Оригінальний плакат",
     "@originalPoster_long": {},
     "originalPoster_short": "ОП",
@@ -644,10 +642,6 @@
     "@settings_about": {},
     "settings_defaultCreateLanguage": "Мова створення публікацій/коментарів за замовчуванням",
     "@settings_defaultCreateLanguage": {},
-    "settings_useAccountLanguageFilter": "Використати мовний фільтр облікового запису",
-    "@settings_useAccountLanguageFilter": {},
-    "settings_useAccountLanguageFilter_help": "Зверніть увагу: мовні фільтри застосовуються лише до стрічок \"Усі\" та \"Огляд\"",
-    "@settings_useAccountLanguageFilter_help": {},
     "settings_disableTabSwiping": "Вимкнути гортання вкладок",
     "@settings_disableTabSwiping": {},
     "settings_askBeforeUnsubscribing": "Запитати перед відпискою/скасуванням підписки",
@@ -1155,7 +1149,7 @@
     "@serverTopic": {},
     "serverTopicSubtitle": "Вхідні дані стрічки об'єднані на сервері. Відповідає темі PieFed.",
     "@serverTopicSubtitle": {},
-    "crossPosts": "Поперечні стовпи",
+    "crossPosts": "Поперечні публікації",
     "@crossPosts": {},
     "crossPostCount": "{count} хрест {count, plural, =1{пост} other{пости}}",
     "@crossPostCount": {
@@ -1175,7 +1169,7 @@
     },
     "settings_crosspostComments": "Показати розділи коментарів до перехресних публікацій",
     "@settings_crosspostComments": {},
-    "settings_crossPostMarkAsRead": "Позначити перехресні повідомлення як прочитані",
+    "settings_crossPostMarkAsRead": "Позначити перехресні дописи як прочитані",
     "@settings_crossPostMarkAsRead": {},
     "pushNotificationsDialog_title": "Push-сповіщення",
     "@pushNotificationsDialog_title": {},
@@ -1192,5 +1186,153 @@
     "inbox": "Вхідні",
     "@inbox": {},
     "newChat": "Новий чат",
-    "@newChat": {}
+    "@newChat": {},
+    "openItem": "Відкрити {item}",
+    "@openItem": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_debug_inspectDatabase": "Перевірити базу даних",
+    "@settings_debug_inspectDatabase": {},
+    "settings_debug_exportDatabase": "Експорт бази даних",
+    "@settings_debug_exportDatabase": {},
+    "settings_debug_importDatabase": "Імпорт бази даних",
+    "@settings_debug_importDatabase": {},
+    "settings_debug_clearReadPosts": "Очистити прочитані дописи",
+    "@settings_debug_clearReadPosts": {},
+    "settings_debug_clearFeedCache": "Очистити кеш стрічки",
+    "@settings_debug_clearFeedCache": {},
+    "translate": "Перекласти",
+    "@translate": {},
+    "user": "Користувач",
+    "@user": {},
+    "subscribe": "Підписатися",
+    "@subscribe": {},
+    "refreshAuth": "Оновити вхід",
+    "@refreshAuth": {},
+    "searchSource": "Пошук {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_imageStore": "Сховище зображень за замовчуванням",
+    "@settings_imageStore": {},
+    "settings_feedSourceOrder": "Порядок джерела каналу",
+    "@settings_feedSourceOrder": {},
+    "settings_feedViewOrder": "Порядок перегляду стрічки",
+    "@settings_feedViewOrder": {},
+    "settings_feedSortOrder": "Порядок сортування стрічки",
+    "@settings_feedSortOrder": {},
+    "errorPage_authError": "Схоже, виникла проблема з авторизацією облікового запису.\nНатисніть кнопку нижче, щоб оновити авторизацію.",
+    "@errorPage_authError": {},
+    "settings_dividerThickness": "Товщина роздільника",
+    "@settings_dividerThickness": {},
+    "settings_postsAsCards": "Показувати публікації як картки",
+    "@settings_postsAsCards": {},
+    "settings_postLayoutOrder": "Порядок макета публікації",
+    "@settings_postLayoutOrder": {},
+    "tags_exist": "Тег існує",
+    "@tags_exist": {},
+    "tags_users": "Позначені користувачі",
+    "@tags_users": {},
+    "pickColor": "Виберіть колір",
+    "@pickColor": {},
+    "settings_debug_clearTags": "Очистити теги користувачів",
+    "@settings_debug_clearTags": {},
+    "poll": "Опитування",
+    "@poll": {},
+    "addChoice": "Додати вибір",
+    "@addChoice": {},
+    "pollDuration": "Тривалість опитування",
+    "@pollDuration": {},
+    "pollMode": "Дозволити кілька варіантів вибору",
+    "@pollMode": {},
+    "pollShowResults": "Показати результати",
+    "@pollShowResults": {},
+    "pollHideResults": "Приховати результати",
+    "@pollHideResults": {},
+    "pollSubmitError": "Перед надсиланням потрібно вибрати хоча б один варіант.",
+    "@pollSubmitError": {},
+    "pollVotes": "{count} {count, plural, =1{голос} other{голоси}}",
+    "@pollVotes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "crossPost": "Поперечний публікацій",
+    "@crossPost": {},
+    "editFlairs": "Редагувати стилі",
+    "@editFlairs": {},
+    "addFlair": "Додати родзинку",
+    "@addFlair": {},
+    "color": "Колір",
+    "@color": {},
+    "tags_new": "Новий тег",
+    "@tags_new": {},
+    "tags_noUsers": "Користувачів із цим тегом не знайдено. Щоб розпочати, призначте тег користувачеві на сторінці його профілю.",
+    "@tags_noUsers": {},
+    "pollDuration_minutes": "{count} {count, plural, =1{хвилина} other{хвилин}}",
+    "@pollDuration_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_hours": "{count} {count, plural, =1{година} other{години}}",
+    "@pollDuration_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_days": "{count} {count, plural, =1{день} other{дні}}",
+    "@pollDuration_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_days": "{count} {count, plural, =1{день} other{днів}} залишилося",
+    "@pollExpiry_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_hours": "{count} {count, plural, =1{година} other{години}} залишається",
+    "@pollExpiry_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_minutes": "{count} {count, plural, =1{хвилина} other{хвилин}} залишається",
+    "@pollExpiry_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_seconds": "{count} {count, plural, =1{секунда} other{секунд}} залишається",
+    "@pollExpiry_seconds": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    }
 }
