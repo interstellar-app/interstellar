@@ -14,7 +14,6 @@
 #include <share_plus/share_plus_windows_plugin_c_api.h>
 #include <sqlite3_flutter_libs/sqlite3_flutter_libs_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
-#include <volume_controller/volume_controller_plugin_c_api.h>
 #include <webcrypto/webcrypto_plugin.h>
 #include <window_manager/window_manager_plugin.h>
 
@@ -35,8 +34,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("Sqlite3FlutterLibsPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("UrlLauncherWindows"));
-  VolumeControllerPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("VolumeControllerPluginCApi"));
   WebcryptoPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("WebcryptoPlugin"));
   WindowManagerPluginRegisterWithRegistrar(
