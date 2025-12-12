@@ -18,7 +18,6 @@ import share_plus
 import shared_preferences_foundation
 import sqlite3_flutter_libs
 import url_launcher_macos
-import volume_controller
 import wakelock_plus
 import webcrypto
 import webview_flutter_wkwebview
@@ -38,7 +37,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
   Sqlite3FlutterLibsPlugin.register(with: registry.registrar(forPlugin: "Sqlite3FlutterLibsPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
-  VolumeControllerPlugin.register(with: registry.registrar(forPlugin: "VolumeControllerPlugin"))
   WakelockPlusMacosPlugin.register(with: registry.registrar(forPlugin: "WakelockPlusMacosPlugin"))
   WebcryptoPlugin.register(with: registry.registrar(forPlugin: "WebcryptoPlugin"))
   WebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "WebViewFlutterPlugin"))
