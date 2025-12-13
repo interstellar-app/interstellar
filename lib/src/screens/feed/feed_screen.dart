@@ -555,11 +555,7 @@ class _FeedScreenState extends State<FeedScreen>
             parentBuilder: (child) => HideOnScroll(
               controller: _scrollController,
               hiddenOffset: Offset(0, 0.2),
-              duration: ac.profile.animationSpeed == 0
-                  ? Duration.zero
-                  : Duration(
-                milliseconds: (300 / ac.profile.animationSpeed).toInt(),
-              ),
+              duration: ac.calcAnimationDuration(),
               child: child
             ),
             child: FloatingMenu(

@@ -488,12 +488,8 @@ class _UserScreenState extends State<UserScreen> {
         shouldWrap: ac.profile.hideFeedUIOnScroll,
         parentBuilder: (child) => HideOnScroll(
           controller: _scrollController,
-          hiddenOffset: Offset(0, 1.5),
-          duration: ac.profile.animationSpeed == 0
-              ? Duration.zero
-              : Duration(
-                  milliseconds: (300 / ac.profile.animationSpeed).toInt(),
-                ),
+          hiddenOffset: Offset(0, 2),
+          duration: ac.calcAnimationDuration(),
           child: child,
         ),
         child: FloatingActionButton(
