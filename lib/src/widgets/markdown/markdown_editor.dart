@@ -238,8 +238,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   ),
                                 ),
                                 const Divider(height: 1, thickness: 1),
-                                Flexible(
-                                  fit: FlexFit.loose,
+                                Expanded(
                                   child: CallbackShortcuts(
                                     bindings: <ShortcutActivator, VoidCallback>{
                                       const SingleActivator(
