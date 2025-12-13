@@ -5,8 +5,10 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/hide_on_scroll.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -121,6 +123,7 @@ class _ExploreScreenState extends State<ExploreScreen>
       }
     },
   );
+  late final ScrollController _scrollController;
 
   @override
   bool get wantKeepAlive => true;
@@ -128,6 +131,8 @@ class _ExploreScreenState extends State<ExploreScreen>
   @override
   void initState() {
     super.initState();
+
+    _scrollController = ScrollController();
     _focusNode = widget.focusNode ?? FocusNode();
 
     _selected = widget.selected;
@@ -170,6 +175,7 @@ class _ExploreScreenState extends State<ExploreScreen>
       ),
       body: AdvancedPagedScrollView(
         controller: _pagingController,
+        scrollController: _scrollController,
         leadingSlivers: [
           if (!widget.subOnly &&
               widget.mode != ExploreType.feeds &&
@@ -463,6 +469,29 @@ class _ExploreScreenState extends State<ExploreScreen>
                   ),
           );
         },
+      ),
+      floatingActionButton: Wrapper(
+        shouldWrap: ac.profile.hideFeedUIOnScroll,
+        parentBuilder: (child) => HideOnScroll(
+          controller: _scrollController,
+          hiddenOffset: Offset(0, 1.5),
+          duration: ac.profile.animationSpeed == 0
+              ? Duration.zero
+              : Duration(
+                  milliseconds: (300 / ac.profile.animationSpeed).toInt(),
+                ),
+          child: child,
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            _scrollController.animateTo(
+              _scrollController.position.minScrollExtent,
+              duration: Durations.long1,
+              curve: Curves.easeInOut,
+            );
+          },
+          child: const Icon(Symbols.keyboard_double_arrow_up_rounded),
+        ),
       ),
     );
   }
