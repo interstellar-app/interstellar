@@ -352,7 +352,7 @@ class _ContentItemState extends State<ContentItem> {
           builder: (context, constraints) {
             final isThumbnail =
                 !isVideo &&
-                (constraints.maxWidth > 800 ||
+                ((constraints.maxWidth > 800 && !widget.fullImageSize) ||
                     (widget.image?.blurHashWidth ?? 500) <= 800 &&
                         widget.link != null);
             final image = getImage(
@@ -655,7 +655,7 @@ class _ContentItemState extends State<ContentItem> {
     final image = AdvancedImage(
       widget.image!,
       openTitle: imageOpenTitle,
-      fit: widget.fullImageSize ? BoxFit.scaleDown : BoxFit.fitWidth,
+      fit: fullImage || isThumbnail ? BoxFit.contain : BoxFit.fitWidth,
       enableBlur: enableBlur,
       hero: AdvancedImage.getHeroTag(),
     );
