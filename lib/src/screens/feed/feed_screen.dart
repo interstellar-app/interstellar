@@ -19,6 +19,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/floating_menu.dart';
+import 'package:interstellar/src/widgets/hide_on_scroll.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
@@ -49,13 +50,13 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen>
     with AutomaticKeepAliveClientMixin<FeedScreen> {
+  late final ScrollController _scrollController;
   final _fabKey = GlobalKey<FloatingMenuState>();
   final List<GlobalKey<_FeedScreenBodyState>> _feedKeyList = [];
   late FeedSource _filter;
   late FeedView _view;
   FeedSort? _sort;
   late bool _hideReadPosts;
-  bool _isHidden = false;
 
   final ExpandableController _drawerController = ExpandableController(
     initialExpanded: true,
@@ -215,6 +216,8 @@ class _FeedScreenState extends State<FeedScreen>
   @override
   void initState() {
     super.initState();
+
+    _scrollController = widget.scrollController ?? ScrollController();
 
     _filter =
         whenLoggedIn(
@@ -428,162 +431,145 @@ class _FeedScreenState extends State<FeedScreen>
       ),
       child: AdvancedScaffold(
         controller: _drawerController,
-        body: NotificationListener<UserScrollNotification>(
-          onNotification: (scroll) {
-            if (scroll.direction == ScrollDirection.forward) {
-              if (_isHidden) {
-                setState(() => _isHidden = false);
-              }
-            } else if (scroll.direction == ScrollDirection.reverse) {
-              if (!_isHidden) {
-                setState(() => _isHidden = true);
-              }
-            }
-            return true;
-          },
-          child: SafeArea(
-            child: NestedScrollView(
-              controller: widget.scrollController,
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, isScrolled) {
-                final currentFeedViewOption =
-                    tabsAction?.name == feedActionSetView(context).name
-                    ? FeedView.match(
-                        values: ac.profile.feedViewOrder,
-                        software: ac.serverSoftware.bitFlag,
-                      )[DefaultTabController.of(context).index]
-                    : feedViewSelect(context).getOption(_view).value;
-                final currentFeedSortOption =
-                    tabsAction?.name == feedActionSetSort(context).name
-                    ? ac.profile.feedSortOrder[DefaultTabController.of(
-                        context,
-                      ).index]
-                    : feedSortSelect(context).getOption(sort).value;
-                return [
-                  SliverAppBar(
-                    leading:
-                        widget.feed == null && Breakpoints.isExpanded(context)
-                        ? IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _drawerController.toggle();
-                              });
-                              ac.setExpandNavDrawer(_drawerController.expanded);
-                            },
-                            icon: const Icon(Symbols.menu_rounded),
-                          )
-                        : null,
-                    floating: ac.profile.hideFeedUIOnScroll,
-                    pinned: !ac.profile.hideFeedUIOnScroll,
-                    snap: ac.profile.hideFeedUIOnScroll,
-                    title: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        widget.feed != null
-                            ? widget.feed!.name
-                            : ac.selectedAccount +
-                                  (ac.isLoggedIn
-                                      ? ''
-                                      : ' (${l(context).guest})'),
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
-                      ),
-                      subtitle: Row(
-                        children: [
-                          Text(currentFeedViewOption.title(context)),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Text('•'),
-                          ),
-                          Icon(currentFeedSortOption.icon, size: 20),
-                          const SizedBox(width: 2),
-                          Text(currentFeedSortOption.title(context)),
-                        ],
-                      ),
+        body: SafeArea(
+          child: NestedScrollView(
+            controller: _scrollController,
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, isScrolled) {
+              final currentFeedViewOption =
+                  tabsAction?.name == feedActionSetView(context).name
+                  ? FeedView.match(
+                      values: ac.profile.feedViewOrder,
+                      software: ac.serverSoftware.bitFlag,
+                    )[DefaultTabController.of(context).index]
+                  : feedViewSelect(context).getOption(_view).value;
+              final currentFeedSortOption =
+                  tabsAction?.name == feedActionSetSort(context).name
+                  ? ac.profile.feedSortOrder[DefaultTabController.of(
+                      context,
+                    ).index]
+                  : feedSortSelect(context).getOption(sort).value;
+              return [
+                SliverAppBar(
+                  leading:
+                      widget.feed == null && Breakpoints.isExpanded(context)
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _drawerController.toggle();
+                            });
+                            ac.setExpandNavDrawer(_drawerController.expanded);
+                          },
+                          icon: const Icon(Symbols.menu_rounded),
+                        )
+                      : null,
+                  floating: ac.profile.hideFeedUIOnScroll,
+                  pinned: !ac.profile.hideFeedUIOnScroll,
+                  snap: ac.profile.hideFeedUIOnScroll,
+                  title: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      widget.feed != null
+                          ? widget.feed!.name
+                          : ac.selectedAccount +
+                                (ac.isLoggedIn ? '' : ' (${l(context).guest})'),
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
                     ),
-                    actions: actions
-                        .where(
-                          (action) => action.location == ActionLocation.appBar,
-                        )
-                        .map(
-                          (action) => Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: IconButton(
-                              tooltip: action.name,
-                              icon: Icon(action.icon),
-                              onPressed: action.callback,
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    bottom: tabsAction == null || tabs == null
-                        ? null
-                        : TabBar(
-                            tabAlignment: tabs.length > 5
-                                ? TabAlignment.start
-                                : null,
-                            isScrollable: tabs.length > 5,
-                            tabs: tabs,
-                          ),
+                    subtitle: Row(
+                      children: [
+                        Text(currentFeedViewOption.title(context)),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Text('•'),
+                        ),
+                        Icon(currentFeedSortOption.icon, size: 20),
+                        const SizedBox(width: 2),
+                        Text(currentFeedSortOption.title(context)),
+                      ],
+                    ),
                   ),
-                ];
-              },
-              body: Builder(
-                builder: (context) {
-                  final controller = tabsAction == null
-                      ? null
-                      : DefaultTabController.of(context);
-                  return tabsAction == null
-                      ? FeedScreenBody(
-                          key: _getFeedKey(0),
-                          feed:
-                              widget.feed ??
-                              FeedAggregator.fromSingleSource(
-                                ac,
-                                name: widget.feed?.name ?? '',
-                                source: _filter,
-                              ),
-                          sort: sort,
-                          view: _view,
-                          details: widget.details,
-                          hideReadPosts: _hideReadPosts,
-                          isActive: true,
-                        )
-                      : TabBarView(
-                          physics: appTabViewPhysics(context),
-                          children: _getFeedBodies(
-                            ac,
-                            tabsAction,
-                            userCanModerate,
-                            controller,
+                  actions: actions
+                      .where(
+                        (action) => action.location == ActionLocation.appBar,
+                      )
+                      .map(
+                        (action) => Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: IconButton(
+                            tooltip: action.name,
+                            icon: Icon(action.icon),
+                            onPressed: action.callback,
                           ),
-                        );
-                },
-              ),
+                        ),
+                      )
+                      .toList(),
+                  bottom: tabsAction == null || tabs == null
+                      ? null
+                      : TabBar(
+                          tabAlignment: tabs.length > 5
+                              ? TabAlignment.start
+                              : null,
+                          isScrollable: tabs.length > 5,
+                          tabs: tabs,
+                        ),
+                ),
+              ];
+            },
+            body: Builder(
+              builder: (context) {
+                final controller = tabsAction == null
+                    ? null
+                    : DefaultTabController.of(context);
+                return tabsAction == null
+                    ? FeedScreenBody(
+                        key: _getFeedKey(0),
+                        feed:
+                            widget.feed ??
+                            FeedAggregator.fromSingleSource(
+                              ac,
+                              name: widget.feed?.name ?? '',
+                              source: _filter,
+                            ),
+                        sort: sort,
+                        view: _view,
+                        details: widget.details,
+                        hideReadPosts: _hideReadPosts,
+                        isActive: true,
+                      )
+                    : TabBarView(
+                        physics: appTabViewPhysics(context),
+                        children: _getFeedBodies(
+                          ac,
+                          tabsAction,
+                          userCanModerate,
+                          controller,
+                        ),
+                      );
+              },
             ),
           ),
         ),
-        floatingActionButton: AnimatedSlide(
-          offset: _isHidden && ac.profile.hideFeedUIOnScroll
-              ? Offset(0, 0.2)
-              : Offset.zero,
-          duration: ac.profile.animationSpeed == 0
-              ? Duration.zero
-              : Duration(
-                  milliseconds: (300 / ac.profile.animationSpeed).toInt(),
-                ),
-          child: FloatingMenu(
-            key: _fabKey,
-            tapAction: actions
-                .where((action) => action.location == ActionLocation.fabTap)
-                .firstOrNull,
-            holdAction: actions
-                .where((action) => action.location == ActionLocation.fabHold)
-                .firstOrNull,
-            menuActions: actions
-                .where((action) => action.location == ActionLocation.fabMenu)
-                .toList(),
-          ),
+        floatingActionButton: Wrapper(
+            shouldWrap: ac.profile.hideFeedUIOnScroll,
+            parentBuilder: (child) => HideOnScroll(
+              controller: _scrollController,
+              hiddenOffset: Offset(0, 0.2),
+              duration: ac.calcAnimationDuration(),
+              child: child
+            ),
+            child: FloatingMenu(
+              key: _fabKey,
+              tapAction: actions
+                  .where((action) => action.location == ActionLocation.fabTap)
+                  .firstOrNull,
+              holdAction: actions
+                  .where((action) => action.location == ActionLocation.fabHold)
+                  .firstOrNull,
+              menuActions: actions
+                  .where((action) => action.location == ActionLocation.fabMenu)
+                  .toList(),
+            ),
         ),
         drawer: (widget.feed != null)
             ? null
@@ -942,7 +928,12 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                           _pagingController.updateItem(item, newValue),
                       onTap: onPostTap,
                       isPreview: true,
-                      onReply: whenLoggedIn(context, (body, lang, {XFile? image, String? alt}) async {
+                      onReply: whenLoggedIn(context, (
+                        body,
+                        lang, {
+                        XFile? image,
+                        String? alt,
+                      }) async {
                         await ac.api.comments.create(
                           item.type,
                           item.id,
