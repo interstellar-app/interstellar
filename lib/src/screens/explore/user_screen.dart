@@ -448,7 +448,9 @@ class _UserScreenState extends State<UserScreen> {
                       mode: UserFeedType.comment,
                       sort: _sort,
                       data: _data,
-                      isActive: controller.index == 2,
+                      isActive: ac.serverSoftware == ServerSoftware.mbin
+                          ? controller.index == 2
+                          : controller.index == 1,
                     ),
                     if (ac.serverSoftware == ServerSoftware.mbin)
                       UserScreenBody(
