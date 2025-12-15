@@ -57,7 +57,7 @@ class AdvancedImage extends StatelessWidget {
               image,
               title: openTitle!,
               hero: tag,
-              fit: fit,
+              fit: BoxFit.contain,
             ),
           ),
           child: child,
