@@ -76,11 +76,7 @@ class App extends StatelessWidget {
                 darkIsTrueBlack: ac.profile.enableTrueBlack,
               ),
               themeMode: ac.profile.themeMode,
-              themeAnimationDuration: ac.profile.animationSpeed == 0
-                  ? Duration.zero
-                  : Duration(
-                      milliseconds: (300 / ac.profile.animationSpeed).toInt(),
-                    ),
+              themeAnimationDuration: ac.calcAnimationDuration(),
               scaffoldMessengerKey: scaffoldMessengerKey,
               home: AppHome(),
             ),

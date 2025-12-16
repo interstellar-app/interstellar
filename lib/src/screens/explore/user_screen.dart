@@ -19,6 +19,7 @@ import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
+import 'package:interstellar/src/widgets/hide_on_scroll.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
@@ -31,6 +32,7 @@ import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +52,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   DetailedUserModel? _data;
   late FeedSort _sort;
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
   final List<GlobalKey<_UserScreenBodyState>> _feedKeyList = [];
 
   GlobalKey<_UserScreenBodyState> _getFeedKey(int index) {
@@ -63,6 +65,8 @@ class _UserScreenState extends State<UserScreen> {
   @override
   void initState() {
     super.initState();
+
+    _scrollController = ScrollController();
 
     _data = widget.initData;
     _sort = context.read<AppController>().profile.feedDefaultExploreSort;
@@ -81,14 +85,12 @@ class _UserScreenState extends State<UserScreen> {
 
             return value.copyWith(tags: [...value.tags, ...tags]);
           })
-          .then(
-            (value) {
-              if (!mounted) return;
-              setState(() {
-                _data = value;
-              });
-            }
-          );
+          .then((value) {
+            if (!mounted) return;
+            setState(() {
+              _data = value;
+            });
+          });
     }
   }
 
@@ -166,6 +168,7 @@ class _UserScreenState extends State<UserScreen> {
           onTabSelected: (newIndex) => setState(() {}),
           child: NestedScrollView(
             controller: _scrollController,
+            floatHeaderSlivers: true,
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverToBoxAdapter(
                 child: Column(
@@ -481,6 +484,25 @@ class _UserScreenState extends State<UserScreen> {
               },
             ),
           ),
+        ),
+      ),
+      floatingActionButton: Wrapper(
+        shouldWrap: ac.profile.hideFeedUIOnScroll,
+        parentBuilder: (child) => HideOnScroll(
+          controller: _scrollController,
+          hiddenOffset: Offset(0, 2),
+          duration: ac.calcAnimationDuration(),
+          child: child,
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            _scrollController.animateTo(
+              _scrollController.position.minScrollExtent,
+              duration: Durations.long1,
+              curve: Curves.easeInOut,
+            );
+          },
+          child: const Icon(Symbols.keyboard_double_arrow_up_rounded),
         ),
       ),
     );

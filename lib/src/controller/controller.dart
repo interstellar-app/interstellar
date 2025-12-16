@@ -1125,4 +1125,16 @@ class AppController with ChangeNotifier {
     final query = database.select(database.tags);
     return query.get();
   }
+
+  Duration calcAnimationDuration({
+    Duration initialDuration = const Duration(milliseconds: 300),
+  }) {
+    return profile.animationSpeed == 0
+        ? Duration.zero
+        : Duration(
+            milliseconds:
+                (initialDuration.inMilliseconds / profile.animationSpeed)
+                    .toInt(),
+          );
+  }
 }
