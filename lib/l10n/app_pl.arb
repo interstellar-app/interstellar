@@ -632,7 +632,7 @@
     "@pickColor": {},
     "crossPosts": "Kros posty",
     "@crossPosts": {},
-    "crossPostCount": "{count} kros {count, plural, =1{post} inne{posts}}",
+    "crossPostCount": "{count} kros {count, plural, =1{post} other{posty}}",
     "@crossPostCount": {
         "placeholders": {
             "count": {
