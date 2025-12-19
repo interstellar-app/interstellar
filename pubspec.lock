@@ -1563,13 +1563,14 @@ packages:
     source: hosted
     version: "3.0.3"
   webcrypto:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: webcrypto
-      sha256: e393b3d0b01694a8f81efecf278ed7392877130e6e7b29f578863e4f2d0b2ebd
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.8"
+      path: "."
+      ref: dbb909449cee4b62f352a41038243a1c10690323
+      resolved-ref: dbb909449cee4b62f352a41038243a1c10690323
+      url: "https://github.com/matehat/webcrypto.dart.git"
+    source: git
+    version: "0.6.0"
   webpush_encryption:
     dependency: "direct main"
     description:
@@ -1660,4 +1661,4 @@ packages:
     version: "3.0.5"
 sdks:
   dart: ">=3.9.0 <4.0.0"
-  flutter: "3.38.4"
+  flutter: "3.38.5"

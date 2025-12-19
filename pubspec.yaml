@@ -3,11 +3,11 @@ name: interstellar
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.11.0+22
+version: 0.11.1+23
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
-  flutter: 3.38.4
+  flutter: 3.38.5
 
 dependencies:
   flutter:
@@ -68,6 +68,13 @@ dev_dependencies:
   freezed: ^3.2.3
   json_serializable: ^6.11.1
   drift_dev: ^2.28.3
+
+# Needed for 16kb page, remove once this pr (https://github.com/google/webcrypto.dart/pull/238) is merged and the next version is released.
+dependency_overrides:
+  webcrypto:
+    git:
+      url: https://github.com/matehat/webcrypto.dart.git
+      ref: dbb909449cee4b62f352a41038243a1c10690323
 
 flutter:
   uses-material-design: true
