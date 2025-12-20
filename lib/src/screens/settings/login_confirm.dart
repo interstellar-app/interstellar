@@ -109,6 +109,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                           server: widget.server,
                           username: _usernameEmailTextController.text,
                           password: _passwordTextController.text,
+                          totp: _totpTokenTextController.text,
                           context: context,
                         );
 
