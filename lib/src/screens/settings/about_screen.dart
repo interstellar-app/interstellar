@@ -45,8 +45,8 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
           ),
           ListTile(
-            leading: const Icon(Symbols.add_moderator_rounded),
-            title: Text('Modlog'),
+            leading: const Icon(Symbols.shield_rounded),
+            title: Text(l(context).modlog),
             onTap: () => pushRoute(
                 context,
                 builder: (context) => ModLog()

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/modlog.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
-import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +42,7 @@ class _ModLogState extends State<ModLog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Modlog')),
+      appBar: AppBar(title: Text(l(context).modlog)),
       body: AdvancedPagedScrollView(
         controller: _pagingController,
         itemBuilder: (context, item, index) {
@@ -86,24 +83,20 @@ class _ModLogState extends State<ModLog> {
                           ),
                           child: Text(switch (item.type) {
                             ModLogType.all => '',
-                            ModLogType.entry_deleted => 'Deleted post',
-                            ModLogType.entry_restored => 'Restored post',
-                            ModLogType.entry_comment_deleted =>
-                              'Deleted comment',
-                            ModLogType.entry_comment_restored =>
-                              'Restored comment',
-                            ModLogType.entry_pinned => 'Pinned post',
-                            ModLogType.entry_unpinned => 'Unpinned post',
-                            ModLogType.post_deleted => 'Deleted post',
-                            ModLogType.post_restored => 'Restored post',
-                            ModLogType.post_comment_deleted =>
-                              'Deleted comment',
-                            ModLogType.post_comment_restored =>
-                              'Restored comment',
-                            ModLogType.ban => 'Banned user',
-                            ModLogType.unban => 'Unbanned user',
-                            ModLogType.moderator_add => 'Added moderator',
-                            ModLogType.moderator_remove => 'Removed moderator',
+                            ModLogType.entry_deleted => l(context).modlog_deletedPost,
+                            ModLogType.entry_restored => l(context).modlog_restoredPost,
+                            ModLogType.entry_comment_deleted => l(context).modlog_deletedComment,
+                            ModLogType.entry_comment_restored => l(context).modlog_restoredComment,
+                            ModLogType.entry_pinned => l(context).modlog_pinnedPost,
+                            ModLogType.entry_unpinned => l(context).modlog_unpinnedPost,
+                            ModLogType.post_deleted => l(context).modlog_deletedPost,
+                            ModLogType.post_restored => l(context).modlog_restoredPost,
+                            ModLogType.post_comment_deleted => l(context).modlog_deletedComment,
+                            ModLogType.post_comment_restored => l(context).modlog_restoredComment,
+                            ModLogType.ban => l(context).modlog_bannedUser,
+                            ModLogType.unban => l(context).modlog_unbannedUser,
+                            ModLogType.moderator_add => l(context).modlog_addModerator,
+                            ModLogType.moderator_remove => l(context).modlog_removedModerator,
                           }),
                         ),
                         Padding(
@@ -137,7 +130,7 @@ class _ModLogState extends State<ModLog> {
                     PostComment(item.comment!, (post) {}),
                   if (item.ban != null) UserItemSimple(item.ban!.bannedUser),
                   if (item.reason != null && item.reason!.isNotEmpty)
-                    Text('Reason: ${item.reason!}'),
+                    Text(l(context).modlog_reason(item.reason!)),
                 ],
               ),
             ),
