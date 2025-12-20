@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/screens/explore/mod_log.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
@@ -162,6 +164,13 @@ Future<void> showCommunityMenu(
             ).searchSource(detailedCommunity?.name ?? community!.name),
           ),
         ),
+      ),
+      ContextMenuItem(
+        title: 'Modlog',
+        onTap: () => pushRoute(
+            context,
+            builder: (context) => ModLog(communityId: detailedCommunity?.id ?? community!.id)
+        )
       ),
     ],
   ).openMenu(context);

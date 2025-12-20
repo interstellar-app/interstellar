@@ -275,6 +275,19 @@ abstract class CommunityBanModel with _$CommunityBanModel {
     expired: json['expired'] as bool,
   );
 
+  factory CommunityBanModel.fromLemmy(JsonMap json) {
+    final expiration = json['expires'] != null ? DateTime.parse(json['expires'] as String) : null;
+
+    return CommunityBanModel(
+      reason: json['reason'] as String?,
+      expiresAt: expiration,
+      community: CommunityModel.fromLemmy(json['community'] as JsonMap),
+      bannedUser: UserModel.fromLemmy(json['banned_person'] as JsonMap),
+      bannedBy: UserModel.fromLemmy(json['moderator'] as JsonMap),
+      expired: expiration?.isBefore(DateTime.now()) ?? false,
+    );
+  }
+
   factory CommunityBanModel.fromPiefed(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expires_at'] as String?),

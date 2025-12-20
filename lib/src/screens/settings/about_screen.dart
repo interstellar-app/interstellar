@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
+import 'package:interstellar/src/screens/explore/mod_log.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
@@ -41,6 +42,14 @@ class _AboutScreenState extends State<AboutScreen> {
             onTap: () => pushRoute(
               context,
               builder: (context) => const DebugSettingsScreen(),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Symbols.add_moderator_rounded),
+            title: Text('Modlog'),
+            onTap: () => pushRoute(
+                context,
+                builder: (context) => ModLog()
             ),
           ),
           ListTile(
