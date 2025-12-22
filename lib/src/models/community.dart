@@ -262,7 +262,7 @@ abstract class CommunityBanModel with _$CommunityBanModel {
     required DateTime? expiresAt,
     required CommunityModel community,
     required UserModel bannedUser,
-    required UserModel bannedBy,
+    required UserModel? bannedBy,
     required bool expired,
   }) = _CommunityBanModel;
 
@@ -283,7 +283,7 @@ abstract class CommunityBanModel with _$CommunityBanModel {
       expiresAt: expiration,
       community: CommunityModel.fromLemmy(json['community'] as JsonMap),
       bannedUser: UserModel.fromLemmy(json['banned_person'] as JsonMap),
-      bannedBy: UserModel.fromLemmy(json['moderator'] as JsonMap),
+      bannedBy: json['moderator'] != null ? UserModel.fromLemmy(json['moderator'] as JsonMap) : null,
       expired: expiration?.isBefore(DateTime.now()) ?? false,
     );
   }
