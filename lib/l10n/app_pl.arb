@@ -343,7 +343,7 @@
     "@settings_colorScheme_flutterDash": {},
     "settings_alwaysShowInstance": "Zawsze pokazuj serwer",
     "@settings_alwaysShowInstance": {},
-    "settings_alwaysShowInstance_help": "Po włączeniu, instancja użytkownika/magazynu będzie zawsze wyświetlana zamiast przycisku @",
+    "settings_alwaysShowInstance_help": "Po włączeniu, instancja użytkownika/magazynu będzie zawsze wyświetlana po nazwie konta",
     "@settings_alwaysShowInstance_help": {},
     "settings_feedActions": "Akcje Feedów",
     "@settings_feedActions": {},
@@ -775,5 +775,566 @@
     "settings_animationDisabled": "Wyłączone",
     "@settings_animationDisabled": {},
     "settings_inlineReplies": "Odpowiedz w wątku",
-    "@settings_inlineReplies": {}
+    "@settings_inlineReplies": {},
+    "pollSubmitError": "Przed wysłaniem należy wybrać co najmniej jedną opcję.",
+    "@pollSubmitError": {},
+    "pollVotes": "{count} {count, plural, =1{vote} other{votes}}",
+    "@pollVotes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_days": "{count} {count, plural, =1{day} other{days}} left",
+    "@pollExpiry_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_hours": "{count} {count, plural, =1{hour} other{hours}} zostało",
+    "@pollExpiry_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_minutes": "{count} {count, plural, =1{minute} other{minutes}} zostało",
+    "@pollExpiry_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_seconds": "{count} {count, plural, =1{second} other{seconds}} zostało",
+    "@pollExpiry_seconds": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "action_createNew": "Utwórz nowy ...",
+    "@action_createNew": {},
+    "action_setView": "Ustaw widok",
+    "@action_setView": {},
+    "action_showReadPosts": "Pokaż przeczytane posty",
+    "@action_showReadPosts": {},
+    "action_upvote": "Wgóręgłos",
+    "@action_upvote": {},
+    "action_downvote": "Wdółgłos",
+    "@action_downvote": {},
+    "action_boost": "Podbij",
+    "@action_boost": {},
+    "action_bookmark": "Zakładka",
+    "@action_bookmark": {},
+    "action_reply": "Odpowiedź",
+    "@action_reply": {},
+    "action_markRead": "Oznacz przeczytane",
+    "@action_markRead": {},
+    "action_markUnread": "Oznacz nieprzeczytane",
+    "@action_markUnread": {},
+    "action_moderatePin": "Przypnij post",
+    "@action_moderatePin": {},
+    "action_moderateMarkNSFW": "Oznacz NSFW",
+    "@action_moderateMarkNSFW": {},
+    "action_moderateDelete": "Mod usunięcie",
+    "@action_moderateDelete": {},
+    "action_moderateBan": "Mod ban",
+    "@action_moderateBan": {},
+    "saveChanges": "Zapisz zmiany",
+    "@saveChanges": {},
+    "searchTheFediverse": "Szukaj w fediwersum",
+    "@searchTheFediverse": {},
+    "languages": "Języki",
+    "@languages": {},
+    "systemLanguage": "Język systemowy",
+    "@systemLanguage": {},
+    "settings_appLanguage": "Język aplikacji",
+    "@settings_appLanguage": {},
+    "pointsX": "{num} punkty",
+    "@pointsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "commentsX": "{num} komentarze",
+    "@commentsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "filterLists": "Filtruj listy",
+    "@filterLists": {},
+    "filterList_activateFilter": "Aktywuj filtr",
+    "@filterList_activateFilter": {},
+    "filterList_new": "Nowy filtr listy",
+    "@filterList_new": {},
+    "filterList_edit": "Edycja filtra listy",
+    "@filterList_edit": {},
+    "filterList_import": "Import filtra listy",
+    "@filterList_import": {},
+    "filterList_delete": "Usuń filtr listy",
+    "@filterList_delete": {},
+    "filterList_name": "Nazwa",
+    "@filterList_name": {},
+    "filterList_phrases": "Frazy",
+    "@filterList_phrases": {},
+    "filterList_addPhrase": "Dodaj frazę",
+    "@filterList_addPhrase": {},
+    "filterList_showWithContentWarning": "Pokaż z ostrzeżeniem treści",
+    "@filterList_showWithContentWarning": {},
+    "filterList_matchMode": "Tryb dopasowania",
+    "@filterList_matchMode": {},
+    "filterList_matchMode_simple": "Proste",
+    "@filterList_matchMode_simple": {},
+    "filterList_matchMode_simple_help": "Dopasuje dosłownie każde wystąpienie frazy. Na przykład fraza „app” dopasuje się do „app”, a także do „apps”, „application”, „yapp” itp.",
+    "@filterList_matchMode_simple_help": {},
+    "filterList_matchMode_wholeWords": "Całe słowa",
+    "@filterList_matchMode_wholeWords": {},
+    "filterList_matchMode_wholeWords_help": "Dopasowanie nastąpi tylko wtedy, gdy na obu końcach zaznaczonego tekstu znajduje się granica słowa, innymi słowy, fraza musi być całym słowem i nie może znajdować się w środku słowa. Na przykład fraza „app” zostanie dopasowana do „app”, ale nie do „apps”, „application”, „yapp” itp.",
+    "@filterList_matchMode_wholeWords_help": {},
+    "filterList_matchMode_regex": "Wyrażenie regexp",
+    "@filterList_matchMode_regex": {},
+    "filterList_matchMode_regex_help": "Dopasuje treść znalezioną przez określone wyrażenie regularne, które pochodzi od frazy.",
+    "@filterList_matchMode_regex_help": {},
+    "filterList_caseSensitive": "Rozróżnianie wielkości liter",
+    "@filterList_caseSensitive": {},
+    "filterList_caseSensitive_help": "Po włączeniu tej opcji będą dopasowywane tylko treści o tej samej wielkości liter, co fraza.",
+    "@filterList_caseSensitive_help": {},
+    "filterListWarningX": "Filtr listy dopasował: {lists}",
+    "@filterListWarningX": {
+        "placeholders": {
+            "lists": {
+                "type": "String"
+            }
+        }
+    },
+    "confirmUnsubscribe": "Chcesz zrezygnować z subskrypcji. Kontynuować?",
+    "@confirmUnsubscribe": {},
+    "confirmUnfollow": "Chcesz przestać obserwować? Kontynuować?",
+    "@confirmUnfollow": {},
+    "altText": "Tekst alternatywny",
+    "@altText": {},
+    "settings_dataUtilities": "BETA: Narzędzia danych",
+    "@settings_dataUtilities": {},
+    "settings_accountMigration": "Migracja konta",
+    "@settings_accountMigration": {},
+    "settings_accountMigration_help": "Migracja subskrypcji, obserwowanych i zablokowanych między kontami",
+    "@settings_accountMigration_help": {},
+    "settings_accountMigration_step1": "Wybierz konta źródłowe i docelowe",
+    "@settings_accountMigration_step1": {},
+    "settings_accountMigration_step1_source": "Konto źródłowe",
+    "@settings_accountMigration_step1_source": {},
+    "settings_accountMigration_step1_destination": "Konto docelowe",
+    "@settings_accountMigration_step1_destination": {},
+    "settings_accountMigration_step2": "Włącz/wyłącz kategorie migracji",
+    "@settings_accountMigration_step2": {},
+    "settings_accountMigration_step2_migrateCommunitySubscriptions": "Migruj subskrypcje społeczności",
+    "@settings_accountMigration_step2_migrateCommunitySubscriptions": {},
+    "settings_accountMigration_step2_migrateCommunityBlocks": "Migruj blokady społeczności",
+    "@settings_accountMigration_step2_migrateCommunityBlocks": {},
+    "settings_accountMigration_step2_migrateUserFollows": "Migracja obserwowanych kont",
+    "@settings_accountMigration_step2_migrateUserFollows": {},
+    "settings_accountMigration_step2_migrateUserBlocks": "Migruj blokady kont",
+    "@settings_accountMigration_step2_migrateUserBlocks": {},
+    "settings_accountMigration_step3": "Potwierdź migrację danych",
+    "@settings_accountMigration_step3": {},
+    "settings_accountMigration_readingFromSource": "Odczyt z konta źródłowego",
+    "@settings_accountMigration_readingFromSource": {},
+    "settings_accountMigration_writingFromSource": "Zapis do konta docelowego",
+    "@settings_accountMigration_writingFromSource": {},
+    "settings_accountMigration_complete": "Migracja konta zakończona!",
+    "@settings_accountMigration_complete": {},
+    "settings_accountMigration_failed": "Migracja konta nie powiodła się z powodu błędu",
+    "@settings_accountMigration_failed": {},
+    "settings_accountMigration_foundXItems": "Znaleziono {count} element(ów)",
+    "@settings_accountMigration_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountMigration_completeXItems": "Przeniesiono {current}/{total} elementów",
+    "@settings_accountMigration_completeXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountMigration_failedXItems": "Niepowodzenie {current}/{total} elementów",
+    "@settings_accountMigration_failedXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset": "Reset konta",
+    "@settings_accountReset": {},
+    "settings_accountReset_help": "Usuń subskrypcje, obserwowania i blokady z konta",
+    "@settings_accountReset_help": {},
+    "settings_accountReset_step1": "Wybierz konto",
+    "@settings_accountReset_step1": {},
+    "settings_accountReset_step2": "Włącz/wyłącz resetowane kategorie",
+    "@settings_accountReset_step2": {},
+    "settings_accountReset_step2_resetCommunitySubscriptions": "Zresetuj subskrypcje społeczności",
+    "@settings_accountReset_step2_resetCommunitySubscriptions": {},
+    "settings_accountReset_step2_resetCommunityBlocks": "Zresetuj blokady społeczności",
+    "@settings_accountReset_step2_resetCommunityBlocks": {},
+    "settings_accountReset_step2_resetUserFollows": "Zresetuj obserwacje kont",
+    "@settings_accountReset_step2_resetUserFollows": {},
+    "settings_accountReset_step2_resetUserBlocks": "Resetuj blokady kont",
+    "@settings_accountReset_step2_resetUserBlocks": {},
+    "settings_accountReset_step3": "Potwierdź reset danych",
+    "@settings_accountReset_step3": {},
+    "settings_accountReset_readingFromAccount": "Odczyt z konta",
+    "@settings_accountReset_readingFromAccount": {},
+    "settings_accountReset_removingItems": "Kasowanie elementów",
+    "@settings_accountReset_removingItems": {},
+    "settings_accountReset_complete": "Reset konta zakończony!",
+    "@settings_accountReset_complete": {},
+    "settings_accountReset_failed": "Resetowanie konta nie powiodło się z powodu błędu",
+    "@settings_accountReset_failed": {},
+    "settings_accountReset_foundXItems": "Znaleziono {count} elementów",
+    "@settings_accountReset_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset_completeXItems": "Przetworzono {current}/{total} elementów",
+    "@settings_accountReset_completeXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset_failedXItems": "Błąd dla {current}/{total} elementów",
+    "@settings_accountReset_failedXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "notificationControlStatus_default": "Domyślne powiadomienia",
+    "@notificationControlStatus_default": {},
+    "notificationControlStatus_muted": "Wyciszone powiadomienia",
+    "@notificationControlStatus_muted": {},
+    "notificationControlStatus_loud": "Głośne powiadomienia",
+    "@notificationControlStatus_loud": {},
+    "bookmark": "Zakładka",
+    "@bookmark": {},
+    "bookmark_addToX": "Dodaj do {name}",
+    "@bookmark_addToX": {},
+    "bookmark_removeFromX": "Usuń z {name}",
+    "@bookmark_removeFromX": {},
+    "bookmarks": "Zakładki",
+    "@bookmarks": {},
+    "bookmarkLists": "Listy zakładek",
+    "@bookmarkLists": {},
+    "bookmarkLists_create": "Stwórz listę",
+    "@bookmarkLists_create": {},
+    "bookmarkLists_setDefault": "Ustaw jako domyślne",
+    "@bookmarkLists_setDefault": {},
+    "bookmarkLists_createHint": "Nazwa nowej listy",
+    "@bookmarkLists_createHint": {},
+    "configShare": "Udostępnij konfigurację",
+    "@configShare": {},
+    "configShare_profile_title": "Profil Interstellar",
+    "@configShare_profile_title": {},
+    "configShare_profile_info": "Modyfikuje {count} ustawień",
+    "@configShare_profile_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_filterList_title": "Lista filtrów Interstellar",
+    "@configShare_filterList_title": {},
+    "configShare_filterList_info": "Zawiera {count} fraz",
+    "@configShare_filterList_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_feed_title": "Kanał Interstellar",
+    "@configShare_feed_title": {},
+    "configShare_feed_info": "Zawiera {count} wejść",
+    "@configShare_feed_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_created": "Utworzono {date} w {version}",
+    "@configShare_created": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            },
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "errorPage_firstPage": "Coś poszło nie tak",
+    "@errorPage_firstPage": {},
+    "errorPage_firstPage_button": "Spróbuj ponownie",
+    "@errorPage_firstPage_button": {},
+    "errorPage_newPage": "Coś poszło nie tak. Dotknij, aby spróbować ponownie.",
+    "@errorPage_newPage": {},
+    "errorPage_caughtUp": "Wszystko już widziano.\nZaładować starsze elementy?",
+    "@errorPage_caughtUp": {},
+    "errorPage_authError": "Wygląda na to, że wystąpił problem z autoryzacją konta.\nNaciśnij poniższy przycisk, aby odświeżyć autoryzację.",
+    "@errorPage_authError": {},
+    "exitMessage": "Naciśnij ponownie BACK, aby wyjść.",
+    "@exitMessage": {},
+    "pushNotificationsDialog_title": "Powiadomienia PUSH",
+    "@pushNotificationsDialog_title": {},
+    "pushNotificationsDialog_noDistributor": "Aby powiadomienia push działały, należy zainstalować dystrybutora UnifiedPush.\nWięcej informacji można znaleźć pod adresem: {url}",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_selectDistributor": "Wybierz dystrybutora push",
+    "@pushNotificationsDialog_selectDistributor": {},
+    "crossPost": "Krospost",
+    "@crossPost": {},
+    "settings_crosspostComments": "Pokaż sekcje komentarzy z krospostów",
+    "@settings_crosspostComments": {},
+    "settings_crossPostMarkAsRead": "Oznacz krosposty jako przeczytane",
+    "@settings_crossPostMarkAsRead": {},
+    "settings_imageStore": "Domyślny magazyn obrazów",
+    "@settings_imageStore": {},
+    "settings_defaultDownloadDir": "Domyślny katalog pobranych",
+    "@settings_defaultDownloadDir": {},
+    "settings_enableTrueBlack_help": "Oszczędza energię na wyświetlaczach AMOLED",
+    "@settings_enableTrueBlack_help": {},
+    "settings_compactMode": "Tryb kompaktowy",
+    "@settings_compactMode": {},
+    "settings_hideActionButtons": "Ukryj klawisze akcji",
+    "@settings_hideActionButtons": {},
+    "settings_hideActionButtons_help": "Ukrywa przyciski akcji (głosowanie, wzmocnienie, odpowiedź itp.) pod każdym postem i komentarzem. Elementy sterujące są nadal dostępne w menu rozwijanym. Zaleca się włączenie gestów przesuwania wraz z tym ustawieniem.",
+    "@settings_hideActionButtons_help": {},
+    "settings_hideFeedUIOnScroll": "Ukryj UI kanału podczas skrolowania",
+    "@settings_hideFeedUIOnScroll": {},
+    "settings_dividerThickness": "Grubość odstępu",
+    "@settings_dividerThickness": {},
+    "settings_globalTextScale": "Globalna skala tekstu",
+    "@settings_globalTextScale": {},
+    "settings_coverMediaMarkedSensitive": "Ukryj media oznaczone jako wrażliwe",
+    "@settings_coverMediaMarkedSensitive": {},
+    "settings_fullImageSizeThreads": "Pełny rozmiar obrazu dla wątków",
+    "@settings_fullImageSizeThreads": {},
+    "settings_fullImageSizeMicroblogs": "Pełny rozmiar obrazu dla mikroblogów",
+    "@settings_fullImageSizeMicroblogs": {},
+    "settings_postsAsCards": "Pokaż posty jako karty",
+    "@settings_postsAsCards": {},
+    "settings_postLayoutOrder": "Kolejność układu postów",
+    "@settings_postLayoutOrder": {},
+    "settings_reduceAnimationMotion": "Ogranicz ruch w animacjach",
+    "@settings_reduceAnimationMotion": {},
+    "settings_donate": "Przekaż darowiznę",
+    "@settings_donate": {},
+    "settings_contribute": "Współtwórz",
+    "@settings_contribute": {},
+    "settings_translate": "Przetłumacz",
+    "@settings_translate": {},
+    "settings_reportIssue": "Zgłoś problem",
+    "@settings_reportIssue": {},
+    "settings_matrixSpace": "Przestrzeń Matrix",
+    "@settings_matrixSpace": {},
+    "settings_mbinCommunity": "Społeczność Mbin",
+    "@settings_mbinCommunity": {},
+    "settings_mbinConfigsCommunity": "Społeczność współdzielenia konfigów",
+    "@settings_mbinConfigsCommunity": {},
+    "settings_feedDefaults_view": "Pokaż",
+    "@settings_feedDefaults_view": {},
+    "settings_feedDefaults_filter": "Filtr",
+    "@settings_feedDefaults_filter": {},
+    "settings_feedDefaults_threadsSort": "Sortowanie wątków",
+    "@settings_feedDefaults_threadsSort": {},
+    "settings_feedDefaults_microblogSort": "Sortowanie mikroblogów",
+    "@settings_feedDefaults_microblogSort": {},
+    "settings_feedDefaults_combinedSort": "Sortowanie łączone",
+    "@settings_feedDefaults_combinedSort": {},
+    "settings_feedDefaults_exploreSort": "Sortowanie Odkrywaj",
+    "@settings_feedDefaults_exploreSort": {},
+    "settings_feedDefaults_commentSort": "Sortowanie komentarzy",
+    "@settings_feedDefaults_commentSort": {},
+    "settings_feedDefaults_hideReadPosts": "Ukryj przeczytane",
+    "@settings_feedDefaults_hideReadPosts": {},
+    "settings_feedSourceOrder": "Kolejność źródeł kanałów",
+    "@settings_feedSourceOrder": {},
+    "settings_feedViewOrder": "Kolejność widoku kanałów",
+    "@settings_feedViewOrder": {},
+    "settings_feedSortOrder": "Kolejność sortowania kanałów",
+    "@settings_feedSortOrder": {},
+    "settings_swipeActionLeftShort": "Lewy krótki",
+    "@settings_swipeActionLeftShort": {},
+    "settings_swipeActionLeftLong": "Lewy długi",
+    "@settings_swipeActionLeftLong": {},
+    "settings_swipeActionRightShort": "Prawy krótki",
+    "@settings_swipeActionRightShort": {},
+    "settings_swipeActionRightLong": "Prawy długi",
+    "@settings_swipeActionRightLong": {},
+    "settings_enableSwipeActions": "Włącz gesty przesuwania",
+    "@settings_enableSwipeActions": {},
+    "settings_swipeThreshold": "Próg działania przesunięcia palcem",
+    "@settings_swipeThreshold": {},
+    "settings_debug_showErrors": "Pokaż błędy",
+    "@settings_debug_showErrors": {},
+    "settings_debug_inspectDatabase": "Sprawdź bazę danych",
+    "@settings_debug_inspectDatabase": {},
+    "settings_debug_exportDatabase": "Eksport bazy danych",
+    "@settings_debug_exportDatabase": {},
+    "settings_debug_importDatabase": "Import bazy danych",
+    "@settings_debug_importDatabase": {},
+    "settings_debug_clearDatabase": "Wyczyść bazę danych",
+    "@settings_debug_clearDatabase": {},
+    "settings_debug_clearAccounts": "Wyczyść konta",
+    "@settings_debug_clearAccounts": {},
+    "settings_debug_clearProfiles": "Wyczyść profile",
+    "@settings_debug_clearProfiles": {},
+    "settings_debug_clearReadPosts": "Wyczyść przeczytane posty",
+    "@settings_debug_clearReadPosts": {},
+    "settings_debug_clearFeedCache": "Wyczyść pamięć kanałów",
+    "@settings_debug_clearFeedCache": {},
+    "settings_debug_clearTags": "Wyczyść tagi konta",
+    "@settings_debug_clearTags": {},
+    "settings_debug_log": "Log",
+    "@settings_debug_log": {},
+    "profiles": "Profile",
+    "@profiles": {},
+    "profile_switch": "Przełącz profile",
+    "@profile_switch": {},
+    "profile_main": "Główny profil",
+    "@profile_main": {},
+    "profile_new": "Nowy profil",
+    "@profile_new": {},
+    "profile_edit": "Edycja profilu",
+    "@profile_edit": {},
+    "profile_import": "Import profilu",
+    "@profile_import": {},
+    "profile_delete": "Usuń profil",
+    "@profile_delete": {},
+    "profile_name": "Nazwa",
+    "@profile_name": {},
+    "profile_setAsMain": "Ustaw jako główny profil",
+    "@profile_setAsMain": {},
+    "profile_setAsMain_help": "Profil główny stanowi podstawę dla wszystkich pozostałych profili. Wprowadzone w nim zmiany będą miały zastosowanie do wszystkich profili, chyba że określone ustawienie zostało nadpisane.",
+    "@profile_setAsMain_help": {},
+    "profile_autoSelect": "Automatycznie wybierz przy starcie aplikacji",
+    "@profile_autoSelect": {},
+    "profile_autoSelectAccount": "Automatycznie wybieraj konto, gdy profil jest włączony",
+    "@profile_autoSelectAccount": {},
+    "profile_autoSelectAccount_none": "Brak",
+    "@profile_autoSelectAccount_none": {},
+    "profile_about_title": "O profilach",
+    "@profile_about_title": {},
+    "profile_about_body": "Profile umożliwiają łatwe zapisywanie i przełączanie się między grupami ustawień. **Profil główny** służy jako domyślny, a inne profile zastępują określone ustawienia w razie potrzeby.\n\n## Modyfikowanie profili\n\nAby zmienić profil, przejdź do niego i dostosuj ustawienia. Obecnie, aby przywrócić domyślne ustawienie, które zostało zastąpione, należy usunąć profil i utworzyć go ponownie.\n\n## Zawarte ustawienia\n\n- Ustawienia zachowania\n\n- Ustawienia wyświetlania\n\n- Działania związane z kanałem\n\n- Ustawienia domyślne kanału\n\n- Status aktywacji listy filtrów\n\n## Dodatkowe opcje\n\n- Zmiana profilu głównego\n\n- Automatyczna aktywacja określonego profilu podczas uruchamiania\n\n- Automatyczne przełączanie na konto po aktywacji określonego profilu\n  \n\nJeśli nie korzystasz z profili, pozostań w profilu głównym, a aplikacja będzie działać jak zwykle.",
+    "@profile_about_body": {},
+    "pinnedInCommunity": "Przypięte w społeczności",
+    "@pinnedInCommunity": {},
+    "editFlairs": "Edytuj flary",
+    "@editFlairs": {},
+    "addFlair": "Dodaj flarę",
+    "@addFlair": {},
+    "status": "Status",
+    "@status": {},
+    "continueInBrowser_manual": "Jeśli przeglądarka się nie uruchamia, kliknij, aby skopiować i wkleić ręcznie",
+    "@continueInBrowser_manual": {},
+    "create_text": "Tekst",
+    "@create_text": {},
+    "create_image": "Obraz",
+    "@create_image": {},
+    "create_link": "Link",
+    "@create_link": {},
+    "create_link_invalid": "Url jest błędny",
+    "@create_link_invalid": {},
+    "create_microblog": "Mikroblog",
+    "@create_microblog": {},
+    "create_community": "Społeczność",
+    "@create_community": {},
+    "microblog_communityHelperText": "Domyślnie wybierana jest społeczność 'losowa' dla mikroblogów, ponieważ właśnie tam Mbin przechowuje mikroblogi niesklasyfikowane.",
+    "@microblog_communityHelperText": {},
+    "selectCommunity": "Wybierz społeczność ...",
+    "@selectCommunity": {},
+    "community": "Społeczność",
+    "@community": {},
+    "translate": "Przetłumacz",
+    "@translate": {},
+    "user": "Użytkownik",
+    "@user": {},
+    "subscribe": "Subskrybuj",
+    "@subscribe": {},
+    "poll": "Sonda",
+    "@poll": {},
+    "addChoice": "Dodaj wybór",
+    "@addChoice": {},
+    "pollDuration": "Czas trwania sondy",
+    "@pollDuration": {},
+    "pollDuration_minutes": "{count} {count, plural, =1{minute} other{minutes}}",
+    "@pollDuration_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_hours": "{count} {count, plural, =1{hour} other{hours}}",
+    "@pollDuration_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_days": "{count} {count, plural, =1{day} other{days}}",
+    "@pollDuration_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollMode": "Pozwalaj wybrać wiele",
+    "@pollMode": {},
+    "pollShowResults": "Pokaż wyniki",
+    "@pollShowResults": {},
+    "pollHideResults": "Ukryj wyniki",
+    "@pollHideResults": {}
 }
