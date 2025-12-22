@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/mod_log.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -44,14 +45,15 @@ class _AboutScreenState extends State<AboutScreen> {
               builder: (context) => const DebugSettingsScreen(),
             ),
           ),
-          ListTile(
-            leading: const Icon(Symbols.shield_rounded),
-            title: Text(l(context).modlog),
-            onTap: () => pushRoute(
-                context,
-                builder: (context) => ModLog()
+          if (context.read<AppController>().serverSoftware != ServerSoftware.piefed)
+            ListTile(
+              leading: const Icon(Symbols.shield_rounded),
+              title: Text(l(context).modlog),
+              onTap: () => pushRoute(
+                  context,
+                  builder: (context) => ModLog()
+              ),
             ),
-          ),
           ListTile(
             leading: const Icon(Symbols.favorite_rounded),
             title: Text(l(context).settings_donate),
