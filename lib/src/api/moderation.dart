@@ -255,6 +255,7 @@ class APIModeration {
         const path = '/modlog';
         final query = {
           if (communityId != null) 'community_id': communityId.toString(),
+          if (userId != null) 'mod_person_id': userId.toString(),
           'page': page,
           'type_': type.toLemmy,
         };

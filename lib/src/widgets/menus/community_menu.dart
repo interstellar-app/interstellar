@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/mod_log.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
@@ -164,13 +165,14 @@ Future<void> showCommunityMenu(
           ),
         ),
       ),
-      ContextMenuItem(
-        title: 'Modlog',
-        onTap: () => pushRoute(
-            context,
-            builder: (context) => ModLog(communityId: detailedCommunity?.id ?? community!.id)
-        )
-      ),
+      if (ac.serverSoftware != ServerSoftware.piefed)
+        ContextMenuItem(
+          title: l(context).modlog,
+          onTap: () => pushRoute(
+              context,
+              builder: (context) => ModLog(communityId: detailedCommunity?.id ?? community!.id)
+          )
+        ),
     ],
   ).openMenu(context);
 }

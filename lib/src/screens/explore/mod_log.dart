@@ -14,9 +14,10 @@ import 'package:provider/provider.dart';
 import '../../api/moderation.dart';
 
 class ModLog extends StatefulWidget {
-  const ModLog({super.key, this.communityId});
+  const ModLog({super.key, this.communityId, this.userId});
 
   final int? communityId;
+  final int? userId;
 
   @override
   State<ModLog> createState() => _ModLogState();
@@ -33,6 +34,7 @@ class _ModLogState extends State<ModLog> {
 
           final newPage = await ac.api.moderation.modLog(
             communityId: widget.communityId,
+            userId: widget.userId,
             page: pageKey,
           );
 

@@ -4,6 +4,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
+import 'package:interstellar/src/screens/explore/mod_log.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -131,6 +132,14 @@ Future<void> showUserMenu(
           );
         }
       ),
+      if (ac.serverSoftware == ServerSoftware.lemmy)
+        ContextMenuItem(
+            title: l(context).modlog,
+            onTap: () => pushRoute(
+                context,
+                builder: (context) => ModLog(userId: user.id),
+            )
+        ),
     ],
   ).openMenu(context);
 }
