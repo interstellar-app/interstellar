@@ -1186,5 +1186,155 @@
         }
     },
     "pushNotificationsDialog_selectDistributor": "选择推送分发器",
-    "@pushNotificationsDialog_selectDistributor": {}
+    "@pushNotificationsDialog_selectDistributor": {},
+    "refreshAuth": "刷新登录",
+    "@refreshAuth": {},
+    "okay": "好的",
+    "@okay": {},
+    "color": "颜色",
+    "@color": {},
+    "tags_new": "新建标签",
+    "@tags_new": {},
+    "tags_exist": "标签已存在",
+    "@tags_exist": {},
+    "tags_users": "已标记用户",
+    "@tags_users": {},
+    "tags_noUsers": "未找到使用该标签的用户。请通过用户个人资料页为其分配标签以开始使用。",
+    "@tags_noUsers": {},
+    "pickColor": "选择颜色",
+    "@pickColor": {},
+    "searchSource": "搜索 {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "openItem": "打开 {item}",
+    "@openItem": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_imageStore": "默认图片存储",
+    "@settings_imageStore": {},
+    "settings_dividerThickness": "分隔线粗细",
+    "@settings_dividerThickness": {},
+    "settings_postsAsCards": "以卡片形式显示帖文",
+    "@settings_postsAsCards": {},
+    "settings_postLayoutOrder": "帖文布局顺序",
+    "@settings_postLayoutOrder": {},
+    "settings_feedSourceOrder": "订阅源顺序",
+    "@settings_feedSourceOrder": {},
+    "settings_feedViewOrder": "信息流视图顺序",
+    "@settings_feedViewOrder": {},
+    "settings_feedSortOrder": "信息流排序顺序",
+    "@settings_feedSortOrder": {},
+    "settings_debug_inspectDatabase": "检查数据库",
+    "@settings_debug_inspectDatabase": {},
+    "settings_debug_exportDatabase": "导出数据库",
+    "@settings_debug_exportDatabase": {},
+    "settings_debug_importDatabase": "导入数据库",
+    "@settings_debug_importDatabase": {},
+    "settings_debug_clearReadPosts": "清除已读帖文",
+    "@settings_debug_clearReadPosts": {},
+    "settings_debug_clearFeedCache": "清除订阅源缓存",
+    "@settings_debug_clearFeedCache": {},
+    "settings_debug_clearTags": "清除用户标签",
+    "@settings_debug_clearTags": {},
+    "editFlairs": "编辑徽章",
+    "@editFlairs": {},
+    "addFlair": "添加徽章",
+    "@addFlair": {},
+    "translate": "翻译",
+    "@translate": {},
+    "user": "用户",
+    "@user": {},
+    "subscribe": "订阅",
+    "@subscribe": {},
+    "poll": "投票",
+    "@poll": {},
+    "addChoice": "添加选项",
+    "@addChoice": {},
+    "pollDuration": "投票时长",
+    "@pollDuration": {},
+    "pollDuration_minutes": "{count} {count, plural, =1{分钟} other{分钟}}",
+    "@pollDuration_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_hours": "{count} {count, plural, =1{小时} other{小时}}",
+    "@pollDuration_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_days": "{count} {count, plural, =1{天} other{天}}",
+    "@pollDuration_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollMode": "允许多选",
+    "@pollMode": {},
+    "pollShowResults": "显示结果",
+    "@pollShowResults": {},
+    "pollHideResults": "隐藏结果",
+    "@pollHideResults": {},
+    "pollSubmitError": "提交前需要至少选择一个选项。",
+    "@pollSubmitError": {},
+    "pollVotes": "{count} {count, plural, =1{票} other{票}}",
+    "@pollVotes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_days": "剩余 {count} {count, plural, =1{天} other{天}}",
+    "@pollExpiry_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_hours": "剩余 {count} {count, plural, =1{小时} other{小时}}",
+    "@pollExpiry_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_minutes": "剩余 {count} {count, plural, =1{分钟} other{分钟}}",
+    "@pollExpiry_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_seconds": "剩余 {count} {count, plural, =1{秒} other{秒}}",
+    "@pollExpiry_seconds": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "errorPage_authError": "账号授权似乎出现了问题。\n请点击下方按钮刷新授权。",
+    "@errorPage_authError": {},
+    "crossPost": "转发帖子",
+    "@crossPost": {}
 }
