@@ -205,7 +205,7 @@ abstract class ModlogListModel with _$ModlogListModel {
       (item) => ModlogItemModel.fromLemmy({
         'type': ModLogType.commentDeleted.name,
         'createdAt': (item['mod_remove_comment'] as JsonMap)['when_'] as String,
-        'reason': (item['mod_remove_comment'] as JsonMap)['reason'] as String,
+        'reason': (item['mod_remove_comment'] as JsonMap)['reason'] as String?,
         ...item as JsonMap,
         'creator': {'person': item['commenter'] as JsonMap},
       }, langCodeIdPairs: langCodeIdPairs),
