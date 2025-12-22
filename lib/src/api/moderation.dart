@@ -28,7 +28,9 @@ enum ModLogType {
   moderatorAdded,
   moderatorRemoved,
   communityAdded,
-  communityRemoved;
+  communityRemoved,
+  postLocked,
+  postUnlocked;
 
   static ModLogType fromMbin(String type) => switch (type) {
     'log_entry_deleted' => ModLogType.postDeleted,
@@ -66,26 +68,30 @@ enum ModLogType {
     ModLogType.moderatorRemoved => 'moderator_remove',
     ModLogType.communityAdded => 'all',
     ModLogType.communityRemoved => 'all',
+    ModLogType.postLocked => 'all',
+    ModLogType.postUnlocked => 'all',
   };
 
   String get toLemmy => switch (this) {
     ModLogType.all => 'All',
     ModLogType.postDeleted => 'ModRemovePost',
-    ModLogType.postRestored => 'All',
+    ModLogType.postRestored => 'ModRemovePost',
     ModLogType.commentDeleted => 'ModRemoveComment',
-    ModLogType.commentRestored => 'All',
+    ModLogType.commentRestored => 'ModRemoveComment',
     ModLogType.postPinned => 'ModFeaturePost',
-    ModLogType.postUnpinned => 'All',
+    ModLogType.postUnpinned => 'ModFeaturePost',
     ModLogType.post_deleted => 'ModRemovePost',
-    ModLogType.post_restored => 'All',
+    ModLogType.post_restored => 'ModRemovePost',
     ModLogType.post_comment_deleted => 'ModRemoveComment',
-    ModLogType.post_comment_restored => 'All',
+    ModLogType.post_comment_restored => 'ModRemoveComment',
     ModLogType.ban => 'ModBan',
-    ModLogType.unban => 'All',
+    ModLogType.unban => 'ModBan',
     ModLogType.moderatorAdded => 'ModAdd',
-    ModLogType.moderatorRemoved => 'All',
+    ModLogType.moderatorRemoved => 'ModAdd',
     ModLogType.communityAdded => 'ModAddCommunity',
     ModLogType.communityRemoved => 'ModRemoveCommunity',
+    ModLogType.postLocked => 'ModLockPost',
+    ModLogType.postUnlocked => 'ModLockPost',
   };
 }
 
@@ -240,14 +246,13 @@ class APIModeration {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        if (communityId != null) {
-          final path = '/magazine/$communityId/log';
-          final query = {'p': page};
-          final response = await client.get(path, queryParams: query);
-          return ModlogListModel.fromMbin(response.bodyJson);
-        }
-        final path = '/modlog';
-        final query = {'p': page};
+        final path = communityId != null ? '/magazine/$communityId/log' : '/modlog';
+        final query = {
+          'p': page,
+          if (type != ModLogType.all)
+            'types[0]': type.toMbin,
+        };
+
         final response = await client.get(path, queryParams: query);
         return ModlogListModel.fromMbin(response.bodyJson);
 

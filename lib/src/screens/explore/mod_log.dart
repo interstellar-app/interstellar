@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
@@ -9,6 +10,8 @@ import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
 import 'package:interstellar/src/widgets/paging.dart';
+import 'package:interstellar/src/widgets/selection_menu.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../api/moderation.dart';
@@ -35,12 +38,14 @@ class _ModLogState extends State<ModLog> {
           final newPage = await ac.api.moderation.modLog(
             communityId: widget.communityId,
             userId: widget.userId,
+            type: _filter,
             page: pageKey,
           );
 
           return (newPage.items, newPage.nextPage);
         },
       );
+  ModLogType _filter = ModLogType.all;
 
   Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
     ModLogType.all => null,
@@ -142,12 +147,31 @@ class _ModLogState extends State<ModLog> {
     ModLogType.moderatorRemoved => null,
     ModLogType.communityAdded => null,
     ModLogType.communityRemoved => null,
+    ModLogType.postLocked => null,
+    ModLogType.postUnlocked => null,
   };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(l(context).modlog)),
+      appBar: AppBar(
+        title: Text(l(context).modlog),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final filter = await modlogFilterType(
+                context,
+              ).askSelection(context, _filter);
+              if (filter == null) return;
+              setState(() {
+                _filter = filter;
+              });
+              _pagingController.refresh();
+            },
+            icon: const Icon(Symbols.sort_rounded),
+          ),
+        ],
+      ),
       body: AdvancedPagedScrollView(
         controller: _pagingController,
         itemBuilder: (context, item, index) {
@@ -188,6 +212,8 @@ class _ModLogState extends State<ModLog> {
                                 ModLogType.moderatorRemoved => Colors.orange,
                                 ModLogType.communityAdded => Colors.green,
                                 ModLogType.communityRemoved => Colors.red,
+                                ModLogType.postLocked => Colors.orange,
+                                ModLogType.postUnlocked => Colors.orange,
                               },
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -233,9 +259,18 @@ class _ModLogState extends State<ModLog> {
                               ModLogType.moderatorRemoved => l(
                                 context,
                               ).modlog_removedModerator,
-                              ModLogType.communityAdded => 'Community added',
-                              ModLogType.communityRemoved =>
-                                'Community removed',
+                              ModLogType.communityAdded => l(
+                                context,
+                              ).modlog_communityAdded,
+                              ModLogType.communityRemoved => l(
+                                context,
+                              ).modlog_communityRemoved,
+                              ModLogType.postLocked => l(
+                                context,
+                              ).modlog_postLocked,
+                              ModLogType.postUnlocked => l(
+                                context,
+                              ).modlog_postUnlocked,
                             }),
                           ),
                           Padding(
@@ -275,4 +310,89 @@ class _ModLogState extends State<ModLog> {
       ),
     );
   }
+}
+
+SelectionMenu<ModLogType> modlogFilterType(BuildContext context) {
+  final software = context.read<AppController>().serverSoftware;
+  return SelectionMenu(l(context).sortComments, [
+    SelectionMenuItem(value: ModLogType.all, title: l(context).modlog_all),
+    SelectionMenuItem(
+      value: ModLogType.postDeleted,
+      title: l(context).modlog_deletedPost,
+    ),
+    if (software == ServerSoftware.mbin)
+      SelectionMenuItem(
+        value: ModLogType.postRestored,
+        title: l(context).modlog_restoredPost,
+      ),
+    SelectionMenuItem(
+      value: ModLogType.commentDeleted,
+      title: l(context).modlog_deletedComment,
+    ),
+    if (software == ServerSoftware.mbin)
+      SelectionMenuItem(
+        value: ModLogType.commentRestored,
+        title: l(context).modlog_restoredComment,
+      ),
+    SelectionMenuItem(
+      value: ModLogType.postPinned,
+      title: l(context).modlog_pinnedPost,
+    ),
+    SelectionMenuItem(
+      value: ModLogType.postUnpinned,
+      title: l(context).modlog_unpinnedPost,
+    ),
+    if (software == ServerSoftware.mbin) ...[
+      SelectionMenuItem(
+        value: ModLogType.post_deleted,
+        title: l(context).modlog_deletedPost,
+      ),
+      SelectionMenuItem(
+        value: ModLogType.post_restored,
+        title: l(context).modlog_restoredPost,
+      ),
+      SelectionMenuItem(
+        value: ModLogType.post_comment_deleted,
+        title: l(context).modlog_deletedComment,
+      ),
+      SelectionMenuItem(
+        value: ModLogType.post_comment_restored,
+        title: l(context).modlog_restoredComment,
+      ),
+    ],
+    SelectionMenuItem(
+      value: ModLogType.ban,
+      title: l(context).modlog_bannedUser,
+    ),
+    SelectionMenuItem(
+      value: ModLogType.unban,
+      title: l(context).modlog_unbannedUser,
+    ),
+    SelectionMenuItem(
+      value: ModLogType.moderatorAdded,
+      title: l(context).modlog_addModerator,
+    ),
+    SelectionMenuItem(
+      value: ModLogType.moderatorRemoved,
+      title: l(context).modlog_removedModerator,
+    ),
+    if (software != ServerSoftware.mbin) ...[
+      SelectionMenuItem(
+        value: ModLogType.communityAdded,
+        title: l(context).modlog_communityAdded,
+      ),
+      SelectionMenuItem(
+        value: ModLogType.communityRemoved,
+        title: l(context).modlog_communityRemoved,
+      ),
+      SelectionMenuItem(
+        value: ModLogType.postLocked,
+        title: l(context).modlog_postLocked,
+      ),
+      SelectionMenuItem(
+        value: ModLogType.postUnlocked,
+        title: l(context).modlog_postUnlocked,
+      ),
+    ],
+  ]);
 }

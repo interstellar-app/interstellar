@@ -855,5 +855,10 @@
         "type": "String"
       }
     }
-  }
+  },
+  "modlog_all": "All",
+  "modlog_communityAdded": "Community added",
+  "modlog_communityRemoved": "Community removed",
+  "modlog_postLocked": "Post locked",
+  "modlog_postUnlocked": "Post unlocked"
 }
