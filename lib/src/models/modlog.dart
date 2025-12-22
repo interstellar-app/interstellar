@@ -263,7 +263,7 @@ abstract class ModlogListModel with _$ModlogListModel {
 
     return ModlogListModel(
       items: items,
-      nextPage: json['next_page'] as String?,
+      nextPage: items.isNotEmpty ? json['next_page'] as String? : null,
     );
   }
 }
