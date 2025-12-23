@@ -68,9 +68,9 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
         ModLogType.post_deleted =>
-          (json['subject'] as JsonMap)['title'] as String,
+          (json['subject'] as JsonMap)['body'] as String,
         ModLogType.post_restored =>
-          (json['subject'] as JsonMap)['title'] as String,
+          (json['subject'] as JsonMap)['body'] as String,
         ModLogType.post_comment_deleted => null,
         ModLogType.post_comment_restored => null,
         ModLogType.ban => null,
