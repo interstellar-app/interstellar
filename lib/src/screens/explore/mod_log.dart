@@ -273,15 +273,15 @@ class _ModLogState extends State<ModLog> {
                               ).modlog_postUnlocked,
                             }),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ContentInfo(
-                              user: item.moderator,
-                              community: item.community,
-                              createdAt: item.createdAt,
-                            ),
-                          ),
                         ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: ContentInfo(
+                        user: item.moderator,
+                        community: item.community,
+                        createdAt: item.createdAt,
                       ),
                     ),
                     if (item.postId != null &&
