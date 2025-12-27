@@ -147,8 +147,22 @@ class _ModLogState extends State<ModLog> {
     ModLogType.moderatorRemoved => null,
     ModLogType.communityAdded => null,
     ModLogType.communityRemoved => null,
-    ModLogType.postLocked => null,
-    ModLogType.postUnlocked => null,
+    ModLogType.postLocked =>
+      item.postId == null
+          ? null
+          : () => pushRoute(
+              context,
+              builder: (context) =>
+                  PostPage(postType: PostType.thread, postId: item.postId),
+            ),
+    ModLogType.postUnlocked =>
+      item.postId == null
+          ? null
+          : () => pushRoute(
+              context,
+              builder: (context) =>
+                  PostPage(postType: PostType.thread, postId: item.postId),
+            ),
   };
 
   @override
@@ -175,136 +189,128 @@ class _ModLogState extends State<ModLog> {
       body: AdvancedPagedScrollView(
         controller: _pagingController,
         itemBuilder: (context, item, index) {
-          return Card(
-            margin: const EdgeInsets.all(8),
-            child: InkWell(
-              onTap: _itemOnTap(item),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        // mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: switch (item.type) {
-                                ModLogType.all => Colors.white,
-                                ModLogType.postDeleted => Colors.red,
-                                ModLogType.postRestored => Colors.green,
-                                ModLogType.commentDeleted => Colors.red,
-                                ModLogType.commentRestored => Colors.green,
-                                ModLogType.postPinned => Colors.orange,
-                                ModLogType.postUnpinned => Colors.orange,
-                                ModLogType.post_deleted => Colors.red,
-                                ModLogType.post_restored => Colors.green,
-                                ModLogType.post_comment_deleted => Colors.red,
-                                ModLogType.post_comment_restored =>
-                                  Colors.green,
-                                ModLogType.ban => Colors.red,
-                                ModLogType.unban => Colors.green,
-                                ModLogType.moderatorAdded => Colors.orange,
-                                ModLogType.moderatorRemoved => Colors.orange,
-                                ModLogType.communityAdded => Colors.green,
-                                ModLogType.communityRemoved => Colors.red,
-                                ModLogType.postLocked => Colors.orange,
-                                ModLogType.postUnlocked => Colors.orange,
-                              },
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(switch (item.type) {
-                              ModLogType.all => '',
-                              ModLogType.postDeleted => l(
-                                context,
-                              ).modlog_deletedPost,
-                              ModLogType.postRestored => l(
-                                context,
-                              ).modlog_restoredPost,
-                              ModLogType.commentDeleted => l(
-                                context,
-                              ).modlog_deletedComment,
-                              ModLogType.commentRestored => l(
-                                context,
-                              ).modlog_restoredComment,
-                              ModLogType.postPinned => l(
-                                context,
-                              ).modlog_pinnedPost,
-                              ModLogType.postUnpinned => l(
-                                context,
-                              ).modlog_unpinnedPost,
-                              ModLogType.post_deleted => l(
-                                context,
-                              ).modlog_deletedPost,
-                              ModLogType.post_restored => l(
-                                context,
-                              ).modlog_restoredPost,
-                              ModLogType.post_comment_deleted => l(
-                                context,
-                              ).modlog_deletedComment,
-                              ModLogType.post_comment_restored => l(
-                                context,
-                              ).modlog_restoredComment,
-                              ModLogType.ban => l(context).modlog_bannedUser,
-                              ModLogType.unban => l(
-                                context,
-                              ).modlog_unbannedUser,
-                              ModLogType.moderatorAdded => l(
-                                context,
-                              ).modlog_addModerator,
-                              ModLogType.moderatorRemoved => l(
-                                context,
-                              ).modlog_removedModerator,
-                              ModLogType.communityAdded => l(
-                                context,
-                              ).modlog_communityAdded,
-                              ModLogType.communityRemoved => l(
-                                context,
-                              ).modlog_communityRemoved,
-                              ModLogType.postLocked => l(
-                                context,
-                              ).modlog_postLocked,
-                              ModLogType.postUnlocked => l(
-                                context,
-                              ).modlog_postUnlocked,
-                            }),
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                onTap: _itemOnTap(item),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: switch (item.type) {
+                              ModLogType.all => Colors.white,
+                              ModLogType.postDeleted => Colors.red,
+                              ModLogType.postRestored => Colors.green,
+                              ModLogType.commentDeleted => Colors.red,
+                              ModLogType.commentRestored => Colors.green,
+                              ModLogType.postPinned => Colors.orange,
+                              ModLogType.postUnpinned => Colors.orange,
+                              ModLogType.post_deleted => Colors.red,
+                              ModLogType.post_restored => Colors.green,
+                              ModLogType.post_comment_deleted => Colors.red,
+                              ModLogType.post_comment_restored => Colors.green,
+                              ModLogType.ban => Colors.red,
+                              ModLogType.unban => Colors.green,
+                              ModLogType.moderatorAdded => Colors.orange,
+                              ModLogType.moderatorRemoved => Colors.orange,
+                              ModLogType.communityAdded => Colors.green,
+                              ModLogType.communityRemoved => Colors.red,
+                              ModLogType.postLocked => Colors.orange,
+                              ModLogType.postUnlocked => Colors.orange,
+                            },
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                        ],
+                          child: Text(switch (item.type) {
+                            ModLogType.all => '',
+                            ModLogType.postDeleted => l(
+                              context,
+                            ).modlog_deletedPost,
+                            ModLogType.postRestored => l(
+                              context,
+                            ).modlog_restoredPost,
+                            ModLogType.commentDeleted => l(
+                              context,
+                            ).modlog_deletedComment,
+                            ModLogType.commentRestored => l(
+                              context,
+                            ).modlog_restoredComment,
+                            ModLogType.postPinned => l(
+                              context,
+                            ).modlog_pinnedPost,
+                            ModLogType.postUnpinned => l(
+                              context,
+                            ).modlog_unpinnedPost,
+                            ModLogType.post_deleted => l(
+                              context,
+                            ).modlog_deletedPost,
+                            ModLogType.post_restored => l(
+                              context,
+                            ).modlog_restoredPost,
+                            ModLogType.post_comment_deleted => l(
+                              context,
+                            ).modlog_deletedComment,
+                            ModLogType.post_comment_restored => l(
+                              context,
+                            ).modlog_restoredComment,
+                            ModLogType.ban => l(context).modlog_bannedUser,
+                            ModLogType.unban => l(context).modlog_unbannedUser,
+                            ModLogType.moderatorAdded => l(
+                              context,
+                            ).modlog_addModerator,
+                            ModLogType.moderatorRemoved => l(
+                              context,
+                            ).modlog_removedModerator,
+                            ModLogType.communityAdded => l(
+                              context,
+                            ).modlog_communityAdded,
+                            ModLogType.communityRemoved => l(
+                              context,
+                            ).modlog_communityRemoved,
+                            ModLogType.postLocked => l(
+                              context,
+                            ).modlog_postLocked,
+                            ModLogType.postUnlocked => l(
+                              context,
+                            ).modlog_postUnlocked,
+                          }),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: ContentInfo(
+                      ContentInfo(
                         user: item.moderator,
                         community: item.community,
                         createdAt: item.createdAt,
                       ),
-                    ),
-                    if (item.postId != null &&
-                        item.postTitle != null &&
-                        item.comment == null)
-                      Text(
-                        item.postTitle!,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    if (item.comment != null)
-                      Text(
-                        item.comment!.body ?? l(context).modlog_deletedComment,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    // PostComment(item.comment!, (post) {}),
-                    if (item.ban != null)
-                      UserItemSimple(item.ban!.bannedUser, noTap: true),
-                    if (item.reason != null && item.reason!.isNotEmpty)
-                      Text(l(context).modlog_reason(item.reason!)),
-                  ],
+                      if (item.postId != null ||
+                          item.comment != null ||
+                          item.ban != null ||
+                          (item.reason != null && item.reason!.isNotEmpty))
+                        const Divider(),
+                      if (item.postId != null || item.comment != null)
+                        Text(
+                          'Content: ${item.postId != null ? item.postTitle ?? l(context).modlog_deletedPost : item.comment?.body ?? l(context).modlog_deletedComment}',
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      if (item.ban != null)
+                        UserItemSimple(item.ban!.bannedUser, noTap: true),
+                      if (item.reason != null && item.reason!.isNotEmpty)
+                        Text(
+                          l(context).modlog_reason(item.reason!),
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+              const Divider(thickness: 0, height: 0),
+            ],
           );
         },
       ),
