@@ -199,7 +199,7 @@ abstract class PostModel with _$PostModel {
   }) {
     final postView = json['post_view'] as JsonMap;
     final lemmyPost = postView['post'] as JsonMap;
-    final lemmyCounts = postView['counts'] as JsonMap;
+    final lemmyCounts = postView['counts'] as JsonMap?;
 
     final isImagePost =
         ((lemmyPost['url_content_type'] != null &&
@@ -231,9 +231,9 @@ abstract class PostModel with _$PostModel {
           .where((pair) => pair.$2 == lemmyPost['language_id'] as int)
           .firstOrNull
           ?.$1,
-      numComments: lemmyCounts['comments'] as int,
-      upvotes: lemmyCounts['upvotes'] as int,
-      downvotes: lemmyCounts['downvotes'] as int,
+      numComments: lemmyCounts?['comments'] as int? ?? 0,
+      upvotes: lemmyCounts?['upvotes'] as int? ?? 0,
+      downvotes: lemmyCounts?['downvotes'] as int? ?? 0,
       boosts: null,
       myVote: postView['my_vote'] as int?,
       myBoost: null,
@@ -244,13 +244,13 @@ abstract class PostModel with _$PostModel {
           lemmyPost['featured_local'] as bool,
       createdAt: DateTime.parse(lemmyPost['published'] as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
-      lastActive: DateTime.parse(lemmyCounts['newest_comment_time'] as String),
+      lastActive: lemmyCounts == null ? DateTime.now() : DateTime.parse(lemmyCounts['newest_comment_time'] as String),
       visibility: 'visible',
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (postView['saved'] as bool) '',
+        if (((postView['saved'] as bool?) != null) ? postView['saved'] as bool : false) '',
       ],
       read: postView['read'] as bool? ?? false,
       crossPosts:

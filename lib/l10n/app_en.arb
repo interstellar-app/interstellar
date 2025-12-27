@@ -836,5 +836,29 @@
     }
   },
   "pushNotificationsDialog_selectDistributor": "Select push distributor",
-  "crossPost": "Cross post"
+  "crossPost": "Cross post",
+  "modlog": "Modlog",
+  "modlog_deletedPost": "Deleted post",
+  "modlog_restoredPost": "Restored post",
+  "modlog_deletedComment": "Deleted comment",
+  "modlog_restoredComment": "Restored comment",
+  "modlog_pinnedPost": "Pinned post",
+  "modlog_unpinnedPost": "Unpinned post",
+  "modlog_bannedUser": "Banned user",
+  "modlog_unbannedUser": "Unbanned user",
+  "modlog_addModerator": "Added moderator",
+  "modlog_removedModerator": "Removed moderator",
+  "modlog_reason": "Reason: {reason}",
+  "@modlog_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "modlog_all": "All",
+  "modlog_communityAdded": "Community added",
+  "modlog_communityRemoved": "Community removed",
+  "modlog_postLocked": "Post locked",
+  "modlog_postUnlocked": "Post unlocked"
 }
