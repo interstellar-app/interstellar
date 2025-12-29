@@ -287,11 +287,6 @@ class _ModLogState extends State<ModLog> {
                         community: item.community,
                         createdAt: item.createdAt,
                       ),
-                      if (item.postId != null ||
-                          item.comment != null ||
-                          item.ban != null ||
-                          (item.reason != null && item.reason!.isNotEmpty))
-                        const Divider(),
                       if (item.postId != null || item.comment != null)
                         Text(
                           'Content: ${item.postId != null ? item.postTitle ?? l(context).modlog_deletedPost : item.comment?.body ?? l(context).modlog_deletedComment}',
