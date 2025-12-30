@@ -4,8 +4,9 @@ An app for Mbin/Lemmy/PieFed, connecting you to the fediverse.
 
 ## Downloads
 
-Interstellar supports Android, Linux, and Windows, with more to come.
+Interstellar supports Android, iOS, Linux, and Windows.
 
+[![](assets/readme/AppleAppStore-badge.png)](https://apps.apple.com/us/app/id6745356296)
 [![](assets/readme/GooglePlay-badge.png)](https://play.google.com/store/apps/details?id=one.jwr.interstellar)
 [![](assets/readme/IzzyOnDroid-badge.png)](https://apt.izzysoft.de/fdroid/index/apk/one.jwr.interstellar)
 [![](assets/readme/Flathub-badge.png)](https://flathub.org/apps/one.jwr.interstellar)
@@ -13,7 +14,6 @@ Interstellar supports Android, Linux, and Windows, with more to come.
 Available for Arch Linux via the AUR: [interstellar-bin](https://aur.archlinux.org/packages/interstellar-bin).
 
 Available for NixOS in `nixos-unstable`: [interstellar](https://search.nixos.org/packages?channel=unstable&show=interstellar&query=interstellar)
-
 
 See the [latest release](https://github.com/interstellar-app/interstellar/releases/latest) for more downloads (.APK, .AppImage, .exe, etc.).
 
