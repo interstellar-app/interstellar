@@ -3,6 +3,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
@@ -42,7 +43,19 @@ class _ModLogState extends State<ModLog> {
             page: pageKey,
           );
 
-          return (newPage.items, newPage.nextPage);
+          final newItems = switch (ac.serverSoftware) {
+            ServerSoftware.mbin => newPage.items,
+            ServerSoftware.lemmy =>
+              _filter != ModLogType.all
+                  ? newPage.items.where((item) => item.type == _filter).toList()
+                  : newPage.items,
+            // Lemmy API returns both positive and negative mod action types for each filter type.
+            // e.g. passing PinnedPost to the API returns both pinned and unpinned actions.
+            // So we do a little extra filtering here to narrow it down further.
+            ServerSoftware.piefed => throw UnimplementedError(),
+          };
+
+          return (newItems, newPage.nextPage);
         },
       );
   ModLogType _filter = ModLogType.all;
@@ -143,10 +156,28 @@ class _ModLogState extends State<ModLog> {
               context,
               builder: (context) => UserScreen(item.ban!.bannedUser.id),
             ),
-    ModLogType.moderatorAdded => null,
-    ModLogType.moderatorRemoved => null,
-    ModLogType.communityAdded => null,
-    ModLogType.communityRemoved => null,
+    ModLogType.moderatorAdded =>
+      item.moderator == null
+          ? null
+          : () => pushRoute(
+              context,
+              builder: (context) => UserScreen(item.moderator!.id),
+            ),
+    ModLogType.moderatorRemoved =>
+      item.moderator == null
+          ? null
+          : () => pushRoute(
+              context,
+              builder: (context) => UserScreen(item.moderator!.id),
+            ),
+    ModLogType.communityAdded => () => pushRoute(
+      context,
+      builder: (context) => CommunityScreen(item.community.id),
+    ),
+    ModLogType.communityRemoved => () => pushRoute(
+      context,
+      builder: (context) => CommunityScreen(item.community.id),
+    ),
     ModLogType.postLocked =>
       item.postId == null
           ? null
@@ -182,7 +213,7 @@ class _ModLogState extends State<ModLog> {
               });
               _pagingController.refresh();
             },
-            icon: const Icon(Symbols.sort_rounded),
+            icon: const Icon(Symbols.filter_alt_rounded),
           ),
         ],
       ),
@@ -289,7 +320,9 @@ class _ModLogState extends State<ModLog> {
                       ),
                       if (item.postId != null || item.comment != null)
                         Text(
-                          'Content: ${item.postId != null ? item.postTitle ?? l(context).modlog_deletedPost : item.comment?.body ?? l(context).modlog_deletedComment}',
+                          'Content: ${item.postId != null
+                              ? item.postTitle ?? l(context).modlog_deletedPost
+                              : item.comment?.body ?? l(context).modlog_deletedComment}',
                           maxLines: 4,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -315,7 +348,7 @@ class _ModLogState extends State<ModLog> {
 
 SelectionMenu<ModLogType> modlogFilterType(BuildContext context) {
   final software = context.read<AppController>().serverSoftware;
-  return SelectionMenu(l(context).sortComments, [
+  return SelectionMenu(l(context).modlog, [
     SelectionMenuItem(value: ModLogType.all, title: l(context).modlog_all),
     SelectionMenuItem(
       value: ModLogType.postDeleted,
