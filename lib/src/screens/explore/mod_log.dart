@@ -3,6 +3,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
@@ -143,32 +144,32 @@ class _ModLogState extends State<ModLog> {
                   PostCommentScreen(PostType.thread, item.comment!.id),
             ),
     ModLogType.ban =>
-      item.ban == null
+      item.user == null
           ? null
           : () => pushRoute(
               context,
-              builder: (context) => UserScreen(item.ban!.bannedUser.id),
+              builder: (context) => UserScreen(item.user!.id),
             ),
     ModLogType.unban =>
-      item.ban == null
+      item.user == null
           ? null
           : () => pushRoute(
               context,
-              builder: (context) => UserScreen(item.ban!.bannedUser.id),
+              builder: (context) => UserScreen(item.user!.id),
             ),
     ModLogType.moderatorAdded =>
-      item.moderator == null
+      item.user == null
           ? null
           : () => pushRoute(
               context,
-              builder: (context) => UserScreen(item.moderator!.id),
+              builder: (context) => UserScreen(item.user!.id),
             ),
     ModLogType.moderatorRemoved =>
-      item.moderator == null
+      item.user == null
           ? null
           : () => pushRoute(
               context,
-              builder: (context) => UserScreen(item.moderator!.id),
+              builder: (context) => UserScreen(item.user!.id),
             ),
     ModLogType.communityAdded => () => pushRoute(
       context,
@@ -326,8 +327,8 @@ class _ModLogState extends State<ModLog> {
                           maxLines: 4,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      if (item.ban != null)
-                        UserItemSimple(item.ban!.bannedUser, noTap: true),
+                      if (item.user != null)
+                        UserItemSimple(UserModel.fromDetailedUser(item.user!), noTap: true),
                       if (item.reason != null && item.reason!.isNotEmpty)
                         Text(
                           l(context).modlog_reason(item.reason!),

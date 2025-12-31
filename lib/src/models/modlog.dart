@@ -20,7 +20,7 @@ abstract class ModlogItemModel with _$ModlogItemModel {
     required int? postId,
     required String? postTitle,
     required CommentModel? comment,
-    required CommunityBanModel? ban,
+    required DetailedUserModel? user,
   }) = _ModlogItemModel;
 
   factory ModlogItemModel.fromMbin(JsonMap json) {
@@ -111,7 +111,7 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.postLocked => null,
         ModLogType.postUnlocked => null,
       },
-      ban: switch (type) {
+      user: switch (type) {
         ModLogType.all => null,
         ModLogType.postDeleted => null,
         ModLogType.postRestored => null,
@@ -123,12 +123,8 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.post_restored => null,
         ModLogType.post_comment_deleted => null,
         ModLogType.post_comment_restored => null,
-        ModLogType.ban => CommunityBanModel.fromMbin(
-          json['subject'] as JsonMap,
-        ),
-        ModLogType.unban => CommunityBanModel.fromMbin(
-          json['subject'] as JsonMap,
-        ),
+        ModLogType.ban => DetailedUserModel.fromMbin((json['subject'] as JsonMap)['bannedUser'] as JsonMap),
+        ModLogType.unban => DetailedUserModel.fromMbin((json['subject'] as JsonMap)['bannedUser'] as JsonMap),
         ModLogType.moderatorAdded => null,
         ModLogType.moderatorRemoved => null,
         ModLogType.communityAdded => null,
@@ -158,7 +154,27 @@ abstract class ModlogItemModel with _$ModlogItemModel {
       comment: json['comment'] != null
           ? CommentModel.fromLemmy(json, langCodeIdPairs: langCodeIdPairs)
           : null,
-      ban: type == ModLogType.ban ? CommunityBanModel.fromLemmy(json) : null,
+      user: switch (type) {
+        ModLogType.all => null,
+        ModLogType.postDeleted => null,
+        ModLogType.postRestored => null,
+        ModLogType.commentDeleted => null,
+        ModLogType.commentRestored => null,
+        ModLogType.postPinned => null,
+        ModLogType.postUnpinned => null,
+        ModLogType.post_deleted => null,
+        ModLogType.post_restored => null,
+        ModLogType.post_comment_deleted => null,
+        ModLogType.post_comment_restored => null,
+        ModLogType.ban => DetailedUserModel.fromLemmy(json['banned_person'] as JsonMap),
+        ModLogType.unban => DetailedUserModel.fromLemmy(json['banned_person'] as JsonMap),
+        ModLogType.moderatorAdded => DetailedUserModel.fromLemmy(json['modded_person'] as JsonMap),
+        ModLogType.moderatorRemoved => DetailedUserModel.fromLemmy(json['modded_person'] as JsonMap),
+        ModLogType.communityAdded => null,
+        ModLogType.communityRemoved => null,
+        ModLogType.postLocked => null,
+        ModLogType.postUnlocked => null,
+      },
     );
   }
 }
