@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +28,14 @@ void main() async {
   if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
     await windowManager.ensureInitialized();
 
-    WindowOptions windowOptions = const WindowOptions(
-      minimumSize: Size(400, 400),
-    );
+    // Get smallest dimensions of available displays and set minimum window
+    // size to be a 16th of those dimensions.
+    final screenSize = PlatformDispatcher.instance.displays
+        .map((display) => display.size)
+        .reduce((a, b) => Size(min(a.width, b.width), min(a.height, b.height)));
+    final minWindowSize = screenSize / 4;
+
+    WindowOptions windowOptions = WindowOptions(minimumSize: minWindowSize);
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
