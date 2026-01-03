@@ -42,12 +42,12 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.commentRestored => null,
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
-        ModLogType.post_deleted =>
+        ModLogType.microblogPostDeleted =>
           (json['subject'] as JsonMap)['postId'] as int,
-        ModLogType.post_restored =>
+        ModLogType.microblogPostRestored =>
           (json['subject'] as JsonMap)['postId'] as int,
-        ModLogType.post_comment_deleted => null,
-        ModLogType.post_comment_restored => null,
+        ModLogType.microblogCommentDeleted => null,
+        ModLogType.microblogCommentRestored => null,
         ModLogType.ban => null,
         ModLogType.unban => null,
         ModLogType.moderatorAdded => null,
@@ -67,12 +67,12 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.commentRestored => null,
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
-        ModLogType.post_deleted =>
+        ModLogType.microblogPostDeleted =>
           (json['subject'] as JsonMap)['body'] as String,
-        ModLogType.post_restored =>
+        ModLogType.microblogPostRestored =>
           (json['subject'] as JsonMap)['body'] as String,
-        ModLogType.post_comment_deleted => null,
-        ModLogType.post_comment_restored => null,
+        ModLogType.microblogCommentDeleted => null,
+        ModLogType.microblogCommentRestored => null,
         ModLogType.ban => null,
         ModLogType.unban => null,
         ModLogType.moderatorAdded => null,
@@ -94,12 +94,12 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ),
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
-        ModLogType.post_deleted => null,
-        ModLogType.post_restored => null,
-        ModLogType.post_comment_deleted => CommentModel.fromMbin(
+        ModLogType.microblogPostDeleted => null,
+        ModLogType.microblogPostRestored => null,
+        ModLogType.microblogCommentDeleted => CommentModel.fromMbin(
           json['subject'] as JsonMap,
         ),
-        ModLogType.post_comment_restored => CommentModel.fromMbin(
+        ModLogType.microblogCommentRestored => CommentModel.fromMbin(
           json['subject'] as JsonMap,
         ),
         ModLogType.ban => null,
@@ -119,10 +119,10 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.commentRestored => null,
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
-        ModLogType.post_deleted => null,
-        ModLogType.post_restored => null,
-        ModLogType.post_comment_deleted => null,
-        ModLogType.post_comment_restored => null,
+        ModLogType.microblogPostDeleted => null,
+        ModLogType.microblogPostRestored => null,
+        ModLogType.microblogCommentDeleted => null,
+        ModLogType.microblogCommentRestored => null,
         ModLogType.ban => DetailedUserModel.fromMbin((json['subject'] as JsonMap)['bannedUser'] as JsonMap),
         ModLogType.unban => DetailedUserModel.fromMbin((json['subject'] as JsonMap)['bannedUser'] as JsonMap),
         ModLogType.moderatorAdded => null,
@@ -162,10 +162,10 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.commentRestored => null,
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
-        ModLogType.post_deleted => null,
-        ModLogType.post_restored => null,
-        ModLogType.post_comment_deleted => null,
-        ModLogType.post_comment_restored => null,
+        ModLogType.microblogPostDeleted => null,
+        ModLogType.microblogPostRestored => null,
+        ModLogType.microblogCommentDeleted => null,
+        ModLogType.microblogCommentRestored => null,
         ModLogType.ban => DetailedUserModel.fromLemmy(json['banned_person'] as JsonMap),
         ModLogType.unban => DetailedUserModel.fromLemmy(json['banned_person'] as JsonMap),
         ModLogType.moderatorAdded => DetailedUserModel.fromLemmy(json['modded_person'] as JsonMap),

@@ -19,10 +19,10 @@ enum ModLogType {
   commentRestored,
   postPinned,
   postUnpinned,
-  post_deleted,
-  post_restored,
-  post_comment_deleted,
-  post_comment_restored,
+  microblogPostDeleted,
+  microblogPostRestored,
+  microblogCommentDeleted,
+  microblogCommentRestored,
   ban,
   unban,
   moderatorAdded,
@@ -39,10 +39,10 @@ enum ModLogType {
     'log_entry_comment_restored' => ModLogType.commentRestored,
     'log_entry_pinned' => ModLogType.postPinned,
     'log_entry_unpinned' => ModLogType.postUnpinned,
-    'log_post_deleted' => ModLogType.post_deleted,
-    'log_post_restored' => ModLogType.post_restored,
-    'log_post_comment_deleted' => ModLogType.post_comment_deleted,
-    'log_post_comment_restored' => ModLogType.post_comment_restored,
+    'log_post_deleted' => ModLogType.microblogPostDeleted,
+    'log_post_restored' => ModLogType.microblogPostRestored,
+    'log_post_comment_deleted' => ModLogType.microblogCommentDeleted,
+    'log_post_comment_restored' => ModLogType.microblogCommentRestored,
     'log_ban' => ModLogType.ban,
     'log_unban' => ModLogType.unban,
     'log_moderator_add' => ModLogType.moderatorAdded,
@@ -58,10 +58,10 @@ enum ModLogType {
     ModLogType.commentRestored => 'entry_comment_restored',
     ModLogType.postPinned => 'entry_pinned',
     ModLogType.postUnpinned => 'entry_unpinned',
-    ModLogType.post_deleted => 'post_deleted',
-    ModLogType.post_restored => 'post_restored',
-    ModLogType.post_comment_deleted => 'post_comment_deleted',
-    ModLogType.post_comment_restored => 'post_comment_restored',
+    ModLogType.microblogPostDeleted => 'post_deleted',
+    ModLogType.microblogPostRestored => 'post_restored',
+    ModLogType.microblogCommentDeleted => 'post_comment_deleted',
+    ModLogType.microblogCommentRestored => 'post_comment_restored',
     ModLogType.ban => 'ban',
     ModLogType.unban => 'unban',
     ModLogType.moderatorAdded => 'moderator_add',
@@ -80,10 +80,10 @@ enum ModLogType {
     ModLogType.commentRestored => 'ModRemoveComment',
     ModLogType.postPinned => 'ModFeaturePost',
     ModLogType.postUnpinned => 'ModFeaturePost',
-    ModLogType.post_deleted => 'ModRemovePost',
-    ModLogType.post_restored => 'ModRemovePost',
-    ModLogType.post_comment_deleted => 'ModRemoveComment',
-    ModLogType.post_comment_restored => 'ModRemoveComment',
+    ModLogType.microblogPostDeleted => 'ModRemovePost',
+    ModLogType.microblogPostRestored => 'ModRemovePost',
+    ModLogType.microblogCommentDeleted => 'ModRemoveComment',
+    ModLogType.microblogCommentRestored => 'ModRemoveComment',
     ModLogType.ban => 'ModBanFromCommunity',
     ModLogType.unban => 'ModBanFromCommunity',
     ModLogType.moderatorAdded => 'ModAddCommunity',
@@ -251,6 +251,16 @@ class APIModeration {
           'p': page,
           if (type != ModLogType.all)
             'types[0]': type.toMbin,
+          
+          // if type set to post or comment also include the corresponding type for microblogs
+          if (type == ModLogType.postDeleted)
+            'types[1]': ModLogType.microblogPostDeleted.toMbin,
+          if (type == ModLogType.postRestored)
+            'types[1]': ModLogType.microblogPostRestored.toMbin,
+          if (type == ModLogType.commentDeleted)
+            'types[1]': ModLogType.microblogCommentDeleted.toMbin,
+          if (type == ModLogType.commentRestored)
+            'types[1]': ModLogType.microblogCommentRestored.toMbin,
         };
 
         final response = await client.get(path, queryParams: query);

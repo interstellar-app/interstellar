@@ -111,7 +111,7 @@ class _ModLogState extends State<ModLog> {
               builder: (context) =>
                   PostPage(postType: PostType.thread, postId: item.postId),
             ),
-    ModLogType.post_deleted =>
+    ModLogType.microblogPostDeleted =>
       item.postId == null
           ? null
           : () => pushRoute(
@@ -119,7 +119,7 @@ class _ModLogState extends State<ModLog> {
               builder: (context) =>
                   PostPage(postType: PostType.thread, postId: item.postId),
             ),
-    ModLogType.post_restored =>
+    ModLogType.microblogPostRestored =>
       item.postId == null
           ? null
           : () => pushRoute(
@@ -127,7 +127,7 @@ class _ModLogState extends State<ModLog> {
               builder: (context) =>
                   PostPage(postType: PostType.thread, postId: item.postId),
             ),
-    ModLogType.post_comment_deleted =>
+    ModLogType.microblogCommentDeleted =>
       item.comment == null
           ? null
           : () => pushRoute(
@@ -135,7 +135,7 @@ class _ModLogState extends State<ModLog> {
               builder: (context) =>
                   PostCommentScreen(PostType.thread, item.comment!.id),
             ),
-    ModLogType.post_comment_restored =>
+    ModLogType.microblogCommentRestored =>
       item.comment == null
           ? null
           : () => pushRoute(
@@ -244,10 +244,10 @@ class _ModLogState extends State<ModLog> {
                               ModLogType.commentRestored => Colors.green,
                               ModLogType.postPinned => Colors.orange,
                               ModLogType.postUnpinned => Colors.orange,
-                              ModLogType.post_deleted => Colors.red,
-                              ModLogType.post_restored => Colors.green,
-                              ModLogType.post_comment_deleted => Colors.red,
-                              ModLogType.post_comment_restored => Colors.green,
+                              ModLogType.microblogPostDeleted => Colors.red,
+                              ModLogType.microblogPostRestored => Colors.green,
+                              ModLogType.microblogCommentDeleted => Colors.red,
+                              ModLogType.microblogCommentRestored => Colors.green,
                               ModLogType.ban => Colors.red,
                               ModLogType.unban => Colors.green,
                               ModLogType.moderatorAdded => Colors.orange,
@@ -279,16 +279,16 @@ class _ModLogState extends State<ModLog> {
                             ModLogType.postUnpinned => l(
                               context,
                             ).modlog_unpinnedPost,
-                            ModLogType.post_deleted => l(
+                            ModLogType.microblogPostDeleted => l(
                               context,
                             ).modlog_deletedPost,
-                            ModLogType.post_restored => l(
+                            ModLogType.microblogPostRestored => l(
                               context,
                             ).modlog_restoredPost,
-                            ModLogType.post_comment_deleted => l(
+                            ModLogType.microblogCommentDeleted => l(
                               context,
                             ).modlog_deletedComment,
-                            ModLogType.post_comment_restored => l(
+                            ModLogType.microblogCommentRestored => l(
                               context,
                             ).modlog_restoredComment,
                             ModLogType.ban => l(context).modlog_bannedUser,
@@ -377,24 +377,6 @@ SelectionMenu<ModLogType> modlogFilterType(BuildContext context) {
       value: ModLogType.postUnpinned,
       title: l(context).modlog_unpinnedPost,
     ),
-    if (software == ServerSoftware.mbin) ...[
-      SelectionMenuItem(
-        value: ModLogType.post_deleted,
-        title: l(context).modlog_deletedPost,
-      ),
-      SelectionMenuItem(
-        value: ModLogType.post_restored,
-        title: l(context).modlog_restoredPost,
-      ),
-      SelectionMenuItem(
-        value: ModLogType.post_comment_deleted,
-        title: l(context).modlog_deletedComment,
-      ),
-      SelectionMenuItem(
-        value: ModLogType.post_comment_restored,
-        title: l(context).modlog_restoredComment,
-      ),
-    ],
     SelectionMenuItem(
       value: ModLogType.ban,
       title: l(context).modlog_bannedUser,
