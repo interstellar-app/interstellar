@@ -203,25 +203,20 @@ class ContentInfo extends StatelessWidget {
     // return Row(
     final internal = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Flexible(
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runSpacing: 4,
-            children: [
-              ?warning,
-              ?pinned,
-              ?nsfw,
-              ?oc,
-              ?langWidget,
-              if (showCommunityFirst) ?communityWidget,
-              if (!showCommunityFirst) ?userWidget,
-              ?created,
-              if (!showCommunityFirst) ?communityWidget,
-              if (showCommunityFirst) ?userWidget,
-            ],
-          ),
+        Row(
+          children: [
+            ?warning,
+            ?pinned,
+            ?nsfw,
+            ?oc,
+            ?langWidget,
+            if (showCommunityFirst) ?communityWidget,
+            if (!showCommunityFirst) ?userWidget,
+            ?created,
+            if (!showCommunityFirst) ?communityWidget,
+            if (showCommunityFirst) ?userWidget,
+          ],
         ),
         ?menuWidget,
       ],
