@@ -173,7 +173,7 @@ abstract class CommentModel with _$CommentModel {
     required List<(String, int)> langCodeIdPairs,
   }) {
     final lemmyComment = json['comment'] as JsonMap;
-    final lemmyCounts = json['counts'] as JsonMap;
+    final lemmyCounts = json['counts'] as JsonMap?;
 
     final lemmyPath = lemmyComment['path'] as String;
     final lemmyPathSegments = lemmyPath
@@ -216,21 +216,21 @@ abstract class CommentModel with _$CommentModel {
           .where((pair) => pair.$2 == lemmyComment['language_id'] as int)
           .firstOrNull
           ?.$1,
-      upvotes: lemmyCounts['upvotes'] as int,
-      downvotes: lemmyCounts['downvotes'] as int,
+      upvotes: lemmyCounts?['upvotes'] as int? ?? 0,
+      downvotes: lemmyCounts?['downvotes'] as int? ?? 0,
       boosts: null,
       myVote: json['my_vote'] as int?,
       myBoost: null,
       createdAt: DateTime.parse(lemmyComment['published'] as String),
       editedAt: optionalDateTime(json['updated'] as String?),
       children: children,
-      childCount: lemmyCounts['child_count'] as int,
+      childCount: lemmyCounts?['child_count'] as int? ?? 0,
       visibility: 'visible',
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (json['saved'] as bool) '',
+        if (((json['saved'] as bool?) != null) ? json['saved'] as bool : false) '',
       ],
       apId: lemmyComment['ap_id'] as String,
     );
