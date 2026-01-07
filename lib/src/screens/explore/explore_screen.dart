@@ -190,6 +190,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                     TextFormField(
                       controller: _searchController,
                       onChanged: (newSearch) {
+                        setState(() {});
                         searchDebounce.run(() {
                           _pagingController.refresh();
                         });
@@ -202,15 +203,17 @@ class _ExploreScreenState extends State<ExploreScreen>
                               type != ExploreType.topics),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Symbols.search_rounded),
-                        suffixIcon: IconButton(
+                        suffixIcon: _searchController.text.isNotEmpty ? IconButton(
                           onPressed: () {
-                            _searchController.clear();
+                            setState(() {
+                              _searchController.clear();
+                            });
                             searchDebounce.run(() {
                               _pagingController.refresh();
                             });
                           },
                           icon: const Icon(Symbols.clear_rounded),
-                        ),
+                        ) : null,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(24)),
