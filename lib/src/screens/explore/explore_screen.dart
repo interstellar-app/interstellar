@@ -44,7 +44,7 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen>
     with AutomaticKeepAliveClientMixin<ExploreScreen> {
   late FocusNode _focusNode;
-  String search = '';
+  final TextEditingController _searchController = TextEditingController();
   final searchDebounce = Debouncer(duration: const Duration(milliseconds: 500));
   Set<String>? _selected;
 
@@ -63,7 +63,7 @@ class _ExploreScreenState extends State<ExploreScreen>
 
       final searchType = widget.id != null ? ExploreType.all : type;
 
-      if (searchType == ExploreType.all && search.isEmpty) {
+      if (searchType == ExploreType.all && _searchController.text.isEmpty) {
         return ([], null);
       }
 
@@ -73,7 +73,7 @@ class _ExploreScreenState extends State<ExploreScreen>
             page: nullIfEmpty(pageKey),
             filter: filter,
             sort: sort,
-            search: nullIfEmpty(search),
+            search: nullIfEmpty(_searchController.text),
           );
 
           return (newPage.items, newPage.nextPage);
@@ -82,14 +82,14 @@ class _ExploreScreenState extends State<ExploreScreen>
           // Lemmy cannot search with an empty query
           if ((context.read<AppController>().serverSoftware !=
                   ServerSoftware.mbin) &&
-              search.isEmpty) {
+              _searchController.text.isEmpty) {
             return ([], null);
           }
 
           final newPage = await ac.api.users.list(
             page: nullIfEmpty(pageKey),
             filter: filter,
-            search: search,
+            search: _searchController.text,
           );
 
           return (newPage.items, newPage.nextPage);
@@ -98,7 +98,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           final newPage = await ac.api.domains.list(
             page: nullIfEmpty(pageKey),
             filter: filter,
-            search: nullIfEmpty(search),
+            search: nullIfEmpty(_searchController.text),
           );
 
           return (newPage.items, newPage.nextPage);
@@ -114,7 +114,7 @@ class _ExploreScreenState extends State<ExploreScreen>
         case ExploreType.all:
           final newPage = await ac.api.search.get(
             page: nullIfEmpty(pageKey),
-            search: search,
+            search: _searchController.text,
             userId: type == ExploreType.people ? widget.id : null,
             communityId: type == ExploreType.communities ? widget.id : null,
           );
@@ -188,10 +188,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      initialValue: search,
+                      controller: _searchController,
                       onChanged: (newSearch) {
+                        setState(() {});
                         searchDebounce.run(() {
-                          search = newSearch;
                           _pagingController.refresh();
                         });
                       },
@@ -203,6 +203,17 @@ class _ExploreScreenState extends State<ExploreScreen>
                               type != ExploreType.topics),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Symbols.search_rounded),
+                        suffixIcon: _searchController.text.isNotEmpty ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _searchController.clear();
+                            });
+                            searchDebounce.run(() {
+                              _pagingController.refresh();
+                            });
+                          },
+                          icon: const Icon(Symbols.clear_rounded),
+                        ) : null,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(24)),
