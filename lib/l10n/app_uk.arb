@@ -866,7 +866,7 @@
             }
         }
     },
-    "filterLists": "Фільтрувати списки",
+    "filterLists": "Перелік фільтрів",
     "@filterLists": {},
     "filterList_activateFilter": "Активувати фільтр",
     "@filterList_activateFilter": {},
