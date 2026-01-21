@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -8,6 +9,7 @@ import 'package:interstellar/src/screens/explore/domain_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/loading_list_tile.dart';
@@ -195,10 +197,8 @@ class _NavDrawerState extends State<NavDrawer> {
 
                       if (!context.mounted) return;
 
-                      pushRoute(
-                        context,
-                        builder: (context) =>
-                            UserScreen(user.id, initData: user),
+                      context.router.push(
+                        UserRoute(userId: user.id, initData: user),
                       );
                       break;
 
@@ -207,10 +207,11 @@ class _NavDrawerState extends State<NavDrawer> {
 
                       if (!context.mounted) return;
 
-                      pushRoute(
-                        context,
-                        builder: (context) =>
-                            CommunityScreen(community.id, initData: community),
+                      context.router.push(
+                        CommunityRoute(
+                          communityId: community.id,
+                          initData: community,
+                        ),
                       );
                       break;
                   }
@@ -253,10 +254,7 @@ class _NavDrawerState extends State<NavDrawer> {
                     feed.value,
                   );
                   if (!context.mounted) return;
-                  pushRoute(
-                    context,
-                    builder: (context) => FeedScreen(feed: aggregator),
-                  );
+                  context.router.push(FeedRoute(feed: aggregator));
                 },
               ),
             ),
@@ -306,20 +304,17 @@ class _NavDrawerState extends State<NavDrawer> {
                                 ? '!${community.name}'
                                 : '!${community.name}@${ac.instanceHost}',
                           ),
-                          onTap: () => pushRoute(
-                            context,
-                            builder: (context) => CommunityScreen(
-                              community.id,
+                          onTap: () => context.router.push(
+                            CommunityRoute(
+                              communityId: community.id,
                               initData: community,
-                              onUpdate: (newValue) {
-                                setState(() {
-                                  final newSubbedCommunities = [
-                                    ...subbedCommunities!,
-                                  ];
-                                  newSubbedCommunities[index] = newValue;
-                                  subbedCommunities = newSubbedCommunities;
-                                });
-                              },
+                              onUpdate: (newValue) => setState(() {
+                                final newSubbedCommunities = [
+                                  ...subbedCommunities!,
+                                ];
+                                newSubbedCommunities[index] = newValue;
+                                subbedCommunities = newSubbedCommunities;
+                              }),
                             ),
                           ),
                         ),
@@ -329,12 +324,8 @@ class _NavDrawerState extends State<NavDrawer> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextButton(
-                  onPressed: () => pushRoute(
-                    context,
-                    builder: (context) => const ExploreScreen(
-                      mode: ExploreType.communities,
-                      subOnly: true,
-                    ),
+                  onPressed: () => context.router.push(
+                    ExploreRoute(mode: ExploreType.communities, subOnly: true),
                   ),
                   child: Text(l(context).subscriptions_community_all),
                 ),
@@ -385,18 +376,15 @@ class _NavDrawerState extends State<NavDrawer> {
                                 ? '@${user.name}'
                                 : '@${user.name}@${ac.instanceHost}',
                           ),
-                          onTap: () => pushRoute(
-                            context,
-                            builder: (context) => UserScreen(
-                              user.id,
+                          onTap: () => context.router.push(
+                            UserRoute(
+                              userId: user.id,
                               initData: user,
-                              onUpdate: (newValue) {
-                                setState(() {
-                                  final newSubbedUsers = [...subbedUsers!];
-                                  newSubbedUsers[index] = newValue;
-                                  subbedUsers = newSubbedUsers;
-                                });
-                              },
+                              onUpdate: (newValue) => setState(() {
+                                final newSubbedUsers = [...subbedUsers!];
+                                newSubbedUsers[index] = newValue;
+                                subbedUsers = newSubbedUsers;
+                              }),
                             ),
                           ),
                         ),
@@ -407,12 +395,8 @@ class _NavDrawerState extends State<NavDrawer> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: TextButton(
-                    onPressed: () => pushRoute(
-                      context,
-                      builder: (context) => const ExploreScreen(
-                        mode: ExploreType.people,
-                        subOnly: true,
-                      ),
+                    onPressed: () => context.router.push(
+                      ExploreRoute(mode: ExploreType.people, subOnly: true),
                     ),
                     child: Text(l(context).subscriptions_user_all),
                   ),
@@ -451,18 +435,15 @@ class _NavDrawerState extends State<NavDrawer> {
                         index,
                         ListTile(
                           title: Text(domain.name),
-                          onTap: () => pushRoute(
-                            context,
-                            builder: (context) => DomainScreen(
-                              domain.id,
+                          onTap: () => context.router.push(
+                            DomainRoute(
+                              domainId: domain.id,
                               initData: domain,
-                              onUpdate: (newValue) {
-                                setState(() {
-                                  final newSubbedDomains = [...subbedDomains!];
-                                  newSubbedDomains[index] = newValue;
-                                  subbedDomains = newSubbedDomains;
-                                });
-                              },
+                              onUpdate: (newValue) => setState(() {
+                                final newSubbedDomains = [...subbedDomains!];
+                                newSubbedDomains[index] = newValue;
+                                subbedDomains = newSubbedDomains;
+                              }),
                             ),
                           ),
                         ),
@@ -473,12 +454,8 @@ class _NavDrawerState extends State<NavDrawer> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: TextButton(
-                    onPressed: () => pushRoute(
-                      context,
-                      builder: (context) => const ExploreScreen(
-                        mode: ExploreType.domains,
-                        subOnly: true,
-                      ),
+                    onPressed: () => context.router.push(
+                      ExploreRoute(mode: ExploreType.domains, subOnly: true),
                     ),
                     child: Text(l(context).subscriptions_domain_all),
                   ),

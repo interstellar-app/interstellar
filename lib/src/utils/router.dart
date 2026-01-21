@@ -11,6 +11,7 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: AppHome.page, path: '/'),
+    AutoRoute(page: FeedRoute.page, path: '/feed'),
     AutoRoute(page: ExploreRoute.page, path: '/explore'),
     AutoRoute(page: PostRoute.page, path: '/post/:id'),
     AutoRoute(page: PostCommentRoute.page, path: '/comment/:id'),

@@ -47,7 +47,12 @@ class UserScreen extends StatefulWidget {
   final DetailedUserModel? initData;
   final void Function(DetailedUserModel)? onUpdate;
 
-  const UserScreen(@PathParam('id') this.userId, {super.key, this.initData, this.onUpdate});
+  const UserScreen(
+    @PathParam('id') this.userId, {
+    super.key,
+    this.initData,
+    this.onUpdate,
+  });
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -279,7 +284,11 @@ class _UserScreenState extends State<UserScreen> {
                                     IconButton(
                                       onPressed: () {
                                         context.router.push(
-                                          MessageThreadRoute(threadId: null, userId: _data?.id, otherUser: _data)
+                                          MessageThreadRoute(
+                                            threadId: null,
+                                            userId: _data?.id,
+                                            otherUser: _data,
+                                          ),
                                         );
                                       },
                                       icon: const Icon(Symbols.mail_rounded),
@@ -632,9 +641,9 @@ class _UserScreenBodyState extends State<UserScreenBody>
           UserFeedType.thread || UserFeedType.microblog => PostItem(
             item,
             (newValue) => _pagingController.updateItem(item, newValue),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => PostPage(
+            onTap: () => context.router.push(
+              PostRoute(
+                postId: item.id,
                 initData: item,
                 onUpdate: (newValue) =>
                     _pagingController.updateItem(item, newValue),
@@ -649,9 +658,8 @@ class _UserScreenBodyState extends State<UserScreenBody>
             child: PostComment(
               item,
               (newValue) => _pagingController.updateItem(item, newValue),
-              onClick: () => pushRoute(
-                context,
-                builder: (context) => PostCommentScreen(item.postType, item.id),
+              onClick: () => context.router.push(
+                PostCommentRoute(postType: item.postType, commentId: item.id),
               ),
               showChildren: false,
             ),

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/comment.dart';
@@ -14,6 +15,7 @@ import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
@@ -113,32 +115,23 @@ class ExploreScreenItem extends StatelessWidget {
         _ => throw 'Unreachable',
       };
       final navigate = switch (item) {
-        DetailedCommunityModel i => () => pushRoute(
-          context,
-          builder: (context) =>
-              CommunityScreen(i.id, initData: i, onUpdate: onUpdate),
+        DetailedCommunityModel i => () => context.router.push(
+          CommunityRoute(communityId: i.id, initData: i, onUpdate: onUpdate),
         ),
-        DetailedUserModel i => () => pushRoute(
-          context,
-          builder: (context) =>
-              UserScreen(i.id, initData: i, onUpdate: onUpdate),
+        DetailedUserModel i => () => context.router.push(
+          UserRoute(userId: i.id, initData: i, onUpdate: onUpdate),
         ),
-        DomainModel i => () => pushRoute(
-          context,
-          builder: (context) =>
-              DomainScreen(i.id, initData: i, onUpdate: onUpdate),
+        DomainModel i => () => context.router.push(
+          DomainRoute(domainId: i.id, initData: i, onUpdate: onUpdate),
         ),
-        FeedModel i => () => pushRoute(
-          context,
-          builder: (context) => FeedScreen(
+        FeedModel i => () => context.router.push(
+          FeedRoute(
             feed: FeedAggregator(
               name: title,
               inputs: [
                 FeedInputState(
                   title: title,
-                  source: i.owner == null
-                      ? FeedSource.topic
-                      : FeedSource.feed, // owner exists for feeds but not for topics so is used to differentiate
+                  source: i.owner == null ? FeedSource.topic : FeedSource.feed,
                   sourceId: i.id,
                 ),
               ],
@@ -205,9 +198,8 @@ class ExploreScreenItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => PostPage(initData: item, onUpdate: onUpdate),
+          onTap: () => context.router.push(
+            PostRoute(postId: item.id, initData: item, onUpdate: onUpdate),
           ),
           child: PostItem(
             item,
@@ -221,9 +213,8 @@ class ExploreScreenItem extends StatelessWidget {
         child: PostComment(
           item,
           onUpdate,
-          onClick: () => pushRoute(
-            context,
-            builder: (context) => PostCommentScreen(item.postType, item.id),
+          onClick: () => context.router.push(
+            PostCommentRoute(postType: item.postType, commentId: item.id),
           ),
         ),
       ),
