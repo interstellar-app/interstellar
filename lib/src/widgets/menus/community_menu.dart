@@ -94,10 +94,9 @@ Future<void> showCommunityMenu(
       if (navigateOption)
         ContextMenuItem(
           title: l(context).openItem(name),
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => CommunityScreen(
-              detailedCommunity?.id ?? community!.id,
+          onTap: () => context.router.push(
+            CommunityRoute(
+              communityId: detailedCommunity?.id ?? community!.id,
               initData: detailedCommunity,
             ),
           ),
@@ -126,9 +125,8 @@ Future<void> showCommunityMenu(
       if (isModerator)
         ContextMenuItem(
           title: l(context).modPanel,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => CommunityModPanel(
+          onTap: () => context.router.push(
+            CommunityModPanelRoute(
               initData: detailedCommunity,
               onUpdate: update!,
             ),
@@ -139,9 +137,8 @@ Future<void> showCommunityMenu(
           detailedCommunity.owner!.name == ac.localName)
         ContextMenuItem(
           title: l(context).ownerPanel,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => CommunityOwnerPanel(
+          onTap: () => context.router.push(
+            CommunityOwnerPanelRoute(
               initData: detailedCommunity,
               onUpdate: update!,
             ),
@@ -157,9 +154,8 @@ Future<void> showCommunityMenu(
       ),
       ContextMenuItem(
         title: l(context).search,
-        onTap: () => pushRoute(
-          context,
-          builder: (context) => ExploreScreen(
+        onTap: () => context.router.push(
+          ExploreRoute(
             mode: ExploreType.communities,
             id: detailedCommunity?.id ?? community!.id,
             title: l(
@@ -171,7 +167,9 @@ Future<void> showCommunityMenu(
       if (ac.serverSoftware != ServerSoftware.piefed)
         ContextMenuItem(
           title: l(context).modlog,
-          onTap: () => context.router.push(ModLogRoute(communityId: detailedCommunity?.id ?? community!.id))
+          onTap: () => context.router.push(
+            ModLogRoute(communityId: detailedCommunity?.id ?? community!.id),
+          ),
         ),
     ],
   ).openMenu(context);

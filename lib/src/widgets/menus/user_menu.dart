@@ -83,10 +83,12 @@ Future<void> showUserMenu(
       if (ac.isLoggedIn && !isMe)
         ContextMenuAction(
           icon: Symbols.mail_rounded,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) =>
-                MessageThreadScreen(threadId: null, otherUser: user),
+          onTap: () => context.router.push(
+            MessageThreadRoute(
+              threadId: null,
+              userId: user.id,
+              otherUser: user,
+            ),
           ),
         ),
     ],
@@ -95,10 +97,8 @@ Future<void> showUserMenu(
       if (navigateOption)
         ContextMenuItem(
           title: l(context).openItem(user.name),
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => UserScreen(user.id, initData: user),
-          ),
+          onTap: () =>
+              context.router.push(UserRoute(userId: user.id, initData: user)),
         ),
       ContextMenuItem(
         title: l(context).feeds_addTo,
@@ -111,9 +111,8 @@ Future<void> showUserMenu(
       if (ac.serverSoftware != ServerSoftware.piefed)
         ContextMenuItem(
           title: l(context).search,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => ExploreScreen(
+          onTap: () => context.router.push(
+            ExploreRoute(
               mode: ExploreType.people,
               id: user.id,
               title: l(context).searchSource(user.name),
@@ -124,20 +123,20 @@ Future<void> showUserMenu(
         title: l(context).tags,
         onTap: () async {
           showModalBottomSheet(
-              context: context,
-              builder: (context) => TagsList(
-                username: user.name,
-                onUpdate: (tags) async {
-                  await ac.reassignTagsToUser(tags, user.name);
-                },
-              )
+            context: context,
+            builder: (context) => TagsList(
+              username: user.name,
+              onUpdate: (tags) async {
+                await ac.reassignTagsToUser(tags, user.name);
+              },
+            ),
           );
-        }
+        },
       ),
       if (ac.serverSoftware == ServerSoftware.lemmy)
         ContextMenuItem(
-            title: l(context).modlog,
-            onTap: () => context.router.push(ModLogRoute(userId: user.id))
+          title: l(context).modlog,
+          onTap: () => context.router.push(ModLogRoute(userId: user.id)),
         ),
     ],
   ).openMenu(context);

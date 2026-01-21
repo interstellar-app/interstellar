@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
@@ -17,21 +18,22 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:provider/provider.dart';
 
-class CommunityModPanel extends StatefulWidget {
+@RoutePage()
+class CommunityModPanelScreen extends StatefulWidget {
   final DetailedCommunityModel initData;
   final void Function(DetailedCommunityModel) onUpdate;
 
-  const CommunityModPanel({
+  const CommunityModPanelScreen({
     super.key,
     required this.initData,
     required this.onUpdate,
   });
 
   @override
-  State<CommunityModPanel> createState() => _CommunityModPanelState();
+  State<CommunityModPanelScreen> createState() => _CommunityModPanelScreenState();
 }
 
-class _CommunityModPanelState extends State<CommunityModPanel> {
+class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
   late DetailedCommunityModel _data;
 
   @override

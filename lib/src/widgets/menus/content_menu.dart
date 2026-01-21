@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/tags/post_flairs.dart';
@@ -106,10 +108,9 @@ Future<void> showContentMenu(
       if (widget.domain != null)
         ContextMenuItem(
           title: l(context).moreFrom(widget.domain!),
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => DomainScreen(widget.domainIdOnClick!),
-          ),
+          onTap: () => context.router.push(DomainRoute(
+              domainId: widget.domainIdOnClick!
+          )),
         ),
       if (widget.onReply != null && onReply != null)
         ContextMenuItem(
