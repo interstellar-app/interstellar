@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 
 import '../../widgets/avatar.dart';
 
+@RoutePage()
 class ProfileEditScreen extends StatefulWidget {
   final DetailedUserModel user;
   final void Function(DetailedUserModel) onUpdate;

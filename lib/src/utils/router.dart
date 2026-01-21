@@ -30,6 +30,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: AdvancedImageRoute.page, path: '/image'),
     AutoRoute(page: TagUsersRoute.page, path: '/tags/:tag'),
     AutoRoute(page: TagEditorRoute.page, path: '/tags-editor/:tag'),
+    AutoRoute(page: BookmarkListRoute.page, path: '/bookmarks-lists'),
+    AutoRoute(page: BookmarksRoute.page, path: '/bookmarks/:bookmarkList'),
+    AutoRoute(page: ProfileEditRoute.page, path: '/profile/edit'),
   ];
 
 }

@@ -133,14 +133,7 @@ class _UserScreenState extends State<UserScreen> {
               padding: const EdgeInsets.only(right: 8),
               child: ActionChip(
                 label: Icon(Symbols.bookmarks_rounded, size: 20),
-                onPressed: () => pushRoute(
-                  context,
-                  builder: (context) {
-                    return ac.serverSoftware == ServerSoftware.mbin
-                        ? BookmarkListScreen()
-                        : BookmarksScreen();
-                  },
-                ),
+                onPressed: () => context.router.push(ac.serverSoftware == ServerSoftware.mbin ? BookmarkListRoute() : BookmarksRoute()),
               ),
             ),
           Padding(
@@ -221,11 +214,8 @@ class _UserScreenState extends State<UserScreen> {
                                 children: [
                                   if (isMyUser)
                                     FilledButton(
-                                      onPressed: () => pushRoute(
-                                        context,
-                                        builder: (context) => ProfileEditScreen(
-                                          _data!,
-                                          (DetailedUserModel user) {
+                                      onPressed: () => context.router.push(ProfileEditRoute(user: _data!,
+                                          onUpdate: (DetailedUserModel user) {
                                             setState(() {
                                               _data = user;
                                             });
