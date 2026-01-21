@@ -282,15 +282,13 @@ class _UserScreenState extends State<UserScreen> {
                                     ),
                                   if (isLoggedIn && !isMyUser)
                                     IconButton(
-                                      onPressed: () {
-                                        context.router.push(
+                                      onPressed: () => context.router.push(
                                           MessageThreadRoute(
                                             threadId: null,
                                             userId: _data?.id,
                                             otherUser: _data,
                                           ),
-                                        );
-                                      },
+                                        ),
                                       icon: const Icon(Symbols.mail_rounded),
                                       tooltip: 'Send message',
                                     ),

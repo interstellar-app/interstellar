@@ -1,9 +1,11 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
@@ -30,7 +32,8 @@ class CommunityModPanelScreen extends StatefulWidget {
   });
 
   @override
-  State<CommunityModPanelScreen> createState() => _CommunityModPanelScreenState();
+  State<CommunityModPanelScreen> createState() =>
+      _CommunityModPanelScreenState();
 }
 
 class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
@@ -226,17 +229,18 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
         return InkWell(
           onTap: () {
             if (item.subjectPost != null) {
-              pushRoute(
-                context,
-                builder: (context) =>
-                    PostPage(initData: item.subjectPost, userCanModerate: true),
+              context.router.push(
+                PostRoute(
+                  postId: item.subjectPost!.id,
+                  initData: item.subjectPost,
+                  userCanModerate: true,
+                ),
               );
             } else if (item.subjectComment != null) {
-              pushRoute(
-                context,
-                builder: (context) => PostCommentScreen(
-                  item.subjectComment!.postType,
-                  item.subjectComment!.id,
+              context.router.push(
+                PostCommentRoute(
+                  postType: item.subjectComment!.postType,
+                  commentId: item.subjectComment!.id,
                 ),
               );
             }
@@ -256,10 +260,8 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                           DisplayName(
                             item.reportedBy!.name,
                             icon: item.reportedBy!.avatar,
-                            onTap: () => pushRoute(
-                              context,
-                              builder: (context) =>
-                                  UserScreen(item.reportedBy!.id),
+                            onTap: () => context.router.push(
+                              UserRoute(userId: item.reportedBy!.id),
                             ),
                           ),
                         ],

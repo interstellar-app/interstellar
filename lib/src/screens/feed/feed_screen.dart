@@ -271,13 +271,7 @@ class _FeedScreenState extends State<FeedScreen>
     final actions = [
       feedActionCreateNew(context).withProps(
         ac.isLoggedIn ? ac.profile.feedActionCreateNew : ActionLocation.hide,
-        () async {
-          await pushRoute(
-            context,
-            builder: (context) =>
-                CreateScreen(initCommunity: widget.createPostCommunity),
-          );
-        },
+        () => context.router.push(CreateRoute(initCommunity: widget.createPostCommunity)),
       ),
       feedActionSetFilter(context).withProps(
         whenLoggedIn(context, widget.feed != null) ?? true

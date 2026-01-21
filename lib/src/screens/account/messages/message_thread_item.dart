@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/message.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
@@ -98,11 +100,7 @@ class MessageThreadItem extends StatelessWidget {
                             DisplayName(
                               currMessage.sender.name,
                               icon: currMessage.sender.avatar,
-                              onTap: () => pushRoute(
-                                context,
-                                builder: (context) =>
-                                    UserScreen(currMessage.sender.id),
-                              ),
+                              onTap: () => context.router.push(UserRoute(userId: currMessage.sender.id)),
                             ),
                           ],
                         ),

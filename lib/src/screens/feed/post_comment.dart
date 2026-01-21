@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +9,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
@@ -102,10 +104,7 @@ class _PostCommentState extends State<PostComment> {
               child: DisplayName(
                 widget.comment.user.name,
                 icon: widget.comment.user.avatar,
-                onTap: () => pushRoute(
-                  context,
-                  builder: (context) => UserScreen(widget.comment.user.id),
-                ),
+                onTap: () => context.router.push(UserRoute(userId: widget.comment.user.id)),
               ),
             ),
             UserStatusIcons(
@@ -436,14 +435,7 @@ class _PostCommentState extends State<PostComment> {
                 _expandableController.expanded &&
                 (widget.comment.children?.isEmpty ?? false))
               TextButton(
-                onPressed: () => pushRoute(
-                  context,
-                  builder: (context) => PostCommentScreen(
-                    widget.comment.postType,
-                    widget.comment.id,
-                    opUserId: widget.opUserId,
-                  ),
-                ),
+                onPressed: () => context.router.push(PostCommentRoute(postType: widget.comment.postType, commentId: widget.comment.id, opUserId: widget.opUserId)),
                 child: Text(l(context).openReplies(widget.comment.childCount)),
               ),
             if (widget.comment.childCount > 0)

@@ -19,8 +19,8 @@ import '../../../models/user.dart';
 @RoutePage()
 class MessageThreadScreen extends StatefulWidget {
   const MessageThreadScreen({
-    required this.threadId,
-    this.userId,
+    this.threadId,
+    @PathParam('userId') this.userId,
     this.otherUser,
     this.initData,
     this.onUpdate,
@@ -81,6 +81,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   @override
   void initState() {
     super.initState();
+    print(context.router.currentPath);
 
     _otherUserId = widget.userId ?? widget.otherUser?.id;
     _threadId =

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -12,6 +14,7 @@ import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/language.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/image_selector.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -27,6 +30,7 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class CreateScreen extends StatefulWidget {
   const CreateScreen({
     this.crossPost,
@@ -598,13 +602,8 @@ class _CreateScreenState extends State<CreateScreen> {
             CommunityOwnerPanelGeneral(
               data: null,
               onUpdate: (newCommunity) {
-                Navigator.pop(context);
-
-                pushRoute(
-                  context,
-                  builder: (context) =>
-                      CommunityScreen(newCommunity.id, initData: newCommunity),
-                );
+                context.router.pop();
+                context.router.push(CommunityRoute(communityId: newCommunity.id, initData: newCommunity));
               },
             ),
           ],
