@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -9,6 +10,7 @@ import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/router.gr.dart';
 import 'debug/debug_screen.dart';
 
 const _donateLink = 'https://github.com/sponsors/jwr1';
@@ -49,10 +51,7 @@ class _AboutScreenState extends State<AboutScreen> {
             ListTile(
               leading: const Icon(Symbols.shield_rounded),
               title: Text(l(context).modlog),
-              onTap: () => pushRoute(
-                  context,
-                  builder: (context) => ModLog()
-              ),
+              onTap: () => context.router.push(ModLogRoute()),
             ),
           ListTile(
             leading: const Icon(Symbols.favorite_rounded),

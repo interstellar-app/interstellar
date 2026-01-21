@@ -32,6 +32,7 @@ import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:collection/collection.dart';
 
+@RoutePage()
 class FeedScreen extends StatefulWidget {
   final FeedAggregator? feed;
   final Widget? details;

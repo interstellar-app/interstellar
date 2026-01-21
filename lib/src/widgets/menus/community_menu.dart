@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -18,6 +19,8 @@ import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
+
+import '../../utils/router.gr.dart';
 
 Future<void> showCommunityMenu(
   BuildContext context, {
@@ -168,10 +171,7 @@ Future<void> showCommunityMenu(
       if (ac.serverSoftware != ServerSoftware.piefed)
         ContextMenuItem(
           title: l(context).modlog,
-          onTap: () => pushRoute(
-              context,
-              builder: (context) => ModLog(communityId: detailedCommunity?.id ?? community!.id)
-          )
+          onTap: () => context.router.push(ModLogRoute(communityId: detailedCommunity?.id ?? community!.id))
         ),
     ],
   ).openMenu(context);

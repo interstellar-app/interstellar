@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -7,6 +8,7 @@ import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/mod_log.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
@@ -135,10 +137,7 @@ Future<void> showUserMenu(
       if (ac.serverSoftware == ServerSoftware.lemmy)
         ContextMenuItem(
             title: l(context).modlog,
-            onTap: () => pushRoute(
-                context,
-                builder: (context) => ModLog(userId: user.id),
-            )
+            onTap: () => context.router.push(ModLogRoute(userId: user.id))
         ),
     ],
   ).openMenu(context);

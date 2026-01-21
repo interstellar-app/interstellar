@@ -13,9 +13,11 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: AppHome.page, path: '/'),
     AutoRoute(page: ExploreRoute.page, path: '/explore'),
     AutoRoute(page: PostRoute.page, path: '/post/:id'),
+    AutoRoute(page: PostCommentRoute.page, path: '/comment/:id'),
     AutoRoute(page: UserRoute.page, path: '/user/:id'),
     AutoRoute(page: MessageThreadRoute.page, path: '/message'),
-    AutoRoute(page: CommunityRoute.page, path: '/community/:id')
+    AutoRoute(page: CommunityRoute.page, path: '/community/:id'),
+    AutoRoute(page: ModLogRoute.page, path: '/modlog'),
   ];
 
 }
