@@ -243,7 +243,11 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {'comment_id': commentId, 'score': newScore, 'emoji': emoji},
+          body: {
+            'comment_id': commentId,
+            'score': newScore,
+            if (emoji != null) 'emoji': emoji,
+          },
         );
 
         return CommentModel.fromPiefed(

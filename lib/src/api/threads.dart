@@ -215,7 +215,11 @@ class APIThreads {
       case ServerSoftware.piefed:
         final response = await client.post(
           '/post/like',
-          body: {'post_id': postId, 'score': newScore, 'emoji': emoji},
+          body: {
+            'post_id': postId,
+            'score': newScore,
+            if (emoji != null) 'emoji': emoji,
+          },
         );
 
         return PostModel.fromPiefed(
