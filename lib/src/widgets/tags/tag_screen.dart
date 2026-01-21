@@ -1,7 +1,10 @@
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_editor.dart';
@@ -141,18 +144,12 @@ class _TagsListState extends State<TagsList> {
             leading: widget.onUpdate != null
                 ? Checkbox(value: isActive, onChanged: toggleTag)
                 : IconButton(
-                    onPressed: () => pushRoute(
-                      context,
-                      builder: (context) => TagUsersScreen(tag),
-                    ),
+                    onPressed: () => context.router.push(TagUsersRoute(tag: tag)),
                     icon: Icon(Symbols.person_rounded),
                   ),
             onTap: widget.onUpdate != null ? () => toggleTag(!isActive) : null,
             trailing: IconButton(
-              onPressed: () => pushRoute(
-                context,
-                builder: (context) => TagEditor(
-                  tag: tag,
+              onPressed: () => context.router.push(TagEditorRoute(tag: tag,
                   onUpdate: (tag) => setState(() {
                     final newAvailableTags = [..._availableTags];
 
@@ -177,6 +174,7 @@ class _TagsListState extends State<TagsList> {
   }
 }
 
+@RoutePage()
 class TagUsersScreen extends StatefulWidget {
   const TagUsersScreen(this.tag, {super.key});
 
@@ -236,11 +234,7 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 
                         if (!context.mounted) return;
 
-                        pushRoute(
-                          context,
-                          builder: (context) =>
-                              UserScreen(user.id, initData: user),
-                        );
+                        context.router.push(UserRoute(userId: user.id, initData: user));
                       },
                     ),
                   )
@@ -302,10 +296,7 @@ class TagsFloatingButton extends StatelessWidget {
         }
         if (!context.mounted || tag == null) return;
         bool cancelled = true;
-        await pushRoute(
-          context,
-          builder: (context) => TagEditor(
-            tag: tag!,
+        await context.router.push(TagEditorRoute(tag: tag!,
             onUpdate: (newTag) async {
               cancelled = false;
               if (newTag == null) {

@@ -23,6 +23,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CommunityOwnerPanelRoute.page, path: '/community-owner'),
     AutoRoute(page: CommunityModPanelRoute.page, path: '/community-mod'),
     AutoRoute(page: CreateRoute.page, path: '/create'),
+    AutoRoute(page: AdvancedImageRoute.page, path: '/image'),
+    AutoRoute(page: TagUsersRoute.page, path: '/tags/:tag'),
+    AutoRoute(page: TagEditorRoute.page, path: '/tags-editor/:tag'),
   ];
 
 }

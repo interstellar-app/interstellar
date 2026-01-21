@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/comments.dart';
@@ -8,6 +9,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
@@ -455,14 +457,7 @@ class _PostPageState extends State<PostPage> {
                                 subtitle: l(
                                   context,
                                 ).commentsX(crossPost.numComments),
-                                onTap: () => pushRoute(
-                                  context,
-                                  builder: (context) => PostPage(
-                                    postType: PostType.thread,
-                                    postId: crossPost.id,
-                                    initData: crossPost,
-                                  ),
-                                ),
+                                onTap: () => context.router.push(PostRoute(postId: crossPost.id, postType: PostType.thread, initData: crossPost)),
                               ),
                             )
                             .toList(),
@@ -503,14 +498,7 @@ class _PostPageState extends State<PostPage> {
                                     showCrossPostMenu(context, crossPost),
                                 icon: const Icon(Symbols.more_vert_rounded),
                               ),
-                              onTap: () => pushRoute(
-                                context,
-                                builder: (context) => PostPage(
-                                  postType: crossPost.type,
-                                  postId: crossPost.id,
-                                  initData: crossPost,
-                                ),
-                              ),
+                              onTap: () => context.router.push(PostRoute(postId: crossPost.id, postType: crossPost.type, initData: crossPost)),
                               onLongPress: () =>
                                   showCrossPostMenu(context, crossPost),
                             ),

@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database.dart';
@@ -6,17 +7,18 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
-class TagEditor extends StatefulWidget {
-  const TagEditor({super.key, required this.tag, required this.onUpdate});
+@RoutePage()
+class TagEditorScreen extends StatefulWidget {
+  const TagEditorScreen({super.key, required this.tag, required this.onUpdate});
 
   final Tag tag;
   final void Function(Tag?) onUpdate;
 
   @override
-  State<TagEditor> createState() => _TagEditorState();
+  State<TagEditorScreen> createState() => _TagEditorScreenState();
 }
 
-class _TagEditorState extends State<TagEditor> {
+class _TagEditorScreenState extends State<TagEditorScreen> {
   late final TextEditingController _tagController;
   late Color _textColor;
   late Color _backgroundColor;

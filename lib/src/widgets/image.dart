@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/image.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/blur.dart';
@@ -51,15 +54,7 @@ class AdvancedImage extends StatelessWidget {
       parentBuilder: (child) => SuperHero(
         tag: tag,
         child: GestureDetector(
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => AdvancedImagePage(
-              image,
-              title: openTitle!,
-              hero: tag,
-              fit: BoxFit.contain,
-            ),
-          ),
+          onTap: () => context.router.push(AdvancedImageRoute(image: image, title: openTitle!, fit: BoxFit.contain, hero: tag)),
           child: child,
         ),
       ),
@@ -124,6 +119,7 @@ class AdvancedImage extends StatelessWidget {
   }
 }
 
+@RoutePage()
 class AdvancedImagePage extends StatefulWidget {
   final ImageModel image;
   final String title;
@@ -146,6 +142,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
   @override
   void initState() {
     super.initState();
+    print(context.router.currentPath);
   }
 
   @override
