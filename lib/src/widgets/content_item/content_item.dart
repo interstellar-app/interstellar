@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
@@ -124,6 +125,9 @@ class ContentItem extends StatefulWidget {
   final PostModel? crossPost;
   final List<Uri> shareLinks;
 
+  final List<EmojiReactionModel>? emojiReactions;
+  final Future<void> Function(String emoji)? onEmojiReact;
+
   const ContentItem({
     required this.originInstance,
     required this.id,
@@ -188,6 +192,8 @@ class ContentItem extends StatefulWidget {
     this.flairs = const [],
     this.crossPost,
     this.shareLinks = const [],
+    this.emojiReactions,
+    this.onEmojiReact,
     super.key,
   });
 
@@ -279,7 +285,7 @@ class _ContentItemState extends State<ContentItem> {
   }
 
   Widget post() {
-    final profile = context.read<AppController>().profile;
+    final ac = context.watch<AppController>();
 
     final editDraftController = context.watch<DraftsController>().auto(
       widget.editDraftResourceId,
@@ -326,7 +332,7 @@ class _ContentItemState extends State<ContentItem> {
         );
       },
       child: Wrapper(
-        shouldWrap: profile.enableSwipeActions,
+        shouldWrap: ac.profile.enableSwipeActions,
         parentBuilder: (child) => SwipeItem(
           onUpVote: widget.onUpVote,
           onDownVote: widget.onDownVote,
@@ -364,18 +370,14 @@ class _ContentItemState extends State<ContentItem> {
                 ? VideoPlayer(
                     widget.link!,
                     enableBlur:
-                        widget.isNSFW &&
-                        context
-                            .watch<AppController>()
-                            .profile
-                            .coverMediaMarkedSensitive,
+                        widget.isNSFW && ac.profile.coverMediaMarkedSensitive,
                   )
                 : null;
 
             List<Widget?> components = [];
             final order = widget.contentTypeName == l(context).comment
                 ? ProfileRequired.defaultProfile.postComponentOrder
-                : profile.postComponentOrder;
+                : ac.profile.postComponentOrder;
 
             for (final component in order) {
               components.add(switch (component) {
@@ -399,7 +401,7 @@ class _ContentItemState extends State<ContentItem> {
                 PostComponent.body =>
                   (widget.body != null &&
                           widget.body!.isNotEmpty &&
-                          !(widget.isPreview && profile.compactMode))
+                          !(widget.isPreview && ac.profile.compactMode))
                       ? widget.poll != null
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,6 +501,8 @@ class _ContentItemState extends State<ContentItem> {
               );
             }
 
+            final localUserName = ac.localName;
+
             return Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
               child: Column(
@@ -522,7 +526,38 @@ class _ContentItemState extends State<ContentItem> {
                         ),
                       ],
                     ),
-                  if (!profile.hideActionButtons)
+                  if (widget.emojiReactions != null &&
+                      widget.emojiReactions!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Wrap(
+                        spacing: 4,
+                        runSpacing: 4,
+                        children: widget.emojiReactions!
+                            .map(
+                              (emojiReaction) => LoadingInputChip(
+                                icon: Text(
+                                  emojiReaction.token,
+                                  style: Theme.of(context).textTheme.labelLarge
+                                      ?.copyWith(color: Colors.white),
+                                ),
+                                label: Text(emojiReaction.count.toString()),
+                                selected: emojiReaction.authors.contains(
+                                  localUserName,
+                                ),
+                                tooltip: emojiReaction.authors.join(', '),
+                                enabled: widget.onEmojiReact != null,
+                                onSelected: (isSelected) async {
+                                  if (widget.onEmojiReact == null) return;
+
+                                  widget.onEmojiReact!(emojiReaction.token);
+                                },
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  if (!ac.profile.hideActionButtons)
                     ActionButtons(
                       upVotes: widget.upVotes,
                       downVotes: widget.downVotes,

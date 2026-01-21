@@ -21,7 +21,7 @@ class SubscriptionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingChip(
+    return LoadingFilterChip(
       selected: isSubscribed ?? false,
       icon: const Icon(Symbols.people_rounded),
       label: Text(
