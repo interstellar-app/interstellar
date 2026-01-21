@@ -95,55 +95,83 @@ class _NotificationItemState extends State<NotificationItem> {
     final void Function()? onTap = switch (software) {
       ServerSoftware.mbin =>
         widget.item.subject.containsKey('threadId')
-            ? () => context.router.push(MessageThreadRoute(threadId: widget.item.subject['threadId'] as int,
+            ? () => context.router.push(
+                MessageThreadRoute(
+                  threadId: widget.item.subject['threadId'] as int,
                 ),
               )
             : widget.item.subject.containsKey('commentId')
-            ? () => context.router.push(PostCommentRoute(postType: widget.item.subject.containsKey('postId')
-            ? PostType.microblog
-            : PostType.thread, commentId: widget.item.subject['commentId'] as int))
+            ? () => context.router.push(
+                PostCommentRoute(
+                  postType: widget.item.subject.containsKey('postId')
+                      ? PostType.microblog
+                      : PostType.thread,
+                  commentId: widget.item.subject['commentId'] as int,
+                ),
+              )
             : widget.item.subject.containsKey('entryId')
-            ? () => context.router.push(PostRoute(
+            ? () => context.router.push(
+                PostRoute(
                   postType: PostType.thread,
                   postId: widget.item.subject['entryId'] as int,
                 ),
               )
             : widget.item.subject.containsKey('postId')
-            ? () => context.router.push(PostRoute(
+            ? () => context.router.push(
+                PostRoute(
                   postType: PostType.microblog,
                   postId: widget.item.subject['postId'] as int,
                 ),
               )
             : null,
       ServerSoftware.lemmy => switch (widget.item.type!) {
-        NotificationType.message => () => context.router.push(MessageThreadRoute(
+        NotificationType.message => () => context.router.push(
+          MessageThreadRoute(
             threadId: widget.item.subject['creator']['id'] as int,
           ),
         ),
-        NotificationType.mention => () => context.router.push(PostCommentRoute(postType: PostType.thread, commentId: widget.item.subject['comment']['id'] as int)),
-        NotificationType.reply => () => context.router.push(PostCommentRoute(postType: PostType.thread, commentId: widget.item.subject['comment']['id'] as int)),
+        NotificationType.mention => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
+            commentId: widget.item.subject['comment']['id'] as int,
+          ),
+        ),
+        NotificationType.reply => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
+            commentId: widget.item.subject['comment']['id'] as int,
+          ),
+        ),
         _ => throw Exception('invalid notification type for lemmy'),
       },
       ServerSoftware.piefed => switch (widget.item.type!) {
-        NotificationType.entryCreated => () => context.router.push(PostRoute(
+        NotificationType.entryCreated => () => context.router.push(
+          PostRoute(
             postType: PostType.thread,
             postId: widget.item.subject['post_id'] as int,
           ),
         ),
-        NotificationType.entryCommentCreated => () => context.router.push(PostCommentRoute(postType: PostType.thread,
+        NotificationType.entryCommentCreated => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
             commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
-        NotificationType.entryCommentReply => () => context.router.push(PostCommentRoute(postType: PostType.thread,
+        NotificationType.entryCommentReply => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
             commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
-        NotificationType.postMention => () => context.router.push(PostRoute(
+        NotificationType.postMention => () => context.router.push(
+          PostRoute(
             postType: PostType.thread,
             postId: widget.item.subject['post_id'] as int,
           ),
         ),
-        NotificationType.commentMention => () => context.router.push(PostCommentRoute(postType: PostType.thread,
+        NotificationType.commentMention => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
             commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
@@ -173,7 +201,8 @@ class _NotificationItemState extends State<NotificationItem> {
                             child: DisplayName(
                               widget.item.creator!.name,
                               icon: widget.item.creator!.avatar,
-                              onTap: () => context.router.push(UserRoute(userId: widget.item.creator!.id),
+                              onTap: () => context.router.push(
+                                UserRoute(userId: widget.item.creator!.id),
                               ),
                             ),
                           ),
@@ -186,7 +215,10 @@ class _NotificationItemState extends State<NotificationItem> {
                               child: DisplayName(
                                 bannedCommunity.name,
                                 icon: bannedCommunity.icon,
-                                onTap: () => context.router.push(CommunityRoute(communityId: bannedCommunity.id),
+                                onTap: () => context.router.push(
+                                  CommunityRoute(
+                                    communityId: bannedCommunity.id,
+                                  ),
                                 ),
                               ),
                             ),

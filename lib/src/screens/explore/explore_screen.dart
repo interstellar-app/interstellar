@@ -205,17 +205,19 @@ class _ExploreScreenState extends State<ExploreScreen>
                               type != ExploreType.topics),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Symbols.search_rounded),
-                        suffixIcon: _searchController.text.isNotEmpty ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _searchController.clear();
-                            });
-                            searchDebounce.run(() {
-                              _pagingController.refresh();
-                            });
-                          },
-                          icon: const Icon(Symbols.clear_rounded),
-                        ) : null,
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _searchController.clear();
+                                  });
+                                  searchDebounce.run(() {
+                                    _pagingController.refresh();
+                                  });
+                                },
+                                icon: const Icon(Symbols.clear_rounded),
+                              )
+                            : null,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(24)),

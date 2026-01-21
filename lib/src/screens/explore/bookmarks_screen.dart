@@ -140,7 +140,8 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                   ],
                 ),
                 trailing: Text(_bookmarkLists[index].count.toString()),
-                onTap: () => context.router.push(BookmarksRoute(bookmarkList: _bookmarkLists[index].name),
+                onTap: () => context.router.push(
+                  BookmarksRoute(bookmarkList: _bookmarkLists[index].name),
                 ),
               );
             },
@@ -196,8 +197,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 item,
                 (newValue) =>
                     _pagingController.updateItem(newValue.id, newValue),
-                onTap: () => context.router.push(PostRoute(
-                  postId: item.id,
+                onTap: () => context.router.push(
+                  PostRoute(
+                    postId: item.id,
                     postType: item.type,
                     initData: item,
                     onUpdate: (newValue) =>
@@ -214,7 +216,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 item,
                 (newValue) =>
                     _pagingController.updateItem(newValue.id, newValue),
-                onClick: () => context.router.push(PostCommentRoute(postType: item.postType, commentId: item.id),
+                onClick: () => context.router.push(
+                  PostCommentRoute(postType: item.postType, commentId: item.id),
                 ),
               ),
             ),

@@ -23,7 +23,9 @@ class UserItemSimple extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: noTap ? null : () => context.router.push(UserRoute(userId: user.id)),
+      onTap: noTap
+          ? null
+          : () => context.router.push(UserRoute(userId: user.id)),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(

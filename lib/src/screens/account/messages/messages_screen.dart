@@ -63,11 +63,14 @@ class _MessagesScreenState extends State<MessagesScreen>
               newList![index] = newValue;
               _pagingController.value = _pagingController.value.copyWith();
             },
-            onClick: () => context.router.push(MessageThreadRoute(
+            onClick: () => context.router.push(
+              MessageThreadRoute(
                 threadId: item.id,
                 initData: item,
-              onUpdate: (newValue) => _pagingController.updateItem(item, newValue)
-            )),
+                onUpdate: (newValue) =>
+                    _pagingController.updateItem(item, newValue),
+              ),
+            ),
           ),
         ),
         Positioned(
@@ -75,15 +78,23 @@ class _MessagesScreenState extends State<MessagesScreen>
           bottom: 20,
           child: FloatingActionButton(
             heroTag: 'new-message',
-            onPressed: () => context.router.push(ExploreRoute(
-              mode: ExploreType.people,
-              title: l(context).newChat,
-              onTap: (selected, item) async {
-                context.router.pop();
-                await context.router.push(MessageThreadRoute(threadId: null, userId: item.id, otherUser: item));
-                _pagingController.refresh();
-              }
-            )),
+            onPressed: () => context.router.push(
+              ExploreRoute(
+                mode: ExploreType.people,
+                title: l(context).newChat,
+                onTap: (selected, item) async {
+                  context.router.pop();
+                  await context.router.push(
+                    MessageThreadRoute(
+                      threadId: null,
+                      userId: item.id,
+                      otherUser: item,
+                    ),
+                  );
+                  _pagingController.refresh();
+                },
+              ),
+            ),
             child: const Icon(Symbols.add_rounded),
           ),
         ),

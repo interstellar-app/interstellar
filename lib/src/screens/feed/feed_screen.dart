@@ -271,7 +271,9 @@ class _FeedScreenState extends State<FeedScreen>
     final actions = [
       feedActionCreateNew(context).withProps(
         ac.isLoggedIn ? ac.profile.feedActionCreateNew : ActionLocation.hide,
-        () => context.router.push(CreateRoute(initCommunity: widget.createPostCommunity)),
+        () => context.router.push(
+          CreateRoute(initCommunity: widget.createPostCommunity),
+        ),
       ),
       feedActionSetFilter(context).withProps(
         whenLoggedIn(context, widget.feed != null) ?? true
@@ -548,25 +550,25 @@ class _FeedScreenState extends State<FeedScreen>
           ),
         ),
         floatingActionButton: Wrapper(
-            shouldWrap: ac.profile.hideFeedUIOnScroll,
-            parentBuilder: (child) => HideOnScroll(
-              controller: _scrollController,
-              hiddenOffset: Offset(0, 0.2),
-              duration: ac.calcAnimationDuration(),
-              child: child
-            ),
-            child: FloatingMenu(
-              key: _fabKey,
-              tapAction: actions
-                  .where((action) => action.location == ActionLocation.fabTap)
-                  .firstOrNull,
-              holdAction: actions
-                  .where((action) => action.location == ActionLocation.fabHold)
-                  .firstOrNull,
-              menuActions: actions
-                  .where((action) => action.location == ActionLocation.fabMenu)
-                  .toList(),
-            ),
+          shouldWrap: ac.profile.hideFeedUIOnScroll,
+          parentBuilder: (child) => HideOnScroll(
+            controller: _scrollController,
+            hiddenOffset: Offset(0, 0.2),
+            duration: ac.calcAnimationDuration(),
+            child: child,
+          ),
+          child: FloatingMenu(
+            key: _fabKey,
+            tapAction: actions
+                .where((action) => action.location == ActionLocation.fabTap)
+                .firstOrNull,
+            holdAction: actions
+                .where((action) => action.location == ActionLocation.fabHold)
+                .firstOrNull,
+            menuActions: actions
+                .where((action) => action.location == ActionLocation.fabMenu)
+                .toList(),
+          ),
         ),
         drawer: (widget.feed != null)
             ? null
@@ -856,12 +858,15 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     : null,
                 itemBuilder: (context, item, index) {
                   void onPostTap() {
-                    context.router.push(PostRoute(
-                      postId: item.id,
+                    context.router.push(
+                      PostRoute(
+                        postId: item.id,
                         initData: item,
-                      onUpdate: (newValue) => _pagingController.updateItem(item, newValue),
-                      userCanModerate: widget.userCanModerate
-                    ));
+                        onUpdate: (newValue) =>
+                            _pagingController.updateItem(item, newValue),
+                        userCanModerate: widget.userCanModerate,
+                      ),
+                    );
                     // pushRoute(
                     //   context,
                     //   builder: (context) => PostPage(

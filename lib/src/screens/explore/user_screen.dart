@@ -133,7 +133,11 @@ class _UserScreenState extends State<UserScreen> {
               padding: const EdgeInsets.only(right: 8),
               child: ActionChip(
                 label: Icon(Symbols.bookmarks_rounded, size: 20),
-                onPressed: () => context.router.push(ac.serverSoftware == ServerSoftware.mbin ? BookmarkListRoute() : BookmarksRoute()),
+                onPressed: () => context.router.push(
+                  ac.serverSoftware == ServerSoftware.mbin
+                      ? BookmarkListRoute()
+                      : BookmarksRoute(),
+                ),
               ),
             ),
           Padding(
@@ -214,7 +218,9 @@ class _UserScreenState extends State<UserScreen> {
                                 children: [
                                   if (isMyUser)
                                     FilledButton(
-                                      onPressed: () => context.router.push(ProfileEditRoute(user: _data!,
+                                      onPressed: () => context.router.push(
+                                        ProfileEditRoute(
+                                          user: _data!,
                                           onUpdate: (DetailedUserModel user) {
                                             setState(() {
                                               _data = user;
@@ -273,12 +279,12 @@ class _UserScreenState extends State<UserScreen> {
                                   if (isLoggedIn && !isMyUser)
                                     IconButton(
                                       onPressed: () => context.router.push(
-                                          MessageThreadRoute(
-                                            threadId: null,
-                                            userId: _data?.id,
-                                            otherUser: _data,
-                                          ),
+                                        MessageThreadRoute(
+                                          threadId: null,
+                                          userId: _data?.id,
+                                          otherUser: _data,
                                         ),
+                                      ),
                                       icon: const Icon(Symbols.mail_rounded),
                                       tooltip: 'Send message',
                                     ),

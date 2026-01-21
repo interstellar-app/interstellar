@@ -104,7 +104,9 @@ class _PostCommentState extends State<PostComment> {
               child: DisplayName(
                 widget.comment.user.name,
                 icon: widget.comment.user.avatar,
-                onTap: () => context.router.push(UserRoute(userId: widget.comment.user.id)),
+                onTap: () => context.router.push(
+                  UserRoute(userId: widget.comment.user.id),
+                ),
               ),
             ),
             UserStatusIcons(
@@ -435,7 +437,13 @@ class _PostCommentState extends State<PostComment> {
                 _expandableController.expanded &&
                 (widget.comment.children?.isEmpty ?? false))
               TextButton(
-                onPressed: () => context.router.push(PostCommentRoute(postType: widget.comment.postType, commentId: widget.comment.id, opUserId: widget.opUserId)),
+                onPressed: () => context.router.push(
+                  PostCommentRoute(
+                    postType: widget.comment.postType,
+                    commentId: widget.comment.id,
+                    opUserId: widget.opUserId,
+                  ),
+                ),
                 child: Text(l(context).openReplies(widget.comment.childCount)),
               ),
             if (widget.comment.childCount > 0)

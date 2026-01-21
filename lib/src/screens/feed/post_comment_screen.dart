@@ -40,14 +40,12 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
         .api
         .comments
         .get(widget.postType, widget.commentId)
-        .then(
-          (value) {
-            if (!mounted) return;
-            setState(() {
-              _comment = value;
-            });
-          }
-        );
+        .then((value) {
+          if (!mounted) return;
+          setState(() {
+            _comment = value;
+          });
+        });
   }
 
   @override
@@ -71,7 +69,12 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
-                    onPressed: () => context.router.push(PostRoute(postId: comment.postId, postType: comment.postType)),
+                    onPressed: () => context.router.push(
+                      PostRoute(
+                        postId: comment.postId,
+                        postType: comment.postType,
+                      ),
+                    ),
                     child: Text(l(context).comment_openOriginalPost),
                   ),
                 ),
@@ -79,7 +82,12 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
                     onPressed: comment.rootId != null
-                        ? () => context.router.push(PostCommentRoute(postType: comment.postType, commentId: comment.rootId!))
+                        ? () => context.router.push(
+                            PostCommentRoute(
+                              postType: comment.postType,
+                              commentId: comment.rootId!,
+                            ),
+                          )
                         : null,
                     child: Text(l(context).comment_openRoot),
                   ),
@@ -88,7 +96,12 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
                     onPressed: comment.parentId != null
-                        ? () => context.router.push(PostCommentRoute(postType: comment.postType, commentId: comment.parentId!))
+                        ? () => context.router.push(
+                            PostCommentRoute(
+                              postType: comment.postType,
+                              commentId: comment.parentId!,
+                            ),
+                          )
                         : null,
                     child: Text(l(context).comment_openParent),
                   ),

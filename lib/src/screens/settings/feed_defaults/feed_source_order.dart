@@ -44,9 +44,7 @@ class _FeedSourceOrderSettingsScreen
               _feedSourceOrder = ProfileRequired.defaultProfile.feedSourceOrder
                   .toList();
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(
-                  feedSourceOrder: null,
-                ),
+                ac.selectedProfileValue.copyWith(feedSourceOrder: null),
               );
             }),
             icon: const Icon(Symbols.restore),

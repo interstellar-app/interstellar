@@ -134,7 +134,8 @@ class DisplaySettingsScreen extends StatelessWidget {
                   value: ac.profile.dividerThickness,
                   max: 10,
                   min: 0,
-                  onChanged: ac.profile.showPostsCards && !ac.profile.compactMode
+                  onChanged:
+                      ac.profile.showPostsCards && !ac.profile.compactMode
                       ? null
                       : (newValue) => ac.updateProfile(
                           ac.selectedProfileValue.copyWith(

@@ -47,10 +47,7 @@ class _InboxScreenState extends State<InboxScreen>
               ),
               body: TabBarView(
                 physics: appTabViewPhysics(context),
-                children: const [
-                  NotificationsScreen(),
-                  MessagesScreen(),
-                ],
+                children: const [NotificationsScreen(), MessagesScreen()],
               ),
             ),
           ),

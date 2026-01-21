@@ -33,19 +33,14 @@ class _DomainScreenState extends State<DomainScreen> {
     _data = widget.initData;
 
     if (_data == null) {
-      context
-          .read<AppController>()
-          .api
-          .domains
-          .get(widget.domainId)
-          .then(
-            (value) {
-              if (!mounted) return;
-              setState(() {
-                _data = value;
-              });
-            }
-          );
+      context.read<AppController>().api.domains.get(widget.domainId).then((
+        value,
+      ) {
+        if (!mounted) return;
+        setState(() {
+          _data = value;
+        });
+      });
     }
   }
 

@@ -47,7 +47,8 @@ class _AboutScreenState extends State<AboutScreen> {
               builder: (context) => const DebugSettingsScreen(),
             ),
           ),
-          if (context.read<AppController>().serverSoftware != ServerSoftware.piefed)
+          if (context.read<AppController>().serverSoftware !=
+              ServerSoftware.piefed)
             ListTile(
               leading: const Icon(Symbols.shield_rounded),
               title: Text(l(context).modlog),

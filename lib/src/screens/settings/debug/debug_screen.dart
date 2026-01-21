@@ -95,7 +95,9 @@ class DebugSettingsScreen extends StatelessWidget {
               final tmpPath = join(tmpDir.path, 'import.db.sqlite');
 
               try {
-                importDb..execute('VACUUM INTO ?', [tmpPath])..dispose();
+                importDb
+                  ..execute('VACUUM INTO ?', [tmpPath])
+                  ..dispose();
                 File(tmpPath).delete();
               } catch (e) {
                 ac.logger.e('Attempted to import invalid database');

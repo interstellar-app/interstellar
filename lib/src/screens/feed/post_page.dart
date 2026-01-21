@@ -457,7 +457,13 @@ class _PostPageState extends State<PostPage> {
                                 subtitle: l(
                                   context,
                                 ).commentsX(crossPost.numComments),
-                                onTap: () => context.router.push(PostRoute(postId: crossPost.id, postType: PostType.thread, initData: crossPost)),
+                                onTap: () => context.router.push(
+                                  PostRoute(
+                                    postId: crossPost.id,
+                                    postType: PostType.thread,
+                                    initData: crossPost,
+                                  ),
+                                ),
                               ),
                             )
                             .toList(),
@@ -498,7 +504,13 @@ class _PostPageState extends State<PostPage> {
                                     showCrossPostMenu(context, crossPost),
                                 icon: const Icon(Symbols.more_vert_rounded),
                               ),
-                              onTap: () => context.router.push(PostRoute(postId: crossPost.id, postType: crossPost.type, initData: crossPost)),
+                              onTap: () => context.router.push(
+                                PostRoute(
+                                  postId: crossPost.id,
+                                  postType: crossPost.type,
+                                  initData: crossPost,
+                                ),
+                              ),
                               onLongPress: () =>
                                   showCrossPostMenu(context, crossPost),
                             ),

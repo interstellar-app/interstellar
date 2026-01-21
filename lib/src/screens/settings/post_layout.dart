@@ -44,9 +44,7 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
                   .postComponentOrder
                   .toList();
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(
-                  postComponentOrder: null,
-                ),
+                ac.selectedProfileValue.copyWith(postComponentOrder: null),
               );
             }),
             icon: const Icon(Symbols.restore),

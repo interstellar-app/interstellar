@@ -24,7 +24,8 @@ class CommunityOwnerPanelScreen extends StatefulWidget {
   });
 
   @override
-  State<CommunityOwnerPanelScreen> createState() => _CommunityOwnerPanelScreenState();
+  State<CommunityOwnerPanelScreen> createState() =>
+      _CommunityOwnerPanelScreenState();
 }
 
 class _CommunityOwnerPanelScreenState extends State<CommunityOwnerPanelScreen> {
@@ -189,28 +190,22 @@ class _CommunityOwnerPanelGeneralState
                 : () async {
                     final ac = context.read<AppController>();
                     final result = widget.data == null
-                        ? await ac
-                              .api
-                              .communityModeration
-                              .create(
-                                name: _nameController.text,
-                                title: _titleController.text,
-                                description: _descriptionController.text,
-                                isAdult: _isAdult,
-                                isPostingRestrictedToMods:
-                                    _isPostingRestrictedToMods,
-                              )
-                        : await ac
-                              .api
-                              .communityModeration
-                              .edit(
-                                widget.data!.id,
-                                title: _titleController.text,
-                                description: _descriptionController.text,
-                                isAdult: _isAdult,
-                                isPostingRestrictedToMods:
-                                    _isPostingRestrictedToMods,
-                              );
+                        ? await ac.api.communityModeration.create(
+                            name: _nameController.text,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            isAdult: _isAdult,
+                            isPostingRestrictedToMods:
+                                _isPostingRestrictedToMods,
+                          )
+                        : await ac.api.communityModeration.edit(
+                            widget.data!.id,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            isAdult: _isAdult,
+                            isPostingRestrictedToMods:
+                                _isPostingRestrictedToMods,
+                          );
 
                     await descriptionDraftController.discard();
 

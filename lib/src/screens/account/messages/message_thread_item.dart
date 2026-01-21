@@ -100,7 +100,9 @@ class MessageThreadItem extends StatelessWidget {
                             DisplayName(
                               currMessage.sender.name,
                               icon: currMessage.sender.avatar,
-                              onTap: () => context.router.push(UserRoute(userId: currMessage.sender.id)),
+                              onTap: () => context.router.push(
+                                UserRoute(userId: currMessage.sender.id),
+                              ),
                             ),
                           ],
                         ),
