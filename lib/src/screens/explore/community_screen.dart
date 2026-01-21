@@ -27,7 +27,7 @@ class CommunityScreen extends StatefulWidget {
   final void Function(DetailedCommunityModel)? onUpdate;
 
   const CommunityScreen(
-    @PathParam('id') this.communityId, {
+    @PathParam('communityId') this.communityId, {
     super.key,
     this.initData,
     this.onUpdate,

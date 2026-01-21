@@ -48,7 +48,7 @@ class UserScreen extends StatefulWidget {
   final void Function(DetailedUserModel)? onUpdate;
 
   const UserScreen(
-    @PathParam('id') this.userId, {
+    @PathParam('userId') this.userId, {
     super.key,
     this.initData,
     this.onUpdate,
