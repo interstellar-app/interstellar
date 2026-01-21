@@ -1,3 +1,5 @@
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/api/comments.dart';
@@ -17,6 +19,7 @@ import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/hide_on_scroll.dart';
@@ -38,12 +41,13 @@ import 'package:provider/provider.dart';
 
 enum UserFeedType { thread, microblog, comment, reply, follower, following }
 
+@RoutePage()
 class UserScreen extends StatefulWidget {
   final int userId;
   final DetailedUserModel? initData;
   final void Function(DetailedUserModel)? onUpdate;
 
-  const UserScreen(this.userId, {super.key, this.initData, this.onUpdate});
+  const UserScreen(@PathParam('id') this.userId, {super.key, this.initData, this.onUpdate});
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -274,13 +278,8 @@ class _UserScreenState extends State<UserScreen> {
                                   if (isLoggedIn && !isMyUser)
                                     IconButton(
                                       onPressed: () {
-                                        pushRoute(
-                                          context,
-                                          builder: (context) =>
-                                              MessageThreadScreen(
-                                                threadId: null,
-                                                otherUser: _data,
-                                              ),
+                                        context.router.push(
+                                          MessageThreadRoute(threadId: null, userId: _data?.id, otherUser: _data)
                                         );
                                       },
                                       icon: const Icon(Symbols.mail_rounded),

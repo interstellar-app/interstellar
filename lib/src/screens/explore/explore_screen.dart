@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -17,6 +18,7 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/models/feed.dart';
 
+@RoutePage()
 class ExploreScreen extends StatefulWidget {
   final ExploreType? mode;
   final int? id;

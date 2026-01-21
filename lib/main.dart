@@ -33,7 +33,7 @@ void main() async {
     final screenSize = PlatformDispatcher.instance.displays
         .map((display) => display.size)
         .reduce((a, b) => Size(min(a.width, b.width), min(a.height, b.height)));
-    final minWindowSize = screenSize / 4;
+    final minWindowSize = screenSize / 8;//4;
 
     WindowOptions windowOptions = WindowOptions(minimumSize: minWindowSize);
 

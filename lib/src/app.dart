@@ -6,10 +6,13 @@ import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:interstellar/src/app_home.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
+import 'package:interstellar/src/utils/router.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:intl/locale.dart' as intl_locale;
 import 'package:provider/provider.dart';
+
+final router = AppRouter();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -42,7 +45,8 @@ class App extends StatelessWidget {
             data: MediaQuery.of(context).copyWith(
               textScaler: TextScaler.linear(ac.profile.globalTextScale),
             ),
-            child: MaterialApp(
+            child: MaterialApp.router(
+              routerConfig: router.config(),
               restorationScopeId: 'app',
               localizationsDelegates: const [
                 ...AppLocalizations.localizationsDelegates,
@@ -78,7 +82,6 @@ class App extends StatelessWidget {
               themeMode: ac.profile.themeMode,
               themeAnimationDuration: ac.calcAnimationDuration(),
               scaffoldMessengerKey: scaffoldMessengerKey,
-              home: AppHome(),
             ),
           ),
         );

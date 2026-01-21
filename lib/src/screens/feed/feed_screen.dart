@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -15,6 +16,7 @@ import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
@@ -859,15 +861,21 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     : null,
                 itemBuilder: (context, item, index) {
                   void onPostTap() {
-                    pushRoute(
-                      context,
-                      builder: (context) => PostPage(
+                    context.router.push(PostRoute(
+                      postId: item.id,
                         initData: item,
-                        onUpdate: (newValue) =>
-                            _pagingController.updateItem(item, newValue),
-                        userCanModerate: widget.userCanModerate,
-                      ),
-                    );
+                      onUpdate: (newValue) => _pagingController.updateItem(item, newValue),
+                      userCanModerate: widget.userCanModerate
+                    ));
+                    // pushRoute(
+                    //   context,
+                    //   builder: (context) => PostPage(
+                    //     initData: item,
+                    //     onUpdate: (newValue) =>
+                    //         _pagingController.updateItem(item, newValue),
+                    //     userCanModerate: widget.userCanModerate,
+                    //   ),
+                    // );
                   }
 
                   return Wrapper(

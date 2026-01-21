@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/comments.dart';
@@ -21,10 +22,11 @@ import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class PostPage extends StatefulWidget {
   const PostPage({
     this.postType,
-    this.postId,
+    @PathParam('id') this.postId,
     this.initData,
     this.onUpdate,
     super.key,

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -12,12 +14,14 @@ import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class AppHome extends StatefulWidget {
   const AppHome({super.key});
 
@@ -63,21 +67,16 @@ class _AppHomeState extends State<AppHome> {
           return;
         case 3:
           if (ac.isLoggedIn) {
-            pushRoute(
-              context,
-              builder: (context) => ExploreScreen(
-                mode: ExploreType.people,
-                title: l(context).newChat,
-                onTap: (selected, item) async {
-                  Navigator.pop(context);
-                  await pushRoute(
-                    context,
-                    builder: (context) =>
-                        MessageThreadScreen(threadId: null, otherUser: item),
-                  );
-                },
-              ),
-            );
+            context.router.push(ExploreRoute(
+              mode: ExploreType.people,
+              title: l(context).newChat,
+              onTap: (selected, item) async {
+                context.router.pop();
+                context.router.push(
+                    MessageThreadRoute(threadId: null, userId: item.id, otherUser: item)
+                );
+              }
+            ));
           }
         case 4:
           switchProfileSelect(context);

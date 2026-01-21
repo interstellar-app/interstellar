@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -19,13 +20,14 @@ import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class CommunityScreen extends StatefulWidget {
   final int communityId;
   final DetailedCommunityModel? initData;
   final void Function(DetailedCommunityModel)? onUpdate;
 
   const CommunityScreen(
-    this.communityId, {
+    @PathParam('id') this.communityId, {
     super.key,
     this.initData,
     this.onUpdate,
