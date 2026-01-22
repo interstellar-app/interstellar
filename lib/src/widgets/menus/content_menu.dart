@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
