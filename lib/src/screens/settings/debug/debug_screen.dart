@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
-import 'package:sqlite3/sqlite3.dart';
+// import 'package:sqlite3/sqlite3.dart';
 
 @RoutePage()
 class DebugSettingsScreen extends StatelessWidget {
@@ -73,44 +73,44 @@ class DebugSettingsScreen extends StatelessWidget {
               }
             },
           ),
-          ListTile(
-            title: Text(l(context).settings_debug_importDatabase),
-            onTap: () async {
-              String? filePath;
-              try {
-                final result = await FilePicker.platform.pickFiles();
-                filePath = result?.files.single.path;
-              } catch (e) {
-                //
-              }
-
-              if (filePath == null) return;
-
-              final srcFile = File(filePath);
-              final importDb = sqlite3.open(filePath);
-
-              final tmpDir = await getTemporaryDirectory();
-              final tmpPath = join(tmpDir.path, 'import.db.sqlite');
-
-              try {
-                importDb
-                  ..execute('VACUUM INTO ?', [tmpPath])
-                  ..dispose();
-                File(tmpPath).delete();
-              } catch (e) {
-                ac.logger.e('Attempted to import invalid database');
-                throw 'Attempted to import invalid database';
-              }
-
-              final dbDir = await getApplicationSupportDirectory();
-              final dbFilepath = join(
-                dbDir.path,
-                '${InterstellarDatabase.databaseFilename}.sqlite',
-              );
-
-              srcFile.copy(dbFilepath);
-            },
-          ),
+          // ListTile(
+          //   title: Text(l(context).settings_debug_importDatabase),
+          //   onTap: () async {
+          //     String? filePath;
+          //     try {
+          //       final result = await FilePicker.platform.pickFiles();
+          //       filePath = result?.files.single.path;
+          //     } catch (e) {
+          //       //
+          //     }
+          //
+          //     if (filePath == null) return;
+          //
+          //     final srcFile = File(filePath);
+          //     final importDb = sqlite3.open(filePath);
+          //
+          //     final tmpDir = await getTemporaryDirectory();
+          //     final tmpPath = join(tmpDir.path, 'import.db.sqlite');
+          //
+          //     try {
+          //       importDb
+          //         ..execute('VACUUM INTO ?', [tmpPath])
+          //         ..dispose();
+          //       File(tmpPath).delete();
+          //     } catch (e) {
+          //       ac.logger.e('Attempted to import invalid database');
+          //       throw 'Attempted to import invalid database';
+          //     }
+          //
+          //     final dbDir = await getApplicationSupportDirectory();
+          //     final dbFilepath = join(
+          //       dbDir.path,
+          //       '${InterstellarDatabase.databaseFilename}.sqlite',
+          //     );
+          //
+          //     srcFile.copy(dbFilepath);
+          //   },
+          // ),
           ListTile(
             leading: const Icon(Symbols.storage_rounded),
             title: Text(l(context).settings_debug_clearDatabase),

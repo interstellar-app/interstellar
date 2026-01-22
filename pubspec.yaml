@@ -34,7 +34,7 @@ dependencies:
   dynamic_color: ^1.8.1
   markdown: ^7.3.0
   expandable: ^5.0.1
-  blurhash_ffi: ^1.2.7
+  flutter_blurhash: ^0.9.1
   unifiedpush: ^6.0.2
   webpush_encryption: 1.0.0-rc1
   flutter_local_notifications: ^19.4.2

@@ -1,8 +1,7 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:auto_route/auto_route.dart';
-import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
@@ -91,14 +90,7 @@ class AdvancedImage extends StatelessWidget {
                       fit: fit,
                       borderRadius: BorderRadius.circular(15),
                       shape: BoxShape.rectangle,
-                      image: BlurhashFfiImage(
-                        image.blurHash!,
-                        decodingWidth:
-                            (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
-                        decodingHeight:
-                            (blurHashSizeFactor * image.blurHashHeight!).ceil(),
-                        scale: blurHashSizeFactor,
-                      ),
+                      image: BlurHashImage(image.blurHash!, decodingHeight: (blurHashSizeFactor! * image.blurHashHeight!).ceil(), decodingWidth: (blurHashSizeFactor * image.blurHashWidth!).ceil()),
                       enableSlideOutPage: true,
                     );
                   } else if (image.blurHashWidth != null &&
@@ -183,7 +175,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
             },
             icon: const Icon(Symbols.download_rounded),
           ),
-          if (!Platform.isLinux)
+          if (!PlatformUtils.isLinux)
             LoadingIconButton(
               onPressed: () async => await shareFile(
                 Uri.parse(widget.image.src),

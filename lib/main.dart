@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -7,6 +6,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/globals.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -25,7 +25,7 @@ void main() async {
 
   await initDatabase();
 
-  if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+  if (PlatformUtils.isDesktop) {
     await windowManager.ensureInitialized();
 
     // Get smallest dimensions of available displays and set minimum window
@@ -75,7 +75,7 @@ void main() async {
     return false;
   };
 
-  if (Platform.isAndroid) {
+  if (PlatformUtils.isAndroid) {
     await initPushNotifications(ac);
   }
 

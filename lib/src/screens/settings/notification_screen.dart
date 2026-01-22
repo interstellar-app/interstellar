@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -61,7 +59,7 @@ class _NotificationSettingsScreenState
       ),
       body: ListView(
         children: [
-          if (Platform.isAndroid) ...[
+          if (PlatformUtils.isAndroid) ...[
             ListTileSwitch(
               leading: const Icon(Symbols.notifications_active_rounded),
               title: Text(

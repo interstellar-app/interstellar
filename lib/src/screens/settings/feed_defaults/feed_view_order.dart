@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:auto_route/annotations.dart';
 import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -59,7 +58,7 @@ class _FeedViewOrderSettingsScreen extends State<FeedViewOrderSettingsScreen> {
                 key: Key(item.index.toString()),
                 leading: Icon(item.icon),
                 title: Text(item.name.capitalize),
-                trailing: Platform.isIOS || Platform.isAndroid
+                trailing: PlatformUtils.isMobile
                     ? const Icon(Symbols.drag_handle_rounded)
                     : null,
               ),

@@ -24,7 +24,7 @@ class _LogConsoleState extends State<LogConsole> {
 
   void _fetchLogFile() async {
     final logFile = await context.read<AppController>().logFile;
-    List<String> lines = await logFile.readAsLines();
+    List<String> lines = await logFile?.readAsLines() ?? [];
     setState(() {
       _logFile = logFile;
       _logLines = lines;
@@ -65,7 +65,7 @@ class _LogConsoleState extends State<LogConsole> {
           ),
           IconButton(
             onPressed: () async {
-              final useBytes = Platform.isAndroid || Platform.isIOS;
+              final useBytes = PlatformUtils.isMobile;
               String? filePath;
               try {
                 filePath = await FilePicker.platform.saveFile(

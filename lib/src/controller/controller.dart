@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -143,7 +144,8 @@ class AppController with ChangeNotifier {
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavDomains: Value(value)));
 
-  Future<File> get logFile async {
+  Future<File?> get logFile async {
+    if (kIsWeb) return null;
     final logDir = await getApplicationSupportDirectory();
     final logFile = join(logDir.path, 'log.log');
     return File(logFile);
@@ -151,9 +153,10 @@ class AppController with ChangeNotifier {
 
   Future<void> init() async {
     refreshState = () {};
+    final loggerFile = await logFile;
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
-      output: FileOutput(file: await logFile),
+      output: loggerFile == null ? null : FileOutput(file: loggerFile),
       filter: ProductionFilter(),
     );
     logger.i('Initializing interstellar');

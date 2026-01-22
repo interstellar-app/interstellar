@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -324,4 +326,47 @@ Future<void> pushRoute(
       builder: builder,
     ),
   );
+}
+
+// apparently Platform is unsupported on web so have to check for web before checking specific platform
+class PlatformUtils {
+  static bool get isMobile {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isIOS || Platform.isAndroid;
+    }
+  }
+
+  static bool get isDesktop {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isLinux || Platform.isFuchsia || Platform.isWindows || Platform.isMacOS;
+    }
+  }
+
+  static bool get isAndroid {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isAndroid;
+    }
+  }
+
+  static bool get isIOS {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isIOS;
+    }
+  }
+
+  static bool get isLinux {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isLinux;
+    }
+  }
 }
