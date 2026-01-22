@@ -3,7 +3,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
-import 'package:interstellar/src/app_home.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
 import 'package:interstellar/src/utils/router.dart';

@@ -7,7 +7,6 @@ import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -18,7 +17,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
 class PostComment extends StatefulWidget {

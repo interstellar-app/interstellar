@@ -18,7 +18,6 @@ import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:drift/drift.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path/path.dart';
 

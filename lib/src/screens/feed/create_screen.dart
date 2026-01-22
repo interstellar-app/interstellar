@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:any_link_preview/any_link_preview.dart';
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +10,6 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/router.gr.dart';

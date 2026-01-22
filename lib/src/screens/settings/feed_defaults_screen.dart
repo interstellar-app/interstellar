@@ -1,12 +1,8 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
-import 'package:interstellar/src/screens/settings/feed_defaults/feed_sort_order.dart';
-import 'package:interstellar/src/screens/settings/feed_defaults/feed_source_order.dart';
-import 'package:interstellar/src/screens/settings/feed_defaults/feed_view_order.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';

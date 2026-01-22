@@ -10,7 +10,6 @@ import 'package:interstellar/src/widgets/tags/post_flairs.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/screens/explore/domain_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';

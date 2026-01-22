@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/inbox_screen.dart';
-import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
 import 'package:interstellar/src/screens/account/self_feed.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';

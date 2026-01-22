@@ -4,12 +4,8 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/screens/explore/mod_log.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
-import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
-import 'package:interstellar/src/screens/explore/community_mod_panel.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
@@ -17,10 +13,9 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import '../../utils/router.gr.dart';
 
 Future<void> showCommunityMenu(
   BuildContext context, {

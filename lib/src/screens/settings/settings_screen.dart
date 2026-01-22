@@ -1,24 +1,12 @@
-import 'dart:ui';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
-import 'package:interstellar/src/screens/settings/behavior_screen.dart';
-import 'package:interstellar/src/screens/settings/data_utilities.dart';
-import 'package:interstellar/src/screens/settings/display_screen.dart';
-import 'package:interstellar/src/screens/settings/feed_actions_screen.dart';
-import 'package:interstellar/src/screens/settings/feed_defaults_screen.dart';
-import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
-import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
-import 'package:interstellar/src/screens/settings/notification_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
-import 'package:interstellar/src/widgets/tags/tag_screen.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 

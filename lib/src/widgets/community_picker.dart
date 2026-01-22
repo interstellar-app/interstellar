@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';

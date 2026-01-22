@@ -5,13 +5,10 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/utils/utils.dart';
 
 class MentionMarkdownSyntax extends md.InlineSyntax {
   /*

@@ -1,8 +1,5 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/screens/settings/account_migration.dart';
-import 'package:interstellar/src/screens/settings/account_reset.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 

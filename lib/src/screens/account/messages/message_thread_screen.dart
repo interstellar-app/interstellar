@@ -81,7 +81,6 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   @override
   void initState() {
     super.initState();
-    print(context.router.currentPath);
 
     _otherUserId = widget.userId ?? widget.otherUser?.id;
     _threadId =

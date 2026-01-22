@@ -1,4 +1,3 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
@@ -12,9 +11,7 @@ import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
-import 'package:interstellar/src/screens/feed/post_page.dart';
 
 @RoutePage()
 class BookmarkListScreen extends StatefulWidget {

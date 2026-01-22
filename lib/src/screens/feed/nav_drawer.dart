@@ -5,10 +5,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/explore/domain_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
@@ -18,7 +15,6 @@ import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:provider/provider.dart';
 
 import 'feed_agregator.dart';
-import 'feed_screen.dart';
 
 class NavDrawPersistentState {
   const NavDrawPersistentState({

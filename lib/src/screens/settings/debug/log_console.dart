@@ -75,8 +75,9 @@ class _LogConsoleState extends State<LogConsole> {
                 if (filePath == null) return;
               } catch (e) {
                 final dir = await getDownloadsDirectory();
-                if (dir == null)
+                if (dir == null) {
                   throw Exception('Downloads directory not found');
+                }
 
                 filePath = '${dir.path}/interstellar_log.log';
               }

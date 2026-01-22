@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -12,9 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:sqlite3/sqlite3.dart';
-
-import '../../../utils/router.gr.dart';
 
 @RoutePage()
 class DebugSettingsScreen extends StatelessWidget {

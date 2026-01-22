@@ -9,11 +9,9 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
-import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
@@ -69,7 +67,7 @@ class _FeedScreenState extends State<FeedScreen>
   @override
   bool get wantKeepAlive => true;
 
-  _getFeedKey(int index) {
+  GlobalKey<_FeedScreenBodyState> _getFeedKey(int index) {
     while (index >= _feedKeyList.length) {
       _feedKeyList.add(GlobalKey());
     }
@@ -898,7 +896,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                               List<PostModel> readPosts = [];
                               for (int i = index; i >= 0; i--) {
                                 final post = items[i];
-                                if (post.read || readPosts.contains(i)) {
+                                if (post.read || readPosts.contains(post)) {
                                   continue;
                                 }
                                 readPosts.add(post);

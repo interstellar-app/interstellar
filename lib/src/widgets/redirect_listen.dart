@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -46,7 +47,7 @@ class _RedirectListenerState extends State<RedirectListener> {
     super.initState();
     if (!isWebViewSupported) {
       _listenForAuth().then(
-        (value) => Navigator.pop(context, value.queryParameters),
+        (value) => context.router.pop(value.queryParameters),
       );
     } else {
       _controller = WebViewController()

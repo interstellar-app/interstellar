@@ -11,7 +11,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'message_item.dart';
-import 'message_thread_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
