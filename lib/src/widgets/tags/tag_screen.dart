@@ -322,6 +322,7 @@ class TagsFloatingButton extends StatelessWidget {
   }
 }
 
+@RoutePage()
 class TagsScreen extends StatefulWidget {
   const TagsScreen({super.key});
 

@@ -1,3 +1,5 @@
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -5,12 +7,14 @@ import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults/feed_sort_order.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults/feed_source_order.dart';
 import 'package:interstellar/src/screens/settings/feed_defaults/feed_view_order.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 
+@RoutePage()
 class FeedDefaultSettingsScreen extends StatelessWidget {
   const FeedDefaultSettingsScreen({super.key});
 
@@ -25,26 +29,17 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.filter_list_rounded),
             title: Text(l(context).settings_feedSourceOrder),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => FeedSourceOrderSettingsScreen(),
-            ),
+            onTap: () => context.router.push(FeedSourceOrderSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.tab_rounded),
             title: Text(l(context).settings_feedViewOrder),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => FeedViewOrderSettingsScreen(),
-            ),
+            onTap: () => context.router.push(FeedViewOrderSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.sort_rounded),
             title: Text(l(context).settings_feedSortOrder),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => FeedSortOrderSettingsScreen(),
-            ),
+            onTap: () => context.router.push(FeedSortOrderSettingsRoute()),
           ),
           ListTileSelect(
             title: l(context).settings_feedDefaults_threadsSort,

@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -12,6 +15,7 @@ import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/screens/settings/notification_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:interstellar/src/widgets/tags/tag_screen.dart';
@@ -32,65 +36,42 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.settings_rounded),
             title: Text(l(context).settings_behavior),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const BehaviorSettingsScreen(),
-            ),
+            onTap: () => context.router.push(BehaviorSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.palette_rounded),
             title: Text(l(context).settings_display),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const DisplaySettingsScreen(),
-            ),
+            onTap: () => context.router.push(DisplaySettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.feed_rounded),
             title: Text(l(context).feeds),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const FeedSettingsScreen(),
-              ),
-            ),
+            onTap: () => context.router.push(FeedSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.filter_list_rounded),
             title: Text(l(context).settings_feedActions),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const FeedActionsSettingsScreen(),
-            ),
+            onTap: () => context.router.push(FeedActionsSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.tune_rounded),
             title: Text(l(context).settings_feedDefaults),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const FeedDefaultSettingsScreen(),
-            ),
+            onTap: () => context.router.push(FeedDefaultSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.label_rounded),
             title: Text(l(context).tags),
-            onTap: () =>
-                pushRoute(context, builder: (context) => const TagsScreen()),
+            onTap: () => context.router.push(TagsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.filter_1_rounded),
             title: Text(l(context).filterLists),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const FilterListsScreen(),
-            ),
+            onTap: () => context.router.push(FilterListsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.notifications_rounded),
             title: Text(l(context).settings_notifications),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const NotificationSettingsScreen(),
-            ),
+            onTap: () => context.router.push(NotificationSettingsRoute()),
             enabled:
                 ac.serverSoftware == ServerSoftware.mbin &&
                 context
@@ -103,16 +84,12 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.database_rounded),
             title: Text(l(context).settings_dataUtilities),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const DataUtilitiesScreen(),
-            ),
+            onTap: () => context.router.push(DataUtilitiesRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.info_rounded),
             title: Text(l(context).settings_about),
-            onTap: () =>
-                pushRoute(context, builder: (context) => const AboutScreen()),
+            onTap: () => context.router.push(AboutRoute()),
           ),
           const Divider(),
           ListTile(

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -8,6 +9,7 @@ import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
 

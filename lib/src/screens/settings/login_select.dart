@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -73,6 +74,7 @@ final Map<String, List<(String, ServerSoftware)>> _recommendedInstances = {
   ],
 };
 
+@RoutePage()
 class LoginSelectScreen extends StatefulWidget {
   const LoginSelectScreen({super.key});
 

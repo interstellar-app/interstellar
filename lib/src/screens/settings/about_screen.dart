@@ -25,6 +25,7 @@ const _mbinCommunityLink = 'https://kbin.earth/m/interstellar';
 const mbinConfigsCommunityName = 'interstellar_configs@kbin.earth';
 const _mbinConfigsCommunityLink = 'https://kbin.earth/m/interstellar_configs';
 
+@RoutePage()
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
 
@@ -42,10 +43,7 @@ class _AboutScreenState extends State<AboutScreen> {
           ListTile(
             leading: const Icon(Symbols.bug_report_rounded),
             title: Text(l(context).settings_debug),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const DebugSettingsScreen(),
-            ),
+            onTap: () => context.router.push(DebugSettingsRoute()),
           ),
           if (context.read<AppController>().serverSoftware !=
               ServerSoftware.piefed)
@@ -100,11 +98,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 if (!context.mounted) return;
 
-                pushRoute(
-                  context,
-                  builder: (context) =>
-                      CommunityScreen(community.id, initData: community),
-                );
+                context.router.push(CommunityRoute(communityId: community.id, initData: community));
               } catch (e) {
                 if (!mounted) return;
                 openWebpagePrimary(context, Uri.parse(_mbinCommunityLink));
@@ -129,11 +123,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 if (!context.mounted) return;
 
-                pushRoute(
-                  context,
-                  builder: (context) =>
-                      CommunityScreen(community.id, initData: community),
-                );
+                context.router.push(CommunityRoute(communityId: community.id, initData: community));
               } catch (e) {
                 if (!mounted) return;
                 openWebpagePrimary(

@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/screens/settings/debug/log_console.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart';
@@ -13,6 +14,9 @@ import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/controller/database.dart';
 import 'package:sqlite3/sqlite3.dart';
 
+import '../../../utils/router.gr.dart';
+
+@RoutePage()
 class DebugSettingsScreen extends StatelessWidget {
   const DebugSettingsScreen({super.key});
 
@@ -35,10 +39,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.schema_rounded),
             title: Text(l(context).settings_debug_inspectDatabase),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => DriftDbViewer(database),
-            ),
+            onTap: () => context.router.push(NamedRoute('DriftDbViewer')),
           ),
           ListTile(
             title: Text(l(context).settings_debug_exportDatabase),
@@ -122,7 +123,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 title: Text(l(context).settings_debug_clearDatabase),
                 actions: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
@@ -130,7 +131,7 @@ class DebugSettingsScreen extends StatelessWidget {
                       await deleteTables();
                       ac.logger.i('Cleared database');
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).remove),
                   ),
@@ -147,7 +148,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 title: Text(l(context).settings_debug_clearAccounts),
                 actions: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
@@ -158,7 +159,7 @@ class DebugSettingsScreen extends StatelessWidget {
                       }
                       ac.logger.i('Cleared accounts');
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).remove),
                   ),
@@ -175,7 +176,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 title: Text(l(context).settings_debug_clearProfiles),
                 actions: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
@@ -186,7 +187,7 @@ class DebugSettingsScreen extends StatelessWidget {
                       }
                       ac.logger.i('Cleared profiles');
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).remove),
                   ),
@@ -203,7 +204,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 title: Text(l(context).settings_debug_clearReadPosts),
                 actions: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
@@ -211,7 +212,7 @@ class DebugSettingsScreen extends StatelessWidget {
                       await database.delete(database.readPostCache).go();
                       ac.logger.i('Cleared read posts');
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).remove),
                   ),
@@ -228,7 +229,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 title: Text(l(context).settings_debug_clearFeedCache),
                 actions: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
@@ -236,7 +237,7 @@ class DebugSettingsScreen extends StatelessWidget {
                       await database.delete(database.feedInputs).go();
                       ac.logger.i('Cleared feed cache');
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).remove),
                   ),
@@ -253,7 +254,7 @@ class DebugSettingsScreen extends StatelessWidget {
                 title: Text(l(context).settings_debug_clearTags),
                 actions: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   FilledButton(
@@ -262,7 +263,7 @@ class DebugSettingsScreen extends StatelessWidget {
                       await database.delete(database.tags).go();
                       ac.logger.i('Cleared user tags');
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).remove),
                   ),
@@ -273,7 +274,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.list_rounded),
             title: Text(l(context).settings_debug_log),
-            onTap: () => pushRoute(context, builder: (context) => LogConsole()),
+            onTap: () => context.router.push(LogConsole()),
           ),
         ],
       ),

@@ -1,10 +1,12 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -14,6 +16,7 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class FilterListsScreen extends StatefulWidget {
   const FilterListsScreen({super.key});
 
@@ -41,11 +44,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                 Expanded(
                   child: ListTile(
                     title: Text(name),
-                    onTap: () => pushRoute(
-                      context,
-                      builder: (context) =>
-                          EditFilterListScreen(filterList: name),
-                    ),
+                    onTap: () => context.router.push(EditFilterListRoute(filterList: name)),
                     trailing: IconButton(
                       onPressed: () async {
                         final filterList = context
@@ -74,9 +73,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
 
                         if (!context.mounted) return;
 
-                        await pushRoute(
-                          context,
-                          builder: (context) => CreateScreen(
+                        await context.router.push(CreateRoute(
                             initTitle: '[Filter List] $name',
                             initBody:
                                 'Short description here...\n\n${config.toMarkdown()}',
@@ -110,10 +107,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
           ListTile(
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).filterList_new),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) =>
-                  const EditFilterListScreen(filterList: null),
+            onTap: () => context.router.push(EditFilterListRoute(filterList: null),
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:auto_route/annotations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -8,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 
+@RoutePage()
 class LogConsole extends StatefulWidget {
   const LogConsole({super.key});
 

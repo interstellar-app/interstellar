@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/action_buttons.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -222,10 +224,7 @@ class _ContentItemState extends State<ContentItem> {
         _isReplying = true;
       });
     } else {
-      pushRoute(
-        context,
-        builder: (context) => ContentReply(
-          inline: false,
+      context.router.push(ContentReplyRoute(
           content: widget,
           onReply: widget.onReply!,
           onComplete: () => Navigator.pop(context),

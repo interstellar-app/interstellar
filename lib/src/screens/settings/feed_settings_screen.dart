@@ -1,9 +1,11 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -21,6 +23,7 @@ import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 
+@RoutePage()
 class FeedSettingsScreen extends StatefulWidget {
   const FeedSettingsScreen({super.key});
 
@@ -60,24 +63,17 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                   ac.feeds[entry.key]!,
                 );
                 if (!context.mounted) return;
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => FeedScreen(feed: feed),
-                  ),
-                );
+                context.router.push(FeedRoute(feed: feed));
               },
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => EditFeedScreen(
+                    onPressed: () => context.router.push(EditFeedRoute(
                           feed: entry.key,
                           feedData: ac.feeds[entry.key],
                         ),
                       ),
-                    ),
                     icon: const Icon(Symbols.edit_rounded),
                   ),
                   IconButton(
@@ -107,15 +103,12 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
 
                       if (!context.mounted) return;
 
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => CreateScreen(
+                      await context.router.push(CreateRoute(
                             initTitle: '[Feed] ${entry.key}',
                             initBody:
                                 'Short description here...\n\n${config.toMarkdown()}',
                             initCommunity: community,
                           ),
-                        ),
                       );
                     },
                     icon: const Icon(Symbols.share_rounded),
@@ -138,7 +131,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
 void newFeed(BuildContext context) {
   final ac = context.read<AppController>();
   if (ac.serverSoftware != ServerSoftware.piefed) {
-    pushRoute(context, builder: (context) => const EditFeedScreen(feed: null));
+    context.router.push(EditFeedRoute(feed: null));
   } else {
     ContextMenu(
       items: [
@@ -146,20 +139,15 @@ void newFeed(BuildContext context) {
           title: l(context).clientFeed,
           subtitle: l(context).clientFeedSubtitle,
           onTap: () async {
-            await pushRoute(
-              context,
-              builder: (context) => const EditFeedScreen(feed: null),
-            );
+            await context.router.push(EditFeedRoute(feed: null));
             if (!context.mounted) return;
-            Navigator.pop(context);
+            context.router.pop();
           },
         ),
         ContextMenuItem(
           title: l(context).serverFeed,
           subtitle: l(context).serverFeedSubtitle,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => ExploreScreen(
+          onTap: () => context.router.push(ExploreRoute(
               mode: ExploreType.feeds,
               onTap: (selected, item) async {
                 if (item is! FeedModel) return;
@@ -184,9 +172,9 @@ void newFeed(BuildContext context) {
                         actions: [
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              context.router.pop();
+                              context.router.pop();
+                              context.router.pop();
                             },
                             child: Text(l(context).cancel),
                           ),
@@ -196,13 +184,13 @@ void newFeed(BuildContext context) {
                               while (ac.feeds[title] != null) {
                                 title = '${item.title} ${num++}';
                               }
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             label: Text(l(context).rename),
                           ),
                           LoadingFilledButton(
                             onPressed: () async {
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             label: Text(l(context).replace),
                           ),
@@ -214,8 +202,8 @@ void newFeed(BuildContext context) {
 
                 if (!context.mounted) return;
                 ac.setFeed(title, feed);
-                Navigator.pop(context);
-                Navigator.pop(context);
+                context.router.pop();
+                context.router.pop();
               },
             ),
           ),
@@ -223,9 +211,7 @@ void newFeed(BuildContext context) {
         ContextMenuItem(
           title: l(context).serverTopic,
           subtitle: l(context).serverTopicSubtitle,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => ExploreScreen(
+          onTap: () => context.router.push(ExploreRoute(
               mode: ExploreType.topics,
               onTap: (selected, item) async {
                 if (item is! FeedModel) return;
@@ -250,9 +236,9 @@ void newFeed(BuildContext context) {
                         actions: [
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              context.router.pop();
+                              context.router.pop();
+                              context.router.pop();
                             },
                             child: Text(l(context).cancel),
                           ),
@@ -262,13 +248,13 @@ void newFeed(BuildContext context) {
                               while (ac.feeds[title] != null) {
                                 title = '${item.title} ${num++}';
                               }
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             label: Text(l(context).rename),
                           ),
                           LoadingFilledButton(
                             onPressed: () async {
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             label: Text(l(context).replace),
                           ),
@@ -280,8 +266,8 @@ void newFeed(BuildContext context) {
 
                 if (!context.mounted) return;
                 ac.setFeed(title, feed);
-                Navigator.pop(context);
-                Navigator.pop(context);
+                context.router.pop();
+                context.router.pop();
               },
             ),
           ),
@@ -362,9 +348,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
           ListTile(
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).feeds_input),
-            onTap: () async => pushRoute(
-              context,
-              builder: (context) => ExploreScreen(
+            onTap: () async => context.router.push(ExploreRoute(
                 selected: feedData.inputs
                     .map(
                       (input) => denormalizeName(input.name, ac.instanceHost),
@@ -424,7 +408,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
 
                       await ac.setFeed(name, feedData);
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
               label: Text(l(context).saveChanges),
             ),
@@ -442,7 +426,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                       content: Text(widget.feed!),
                       actions: <Widget>[
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).cancel),
                         ),
                         FilledButton(
@@ -450,8 +434,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                             await ac.removeFeed(widget.feed!);
 
                             if (!context.mounted) return;
-                            Navigator.pop(context);
-                            Navigator.pop(context);
+                            context.router.pop();
+                            context.router.pop();
                           },
                           child: Text(l(context).delete),
                         ),
@@ -487,17 +471,14 @@ void showAddToFeedMenu(BuildContext context, String name, FeedSource source) {
                 );
                 await ac.setFeed(feed.key, newFeed);
                 if (!context.mounted) return;
-                Navigator.pop(context);
+                context.router.pop();
               },
             ),
           ),
       ContextMenuItem(
         title: l(context).feeds_new,
         icon: Symbols.add_rounded,
-        onTap: () => pushRoute(
-          context,
-          builder: (context) => const EditFeedScreen(feed: null),
-        ),
+        onTap: () => context.router.push(EditFeedRoute(feed: null)),
       ),
     ],
   ).openMenu(context);

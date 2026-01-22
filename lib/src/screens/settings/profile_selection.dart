@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/profile.dart';
@@ -6,6 +7,7 @@ import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -116,9 +118,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            await pushRoute(
-                              context,
-                              builder: (context) => EditProfileScreen(
+                            await context.router.push(EditProfileRoute(
                                 profile: profileName,
                                 profileList: profileList!,
                               ),
@@ -156,9 +156,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
                             if (!context.mounted) return;
 
-                            await pushRoute(
-                              context,
-                              builder: (context) => CreateScreen(
+                            await context.router.push(CreateRoute(
                                 initTitle: '[Profile] $profileName',
                                 initBody:
                                     'Short description here...\n\n${config.toMarkdown()}',
@@ -176,9 +174,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                   leading: const Icon(Symbols.add_rounded),
                   title: Text(l(context).profile_new),
                   onTap: () async {
-                    await pushRoute(
-                      context,
-                      builder: (context) => EditProfileScreen(
+                    await context.router.push(EditProfileRoute(
                         profile: null,
                         profileList: profileList!,
                       ),
