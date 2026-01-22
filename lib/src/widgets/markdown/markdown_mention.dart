@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
@@ -6,6 +7,7 @@ import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
@@ -182,10 +184,8 @@ class MentionWidgetState extends State<MentionWidget> {
 
         setState(() {
           _icon = user.avatar;
-          _onClick = () => pushRoute(
-            context,
-            builder: (context) => UserScreen(user.id, initData: user),
-          );
+          _onClick = () =>
+              context.router.push(UserRoute(userId: user.id, initData: user));
         });
       } else if (modifier == '!') {
         if (!communityMentionCache.containsKey(cacheKey)) {
@@ -203,10 +203,8 @@ class MentionWidgetState extends State<MentionWidget> {
 
         setState(() {
           _icon = community.icon;
-          _onClick = () => pushRoute(
-            context,
-            builder: (context) =>
-                CommunityScreen(community.id, initData: community),
+          _onClick = () => context.router.push(
+            CommunityRoute(communityId: community.id, initData: community),
           );
         });
       }

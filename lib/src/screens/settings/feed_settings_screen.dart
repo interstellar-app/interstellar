@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
@@ -290,6 +291,7 @@ void newFeed(BuildContext context) {
   }
 }
 
+@RoutePage()
 class EditFeedScreen extends StatefulWidget {
   final String? feed;
   final Feed? feedData;

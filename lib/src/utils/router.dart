@@ -32,7 +32,10 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: TagEditorRoute.page, path: '/tags-editor/:tag'),
     AutoRoute(page: BookmarkListRoute.page, path: '/bookmarks-lists'),
     AutoRoute(page: BookmarksRoute.page, path: '/bookmarks/:bookmarkList'),
-    AutoRoute(page: ProfileEditRoute.page, path: '/profile/edit'),
+    AutoRoute(page: ProfileEditRoute.page, path: '/account/edit'),
+    AutoRoute(page: EditProfileRoute.page, path: '/profile/edit'),
+    AutoRoute(page: EditFilterListRoute.page, path: '/filter/edit'),
+    AutoRoute(page: EditFeedRoute.page, path: '/feed/edit'),
   ];
 
 }

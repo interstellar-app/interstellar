@@ -144,12 +144,15 @@ class _TagsListState extends State<TagsList> {
             leading: widget.onUpdate != null
                 ? Checkbox(value: isActive, onChanged: toggleTag)
                 : IconButton(
-                    onPressed: () => context.router.push(TagUsersRoute(tag: tag)),
+                    onPressed: () =>
+                        context.router.push(TagUsersRoute(tag: tag)),
                     icon: Icon(Symbols.person_rounded),
                   ),
             onTap: widget.onUpdate != null ? () => toggleTag(!isActive) : null,
             trailing: IconButton(
-              onPressed: () => context.router.push(TagEditorRoute(tag: tag,
+              onPressed: () => context.router.push(
+                TagEditorRoute(
+                  tag: tag,
                   onUpdate: (tag) => setState(() {
                     final newAvailableTags = [..._availableTags];
 
@@ -234,7 +237,9 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 
                         if (!context.mounted) return;
 
-                        context.router.push(UserRoute(userId: user.id, initData: user));
+                        context.router.push(
+                          UserRoute(userId: user.id, initData: user),
+                        );
                       },
                     ),
                   )
@@ -296,7 +301,9 @@ class TagsFloatingButton extends StatelessWidget {
         }
         if (!context.mounted || tag == null) return;
         bool cancelled = true;
-        await context.router.push(TagEditorRoute(tag: tag!,
+        await context.router.push(
+          TagEditorRoute(
+            tag: tag!,
             onUpdate: (newTag) async {
               cancelled = false;
               if (newTag == null) {

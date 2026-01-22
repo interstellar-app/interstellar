@@ -140,9 +140,8 @@ class ContentInfo extends StatelessWidget {
                     user!.name,
                     displayName: user!.displayName,
                     icon: user!.avatar,
-                    onTap: () => context.router.push(UserRoute(
-                        userId: user!.id
-                    )),
+                    onTap: () =>
+                        context.router.push(UserRoute(userId: user!.id)),
                   ),
                 ),
                 UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
@@ -171,9 +170,9 @@ class ContentInfo extends StatelessWidget {
             child: DisplayName(
               community!.name,
               icon: community!.icon,
-              onTap: () => context.router.push(CommunityRoute(
-                  communityId: community!.id
-              )),
+              onTap: () => context.router.push(
+                CommunityRoute(communityId: community!.id),
+              ),
             ),
           );
 

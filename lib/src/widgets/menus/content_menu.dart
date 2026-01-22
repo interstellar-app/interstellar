@@ -108,9 +108,9 @@ Future<void> showContentMenu(
       if (widget.domain != null)
         ContextMenuItem(
           title: l(context).moreFrom(widget.domain!),
-          onTap: () => context.router.push(DomainRoute(
-              domainId: widget.domainIdOnClick!
-          )),
+          onTap: () => context.router.push(
+            DomainRoute(domainId: widget.domainIdOnClick!),
+          ),
         ),
       if (widget.onReply != null && onReply != null)
         ContextMenuItem(

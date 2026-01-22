@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
@@ -121,6 +122,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
   }
 }
 
+@RoutePage()
 class EditFilterListScreen extends StatefulWidget {
   final String? filterList;
   final FilterList? importFilterList;

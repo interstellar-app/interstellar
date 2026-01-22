@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
@@ -10,6 +11,7 @@ import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/screens/settings/filter_lists_screen.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -163,34 +165,24 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
 
                         if (!context.mounted) return;
 
-                        await pushRoute(
-                          context,
-                          builder: (context) => EditProfileScreen(
+                        await context.router.push(
+                          EditProfileRoute(
                             profile: config.name,
                             profileList: profileList,
                             importProfile: configProfile!,
                           ),
                         );
                       },
-                      ConfigShareType.filterList => () async {
-                        await pushRoute(
-                          context,
-                          builder: (context) => EditFilterListScreen(
+                      ConfigShareType.filterList =>
+                        () async => context.router.push(
+                          EditFilterListRoute(
                             filterList: config.name,
                             importFilterList: configFilterList!,
                           ),
-                        );
-                      },
-                      ConfigShareType.feed => () async {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EditFeedScreen(
-                              feed: config.name,
-                              feedData: configFeed,
-                            ),
-                          ),
-                        );
-                      },
+                        ),
+                      ConfigShareType.feed => () async => context.router.push(
+                        EditFeedRoute(feed: config.name, feedData: configFeed),
+                      ),
                     },
                     label: Text(switch (config.type) {
                       ConfigShareType.profile => l(context).profile_import,

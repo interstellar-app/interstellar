@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/profile.dart';
@@ -194,6 +195,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
   }
 }
 
+@RoutePage()
 class EditProfileScreen extends StatefulWidget {
   final String? profile;
   final List<String> profileList;

@@ -54,7 +54,14 @@ class AdvancedImage extends StatelessWidget {
       parentBuilder: (child) => SuperHero(
         tag: tag,
         child: GestureDetector(
-          onTap: () => context.router.push(AdvancedImageRoute(image: image, title: openTitle!, fit: BoxFit.contain, hero: tag)),
+          onTap: () => context.router.push(
+            AdvancedImageRoute(
+              image: image,
+              title: openTitle!,
+              fit: BoxFit.contain,
+              hero: tag,
+            ),
+          ),
           child: child,
         ),
       ),
