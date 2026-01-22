@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database.dart';
@@ -67,7 +68,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                       ),
                       actions: [
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).cancel),
                         ),
                         FilledButton(
@@ -77,7 +78,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                               final tc = ColorScheme.fromSeed(seedColor: c);
                               _textColor = tc.primaryFixed;
                             });
-                            Navigator.pop(context);
+                            context.router.pop();
                           },
                           child: Text(l(context).save),
                         ),
@@ -93,7 +94,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                 ),
@@ -104,7 +105,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                       await ac.removeTag(widget.tag);
                       if (!context.mounted) return;
                       widget.onUpdate(null);
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).delete),
                   ),
@@ -131,7 +132,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                             title: Text(l(context).tags_exist),
                             actions: [
                               OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => context.router.pop(),
                                 child: Text(l(context).okay),
                               ),
                             ],
@@ -141,7 +142,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                       }
                       widget.onUpdate(tag);
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).save),
                   ),

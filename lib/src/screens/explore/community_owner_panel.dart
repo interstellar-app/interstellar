@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
@@ -276,12 +277,12 @@ class _CommunityOwnerPanelModeratorsState
                           ),
                           actions: <Widget>[
                             OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => context.router.pop(),
                               child: const Text('Cancel'),
                             ),
                             LoadingFilledButton(
                               onPressed: () async {
-                                Navigator.of(context).pop(
+                                context.router.pop(
                                   await context
                                       .read<AppController>()
                                       .api
@@ -330,12 +331,12 @@ class _CommunityOwnerPanelModeratorsState
                       ),
                       actions: <Widget>[
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: const Text('Cancel'),
                         ),
                         LoadingFilledButton(
                           onPressed: () async {
-                            Navigator.of(context).pop(
+                            context.router.pop(
                               await context
                                   .read<AppController>()
                                   .api
@@ -418,7 +419,7 @@ class _CommunityOwnerPanelDeletionState
 
               if (result == true) {
                 if (!context.mounted) return;
-                Navigator.of(context).pop();
+                context.router.pop();
               }
             },
             child: const Text('Delete Community'),
@@ -461,7 +462,7 @@ class _CommunityOwnerPanelDeletionDialogState
       ),
       actions: <Widget>[
         OutlinedButton(
-          onPressed: () => Navigator.pop(context, false),
+          onPressed: () => context.router.pop(false),
           child: const Text('Cancel'),
         ),
         LoadingFilledButton(
@@ -475,7 +476,7 @@ class _CommunityOwnerPanelDeletionDialogState
                       .delete(widget.data.id);
 
                   if (!context.mounted) return;
-                  Navigator.pop(context, true);
+                  context.router.pop(true);
                 },
           label: const Text('DELETE COMMUNITY'),
         ),

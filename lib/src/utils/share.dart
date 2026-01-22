@@ -27,7 +27,11 @@ Future<ShareResult> shareFile(Uri uri, String filename) async {
   return result;
 }
 
-Future<void> downloadFile(Uri uri, String filename, {Directory? defaultDir}) async {
+Future<void> downloadFile(
+  Uri uri,
+  String filename, {
+  Directory? defaultDir,
+}) async {
   final response = await http.get(uri);
 
   // Whether to use bytes property or need to manually write file

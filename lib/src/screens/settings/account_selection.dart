@@ -84,7 +84,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                 ListTile(
                   title: Text(l(context).profile_autoSelectAccount_none),
                   onTap: () async {
-                    Navigator.of(context).pop('');
+                    context.router.pop('');
                   },
                 ),
               ...ac.accounts.keys
@@ -105,7 +105,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                         ],
                       ),
                       onTap: () async {
-                        Navigator.of(context).pop(account);
+                        context.router.pop(account);
                       },
                       selected: account == oldAccount,
                       selectedTileColor: Theme.of(
@@ -128,14 +128,14 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                                               actions: <Widget>[
                                                 OutlinedButton(
                                                   onPressed: () =>
-                                                      Navigator.pop(context),
+                                                      context.router.pop(),
                                                   child: Text(
                                                     l(context).cancel,
                                                   ),
                                                 ),
                                                 FilledButton(
                                                   onPressed: () {
-                                                    Navigator.pop(context);
+                                                    context.router.pop();
                                                     ac.removeAccount(account);
                                                   },
                                                   child: Text(

@@ -111,7 +111,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                   content: Text(_bookmarkLists[index].name),
                                   actions: [
                                     OutlinedButton(
-                                      onPressed: () => Navigator.pop(context),
+                                      onPressed: () => context.router.pop(),
                                       child: Text(l(context).cancel),
                                     ),
                                     FilledButton(
@@ -122,7 +122,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                             );
                                         _fetch();
                                         if (!context.mounted) return;
-                                        Navigator.pop(context);
+                                        context.router.pop();
                                       },
                                       child: Text(l(context).delete),
                                     ),

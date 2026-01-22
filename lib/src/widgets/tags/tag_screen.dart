@@ -272,7 +272,7 @@ class TagsFloatingButton extends StatelessWidget {
                 actions: [
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).cancel),
                   ),
@@ -287,7 +287,7 @@ class TagsFloatingButton extends StatelessWidget {
                         }
                       }
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     label: Text(l(context).rename),
                   ),

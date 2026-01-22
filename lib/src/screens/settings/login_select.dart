@@ -1,9 +1,11 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/settings/login_confirm.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
@@ -100,18 +102,15 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
     // Check BuildContext
     if (!mounted) return;
 
-    final shouldPop = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginConfirmScreen(software, host),
-      ),
+    final shouldPop = await context.router.push(
+      LoginConfirmRoute(software: software, server: host),
     );
 
     if (shouldPop == true) {
       // Check BuildContext
       if (!mounted) return;
 
-      Navigator.pop(context);
+      context.router.pop();
     }
   }
 

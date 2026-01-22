@@ -94,7 +94,12 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 if (!context.mounted) return;
 
-                context.router.push(CommunityRoute(communityId: community.id, initData: community));
+                context.router.push(
+                  CommunityRoute(
+                    communityId: community.id,
+                    initData: community,
+                  ),
+                );
               } catch (e) {
                 if (!mounted) return;
                 openWebpagePrimary(context, Uri.parse(_mbinCommunityLink));
@@ -119,7 +124,12 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 if (!context.mounted) return;
 
-                context.router.push(CommunityRoute(communityId: community.id, initData: community));
+                context.router.push(
+                  CommunityRoute(
+                    communityId: community.id,
+                    initData: community,
+                  ),
+                );
               } catch (e) {
                 if (!mounted) return;
                 openWebpagePrimary(

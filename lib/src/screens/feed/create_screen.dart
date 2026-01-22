@@ -424,7 +424,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         // Check BuildContext
                         if (!context.mounted) return;
 
-                        Navigator.pop(context);
+                        context.router.pop();
                       },
               ),
             ]),
@@ -465,7 +465,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         // Check BuildContext
                         if (!context.mounted) return;
 
-                        Navigator.pop(context);
+                        context.router.pop();
                       },
               ),
             ]),
@@ -508,7 +508,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         // Check BuildContext
                         if (!context.mounted) return;
 
-                        Navigator.pop(context);
+                        context.router.pop();
                       },
               ),
             ]),
@@ -551,7 +551,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   // Check BuildContext
                   if (!context.mounted) return;
 
-                  Navigator.pop(context);
+                  context.router.pop();
                 }),
               ]),
             if (ac.serverSoftware == ServerSoftware.piefed)
@@ -590,7 +590,7 @@ class _CreateScreenState extends State<CreateScreen> {
                           );
 
                           if (!context.mounted) return;
-                          Navigator.pop(context);
+                          context.router.pop();
                         },
                 ),
               ]),

@@ -244,13 +244,18 @@ abstract class PostModel with _$PostModel {
           lemmyPost['featured_local'] as bool,
       createdAt: DateTime.parse(lemmyPost['published'] as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
-      lastActive: lemmyCounts == null ? DateTime.now() : DateTime.parse(lemmyCounts['newest_comment_time'] as String),
+      lastActive: lemmyCounts == null
+          ? DateTime.now()
+          : DateTime.parse(lemmyCounts['newest_comment_time'] as String),
       visibility: 'visible',
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (((postView['saved'] as bool?) != null) ? postView['saved'] as bool : false) '',
+        if (((postView['saved'] as bool?) != null)
+            ? postView['saved'] as bool
+            : false)
+          '',
       ],
       read: postView['read'] as bool? ?? false,
       crossPosts:
@@ -345,16 +350,26 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
-      flairs: (postView['flair_list'] as List<dynamic>?)?.map((flair) => Tag(
-        id: flair['id'] as int,
-        tag: flair['flair_title'] as String,
-        textColor: getColorFromHex(flair['text_color'] as String),
-        backgroundColor: getColorFromHex(flair['background_color'] as String),
-      )).toList() ?? [],
-      poll: piefedPost['post_type'] == 'Poll' ? PollModel.fromPiefed(
-          piefedPost['id'] as int,
-          piefedPost['poll'] as Map<String, Object?>
-      ) : null,
+      flairs:
+          (postView['flair_list'] as List<dynamic>?)
+              ?.map(
+                (flair) => Tag(
+                  id: flair['id'] as int,
+                  tag: flair['flair_title'] as String,
+                  textColor: getColorFromHex(flair['text_color'] as String),
+                  backgroundColor: getColorFromHex(
+                    flair['background_color'] as String,
+                  ),
+                ),
+              )
+              .toList() ??
+          [],
+      poll: piefedPost['post_type'] == 'Poll'
+          ? PollModel.fromPiefed(
+              piefedPost['id'] as int,
+              piefedPost['poll'] as Map<String, Object?>,
+            )
+          : null,
       apId: piefedPost['ap_id'] as String,
     );
   }

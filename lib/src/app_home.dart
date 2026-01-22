@@ -65,16 +65,22 @@ class _AppHomeState extends State<AppHome> {
           return;
         case 3:
           if (ac.isLoggedIn) {
-            context.router.push(ExploreRoute(
-              mode: ExploreType.people,
-              title: l(context).newChat,
-              onTap: (selected, item) async {
-                context.router.pop();
-                context.router.push(
-                    MessageThreadRoute(threadId: null, userId: item.id, otherUser: item)
-                );
-              }
-            ));
+            context.router.push(
+              ExploreRoute(
+                mode: ExploreType.people,
+                title: l(context).newChat,
+                onTap: (selected, item) async {
+                  context.router.pop();
+                  context.router.push(
+                    MessageThreadRoute(
+                      threadId: null,
+                      userId: item.id,
+                      otherUser: item,
+                    ),
+                  );
+                },
+              ),
+            );
           }
         case 4:
           switchProfileSelect(context);

@@ -27,7 +27,7 @@ SelectionMenu<String> languageSelectionMenu(BuildContext context) =>
             ),
           )
           .toList()
-          ..sort((lhs, rhs) => lhs.title.compareTo(rhs.title)),
+        ..sort((lhs, rhs) => lhs.title.compareTo(rhs.title)),
     );
 
 SelectionMenu<String> languageSelectionMenuAppSupported(BuildContext context) =>

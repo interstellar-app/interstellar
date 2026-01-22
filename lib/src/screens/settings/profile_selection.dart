@@ -80,7 +80,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       ),
                       actions: [
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).close),
                         ),
                       ],
@@ -104,7 +104,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                         ? Text(l(context).profile_main)
                         : null,
                     onTap: () async {
-                      Navigator.pop(context);
+                      context.router.pop();
                       await ac.switchProfiles(profileName);
                     },
                     selected: profileName == ac.selectedProfile,
@@ -116,7 +116,8 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            await context.router.push(EditProfileRoute(
+                            await context.router.push(
+                              EditProfileRoute(
                                 profile: profileName,
                                 profileList: profileList!,
                               ),
@@ -154,7 +155,8 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
                             if (!context.mounted) return;
 
-                            await context.router.push(CreateRoute(
+                            await context.router.push(
+                              CreateRoute(
                                 initTitle: '[Profile] $profileName',
                                 initBody:
                                     'Short description here...\n\n${config.toMarkdown()}',
@@ -172,7 +174,8 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                   leading: const Icon(Symbols.add_rounded),
                   title: Text(l(context).profile_new),
                   onTap: () async {
-                    await context.router.push(EditProfileRoute(
+                    await context.router.push(
+                      EditProfileRoute(
                         profile: null,
                         profileList: profileList!,
                       ),
@@ -340,7 +343,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       }
 
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
               label: Text(l(context).saveChanges),
             ),
@@ -360,7 +363,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             content: Text(widget.profile!),
                             actions: <Widget>[
                               OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => context.router.pop(),
                                 child: Text(l(context).cancel),
                               ),
                               FilledButton(
@@ -368,8 +371,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   await ac.deleteProfile(widget.profile!);
 
                                   if (!context.mounted) return;
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
+                                  context.router.pop();
+                                  context.router.pop();
                                 },
                                 child: Text(l(context).delete),
                               ),

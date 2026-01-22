@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,7 +19,8 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
-import 'package:interstellar/src/widgets/redirect_listen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
+import 'package:interstellar/src/widgets/redirect_listen.dart' show redirectUri;
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:path/path.dart';
@@ -508,12 +510,8 @@ class AppController with ChangeNotifier {
         );
 
         if (!context!.mounted) return;
-        Map<String, String>? result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                RedirectListener(authorizationUrl, title: server),
-          ),
+        Map<String, String>? result = await context.router.push(
+          RedirectListener(initUri: authorizationUrl, title: server),
         );
 
         if (result == null || !result.containsKey('code')) {

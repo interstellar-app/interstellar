@@ -224,10 +224,11 @@ class _ContentItemState extends State<ContentItem> {
         _isReplying = true;
       });
     } else {
-      context.router.push(ContentReplyRoute(
+      context.router.push(
+        ContentReplyRoute(
           content: widget,
           onReply: widget.onReply!,
-          onComplete: () => Navigator.pop(context),
+          onComplete: () => context.router.pop(),
           draftResourceId: widget.replyDraftResourceId,
         ),
       );

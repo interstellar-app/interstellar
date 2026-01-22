@@ -221,7 +221,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                         content: Text(widget.image.altText!),
                         actions: [
                           OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.router.pop(),
                             child: Text(l(context).close),
                           ),
                         ],

@@ -150,40 +150,48 @@ class ContentReplyScreen extends StatelessWidget {
   final bool inline;
   final ContentItem content;
   final Future<void> Function(
-      String body,
-      String lang, {
-      XFile? image,
-      String? alt,
-      })
+    String body,
+    String lang, {
+    XFile? image,
+    String? alt,
+  })
   onReply;
   final Function() onComplete;
   final String draftResourceId;
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          l(context).replying_toX(
-            content.user?.name ?? content.contentTypeName,
-          ),
+          l(
+            context,
+          ).replying_toX(content.user?.name ?? content.contentTypeName),
         ),
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Markdown(
-              content.title ?? content.body!,
-              content.originInstance,
-              nsfw: content.isNSFW,
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Markdown(
+                content.title ?? content.body!,
+                content.originInstance,
+                nsfw: content.isNSFW,
+              ),
             ),
-          )),
-          SliverToBoxAdapter(child: ContentReply(inline: false, content: content, onReply: onReply, onComplete: onComplete, draftResourceId: draftResourceId)),
+          ),
+          SliverToBoxAdapter(
+            child: ContentReply(
+              inline: false,
+              content: content,
+              onReply: onReply,
+              onComplete: onComplete,
+              draftResourceId: draftResourceId,
+            ),
+          ),
         ],
       ),
     );
   }
-
 }

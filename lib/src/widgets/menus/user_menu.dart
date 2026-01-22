@@ -46,7 +46,7 @@ Future<void> showUserMenu(
                 update(newValue);
               }
               if (!context.mounted) return;
-              Navigator.pop(context);
+              context.router.pop();
             },
             followMode: true,
           ),
@@ -65,7 +65,7 @@ Future<void> showUserMenu(
                 update(newValue);
               }
               if (!context.mounted) return;
-              Navigator.pop(context);
+              context.router.pop();
             },
             icon: const Icon(Symbols.block_rounded),
             style: ButtonStyle(

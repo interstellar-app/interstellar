@@ -13,6 +13,7 @@ const _redirectHost = 'localhost';
 const _redirectPort = 46837;
 const redirectUri = 'http://$_redirectHost:$_redirectPort';
 
+@RoutePage()
 class RedirectListener extends StatefulWidget {
   final Uri initUri;
   final String title;
@@ -57,7 +58,7 @@ class _RedirectListenerState extends State<RedirectListener> {
             onNavigationRequest: (NavigationRequest request) {
               if (request.url.startsWith(redirectUri)) {
                 WebViewCookieManager().clearCookies();
-                Navigator.pop(context, Uri.parse(request.url).queryParameters);
+                context.router.pop(Uri.parse(request.url).queryParameters);
                 return NavigationDecision.prevent;
               }
 

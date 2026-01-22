@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
@@ -107,7 +108,7 @@ Future<String?> getUnifiedPushDistributor(BuildContext context) async {
         ),
         actions: [
           OutlinedButton(
-            onPressed: Navigator.of(context).pop,
+            onPressed: context.router.pop,
             child: Text(l(context).close),
           ),
           FilledButton(

@@ -66,11 +66,12 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () => context.router.push(EditFeedRoute(
-                          feed: entry.key,
-                          feedData: ac.feeds[entry.key],
-                        ),
+                    onPressed: () => context.router.push(
+                      EditFeedRoute(
+                        feed: entry.key,
+                        feedData: ac.feeds[entry.key],
                       ),
+                    ),
                     icon: const Icon(Symbols.edit_rounded),
                   ),
                   IconButton(
@@ -100,12 +101,13 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
 
                       if (!context.mounted) return;
 
-                      await context.router.push(CreateRoute(
-                            initTitle: '[Feed] ${entry.key}',
-                            initBody:
-                                'Short description here...\n\n${config.toMarkdown()}',
-                            initCommunity: community,
-                          ),
+                      await context.router.push(
+                        CreateRoute(
+                          initTitle: '[Feed] ${entry.key}',
+                          initBody:
+                              'Short description here...\n\n${config.toMarkdown()}',
+                          initCommunity: community,
+                        ),
                       );
                     },
                     icon: const Icon(Symbols.share_rounded),
@@ -144,7 +146,8 @@ void newFeed(BuildContext context) {
         ContextMenuItem(
           title: l(context).serverFeed,
           subtitle: l(context).serverFeedSubtitle,
-          onTap: () => context.router.push(ExploreRoute(
+          onTap: () => context.router.push(
+            ExploreRoute(
               mode: ExploreType.feeds,
               onTap: (selected, item) async {
                 if (item is! FeedModel) return;
@@ -208,7 +211,8 @@ void newFeed(BuildContext context) {
         ContextMenuItem(
           title: l(context).serverTopic,
           subtitle: l(context).serverTopicSubtitle,
-          onTap: () => context.router.push(ExploreRoute(
+          onTap: () => context.router.push(
+            ExploreRoute(
               mode: ExploreType.topics,
               onTap: (selected, item) async {
                 if (item is! FeedModel) return;
@@ -345,7 +349,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
           ListTile(
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).feeds_input),
-            onTap: () async => context.router.push(ExploreRoute(
+            onTap: () async => context.router.push(
+              ExploreRoute(
                 selected: feedData.inputs
                     .map(
                       (input) => denormalizeName(input.name, ac.instanceHost),

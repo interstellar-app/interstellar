@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1000,13 +1001,13 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                         actions: [
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             child: Text(l(context).close),
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
 
                               widget.onApply();
                             },
@@ -1016,7 +1017,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
 
                               widget.onApply();
 
@@ -1115,7 +1116,7 @@ class _MarkdownEditorConfigShareDialogState
                   payload: profile.toJson(),
                 );
                 if (!context.mounted) return;
-                Navigator.pop(context, config.toMarkdown());
+                context.router.pop(config.toMarkdown());
               },
             ),
           ),
@@ -1140,7 +1141,7 @@ class _MarkdownEditorConfigShareDialogState
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
-                Navigator.pop(context, configStr);
+                context.router.pop(configStr);
               },
             ),
           ),
@@ -1163,7 +1164,7 @@ class _MarkdownEditorConfigShareDialogState
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
-                Navigator.pop(context, configStr);
+                context.router.pop(configStr);
               },
             ),
           ),

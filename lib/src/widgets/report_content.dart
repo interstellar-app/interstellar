@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
@@ -32,13 +33,13 @@ class _ReportContentBodyState extends State<ReportContentBody> {
       ),
       actions: <Widget>[
         OutlinedButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.router.pop(),
           child: Text(l(context).cancel),
         ),
         FilledButton(
           onPressed: _reasonTextEditingController.text.isEmpty
               ? null
-              : () => Navigator.pop(context, _reasonTextEditingController.text),
+              : () => context.router.pop(_reasonTextEditingController.text),
           child: Text(l(context).report),
         ),
       ],
