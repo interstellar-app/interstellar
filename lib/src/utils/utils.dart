@@ -330,6 +330,10 @@ Future<void> pushRoute(
 
 // apparently Platform is unsupported on web so have to check for web before checking specific platform
 class PlatformUtils {
+  static bool get isWeb {
+    return kIsWeb;
+  }
+
   static bool get isMobile {
     if (kIsWeb) {
       return false;
