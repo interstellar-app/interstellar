@@ -536,11 +536,17 @@ class _ContentItemState extends State<ContentItem> {
                         children: widget.emojiReactions!
                             .map(
                               (emojiReaction) => LoadingInputChip(
-                                icon: Text(
-                                  emojiReaction.token,
-                                  style: Theme.of(context).textTheme.labelLarge
-                                      ?.copyWith(color: Colors.white),
-                                ),
+                                icon: emojiReaction.url.isEmpty
+                                    ? Text(
+                                        emojiReaction.token,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(color: Colors.white),
+                                      )
+                                    : ImageIcon(
+                                        NetworkImage(emojiReaction.url),
+                                      ),
                                 label: Text(emojiReaction.count.toString()),
                                 selected: emojiReaction.authors.contains(
                                   localUserName,
