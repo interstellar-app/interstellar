@@ -63,34 +63,37 @@ import "./emoji_class.dart";
 
     s.write('final emojiList = [\n');
 
-    for (var i = 0; i < (dataJson as List).length; i++) {
-      final emoji = dataJson[i];
+    {
+      int i = 0;
+      for (var emoji in dataJson) {
+        if (emoji['group'] == null || emoji['order'] == null) continue;
 
-      final tags = [
-        ...?emoji['tags'],
-        ...?(emoji['emoticon'] is String
-            ? [emoji['emoticon']]
-            : emoji['emoticon']),
-      ];
+        assert(emoji['order'] == i + 1);
 
-      trie.addChild(Trie.normalizeTerm(emoji['label']), {i});
-      for (var tag in tags) {
-        trie.addChild(Trie.normalizeTerm(tag), {i});
-      }
+        final tags = [
+          ...?emoji['tags'],
+          ...?(emoji['emoticon'] is String
+              ? [emoji['emoticon']]
+              : emoji['emoticon']),
+        ];
 
-      s.write('Emoji("');
-      s.write(emoji['unicode']);
-      s.write('","');
-      s.write(emoji['label']);
-      s.write('",');
-      s.write(jsonEncode(tags).replaceAll(r'$', r'\$'));
-      if (emoji['group'] != null || emoji['order'] != null) {
+        trie.addChild(Trie.normalizeTerm(emoji['label']), {i});
+        for (var tag in tags) {
+          trie.addChild(Trie.normalizeTerm(tag), {i});
+        }
+
+        s.write('Emoji("');
+        s.write(emoji['unicode']);
+        s.write('","');
+        s.write(emoji['label']);
+        s.write('",');
+        s.write(jsonEncode(tags).replaceAll(r'$', r'\$'));
         s.write(',');
         s.write(emoji['group']);
-        s.write(',');
-        s.write(emoji['order']);
+        s.write('),\n');
+
+        i++;
       }
-      s.write('),\n');
     }
 
     s.write('];\n\n');
