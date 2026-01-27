@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
@@ -153,7 +154,10 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
 class BookmarksScreen extends StatefulWidget {
   final String? bookmarkList;
 
-  const BookmarksScreen({super.key, this.bookmarkList});
+  const BookmarksScreen({
+    super.key,
+    @PathParam('bookmarkList') this.bookmarkList,
+  });
 
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();
@@ -181,7 +185,11 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.bookmarkList ?? ''} ${l(context).bookmarks}'),
+        title: Text(
+          context.read<AppController>().serverSoftware == ServerSoftware.mbin
+              ? '${widget.bookmarkList ?? ''} ${l(context).bookmarks}'
+              : l(context).bookmarks,
+        ),
       ),
       body: AdvancedPagedScrollView(
         controller: _pagingController,

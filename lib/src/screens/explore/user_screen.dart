@@ -130,7 +130,7 @@ class _UserScreenState extends State<UserScreen> {
                 onPressed: () => context.router.push(
                   ac.serverSoftware == ServerSoftware.mbin
                       ? BookmarkListRoute()
-                      : BookmarksRoute(),
+                      : BookmarksRoute(bookmarkList: 'default'),
                 ),
               ),
             ),

@@ -16,6 +16,26 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/api/moderation.dart';
 
 @RoutePage()
+class ModLogCommunityScreen extends StatelessWidget {
+  const ModLogCommunityScreen({super.key, @PathParam('communityId') required this.communityId});
+
+  final int communityId;
+
+  @override
+  Widget build(BuildContext context) => ModLogScreen(communityId: communityId);
+}
+
+@RoutePage()
+class ModLogUserScreen extends StatelessWidget {
+  const ModLogUserScreen({super.key, @PathParam('userId') required this.userId});
+
+  final int userId;
+
+  @override
+  Widget build(BuildContext context) => ModLogScreen(userId: userId);
+}
+
+@RoutePage()
 class ModLogScreen extends StatefulWidget {
   const ModLogScreen({super.key, this.communityId, this.userId});
 

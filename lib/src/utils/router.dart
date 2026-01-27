@@ -16,31 +16,28 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: PostRoute.page, path: '/post/:id'),
     AutoRoute(page: PostCommentRoute.page, path: '/comment/:id'),
     AutoRoute(page: ContentReplyRoute.page, path: '/reply'),
-    AutoRoute(
-      page: UserRoute.page,
-      path: '/user/:userId',
-      children: [AutoRoute(page: ModLogRoute.page, path: 'modlog')],
-    ),
+
+    AutoRoute(page: UserRoute.page, path: '/user/:userId'),
+    AutoRoute(page: ModLogUserRoute.page, path: '/user/:userId/modlog'),
     AutoRoute(page: MessageThreadRoute.page, path: '/user/:userId/message'),
-    AutoRoute(
-      page: CommunityRoute.page,
-      path: '/community/:communityId',
-      children: [AutoRoute(page: ModLogRoute.page, path: 'modlog')],
-    ),
+
+    AutoRoute(page: CommunityRoute.page, path: '/community/:communityId'),
+    AutoRoute(page: ModLogCommunityRoute.page, path: '/community/:communityId/modlog'),
+    AutoRoute(page: CommunityModPanelRoute.page, path: '/community/:communityId/mod'),
+    AutoRoute(page: CommunityOwnerPanelRoute.page, path: '/community/:communityId/owner'),
+
     AutoRoute(page: ModLogRoute.page, path: '/modlog'),
     AutoRoute(page: DomainRoute.page, path: '/domain'),
-    AutoRoute(page: CommunityOwnerPanelRoute.page, path: '/community-owner'),
-    AutoRoute(page: CommunityModPanelRoute.page, path: '/community-mod'),
     AutoRoute(page: CreateRoute.page, path: '/create'),
     AutoRoute(page: AdvancedImageRoute.page, path: '/image'),
     AutoRoute(page: TagUsersRoute.page, path: '/tags/:tag'),
     AutoRoute(page: TagEditorRoute.page, path: '/tags-editor/:tag'),
-    AutoRoute(page: BookmarkListRoute.page, path: '/bookmarks-lists'),
+    AutoRoute(page: BookmarkListRoute.page, path: '/bookmarks'),
     AutoRoute(page: BookmarksRoute.page, path: '/bookmarks/:bookmarkList'),
     AutoRoute(page: ProfileEditRoute.page, path: '/account/edit'),
     AutoRoute(page: EditProfileRoute.page, path: '/profile/edit'),
-    AutoRoute(page: EditFilterListRoute.page, path: '/filter/edit'),
-    AutoRoute(page: EditFeedRoute.page, path: '/feed/edit'),
+    AutoRoute(page: EditFilterListRoute.page, path: '/filter/:filterList'),
+    AutoRoute(page: EditFeedRoute.page, path: '/feed/:feed/edit'),
 
     //settings
     AutoRoute(page: BehaviorSettingsRoute.page, path: '/settings/behavior'),

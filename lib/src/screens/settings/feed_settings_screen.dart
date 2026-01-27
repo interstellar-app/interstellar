@@ -283,7 +283,7 @@ class EditFeedScreen extends StatefulWidget {
   final String? feed;
   final Feed? feedData;
 
-  const EditFeedScreen({required this.feed, this.feedData, super.key});
+  const EditFeedScreen({@PathParam('feed') required this.feed, this.feedData, super.key});
 
   @override
   State<EditFeedScreen> createState() => _EditFeedScreenState();

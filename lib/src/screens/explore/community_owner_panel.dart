@@ -14,11 +14,13 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityOwnerPanelScreen extends StatefulWidget {
+  final int communityId;
   final DetailedCommunityModel initData;
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityOwnerPanelScreen({
     super.key,
+    @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
   });

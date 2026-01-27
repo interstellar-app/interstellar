@@ -122,6 +122,7 @@ Future<void> showCommunityMenu(
           title: l(context).modPanel,
           onTap: () => context.router.push(
             CommunityModPanelRoute(
+              communityId: detailedCommunity.id,
               initData: detailedCommunity,
               onUpdate: update!,
             ),
@@ -134,6 +135,7 @@ Future<void> showCommunityMenu(
           title: l(context).ownerPanel,
           onTap: () => context.router.push(
             CommunityOwnerPanelRoute(
+              communityId: detailedCommunity.id,
               initData: detailedCommunity,
               onUpdate: update!,
             ),
@@ -163,7 +165,7 @@ Future<void> showCommunityMenu(
         ContextMenuItem(
           title: l(context).modlog,
           onTap: () => context.router.push(
-            ModLogRoute(communityId: detailedCommunity?.id ?? community!.id),
+            ModLogCommunityRoute(communityId: detailedCommunity?.id ?? community!.id),
           ),
         ),
     ],

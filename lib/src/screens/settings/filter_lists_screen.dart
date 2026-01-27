@@ -123,7 +123,7 @@ class EditFilterListScreen extends StatefulWidget {
   final FilterList? importFilterList;
 
   const EditFilterListScreen({
-    required this.filterList,
+    @PathParam('filterList') required this.filterList,
     this.importFilterList,
     super.key,
   });
