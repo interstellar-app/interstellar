@@ -4,3 +4,17 @@ targets:
       drift_dev:
         options:
           store_date_time_values_as_text: true
+
+builders:
+  emoji_builder:
+    import: 'package:interstellar/emojis/emoji_builder.dart'
+    builder_factories: ['emojiBuilder']
+    build_extensions: { '$package$': ['lib/emojis/emojis.g.dart'] }
+    # The default, but listed explicitly for illustration purposes, see:
+    # https://github.com/dart-lang/build/blob/master/docs/builder_author_faq.md#when-should-a-builder-build-to-cache-vs-source
+    build_to: source
+    auto_apply: root_package
+    defaults:
+      options:
+        # Update git ref to use latest source
+        sourcePrefix: https://raw.githubusercontent.com/milesj/emojibase/a5fc630a91ca42cddf3f4a66492965600fd3bce8/packages/data/en
