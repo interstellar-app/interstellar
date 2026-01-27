@@ -9,6 +9,7 @@ import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
@@ -192,9 +193,7 @@ class ExploreScreenItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => context.router.push(
-            PostRoute(postId: item.id, initData: item, onUpdate: onUpdate),
-          ),
+          onTap: () => pushPostPage(context, postId: item.id, postType: item.type, initData: item, onUpdate: onUpdate),
           child: PostItem(
             item,
             onUpdate,

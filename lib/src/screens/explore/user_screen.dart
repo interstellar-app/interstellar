@@ -13,6 +13,7 @@ import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
@@ -629,14 +630,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
           UserFeedType.thread || UserFeedType.microblog => PostItem(
             item,
             (newValue) => _pagingController.updateItem(item, newValue),
-            onTap: () => context.router.push(
-              PostRoute(
-                postId: item.id,
-                initData: item,
-                onUpdate: (newValue) =>
-                    _pagingController.updateItem(item, newValue),
-              ),
-            ),
+            onTap: () => pushPostPage(context, postId: item.id, postType: item.type, initData: item, onUpdate: (newValue) => _pagingController.updateItem(item, newValue)),
             isPreview: true,
             isTopLevel: true,
             isCompact: context.watch<AppController>().profile.compactMode,

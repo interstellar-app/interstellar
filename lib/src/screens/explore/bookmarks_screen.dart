@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
@@ -202,15 +203,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 item,
                 (newValue) =>
                     _pagingController.updateItem(newValue.id, newValue),
-                onTap: () => context.router.push(
-                  PostRoute(
-                    postId: item.id,
-                    postType: item.type,
-                    initData: item,
-                    onUpdate: (newValue) =>
-                        _pagingController.updateItem(newValue.id, newValue),
-                  ),
-                ),
+                onTap: () => pushPostPage(context, postId: item.id, postType: item.type, initData: item, onUpdate: (newValue) => _pagingController.updateItem(item, newValue)),
                 isPreview: item.type == PostType.thread,
                 isTopLevel: true,
               ),

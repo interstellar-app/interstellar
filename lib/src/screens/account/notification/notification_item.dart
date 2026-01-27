@@ -13,6 +13,7 @@ import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../../feed/post_page.dart';
 import 'notification_count_controller.dart';
 
 const notificationTitle = {
@@ -105,19 +106,9 @@ class _NotificationItemState extends State<NotificationItem> {
                 ),
               )
             : widget.item.subject.containsKey('entryId')
-            ? () => context.router.push(
-                PostRoute(
-                  postType: PostType.thread,
-                  postId: widget.item.subject['entryId'] as int,
-                ),
-              )
+            ? () => pushPostPage(context, postId: widget.item.subject['entryId'] as int, postType: PostType.thread)
             : widget.item.subject.containsKey('postId')
-            ? () => context.router.push(
-                PostRoute(
-                  postType: PostType.microblog,
-                  postId: widget.item.subject['postId'] as int,
-                ),
-              )
+            ? () => pushPostPage(context, postId: widget.item.subject['postId'] as int, postType: PostType.microblog)
             : null,
       ServerSoftware.lemmy => switch (widget.item.type!) {
         NotificationType.message => () => context.router.push(
@@ -140,12 +131,7 @@ class _NotificationItemState extends State<NotificationItem> {
         _ => throw Exception('invalid notification type for lemmy'),
       },
       ServerSoftware.piefed => switch (widget.item.type!) {
-        NotificationType.entryCreated => () => context.router.push(
-          PostRoute(
-            postType: PostType.thread,
-            postId: widget.item.subject['post_id'] as int,
-          ),
-        ),
+        NotificationType.entryCreated => () => pushPostPage(context, postId: widget.item.subject['post_id'] as int, postType: PostType.thread),
         NotificationType.entryCommentCreated => () => context.router.push(
           PostCommentRoute(
             postType: PostType.thread,
@@ -158,12 +144,7 @@ class _NotificationItemState extends State<NotificationItem> {
             commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
-        NotificationType.postMention => () => context.router.push(
-          PostRoute(
-            postType: PostType.thread,
-            postId: widget.item.subject['post_id'] as int,
-          ),
-        ),
+        NotificationType.postMention => () => pushPostPage(context, postId: widget.item.subject['post_id'] as int, postType: PostType.thread),
         NotificationType.commentMention => () => context.router.push(
           PostCommentRoute(
             postType: PostType.thread,

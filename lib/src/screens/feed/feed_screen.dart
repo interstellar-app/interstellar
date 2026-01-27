@@ -12,6 +12,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
@@ -856,24 +857,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     : null,
                 itemBuilder: (context, item, index) {
                   void onPostTap() {
-                    context.router.push(
-                      PostRoute(
-                        postId: item.id,
-                        initData: item,
-                        onUpdate: (newValue) =>
-                            _pagingController.updateItem(item, newValue),
-                        userCanModerate: widget.userCanModerate,
-                      ),
-                    );
-                    // pushRoute(
-                    //   context,
-                    //   builder: (context) => PostPage(
-                    //     initData: item,
-                    //     onUpdate: (newValue) =>
-                    //         _pagingController.updateItem(item, newValue),
-                    //     userCanModerate: widget.userCanModerate,
-                    //   ),
-                    // );
+                    pushPostPage(context, initData: item, userCanModerate: widget.userCanModerate, onUpdate: (newValue) => _pagingController.updateItem(item, newValue));
                   }
 
                   return Wrapper(

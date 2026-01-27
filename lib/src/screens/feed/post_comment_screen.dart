@@ -4,6 +4,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
@@ -67,12 +68,7 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
-                    onPressed: () => context.router.push(
-                      PostRoute(
-                        postId: comment.postId,
-                        postType: comment.postType,
-                      ),
-                    ),
+                    onPressed: () => pushPostPage(context, postId: comment.postId, postType: comment.postType),
                     child: Text(l(context).comment_openOriginalPost),
                   ),
                 ),

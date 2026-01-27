@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -227,13 +229,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
         return InkWell(
           onTap: () {
             if (item.subjectPost != null) {
-              context.router.push(
-                PostRoute(
-                  postId: item.subjectPost!.id,
-                  initData: item.subjectPost,
-                  userCanModerate: true,
-                ),
-              );
+              pushPostPage(context, postId: item.subjectPost!.id, postType: item.subjectPost!.type, initData: item.subjectPost, userCanModerate: true);
             } else if (item.subjectComment != null) {
               context.router.push(
                 PostCommentRoute(

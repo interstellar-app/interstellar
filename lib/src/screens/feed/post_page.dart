@@ -24,6 +24,55 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
+class ThreadPage extends StatelessWidget {
+  const ThreadPage({
+    super.key,
+    @PathParam('id') required this.postId,
+    this.initData,
+    this.onUpdate,
+    this.userCanModerate = false,
+  });
+
+  final int postId;
+  final PostModel? initData;
+  final void Function(PostModel)? onUpdate;
+  final bool userCanModerate;
+
+  @override
+  Widget build(BuildContext context) => PostPage(postType: PostType.thread, postId: postId, initData: initData, onUpdate: onUpdate, userCanModerate: userCanModerate);
+}
+
+@RoutePage()
+class MicroblogPage extends StatelessWidget {
+  const MicroblogPage({
+    super.key,
+    @PathParam('id') required this.postId,
+    this.initData,
+    this.onUpdate,
+    this.userCanModerate = false,
+  });
+
+  final int postId;
+  final PostModel? initData;
+  final void Function(PostModel)? onUpdate;
+  final bool userCanModerate;
+
+  @override
+  Widget build(BuildContext context) => PostPage(postType: PostType.microblog, postId: postId, initData: initData, onUpdate: onUpdate, userCanModerate: userCanModerate);
+}
+
+void pushPostPage(BuildContext context, {int? postId, PostType? postType, PostModel? initData, void Function(PostModel)? onUpdate, bool userCanModerate = false}) async {
+  final type = postType ?? initData!.type;
+  final id = postId ?? initData!.id;
+
+  context.router.push(
+    type == PostType.thread
+        ? ThreadRoute(postId: id, initData: initData, userCanModerate: userCanModerate, onUpdate: onUpdate)
+        : MicroblogRoute(postId: id, initData: initData, userCanModerate: userCanModerate, onUpdate: onUpdate),
+  );
+}
+
+// @RoutePage()
 class PostPage extends StatefulWidget {
   const PostPage({
     this.postType,
@@ -456,13 +505,7 @@ class _PostPageState extends State<PostPage> {
                                 subtitle: l(
                                   context,
                                 ).commentsX(crossPost.numComments),
-                                onTap: () => context.router.push(
-                                  PostRoute(
-                                    postId: crossPost.id,
-                                    postType: PostType.thread,
-                                    initData: crossPost,
-                                  ),
-                                ),
+                                onTap: () async => pushPostPage(context, initData: crossPost),
                               ),
                             )
                             .toList(),
@@ -503,13 +546,7 @@ class _PostPageState extends State<PostPage> {
                                     showCrossPostMenu(context, crossPost),
                                 icon: const Icon(Symbols.more_vert_rounded),
                               ),
-                              onTap: () => context.router.push(
-                                PostRoute(
-                                  postId: crossPost.id,
-                                  postType: crossPost.type,
-                                  initData: crossPost,
-                                ),
-                              ),
+                              onTap: () => pushPostPage(context, initData: crossPost),
                               onLongPress: () =>
                                   showCrossPostMenu(context, crossPost),
                             ),

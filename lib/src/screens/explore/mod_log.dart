@@ -6,6 +6,7 @@ import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
@@ -83,15 +84,11 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.postDeleted =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.thread, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.postRestored =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.thread, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.commentDeleted =>
       item.comment == null
           ? null
@@ -113,27 +110,19 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.postPinned =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.thread, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.postUnpinned =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.thread, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.microblogPostDeleted =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.microblog, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.microblogPostRestored =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.microblog, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.microblogCommentDeleted =>
       item.comment == null
           ? null
@@ -177,15 +166,11 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.postLocked =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.thread, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
     ModLogType.postUnlocked =>
       item.postId == null
           ? null
-          : () => context.router.push(
-              PostRoute(postType: PostType.thread, postId: item.postId),
-            ),
+          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
   };
 
   @override

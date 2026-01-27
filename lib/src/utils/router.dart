@@ -13,7 +13,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: AppHome.page, path: '/'),
     AutoRoute(page: FeedRoute.page, path: '/feed'),
     AutoRoute(page: ExploreRoute.page, path: '/explore'),
-    AutoRoute(page: PostRoute.page, path: '/post/:id'),
+
+    AutoRoute(page: ThreadRoute.page, path: '/thread/:id'),
+    AutoRoute(page: MicroblogRoute.page, path: '/microblog/:id'),
     AutoRoute(page: PostCommentRoute.page, path: '/comment/:id'),
     AutoRoute(page: ContentReplyRoute.page, path: '/reply'),
 
