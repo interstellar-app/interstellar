@@ -239,50 +239,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   ),
                                 ),
                                 const Divider(height: 1, thickness: 1),
-                                Expanded(
-                                  child: CallbackShortcuts(
-                                    bindings: <ShortcutActivator, VoidCallback>{
-                                      const SingleActivator(
-                                        LogicalKeyboardKey.enter,
-                                      ): () => execAction(
-                                        const _MarkdownEditorActionEnter(),
-                                      ),
-                                      for (var action
-                                          in _actions(context).where(
-                                            (action) => action.shortcut != null,
-                                          ))
-                                        action.shortcut!: () =>
-                                            execAction(action.action),
-                                    },
-                                    child: TextField(
-                                      controller: widget.controller,
-                                      keyboardType: TextInputType.multiline,
-                                      minLines: 2,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.all(12),
-                                      ),
-                                      onChanged: (String value) {
-                                        widget.onChanged?.call(value);
-
-                                        draftDebounce.run(() async {
-                                          if (value.isNotEmpty) {
-                                            await widget.draftController.save(
-                                              value,
-                                            );
-                                          } else {
-                                            await widget.draftController
-                                                .discard();
-                                          }
-                                        });
-                                      },
-                                      enabled: widget.enabled,
-                                      focusNode: _focusNodeTextField,
-                                      autofocus: widget.autoFocus,
-                                    ),
-                                  ),
-                                ),
+                                _textbox(),
                               ],
                             );
                           case 1:
@@ -403,6 +360,45 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         ),
       ],
     );
+  }
+
+  Widget _textbox() {
+    final box = CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        const SingleActivator(LogicalKeyboardKey.enter): () =>
+            execAction(const _MarkdownEditorActionEnter()),
+        for (var action in _actions(
+          context,
+        ).where((action) => action.shortcut != null))
+          action.shortcut!: () => execAction(action.action),
+      },
+      child: TextField(
+        controller: widget.controller,
+        keyboardType: TextInputType.multiline,
+        minLines: 2,
+        maxLines: null,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(12),
+        ),
+        onChanged: (String value) {
+          widget.onChanged?.call(value);
+
+          draftDebounce.run(() async {
+            if (value.isNotEmpty) {
+              await widget.draftController.save(value);
+            } else {
+              await widget.draftController.discard();
+            }
+          });
+        },
+        enabled: widget.enabled,
+        focusNode: _focusNodeTextField,
+        autofocus: widget.autoFocus,
+      ),
+    );
+
+    return widget.inline ? Expanded(child: box) : Flexible(child: box);
   }
 }
 
