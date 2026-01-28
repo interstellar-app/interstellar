@@ -607,8 +607,7 @@ class AppController with ChangeNotifier {
     // Ensure default guest account remains
     if (_servers.isEmpty ||
         _accounts.isEmpty ||
-        _selectedAccount.isEmpty ||
-        _accounts.length == 1) {
+        _selectedAccount.isEmpty) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount(
         '@kbin.earth',

@@ -165,7 +165,7 @@ abstract class PostModel with _$PostModel {
     title: null,
     url: null,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
-    body: json['body'] as String,
+    body: json['body'] as String?,
     lang: json['lang'] as String,
     numComments: json['comments'] as int,
     upvotes: json['favourites'] as int?,
