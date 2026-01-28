@@ -41,7 +41,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
   );
   final ScrollController _scrollController = ScrollController();
   final List<GlobalKey> _emojiGroupGlobalKeys = [];
-  Set<int> _visibleEmojiGroups = {};
+  Set<int> _visibleEmojiGroups = {0};
 
   List<List<Emoji>> _emojis = searchEmojis('');
 
@@ -82,8 +82,6 @@ class _EmojiPickerState extends State<EmojiPicker> {
 
     for (var i = 0; i < emojiGroups.length; i++) {
       final currPos = groupPositions[i];
-      print(i);
-      print(currPos);
       if (currPos == null) continue;
       double? nextPos;
       for (var j = i + 1; j < emojiGroups.length; j++) {
@@ -91,8 +89,6 @@ class _EmojiPickerState extends State<EmojiPicker> {
 
         if (nextPos != null) break;
       }
-
-      print(nextPos);
 
       if (currPos >= viewportStart && currPos < viewportEnd ||
           (currPos < viewportStart &&
@@ -126,6 +122,16 @@ class _EmojiPickerState extends State<EmojiPicker> {
 
   @override
   Widget build(BuildContext context) {
+    const double buttonSize = 40;
+    final int buttonsWide = emojiGroups.length;
+
+    final buttonStyle = IconButton.styleFrom(
+      // backgroundColor: Colors.red,
+      fixedSize: const Size.square(buttonSize),
+      padding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+    );
+
     return MenuAnchor(
       childFocusNode: _buttonFocusNode,
       builder: (context, controller, child) => IconButton(
@@ -141,8 +147,10 @@ class _EmojiPickerState extends State<EmojiPicker> {
       ),
       menuChildren: [
         Card(
+          margin: EdgeInsets.all(8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextField(
                 controller: _searchController,
@@ -163,42 +171,45 @@ class _EmojiPickerState extends State<EmojiPicker> {
                 ),
                 onChanged: (newSearch) => _searchDebounce.run(_searchEmojis),
               ),
-              Row(
-                children: emojiGroups
-                    .asMap()
-                    .entries
-                    .map(
-                      (group) => IconButton(
-                        onPressed: _emojis[group.key].isEmpty
-                            ? null
-                            : () => _scrollToEmojiGroup(group.key),
-                        icon: Center(
-                          child: Icon(
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 2,
+                      color: Theme.of(context).dividerColor,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: emojiGroups
+                      .asMap()
+                      .entries
+                      .map(
+                        (group) => IconButton(
+                          onPressed: _emojis[group.key].isEmpty
+                              ? null
+                              : () => _scrollToEmojiGroup(group.key),
+                          icon: Icon(
                             emojiGroupIcons[group.key],
                             size: 24,
                             weight: _visibleEmojiGroups.contains(group.key)
                                 ? 800
                                 : 400,
                           ),
+                          color: _visibleEmojiGroups.contains(group.key)
+                              ? Theme.of(context).primaryColor
+                              : null,
+                          style: buttonStyle,
+                          tooltip: group.value,
                         ),
-                        color: _visibleEmojiGroups.contains(group.key)
-                            ? Theme.of(context).primaryColor
-                            : null,
-                        style: IconButton.styleFrom(
-                          fixedSize: const Size(38, 38),
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                        ),
-                        tooltip: group.value,
-                      ),
-                    )
-                    .toList(),
+                      )
+                      .toList(),
+                ),
               ),
               SizedBox(
+                width: buttonSize * buttonsWide,
                 height: 300,
-                width: 350,
                 child: CustomScrollView(
                   controller: _scrollController,
                   slivers: [
@@ -211,7 +222,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
                         SliverToBoxAdapter(
                           key: _emojiGroupGlobalKeys[groupIndex],
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.only(top: 8, left: 4),
                             child: Text(
                               emojiGroups[groupIndex],
                               style: TextStyle(fontWeight: FontWeight.bold),
@@ -220,32 +231,21 @@ class _EmojiPickerState extends State<EmojiPicker> {
                         ),
                         SliverGrid.builder(
                           gridDelegate:
-                              // const SliverGridDelegateWithMaxCrossAxisExtent(
-                              //   maxCrossAxisExtent: 300,
-                              //   mainAxisSpacing: 10.0,
-                              //   crossAxisSpacing: 10.0,
-                              // ),
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 8,
+                                crossAxisCount: buttonsWide,
                               ),
                           itemCount: _emojis[groupIndex].length,
                           itemBuilder: (context, index) {
                             final emoji = _emojis[groupIndex][index];
 
-                            return Tooltip(
-                              message: emoji.label,
-                              child: InkWell(
-                                onTap: () {},
-                                customBorder: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    emoji.unicode,
-                                    style: TextStyle(fontSize: 24),
-                                  ),
-                                ),
+                            return IconButton(
+                              onPressed: () {},
+                              icon: Text(
+                                emoji.unicode,
+                                style: TextStyle(fontSize: 24),
                               ),
+                              style: buttonStyle,
+                              tooltip: emoji.label,
                             );
                           },
                         ),
