@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:interstellar/emojis/emojis.g.dart';
 import 'package:interstellar/src/utils/trie.dart';
 
@@ -9,9 +8,6 @@ class Emoji {
   final int group;
 
   const Emoji(this.unicode, this.label, this.tags, this.group);
-
-  @override
-  String toString() => '$unicode - $label $tags\n';
 }
 
 List<List<Emoji>> searchEmojis(String term) {

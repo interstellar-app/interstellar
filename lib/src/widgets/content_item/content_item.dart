@@ -579,6 +579,7 @@ class _ContentItemState extends State<ContentItem> {
                       onReply: widget.onReply == null ? null : _reply,
                       onAddBookmark: widget.onAddBookmark,
                       onRemoveBookmark: widget.onRemoveBookmark,
+                      onEmojiReact: widget.onEmojiReact,
                     ),
                 ],
               ),

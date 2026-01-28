@@ -2,15 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:interstellar/emojis/emoji_class.dart';
 import 'package:interstellar/emojis/emojis.g.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
+
+// TODO: Allow custom emoji groups (quick access, and server specific emojis)
+// TODO: If screen is too narrow, split emoji groups across two lines
 
 final emojiGroupIcons = [
   Symbols.emoji_emotions_rounded,
@@ -23,18 +24,26 @@ final emojiGroupIcons = [
   Symbols.emoji_objects_rounded,
   Symbols.emoji_symbols_rounded,
   Symbols.emoji_flags_rounded,
-  Symbols.tune_rounded,
 ];
 
 class EmojiPicker extends StatefulWidget {
-  const EmojiPicker({super.key});
+  const EmojiPicker({
+    super.key,
+    required this.childBuilder,
+    required this.onSelect,
+  });
+
+  final Widget Function(void Function() onClick, FocusNode focusNode)
+  childBuilder;
+  final void Function(String emoji) onSelect;
 
   @override
   State<EmojiPicker> createState() => _EmojiPickerState();
 }
 
 class _EmojiPickerState extends State<EmojiPicker> {
-  final FocusNode _buttonFocusNode = FocusNode();
+  final _menuController = MenuController();
+  final _buttonFocusNode = FocusNode();
   final _searchController = TextEditingController();
   final _searchDebounce = Debouncer(
     duration: const Duration(milliseconds: 250),
@@ -126,24 +135,17 @@ class _EmojiPickerState extends State<EmojiPicker> {
     final int buttonsWide = emojiGroups.length;
 
     final buttonStyle = IconButton.styleFrom(
-      // backgroundColor: Colors.red,
       fixedSize: const Size.square(buttonSize),
       padding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
     );
 
     return MenuAnchor(
+      controller: _menuController,
       childFocusNode: _buttonFocusNode,
-      builder: (context, controller, child) => IconButton(
-        icon: Icon(Symbols.add_reaction_rounded),
-        focusNode: _buttonFocusNode,
-        onPressed: () {
-          if (controller.isOpen) {
-            controller.close();
-          } else {
-            controller.open();
-          }
-        },
+      builder: (context, controller, child) => widget.childBuilder(
+        controller.isOpen ? controller.close : controller.open,
+        _buttonFocusNode,
       ),
       menuChildren: [
         Card(
@@ -239,7 +241,10 @@ class _EmojiPickerState extends State<EmojiPicker> {
                             final emoji = _emojis[groupIndex][index];
 
                             return IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _menuController.close();
+                                widget.onSelect(emoji.unicode);
+                              },
                               icon: Text(
                                 emoji.unicode,
                                 style: TextStyle(fontSize: 24),
