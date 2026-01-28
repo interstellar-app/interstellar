@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/emojis/emoji_picker.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -20,6 +21,7 @@ class ActionButtons extends StatelessWidget {
     this.onReply,
     this.onAddBookmark,
     this.onRemoveBookmark,
+    this.onEmojiReact,
   });
 
   final int? upVotes;
@@ -38,6 +40,8 @@ class ActionButtons extends StatelessWidget {
   final void Function()? onReply;
   final Future<void> Function()? onAddBookmark;
   final Future<void> Function()? onRemoveBookmark;
+
+  final Future<void> Function(String emoji)? onEmojiReact;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +78,15 @@ class ActionButtons extends StatelessWidget {
     final voting = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (onEmojiReact != null)
+          EmojiPicker(
+            childBuilder: (onClick, focusNode) => IconButton(
+              onPressed: onClick,
+              focusNode: focusNode,
+              icon: Icon(Symbols.add_reaction_rounded),
+            ),
+            onSelect: (emoji) => onEmojiReact!(emoji),
+          ),
         if (boosts != null)
           Row(
             mainAxisSize: MainAxisSize.min,

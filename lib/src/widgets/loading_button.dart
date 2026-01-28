@@ -240,15 +240,15 @@ class _LoadingIconButtonState extends State<LoadingIconButton> {
       onLongPress: _isLoading || widget.onLongPress == null
           ? null
           : () async {
-        setState(() => _isLoading = true);
-        try {
-          await widget.onLongPress!();
-        } catch (e) {
-          rethrow;
-        } finally {
-          if (mounted) setState(() => _isLoading = false);
-        }
-      },
+              setState(() => _isLoading = true);
+              try {
+                await widget.onLongPress!();
+              } catch (e) {
+                rethrow;
+              } finally {
+                if (mounted) setState(() => _isLoading = false);
+              }
+            },
       icon: _isLoading ? const _LoadingButtonIndicator() : widget.icon,
       style: widget.style,
       tooltip: widget.tooltip,
@@ -256,7 +256,7 @@ class _LoadingIconButtonState extends State<LoadingIconButton> {
   }
 }
 
-class LoadingChip extends StatefulWidget {
+class LoadingFilterChip extends StatefulWidget {
   final Widget? icon;
   final Widget label;
   final bool selected;
@@ -265,7 +265,7 @@ class LoadingChip extends StatefulWidget {
 
   final String? tooltip;
 
-  const LoadingChip({
+  const LoadingFilterChip({
     required this.label,
     required this.selected,
     this.onSelected,
@@ -276,10 +276,10 @@ class LoadingChip extends StatefulWidget {
   });
 
   @override
-  State<LoadingChip> createState() => _LoadingChipState();
+  State<LoadingFilterChip> createState() => _LoadingFilterChipState();
 }
 
-class _LoadingChipState extends State<LoadingChip> {
+class _LoadingFilterChipState extends State<LoadingFilterChip> {
   bool _isLoading = false;
 
   @override
@@ -302,6 +302,57 @@ class _LoadingChipState extends State<LoadingChip> {
               }
             },
       tooltip: widget.tooltip,
+    );
+  }
+}
+
+class LoadingInputChip extends StatefulWidget {
+  final Widget? icon;
+  final Widget label;
+  final bool selected;
+  final Future<void> Function(bool)? onSelected;
+  final bool enabled;
+
+  final String? tooltip;
+
+  const LoadingInputChip({
+    required this.label,
+    required this.selected,
+    this.onSelected,
+    this.icon,
+    this.tooltip,
+    this.enabled = true,
+    super.key,
+  });
+
+  @override
+  State<LoadingInputChip> createState() => _LoadingInputChipState();
+}
+
+class _LoadingInputChipState extends State<LoadingInputChip> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return InputChip(
+      selected: widget.selected,
+      showCheckmark: false,
+      avatar: _isLoading ? const _LoadingButtonIndicator() : widget.icon,
+      label: widget.label,
+      onSelected: _isLoading || widget.onSelected == null
+          ? null
+          : (selected) async {
+              setState(() => _isLoading = true);
+              try {
+                await widget.onSelected!(selected);
+              } catch (e) {
+                rethrow;
+              } finally {
+                if (mounted) setState(() => _isLoading = false);
+              }
+            },
+      tooltip: widget.tooltip,
+      isEnabled: widget.enabled,
     );
   }
 }

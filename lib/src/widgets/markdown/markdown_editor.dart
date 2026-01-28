@@ -3,6 +3,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:interstellar/emojis/emoji_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
@@ -188,6 +189,48 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                                 shape: const LinearBorder(),
                                               ),
                                             ),
+                                          ),
+                                        ),
+                                      ),
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            right: BorderSide(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.outlineVariant,
+                                            ),
+                                          ),
+                                        ),
+                                        child: SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: EmojiPicker(
+                                            childBuilder:
+                                                (
+                                                  onClick,
+                                                  focusNode,
+                                                ) => IconButton(
+                                                  onPressed: onClick,
+                                                  focusNode: focusNode,
+                                                  icon: const Icon(
+                                                    Symbols
+                                                        .add_reaction_rounded,
+                                                  ),
+                                                  style: TextButton.styleFrom(
+                                                    shape: const LinearBorder(),
+                                                  ),
+                                                ),
+                                            onSelect: (emoji) {
+                                              _focusNodeTextField
+                                                  .requestFocus();
+
+                                              execAction(
+                                                _MarkdownEditorActionReplace(
+                                                  emoji,
+                                                ),
+                                              );
+                                            },
                                           ),
                                         ),
                                       ),
@@ -588,6 +631,27 @@ class _MarkdownEditorData {
     required this.selectionStart,
     required this.selectionEnd,
   }) : selectionText = text.substring(selectionStart, selectionEnd);
+}
+
+class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
+  final String chars;
+
+  const _MarkdownEditorActionReplace(this.chars);
+
+  @override
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
+    var text = input.text;
+
+    text = text.replaceRange(input.selectionStart, input.selectionEnd, chars);
+
+    final selection = input.selectionStart + chars.length;
+
+    return _MarkdownEditorData(
+      text: text,
+      selectionStart: selection,
+      selectionEnd: selection,
+    );
+  }
 }
 
 class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {

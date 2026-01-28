@@ -212,8 +212,9 @@ class APIComments {
     PostType postType,
     int commentId,
     int choice,
-    int newScore,
-  ) async {
+    int newScore, {
+    String? emoji,
+  }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = choice == 1
@@ -242,7 +243,11 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {'comment_id': commentId, 'score': newScore},
+          body: {
+            'comment_id': commentId,
+            'score': newScore,
+            if (emoji != null) 'emoji': emoji,
+          },
         );
 
         return CommentModel.fromPiefed(

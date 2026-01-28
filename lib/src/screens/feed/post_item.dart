@@ -337,6 +337,22 @@ class _PostItemState extends State<PostItem> {
           flairs: widget.item.flairs,
           crossPost: widget.item,
           shareLinks: genPostUrls(context, widget.item),
+          emojiReactions: widget.item.emojiReactions,
+          onEmojiReact: whenLoggedIn(context, (emoji) async {
+            widget.onUpdate(
+              (await ac.markAsRead([
+                await switch (widget.item.type) {
+                  PostType.thread => ac.api.threads.vote(
+                    widget.item.id,
+                    1,
+                    1,
+                    emoji: emoji,
+                  ),
+                  PostType.microblog => throw 'Unreachable',
+                },
+              ], true)).first,
+            );
+          }),
         ),
       ),
     );

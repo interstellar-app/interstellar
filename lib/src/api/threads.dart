@@ -185,7 +185,12 @@ class APIThreads {
     }
   }
 
-  Future<PostModel> vote(int postId, int choice, int newScore) async {
+  Future<PostModel> vote(
+    int postId,
+    int choice,
+    int newScore, {
+    String? emoji,
+  }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = choice == 1
@@ -210,7 +215,11 @@ class APIThreads {
       case ServerSoftware.piefed:
         final response = await client.post(
           '/post/like',
-          body: {'post_id': postId, 'score': newScore},
+          body: {
+            'post_id': postId,
+            'score': newScore,
+            if (emoji != null) 'emoji': emoji,
+          },
         );
 
         return PostModel.fromPiefed(
@@ -245,13 +254,13 @@ class APIThreads {
         throw Exception('Tried to vote on a poll on lemmy');
       case ServerSoftware.piefed:
         final path = '/post/poll_vote';
-        final response = await client.post(path, body: {
-          'post_id': postId,
-          'choice_id': choiceIds
-        });
+        final response = await client.post(
+          path,
+          body: {'post_id': postId, 'choice_id': choiceIds},
+        );
         return PostModel.fromPiefed(
           response.bodyJson,
-          langCodeIdPairs: await client.languageCodeIdPairs()
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
   }
@@ -348,23 +357,23 @@ class APIThreads {
   Future<PostModel> assignFlairs(int postId, List<int> flairIds) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        throw UnsupportedError('Mbin doesnt support assigning flairs to a post');
+        throw UnsupportedError(
+          'Mbin doesnt support assigning flairs to a post',
+        );
       case ServerSoftware.lemmy:
-        throw UnsupportedError('Lemmy doesnt support assigning flairs to a post');
+        throw UnsupportedError(
+          'Lemmy doesnt support assigning flairs to a post',
+        );
       case ServerSoftware.piefed:
         final path = '/post/assign_flair';
         final response = await client.post(
           path,
-          body: {
-            'post_id': postId,
-            'flair_id_list': flairIds
-          }
+          body: {'post_id': postId, 'flair_id_list': flairIds},
         );
 
-        return PostModel.fromPiefed(
-            {'post_view': response.bodyJson},
-            langCodeIdPairs: await client.languageCodeIdPairs()
-        );
+        return PostModel.fromPiefed({
+          'post_view': response.bodyJson,
+        }, langCodeIdPairs: await client.languageCodeIdPairs());
     }
   }
 
@@ -621,16 +630,16 @@ class APIThreads {
   }
 
   Future<PostModel> createPoll(
-      int communityId, {
-        required String title,
-        required bool isOc,
-        required String body,
-        required String lang,
-        required bool isAdult,
-        required List<String> choices,
-        required DateTime? endDate,
-        required String mode,
-      }) async {
+    int communityId, {
+    required String title,
+    required bool isOc,
+    required String body,
+    required String lang,
+    required bool isAdult,
+    required List<String> choices,
+    required DateTime? endDate,
+    required String mode,
+  }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         throw UnimplementedError('Polls are unsupported on mbin');
@@ -652,12 +661,16 @@ class APIThreads {
               if (endDate != null)
                 'end_poll': endDate.toUtc().toIso8601String(),
               'mode': mode,
-              'choices': choices.mapIndexed((index, choice) => {
-                'id': index,
-                'choice_text': choice,
-                'sort_order': index,
-              }).toList(),
-            }
+              'choices': choices
+                  .mapIndexed(
+                    (index, choice) => {
+                      'id': index,
+                      'choice_text': choice,
+                      'sort_order': index,
+                    },
+                  )
+                  .toList(),
+            },
           },
         );
 
