@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:interstellar/emojis/emojis.g.dart';
 import 'package:interstellar/src/utils/trie.dart';
 
@@ -13,7 +14,21 @@ class Emoji {
   String toString() => '$unicode - $label $tags\n';
 }
 
-List<Emoji> searchEmojis(String term) =>
-    (emojiTrie.search(Trie.normalizeTerm(term)).toList()..sort())
-        .map((index) => emojiList[index])
-        .toList();
+List<List<Emoji>> searchEmojis(String term) {
+  final matches = term.isEmpty
+      ? emojiList
+      : (emojiTrie.search(Trie.normalizeTerm(term)).toList()..sort())
+            .map((index) => emojiList[index])
+            .toList();
+
+  final List<List<Emoji>> results = List.generate(
+    emojiGroups.length,
+    (i) => [],
+  );
+
+  for (var match in matches) {
+    results[match.group].add(match);
+  }
+
+  return results;
+}

@@ -1,0 +1,270 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
+import 'package:interstellar/emojis/emoji_class.dart';
+import 'package:interstellar/emojis/emojis.g.dart';
+import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/utils/debouncer.dart';
+import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/text_editor.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
+
+final emojiGroupIcons = [
+  Symbols.emoji_emotions_rounded,
+  Symbols.emoji_people_rounded,
+  Symbols.invert_colors_rounded,
+  Symbols.emoji_nature_rounded,
+  Symbols.emoji_food_beverage_rounded,
+  Symbols.emoji_transportation_rounded,
+  Symbols.emoji_events_rounded,
+  Symbols.emoji_objects_rounded,
+  Symbols.emoji_symbols_rounded,
+  Symbols.emoji_flags_rounded,
+  Symbols.tune_rounded,
+];
+
+class EmojiPicker extends StatefulWidget {
+  const EmojiPicker({super.key});
+
+  @override
+  State<EmojiPicker> createState() => _EmojiPickerState();
+}
+
+class _EmojiPickerState extends State<EmojiPicker> {
+  final FocusNode _buttonFocusNode = FocusNode();
+  final _searchController = TextEditingController();
+  final _searchDebounce = Debouncer(
+    duration: const Duration(milliseconds: 250),
+  );
+  final ScrollController _scrollController = ScrollController();
+  final List<GlobalKey> _emojiGroupGlobalKeys = [];
+  Set<int> _visibleEmojiGroups = {};
+
+  List<List<Emoji>> _emojis = searchEmojis('');
+
+  void _scrollToEmojiGroup(int emojiGroup) {
+    final context = _emojiGroupGlobalKeys[emojiGroup].currentContext;
+    if (context == null) return;
+
+    Scrollable.ensureVisible(
+      context,
+      duration: context.read<AppController>().calcAnimationDuration(),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _calculateVisibleEmojiGroups() {
+    Set<int> newVisibleEmojiGroups = {};
+
+    final viewportStart = _scrollController.offset;
+    final viewportEnd =
+        viewportStart + _scrollController.position.viewportDimension;
+
+    final List<double?> groupPositions = _emojiGroupGlobalKeys
+        .asMap()
+        .entries
+        .map((entry) {
+          final context = entry.value.currentContext;
+          if (context == null) return null;
+
+          final renderObject = context.findRenderObject();
+          if (renderObject == null) return null;
+          final viewport = RenderAbstractViewport.of(renderObject);
+
+          final reveal = viewport.getOffsetToReveal(renderObject, 0.0);
+
+          return reveal.offset;
+        })
+        .toList();
+
+    for (var i = 0; i < emojiGroups.length; i++) {
+      final currPos = groupPositions[i];
+      print(i);
+      print(currPos);
+      if (currPos == null) continue;
+      double? nextPos;
+      for (var j = i + 1; j < emojiGroups.length; j++) {
+        nextPos = groupPositions[j];
+
+        if (nextPos != null) break;
+      }
+
+      print(nextPos);
+
+      if (currPos >= viewportStart && currPos < viewportEnd ||
+          (currPos < viewportStart &&
+              (nextPos == null || nextPos > viewportStart))) {
+        newVisibleEmojiGroups.add(i);
+      }
+    }
+
+    if (!setEquals(_visibleEmojiGroups, newVisibleEmojiGroups)) {
+      setState(() => _visibleEmojiGroups = newVisibleEmojiGroups);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    for (var i = 0; i < emojiGroups.length; i++) {
+      _emojiGroupGlobalKeys.add(GlobalKey());
+    }
+
+    _scrollController.addListener(_calculateVisibleEmojiGroups);
+  }
+
+  void _searchEmojis() {
+    setState(() => _emojis = searchEmojis(_searchController.text));
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) => _calculateVisibleEmojiGroups(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MenuAnchor(
+      childFocusNode: _buttonFocusNode,
+      builder: (context, controller, child) => IconButton(
+        icon: Icon(Symbols.add_reaction_rounded),
+        focusNode: _buttonFocusNode,
+        onPressed: () {
+          if (controller.isOpen) {
+            controller.close();
+          } else {
+            controller.open();
+          }
+        },
+      ),
+      menuChildren: [
+        Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Symbols.search_rounded),
+                  suffixIcon: IconButton(
+                    onPressed: _searchController.text.isEmpty
+                        ? null
+                        : () {
+                            _searchController.text = '';
+                            _searchEmojis();
+                          },
+                    icon: Icon(Symbols.close_rounded),
+                    disabledColor: Theme.of(context).disabledColor,
+                  ),
+                  border: const OutlineInputBorder(),
+                  hintText: l(context).search,
+                ),
+                onChanged: (newSearch) => _searchDebounce.run(_searchEmojis),
+              ),
+              Row(
+                children: emojiGroups
+                    .asMap()
+                    .entries
+                    .map(
+                      (group) => IconButton(
+                        onPressed: _emojis[group.key].isEmpty
+                            ? null
+                            : () => _scrollToEmojiGroup(group.key),
+                        icon: Center(
+                          child: Icon(
+                            emojiGroupIcons[group.key],
+                            size: 24,
+                            weight: _visibleEmojiGroups.contains(group.key)
+                                ? 800
+                                : 400,
+                          ),
+                        ),
+                        color: _visibleEmojiGroups.contains(group.key)
+                            ? Theme.of(context).primaryColor
+                            : null,
+                        style: IconButton.styleFrom(
+                          fixedSize: const Size(38, 38),
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                        tooltip: group.value,
+                      ),
+                    )
+                    .toList(),
+              ),
+              SizedBox(
+                height: 300,
+                width: 350,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    for (
+                      var groupIndex = 0;
+                      groupIndex < emojiGroups.length;
+                      groupIndex++
+                    )
+                      if (_emojis[groupIndex].isNotEmpty) ...[
+                        SliverToBoxAdapter(
+                          key: _emojiGroupGlobalKeys[groupIndex],
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              emojiGroups[groupIndex],
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        SliverGrid.builder(
+                          gridDelegate:
+                              // const SliverGridDelegateWithMaxCrossAxisExtent(
+                              //   maxCrossAxisExtent: 300,
+                              //   mainAxisSpacing: 10.0,
+                              //   crossAxisSpacing: 10.0,
+                              // ),
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 8,
+                              ),
+                          itemCount: _emojis[groupIndex].length,
+                          itemBuilder: (context, index) {
+                            final emoji = _emojis[groupIndex][index];
+
+                            return Tooltip(
+                              message: emoji.label,
+                              child: InkWell(
+                                onTap: () {},
+                                customBorder: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    emoji.unicode,
+                                    style: TextStyle(fontSize: 24),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _buttonFocusNode.dispose();
+    _scrollController.dispose();
+
+    super.dispose();
+  }
+}

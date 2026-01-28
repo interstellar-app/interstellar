@@ -47,17 +47,19 @@ import "./emoji_class.dart";
 
 ''');
 
-    s.write('final emojiGroups = [\n');
+    final List<String> emojiGroups = [];
 
     for (var i = 0; i < (messagesJson['groups'] as List).length; i++) {
       final group = messagesJson['groups'][i];
 
       assert(group['order'] == i);
 
-      s.write('"${group['message']}",\n');
+      emojiGroups.add(group['message']);
     }
 
-    s.write('];\n\n');
+    s.write('final emojiGroups = ');
+    s.write(jsonEncode(emojiGroups));
+    s.write(';\n');
 
     final trie = Trie<int>();
 
