@@ -89,8 +89,6 @@ import "./emoji_class.dart";
         s.write('","');
         s.write(emoji['label']);
         s.write('",');
-        s.write(jsonEncode(tags).replaceAll(r'$', r'\$'));
-        s.write(',');
         s.write(emoji['group']);
         s.write('),\n');
 

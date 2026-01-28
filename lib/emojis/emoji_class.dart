@@ -4,10 +4,9 @@ import 'package:interstellar/src/utils/trie.dart';
 class Emoji {
   final String unicode;
   final String label;
-  final List<String> tags;
   final int group;
 
-  const Emoji(this.unicode, this.label, this.tags, this.group);
+  const Emoji(this.unicode, this.label, this.group);
 }
 
 List<List<Emoji>> searchEmojis(String term) {
