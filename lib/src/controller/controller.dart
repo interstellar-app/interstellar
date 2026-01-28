@@ -507,8 +507,10 @@ class AppController with ChangeNotifier {
           tokenEndpoint,
         );
 
+        final redirectUrl = PlatformUtils.isWeb ? 'http://${Uri.base.host}:${Uri.base.port}/auth.html' : redirectUri;
         final authorizationUrl = grant.getAuthorizationUrl(
-          Uri.parse(redirectUri),
+          // Uri.parse(redirectUri),
+          Uri.parse(redirectUrl),
           scopes: oauthScopes,
         );
 

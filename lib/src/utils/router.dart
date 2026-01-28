@@ -83,5 +83,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LoginSelectRoute.page, path: '/settings/login'),
     AutoRoute(page: LoginConfirmRoute.page, path: '/settings/login/confirm'),
     AutoRoute(page: WebViewRoute.page, path: '/webview'),
+    AutoRoute(page: RedirectListener.page, path: '/redirect'),
   ];
 }
