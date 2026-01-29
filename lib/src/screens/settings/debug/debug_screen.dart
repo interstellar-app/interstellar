@@ -13,8 +13,8 @@ import 'package:interstellar/src/controller/database.dart';
 import 'package:interstellar/src/utils/router.gr.dart';
 
 import 'package:interstellar/src/utils/sqlite/sqlite.dart'
-  if (dart.library.io) 'package:interstellar/src/utils/sqlite/sqlite_native.dart'
-  if (dart.library.js_interop) 'package:interstellar/src/utils/sqlite/sqlite_web.dart';
+    if (dart.library.io) 'package:interstellar/src/utils/sqlite/sqlite_native.dart'
+    if (dart.library.js_interop) 'package:interstellar/src/utils/sqlite/sqlite_web.dart';
 
 @RoutePage()
 class DebugSettingsScreen extends StatelessWidget {

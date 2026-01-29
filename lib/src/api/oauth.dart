@@ -24,7 +24,9 @@ const oauthScopes = [
 Future<String> registerOauthApp(String instanceHost) async {
   const path = '/api/client';
 
-  final redirectUrl = PlatformUtils.isWeb ? 'http://${Uri.base.host}:${Uri.base.port}/auth.html' : redirectUri;
+  final redirectUrl = PlatformUtils.isWeb
+      ? 'http://${Uri.base.host}:${Uri.base.port}/auth.html'
+      : redirectUri;
 
   final response = await appHttpClient.post(
     Uri.https(instanceHost, path),

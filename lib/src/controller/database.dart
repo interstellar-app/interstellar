@@ -459,11 +459,11 @@ class InterstellarDatabase extends _$InterstellarDatabase {
           if (result.missingFeatures.isNotEmpty) {
             debugPrint(
               'Using ${result.chosenImplementation} due to unsupported '
-                  'browser features: ${result.missingFeatures}',
+              'browser features: ${result.missingFeatures}',
             );
           }
         },
-      )
+      ),
     );
   }
 }

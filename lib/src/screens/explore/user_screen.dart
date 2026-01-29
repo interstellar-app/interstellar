@@ -631,7 +631,14 @@ class _UserScreenBodyState extends State<UserScreenBody>
           UserFeedType.thread || UserFeedType.microblog => PostItem(
             item,
             (newValue) => _pagingController.updateItem(item, newValue),
-            onTap: () => pushPostPage(context, postId: item.id, postType: item.type, initData: item, onUpdate: (newValue) => _pagingController.updateItem(item, newValue)),
+            onTap: () => pushPostPage(
+              context,
+              postId: item.id,
+              postType: item.type,
+              initData: item,
+              onUpdate: (newValue) =>
+                  _pagingController.updateItem(item, newValue),
+            ),
             isPreview: true,
             isTopLevel: true,
             isCompact: context.watch<AppController>().profile.compactMode,

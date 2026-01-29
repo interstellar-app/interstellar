@@ -41,8 +41,14 @@ class _RedirectListenerState extends State<RedirectListener> {
       });
     }
 
-    final callbackUrlScheme = PlatformUtils.isWeb ? 'http': 'http://$_redirectHost:$_redirectPort';
-    final result = await FlutterWebAuth2.authenticate(url: widget.initUri.toString(), callbackUrlScheme: callbackUrlScheme, options: FlutterWebAuth2Options(useWebview: false));
+    final callbackUrlScheme = PlatformUtils.isWeb
+        ? 'http'
+        : 'http://$_redirectHost:$_redirectPort';
+    final result = await FlutterWebAuth2.authenticate(
+      url: widget.initUri.toString(),
+      callbackUrlScheme: callbackUrlScheme,
+      options: FlutterWebAuth2Options(useWebview: false),
+    );
     return Uri.parse(result);
   }
 

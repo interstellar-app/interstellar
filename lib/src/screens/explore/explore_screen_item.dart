@@ -193,7 +193,13 @@ class ExploreScreenItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => pushPostPage(context, postId: item.id, postType: item.type, initData: item, onUpdate: onUpdate),
+          onTap: () => pushPostPage(
+            context,
+            postId: item.id,
+            postType: item.type,
+            initData: item,
+            onUpdate: onUpdate,
+          ),
           child: PostItem(
             item,
             onUpdate,

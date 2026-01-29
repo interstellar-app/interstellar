@@ -165,7 +165,9 @@ Future<void> showCommunityMenu(
         ContextMenuItem(
           title: l(context).modlog,
           onTap: () => context.router.push(
-            ModLogCommunityRoute(communityId: detailedCommunity?.id ?? community!.id),
+            ModLogCommunityRoute(
+              communityId: detailedCommunity?.id ?? community!.id,
+            ),
           ),
         ),
     ],

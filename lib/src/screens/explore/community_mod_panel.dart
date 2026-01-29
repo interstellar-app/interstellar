@@ -229,7 +229,13 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
         return InkWell(
           onTap: () {
             if (item.subjectPost != null) {
-              pushPostPage(context, postId: item.subjectPost!.id, postType: item.subjectPost!.type, initData: item.subjectPost, userCanModerate: true);
+              pushPostPage(
+                context,
+                postId: item.subjectPost!.id,
+                postType: item.subjectPost!.type,
+                initData: item.subjectPost,
+                userCanModerate: true,
+              );
             } else if (item.subjectComment != null) {
               context.router.push(
                 PostCommentRoute(

@@ -90,7 +90,14 @@ class AdvancedImage extends StatelessWidget {
                       fit: fit,
                       borderRadius: BorderRadius.circular(15),
                       shape: BoxShape.rectangle,
-                      image: BlurHashImage(image.blurHash!, decodingHeight: (blurHashSizeFactor! * image.blurHashHeight!).ceil(), decodingWidth: (blurHashSizeFactor * image.blurHashWidth!).ceil()),
+                      image: BlurHashImage(
+                        image.blurHash!,
+                        decodingHeight:
+                            (blurHashSizeFactor! * image.blurHashHeight!)
+                                .ceil(),
+                        decodingWidth:
+                            (blurHashSizeFactor * image.blurHashWidth!).ceil(),
+                      ),
                       enableSlideOutPage: true,
                     );
                   } else if (image.blurHashWidth != null &&

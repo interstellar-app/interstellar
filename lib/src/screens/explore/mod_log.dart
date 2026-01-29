@@ -18,7 +18,10 @@ import 'package:interstellar/src/api/moderation.dart';
 
 @RoutePage()
 class ModLogCommunityScreen extends StatelessWidget {
-  const ModLogCommunityScreen({super.key, @PathParam('communityId') required this.communityId});
+  const ModLogCommunityScreen({
+    super.key,
+    @PathParam('communityId') required this.communityId,
+  });
 
   final int communityId;
 
@@ -28,7 +31,10 @@ class ModLogCommunityScreen extends StatelessWidget {
 
 @RoutePage()
 class ModLogUserScreen extends StatelessWidget {
-  const ModLogUserScreen({super.key, @PathParam('userId') required this.userId});
+  const ModLogUserScreen({
+    super.key,
+    @PathParam('userId') required this.userId,
+  });
 
   final int userId;
 
@@ -84,11 +90,19 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.postDeleted =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.postRestored =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.commentDeleted =>
       item.comment == null
           ? null
@@ -110,19 +124,35 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.postPinned =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.postUnpinned =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.microblogPostDeleted =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.microblogPostRestored =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.microblogCommentDeleted =>
       item.comment == null
           ? null
@@ -166,11 +196,19 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.postLocked =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
     ModLogType.postUnlocked =>
       item.postId == null
           ? null
-          : () => pushPostPage(context, postId: item.postId, postType: PostType.thread),
+          : () => pushPostPage(
+              context,
+              postId: item.postId,
+              postType: PostType.thread,
+            ),
   };
 
   @override

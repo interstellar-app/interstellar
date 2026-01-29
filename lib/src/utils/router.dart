@@ -24,9 +24,18 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: MessageThreadRoute.page, path: '/user/:userId/message'),
 
     AutoRoute(page: CommunityRoute.page, path: '/community/:communityId'),
-    AutoRoute(page: ModLogCommunityRoute.page, path: '/community/:communityId/modlog'),
-    AutoRoute(page: CommunityModPanelRoute.page, path: '/community/:communityId/mod'),
-    AutoRoute(page: CommunityOwnerPanelRoute.page, path: '/community/:communityId/owner'),
+    AutoRoute(
+      page: ModLogCommunityRoute.page,
+      path: '/community/:communityId/modlog',
+    ),
+    AutoRoute(
+      page: CommunityModPanelRoute.page,
+      path: '/community/:communityId/mod',
+    ),
+    AutoRoute(
+      page: CommunityOwnerPanelRoute.page,
+      path: '/community/:communityId/owner',
+    ),
 
     AutoRoute(page: ModLogRoute.page, path: '/modlog'),
     AutoRoute(page: DomainRoute.page, path: '/domain'),

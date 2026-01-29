@@ -68,7 +68,11 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
-                    onPressed: () => pushPostPage(context, postId: comment.postId, postType: comment.postType),
+                    onPressed: () => pushPostPage(
+                      context,
+                      postId: comment.postId,
+                      postType: comment.postType,
+                    ),
                     child: Text(l(context).comment_openOriginalPost),
                   ),
                 ),

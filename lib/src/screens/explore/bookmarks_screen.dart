@@ -203,7 +203,14 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 item,
                 (newValue) =>
                     _pagingController.updateItem(newValue.id, newValue),
-                onTap: () => pushPostPage(context, postId: item.id, postType: item.type, initData: item, onUpdate: (newValue) => _pagingController.updateItem(item, newValue)),
+                onTap: () => pushPostPage(
+                  context,
+                  postId: item.id,
+                  postType: item.type,
+                  initData: item,
+                  onUpdate: (newValue) =>
+                      _pagingController.updateItem(item, newValue),
+                ),
                 isPreview: item.type == PostType.thread,
                 isTopLevel: true,
               ),

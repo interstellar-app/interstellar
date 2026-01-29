@@ -857,7 +857,13 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     : null,
                 itemBuilder: (context, item, index) {
                   void onPostTap() {
-                    pushPostPage(context, initData: item, userCanModerate: widget.userCanModerate, onUpdate: (newValue) => _pagingController.updateItem(item, newValue));
+                    pushPostPage(
+                      context,
+                      initData: item,
+                      userCanModerate: widget.userCanModerate,
+                      onUpdate: (newValue) =>
+                          _pagingController.updateItem(item, newValue),
+                    );
                   }
 
                   return Wrapper(
