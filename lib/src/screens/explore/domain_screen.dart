@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -10,6 +11,7 @@ import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class DomainScreen extends StatefulWidget {
   final int domainId;
   final DomainModel? initData;
@@ -31,19 +33,14 @@ class _DomainScreenState extends State<DomainScreen> {
     _data = widget.initData;
 
     if (_data == null) {
-      context
-          .read<AppController>()
-          .api
-          .domains
-          .get(widget.domainId)
-          .then(
-            (value) {
-              if (!mounted) return;
-              setState(() {
-                _data = value;
-              });
-            }
-          );
+      context.read<AppController>().api.domains.get(widget.domainId).then((
+        value,
+      ) {
+        if (!mounted) return;
+        setState(() {
+          _data = value;
+        });
+      });
     }
   }
 

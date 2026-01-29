@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,7 +20,8 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
-import 'package:interstellar/src/widgets/redirect_listen.dart';
+import 'package:interstellar/src/utils/router.gr.dart';
+import 'package:interstellar/src/widgets/redirect_listen.dart' show redirectUri;
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:path/path.dart';
@@ -141,7 +144,8 @@ class AppController with ChangeNotifier {
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavDomains: Value(value)));
 
-  Future<File> get logFile async {
+  Future<File?> get logFile async {
+    if (kIsWeb) return null;
     final logDir = await getApplicationSupportDirectory();
     final logFile = join(logDir.path, 'log.log');
     return File(logFile);
@@ -149,9 +153,10 @@ class AppController with ChangeNotifier {
 
   Future<void> init() async {
     refreshState = () {};
+    final loggerFile = await logFile;
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
-      output: FileOutput(file: await logFile),
+      output: loggerFile == null ? null : FileOutput(file: loggerFile),
       filter: ProductionFilter(),
     );
     logger.i('Initializing interstellar');
@@ -502,18 +507,18 @@ class AppController with ChangeNotifier {
           tokenEndpoint,
         );
 
+        final redirectUrl = PlatformUtils.isWeb
+            ? 'http://${Uri.base.host}:${Uri.base.port}/auth.html'
+            : redirectUri;
         final authorizationUrl = grant.getAuthorizationUrl(
-          Uri.parse(redirectUri),
+          // Uri.parse(redirectUri),
+          Uri.parse(redirectUrl),
           scopes: oauthScopes,
         );
 
         if (!context!.mounted) return;
-        Map<String, String>? result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                RedirectListener(authorizationUrl, title: server),
-          ),
+        Map<String, String>? result = await context.router.push(
+          RedirectListener(initUri: authorizationUrl, title: server),
         );
 
         if (result == null || !result.containsKey('code')) {

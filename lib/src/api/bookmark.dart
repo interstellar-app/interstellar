@@ -38,35 +38,35 @@ class APIBookmark {
 
   APIBookmark(this.client);
 
-  Future<(List<Object>, String?)> list({
-    String? list,
-    String? page,
-  }) async {
+  Future<(List<Object>, String?)> list({String? list, String? page}) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         const path = '/bookmark-lists/show';
-        final query = {
-          'list': list,
-          'sort': 'newest',
-          'p': page,
-        };
+        final query = {'list': list, 'sort': 'newest', 'p': page};
 
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
         final itemList = json['items'] as List<dynamic>;
-        final items = itemList.map((item) {
-          var itemType = item['itemType'];
-          if (itemType == 'entry') {
-            return PostModel.fromMbinEntry(item as JsonMap);
-          } else if (itemType == 'post') {
-            return PostModel.fromMbinPost(item as JsonMap);
-          } else if (itemType == 'entry_comment' || itemType == 'post_comment') {
-            return CommentModel.fromMbin(item as JsonMap);
-          }
-        }).nonNulls.toList();
+        final items = itemList
+            .map((item) {
+              var itemType = item['itemType'];
+              if (itemType == 'entry') {
+                return PostModel.fromMbinEntry(item as JsonMap);
+              } else if (itemType == 'post') {
+                return PostModel.fromMbinPost(item as JsonMap);
+              } else if (itemType == 'entry_comment' ||
+                  itemType == 'post_comment') {
+                return CommentModel.fromMbin(item as JsonMap);
+              }
+            })
+            .nonNulls
+            .toList();
 
-        return (items, mbinCalcNextPaginationPage(json['pagination'] as JsonMap));
+        return (
+          items,
+          mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+        );
 
       case ServerSoftware.lemmy:
         const postsPath = '/post/list';
@@ -81,7 +81,7 @@ class APIBookmark {
 
         final [postResponse, commentResponse] = await Future.wait([
           client.get(postsPath, queryParams: query),
-          client.get(commentsPath, queryParams: query)
+          client.get(commentsPath, queryParams: query),
         ]);
 
         final postJson = postResponse.bodyJson;
@@ -98,15 +98,18 @@ class APIBookmark {
 
         final postLists = PostListModel.fromLemmy(
           postJson,
-          langCodeIdPairs: await client.languageCodeIdPairs()
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
         final commentLists = CommentListModel.fromLemmyToFlat(
           commentJson,
-          langCodeIdPairs: await client.languageCodeIdPairs()
+          langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
-        return ([...postLists.items, ...commentLists.items], postLists.nextPage);
+        return (
+          [...postLists.items, ...commentLists.items],
+          postLists.nextPage,
+        );
 
       case ServerSoftware.piefed:
         throw UnimplementedError('Unimplemented');

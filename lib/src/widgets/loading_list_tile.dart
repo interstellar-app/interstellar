@@ -44,7 +44,6 @@ class _LoadingListTileState extends State<LoadingListTile> {
 
   @override
   Widget build(BuildContext context) {
-
     return ListTile(
       leading: widget.leading,
       title: widget.title,

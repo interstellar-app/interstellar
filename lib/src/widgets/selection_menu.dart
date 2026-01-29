@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class SelectionMenuItem<T> {
@@ -50,7 +51,7 @@ class SelectionMenu<T> {
                     ...options.map(
                       (option) => ListTile(
                         title: Text(option.title),
-                        onTap: () => Navigator.pop(context, option.value),
+                        onTap: () => context.router.pop(option.value),
                         leading: Icon(option.icon, color: option.iconColor),
                         selected: oldSelection == option.value,
                         selectedTileColor: Theme.of(
@@ -69,7 +70,7 @@ class SelectionMenu<T> {
                                       .subItemsSelectionMenu!
                                       .askSelection(context, oldSelection);
                                   if (!context.mounted) return;
-                                  Navigator.pop(context, subSelection);
+                                  context.router.pop(subSelection);
                                 },
                               )
                             : null,

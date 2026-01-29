@@ -123,8 +123,12 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.microblogPostRestored => null,
         ModLogType.microblogCommentDeleted => null,
         ModLogType.microblogCommentRestored => null,
-        ModLogType.ban => DetailedUserModel.fromMbin((json['subject'] as JsonMap)['bannedUser'] as JsonMap),
-        ModLogType.unban => DetailedUserModel.fromMbin((json['subject'] as JsonMap)['bannedUser'] as JsonMap),
+        ModLogType.ban => DetailedUserModel.fromMbin(
+          (json['subject'] as JsonMap)['bannedUser'] as JsonMap,
+        ),
+        ModLogType.unban => DetailedUserModel.fromMbin(
+          (json['subject'] as JsonMap)['bannedUser'] as JsonMap,
+        ),
         ModLogType.moderatorAdded => null,
         ModLogType.moderatorRemoved => null,
         ModLogType.communityAdded => null,
@@ -166,10 +170,18 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.microblogPostRestored => null,
         ModLogType.microblogCommentDeleted => null,
         ModLogType.microblogCommentRestored => null,
-        ModLogType.ban => DetailedUserModel.fromLemmy(json['banned_person'] as JsonMap),
-        ModLogType.unban => DetailedUserModel.fromLemmy(json['banned_person'] as JsonMap),
-        ModLogType.moderatorAdded => DetailedUserModel.fromLemmy(json['modded_person'] as JsonMap),
-        ModLogType.moderatorRemoved => DetailedUserModel.fromLemmy(json['modded_person'] as JsonMap),
+        ModLogType.ban => DetailedUserModel.fromLemmy(
+          json['banned_person'] as JsonMap,
+        ),
+        ModLogType.unban => DetailedUserModel.fromLemmy(
+          json['banned_person'] as JsonMap,
+        ),
+        ModLogType.moderatorAdded => DetailedUserModel.fromLemmy(
+          json['modded_person'] as JsonMap,
+        ),
+        ModLogType.moderatorRemoved => DetailedUserModel.fromLemmy(
+          json['modded_person'] as JsonMap,
+        ),
         ModLogType.communityAdded => null,
         ModLogType.communityRemoved => null,
         ModLogType.postLocked => null,

@@ -240,15 +240,15 @@ class _LoadingIconButtonState extends State<LoadingIconButton> {
       onLongPress: _isLoading || widget.onLongPress == null
           ? null
           : () async {
-        setState(() => _isLoading = true);
-        try {
-          await widget.onLongPress!();
-        } catch (e) {
-          rethrow;
-        } finally {
-          if (mounted) setState(() => _isLoading = false);
-        }
-      },
+              setState(() => _isLoading = true);
+              try {
+                await widget.onLongPress!();
+              } catch (e) {
+                rethrow;
+              } finally {
+                if (mounted) setState(() => _isLoading = false);
+              }
+            },
       icon: _isLoading ? const _LoadingButtonIndicator() : widget.icon,
       style: widget.style,
       tooltip: widget.tooltip,

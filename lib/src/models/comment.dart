@@ -230,7 +230,8 @@ abstract class CommentModel with _$CommentModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (((json['saved'] as bool?) != null) ? json['saved'] as bool : false) '',
+        if (((json['saved'] as bool?) != null) ? json['saved'] as bool : false)
+          '',
       ],
       apId: lemmyComment['ap_id'] as String,
     );

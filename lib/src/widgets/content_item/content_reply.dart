@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -62,7 +63,7 @@ class _ContentReplyState extends State<ContentReply> {
       widget.draftResourceId,
     );
 
-    final reply = Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -132,35 +133,65 @@ class _ContentReplyState extends State<ContentReply> {
         ],
       ),
     );
+  }
+}
 
-    if (!widget.inline) {
-      final parent = Padding(
-        padding: const EdgeInsets.all(8),
-        child: Markdown(
-          widget.content.title ?? widget.content.body!,
-          widget.content.originInstance,
-          nsfw: widget.content.isNSFW,
+@RoutePage()
+class ContentReplyScreen extends StatelessWidget {
+  const ContentReplyScreen({
+    super.key,
+    this.inline = true,
+    required this.content,
+    required this.onReply,
+    required this.onComplete,
+    required this.draftResourceId,
+  });
+
+  final bool inline;
+  final ContentItem content;
+  final Future<void> Function(
+    String body,
+    String lang, {
+    XFile? image,
+    String? alt,
+  })
+  onReply;
+  final Function() onComplete;
+  final String draftResourceId;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          l(
+            context,
+          ).replying_toX(content.user?.name ?? content.contentTypeName),
         ),
-      );
-
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            l(context).replying_toX(
-              widget.content.user?.name ?? widget.content.contentTypeName,
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Markdown(
+                content.title ?? content.body!,
+                content.originInstance,
+                nsfw: content.isNSFW,
+              ),
             ),
           ),
-        ),
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: parent),
-            // SliverFillRemaining(child: reply),
-            SliverToBoxAdapter(child: reply),
-          ],
-        ),
-      );
-    } else {
-      return reply;
-    }
+          SliverToBoxAdapter(
+            child: ContentReply(
+              inline: false,
+              content: content,
+              onReply: onReply,
+              onComplete: onComplete,
+              draftResourceId: draftResourceId,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

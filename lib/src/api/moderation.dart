@@ -246,12 +246,13 @@ class APIModeration {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = communityId != null ? '/magazine/$communityId/log' : '/modlog';
+        final path = communityId != null
+            ? '/magazine/$communityId/log'
+            : '/modlog';
         final query = {
           'p': page,
-          if (type != ModLogType.all)
-            'types[0]': type.toMbin,
-          
+          if (type != ModLogType.all) 'types[0]': type.toMbin,
+
           // if type set to post or comment also include the corresponding type for microblogs
           if (type == ModLogType.postDeleted)
             'types[1]': ModLogType.microblogPostDeleted.toMbin,

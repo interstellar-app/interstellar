@@ -11,12 +11,16 @@ import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 
 import '../../../models/user.dart';
 
+@RoutePage()
 class MessageThreadScreen extends StatefulWidget {
   const MessageThreadScreen({
-    required this.threadId,
+    this.threadId,
+    @PathParam('userId') this.userId,
     this.otherUser,
     this.initData,
     this.onUpdate,
@@ -24,6 +28,7 @@ class MessageThreadScreen extends StatefulWidget {
   });
 
   final int? threadId;
+  final int? userId;
   final DetailedUserModel? otherUser;
   final MessageThreadModel? initData;
   final void Function(MessageThreadModel)? onUpdate;
@@ -77,12 +82,12 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
   void initState() {
     super.initState();
 
+    _otherUserId = widget.userId ?? widget.otherUser?.id;
     _threadId =
         widget.threadId ??
         (context.read<AppController>().serverSoftware != ServerSoftware.mbin
-            ? widget.otherUser?.id
+            ? _otherUserId
             : null);
-    _otherUserId = widget.otherUser?.id;
     _data = widget.initData;
 
     if (_data != null) {

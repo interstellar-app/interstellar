@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -18,11 +17,9 @@ class HideOnScroll extends StatefulWidget {
 
   @override
   State<HideOnScroll> createState() => _HideOnScrollState();
-
 }
 
 class _HideOnScrollState extends State<HideOnScroll> {
-
   bool _hidden = false;
 
   void _onScroll() {
@@ -54,5 +51,4 @@ class _HideOnScrollState extends State<HideOnScroll> {
     widget.controller?.removeListener(_onScroll);
     super.dispose();
   }
-
 }

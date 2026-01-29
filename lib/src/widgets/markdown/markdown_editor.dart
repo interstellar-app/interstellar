@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -238,50 +239,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   ),
                                 ),
                                 const Divider(height: 1, thickness: 1),
-                                Expanded(
-                                  child: CallbackShortcuts(
-                                    bindings: <ShortcutActivator, VoidCallback>{
-                                      const SingleActivator(
-                                        LogicalKeyboardKey.enter,
-                                      ): () => execAction(
-                                        const _MarkdownEditorActionEnter(),
-                                      ),
-                                      for (var action
-                                          in _actions(context).where(
-                                            (action) => action.shortcut != null,
-                                          ))
-                                        action.shortcut!: () =>
-                                            execAction(action.action),
-                                    },
-                                    child: TextField(
-                                      controller: widget.controller,
-                                      keyboardType: TextInputType.multiline,
-                                      minLines: 2,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.all(12),
-                                      ),
-                                      onChanged: (String value) {
-                                        widget.onChanged?.call(value);
-
-                                        draftDebounce.run(() async {
-                                          if (value.isNotEmpty) {
-                                            await widget.draftController.save(
-                                              value,
-                                            );
-                                          } else {
-                                            await widget.draftController
-                                                .discard();
-                                          }
-                                        });
-                                      },
-                                      enabled: widget.enabled,
-                                      focusNode: _focusNodeTextField,
-                                      autofocus: widget.autoFocus,
-                                    ),
-                                  ),
-                                ),
+                                _textbox(),
                               ],
                             );
                           case 1:
@@ -402,6 +360,45 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         ),
       ],
     );
+  }
+
+  Widget _textbox() {
+    final box = CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        const SingleActivator(LogicalKeyboardKey.enter): () =>
+            execAction(const _MarkdownEditorActionEnter()),
+        for (var action in _actions(
+          context,
+        ).where((action) => action.shortcut != null))
+          action.shortcut!: () => execAction(action.action),
+      },
+      child: TextField(
+        controller: widget.controller,
+        keyboardType: TextInputType.multiline,
+        minLines: 2,
+        maxLines: null,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(12),
+        ),
+        onChanged: (String value) {
+          widget.onChanged?.call(value);
+
+          draftDebounce.run(() async {
+            if (value.isNotEmpty) {
+              await widget.draftController.save(value);
+            } else {
+              await widget.draftController.discard();
+            }
+          });
+        },
+        enabled: widget.enabled,
+        focusNode: _focusNodeTextField,
+        autofocus: widget.autoFocus,
+      ),
+    );
+
+    return widget.inline ? Expanded(child: box) : Flexible(child: box);
   }
 }
 
@@ -1000,13 +997,13 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                         actions: [
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             child: Text(l(context).close),
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
 
                               widget.onApply();
                             },
@@ -1016,7 +1013,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
 
                               widget.onApply();
 
@@ -1115,7 +1112,7 @@ class _MarkdownEditorConfigShareDialogState
                   payload: profile.toJson(),
                 );
                 if (!context.mounted) return;
-                Navigator.pop(context, config.toMarkdown());
+                context.router.pop(config.toMarkdown());
               },
             ),
           ),
@@ -1140,7 +1137,7 @@ class _MarkdownEditorConfigShareDialogState
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
-                Navigator.pop(context, configStr);
+                context.router.pop(configStr);
               },
             ),
           ),
@@ -1163,7 +1160,7 @@ class _MarkdownEditorConfigShareDialogState
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
-                Navigator.pop(context, configStr);
+                context.router.pop(configStr);
               },
             ),
           ),

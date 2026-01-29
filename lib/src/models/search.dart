@@ -69,7 +69,9 @@ abstract class SearchListModel with _$SearchListModel {
 
     for (var post in json['posts']) {
       items.add(
-        PostModel.fromLemmy({'post_view': post as JsonMap}, langCodeIdPairs: langCodeIdPairs),
+        PostModel.fromLemmy({
+          'post_view': post as JsonMap,
+        }, langCodeIdPairs: langCodeIdPairs),
       );
     }
 
@@ -104,7 +106,9 @@ abstract class SearchListModel with _$SearchListModel {
 
     for (var post in json['posts']) {
       items.add(
-        PostModel.fromPiefed({'post_view': post as JsonMap}, langCodeIdPairs: langCodeIdPairs),
+        PostModel.fromPiefed({
+          'post_view': post as JsonMap,
+        }, langCodeIdPairs: langCodeIdPairs),
       );
     }
 

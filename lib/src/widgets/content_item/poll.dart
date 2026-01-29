@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -170,7 +171,7 @@ class _PollState extends State<Poll> {
                           title: Text(l(context).pollSubmitError),
                           actions: [
                             OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => context.router.pop(),
                               child: Text(l(context).cancel),
                             ),
                           ],

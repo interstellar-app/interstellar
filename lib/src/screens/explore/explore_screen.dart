@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -17,6 +18,7 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/models/feed.dart';
 
+@RoutePage()
 class ExploreScreen extends StatefulWidget {
   final ExploreType? mode;
   final int? id;
@@ -203,17 +205,19 @@ class _ExploreScreenState extends State<ExploreScreen>
                               type != ExploreType.topics),
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Symbols.search_rounded),
-                        suffixIcon: _searchController.text.isNotEmpty ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _searchController.clear();
-                            });
-                            searchDebounce.run(() {
-                              _pagingController.refresh();
-                            });
-                          },
-                          icon: const Icon(Symbols.clear_rounded),
-                        ) : null,
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _searchController.clear();
+                                  });
+                                  searchDebounce.run(() {
+                                    _pagingController.refresh();
+                                  });
+                                },
+                                icon: const Icon(Symbols.clear_rounded),
+                              )
+                            : null,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(24)),
@@ -490,6 +494,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           child: child,
         ),
         child: FloatingActionButton(
+          heroTag: 'explore_screen_floating',
           onPressed: () {
             _scrollController.animateTo(
               _scrollController.position.minScrollExtent,

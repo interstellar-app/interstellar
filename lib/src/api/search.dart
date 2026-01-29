@@ -21,7 +21,12 @@ class APISearch {
 
         final response = await client.get(
           path,
-          queryParams: {'p': page, 'q': search, 'authorId': userId?.toString(), 'magazineId': communityId?.toString()},
+          queryParams: {
+            'p': page,
+            'q': search,
+            'authorId': userId?.toString(),
+            'magazineId': communityId?.toString(),
+          },
         );
 
         return SearchListModel.fromMbin(response.bodyJson);

@@ -1,5 +1,5 @@
-import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:interstellar/src/models/image.dart';
 
 class Avatar extends StatelessWidget {
@@ -35,7 +35,7 @@ class Avatar extends StatelessWidget {
         backgroundImage: image == null
             ? const AssetImage('assets/icons/logo.png')
             : (image!.blurHash != null
-                  ? BlurhashFfiImage(image!.blurHash!) as ImageProvider<Object>
+                  ? BlurHashImage(image!.blurHash!)
                   : null),
         radius: radius,
       ),

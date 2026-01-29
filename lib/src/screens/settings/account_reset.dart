@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import './account_migration.dart';
 
+@RoutePage()
 class AccountResetScreen extends StatefulWidget {
   const AccountResetScreen({super.key});
 

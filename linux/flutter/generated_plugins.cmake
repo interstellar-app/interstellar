@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  desktop_webview_window
   dynamic_color
   file_selector_linux
   media_kit_libs_linux
@@ -12,10 +13,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   url_launcher_linux
   webcrypto
   window_manager
+  window_to_front
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  blurhash_ffi
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

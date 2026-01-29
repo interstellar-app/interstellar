@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/utils/share.dart';
@@ -6,6 +7,8 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../utils/router.gr.dart';
 
 void openWebpagePrimary(BuildContext context, Uri uri) {
   launchUrl(uri);
@@ -19,13 +22,12 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
       content: SelectableText(uri.toString()),
       actions: <Widget>[
         OutlinedButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.router.pop(),
           child: Text(l(context).cancel),
         ),
         FilledButton.tonal(
           onPressed: () {
-            Navigator.pop(context);
-
+            context.router.pop();
             shareUri(uri);
           },
           child: Text(l(context).share),
@@ -35,32 +37,26 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
             await Clipboard.setData(ClipboardData(text: uri.toString()));
 
             if (!context.mounted) return;
-            Navigator.pop(context);
+            context.router.pop();
           },
           label: Text(l(context).copy),
         ),
         if (isWebViewSupported)
           FilledButton.tonal(
             onPressed: () {
-              Navigator.pop(context);
+              context.router.pop();
 
               var controller = WebViewController()
                 ..setJavaScriptMode(JavaScriptMode.unrestricted)
                 ..loadRequest(uri);
 
-              pushRoute(
-                context,
-                builder: (context) => Scaffold(
-                  appBar: AppBar(),
-                  body: WebViewWidget(controller: controller),
-                ),
-              );
+              context.router.push(WebViewRoute(controller: controller));
             },
             child: Text(l(context).webView),
           ),
         FilledButton(
           onPressed: () {
-            Navigator.pop(context);
+            context.router.pop();
 
             launchUrl(uri);
           },
@@ -72,4 +68,19 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
       actionsOverflowDirection: VerticalDirection.up,
     ),
   );
+}
+
+@RoutePage()
+class WebViewScreen extends StatelessWidget {
+  const WebViewScreen({super.key, required this.controller});
+
+  final WebViewController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: WebViewWidget(controller: controller),
+    );
+  }
 }

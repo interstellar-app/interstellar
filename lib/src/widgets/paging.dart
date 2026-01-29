@@ -37,7 +37,7 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   PageKeyType? _nextPage;
   final PageKeyType _firstPage;
 
-  Logger _logger;
+  final Logger _logger;
 
   /// Keeps track of the current operation.
   /// If the operation changes during its execution, the operation is cancelled.

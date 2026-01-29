@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -6,6 +7,7 @@ import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class AccountMigrationScreen extends StatefulWidget {
   const AccountMigrationScreen({super.key});
 
