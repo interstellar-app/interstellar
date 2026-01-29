@@ -494,6 +494,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           child: child,
         ),
         child: FloatingActionButton(
+          heroTag: 'explore_screen_floating',
           onPressed: () {
             _scrollController.animateTo(
               _scrollController.position.minScrollExtent,

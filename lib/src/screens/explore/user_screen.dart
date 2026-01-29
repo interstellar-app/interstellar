@@ -492,6 +492,7 @@ class _UserScreenState extends State<UserScreen> {
           child: child,
         ),
         child: FloatingActionButton(
+          heroTag: 'user_screen_floating',
           onPressed: () {
             _scrollController.animateTo(
               _scrollController.position.minScrollExtent,
