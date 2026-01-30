@@ -49,4 +49,5 @@ app.*.map.json
 # Generated code
 *.freezed.dart
 *.g.dart
+*.gr.dart
 app_localizations*.dart

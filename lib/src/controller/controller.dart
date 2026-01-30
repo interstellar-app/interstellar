@@ -145,7 +145,7 @@ class AppController with ChangeNotifier {
       .write(MiscCacheCompanion(expandNavDomains: Value(value)));
 
   Future<File?> get logFile async {
-    if (kIsWeb) return null;
+    if (PlatformUtils.isWeb) return null;
     final logDir = await getApplicationSupportDirectory();
     final logFile = join(logDir.path, 'log.log');
     return File(logFile);
@@ -507,12 +507,8 @@ class AppController with ChangeNotifier {
           tokenEndpoint,
         );
 
-        final redirectUrl = PlatformUtils.isWeb
-            ? 'http://${Uri.base.host}:${Uri.base.port}/auth.html'
-            : redirectUri;
         final authorizationUrl = grant.getAuthorizationUrl(
-          // Uri.parse(redirectUri),
-          Uri.parse(redirectUrl),
+          Uri.parse(redirectUri),
           scopes: oauthScopes,
         );
 

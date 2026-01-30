@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/utils/globals.dart';
-import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/redirect_listen.dart';
 
 const oauthName = 'Interstellar';
@@ -24,10 +23,6 @@ const oauthScopes = [
 Future<String> registerOauthApp(String instanceHost) async {
   const path = '/api/client';
 
-  final redirectUrl = PlatformUtils.isWeb
-      ? 'http://${Uri.base.host}:${Uri.base.port}/auth.html'
-      : redirectUri;
-
   final response = await appHttpClient.post(
     Uri.https(instanceHost, path),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
@@ -35,7 +30,7 @@ Future<String> registerOauthApp(String instanceHost) async {
       'name': oauthName,
       'contactEmail': oauthContact,
       'public': true,
-      'redirectUris': [redirectUrl],
+      'redirectUris': [redirectUri],
       'grants': oauthGrants,
       'scopes': oauthScopes,
     }),

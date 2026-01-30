@@ -12,7 +12,9 @@ import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 const _redirectHost = 'localhost';
 const _redirectPort = 46837;
-const redirectUri = 'http://$_redirectHost:$_redirectPort';
+final redirectUri = PlatformUtils.isWeb
+    ? '${Uri.base.origin}/auth.html'
+    : 'http://$_redirectHost:$_redirectPort';
 
 @RoutePage()
 class RedirectListener extends StatefulWidget {
