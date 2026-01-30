@@ -12,6 +12,8 @@ jobs:
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
 
       - name: Run build_runner
         run: dart run build_runner build
