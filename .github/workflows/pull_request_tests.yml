@@ -1,11 +1,24 @@
 name: Pull request tests
 
-permissions:
-  contents: write
-
 on: pull_request
 
 jobs:
+  dart-analysis:
+    name: Dart analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+
+      - name: Run build_runner
+        run: dart run build_runner build
+
+      - name: Analyze Dart
+        uses: zgosalvez/github-actions-analyze-dart@v3
+
   test-android-build:
     name: Test android build
     runs-on: ubuntu-latest
