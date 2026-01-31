@@ -37,7 +37,7 @@
     "sort": "Ordenar por",
     "sortComments": "Ordenar comentários",
     "sort_active": "Ativo",
-    "sort_hot": "Mais vistos",
+    "sort_hot": "Popular",
     "sort_newest": "Mais recentes",
     "sort_oldest": "Mais antigos",
     "sort_top": "Mais lidos",
@@ -76,7 +76,7 @@
     "sort_controversial": "Controversos",
     "sort_scaled": "Outros",
     "feedView": "Visão do Feed",
-    "threads": "Sequências",
+    "threads": "Fios",
     "microblog": "Microblog",
     "combined": "Combinado",
     "stars": "Marcados",
@@ -91,5 +91,774 @@
     "subscriptions_domain": "Inscrição de domínios",
     "subscriptions_domain_all": "Todos as inscrições em domínios",
     "subscriptions_domain_empty": "Ainda não há nada, se inscriva em domínios para que apareçam aqui.",
-    "feeds": "Feeds"
+    "feeds": "Feeds",
+    "feeds_empty": "Ainda vazio. Crie um feed para aparecer aqui.",
+    "feeds_exist": "Feed existente",
+    "feeds_new": "Novo Feed",
+    "feeds_edit": "Editar feed {feed}",
+    "@feeds_edit": {
+        "placeholders": {
+            "feed": {
+                "type": "String"
+            }
+        }
+    },
+    "feeds_delete": "Excluir feed",
+    "feeds_input": "Adicionar entrada",
+    "feeds_import": "Importar Feed",
+    "feeds_selectInputs": "Selecione entradas",
+    "feeds_addTo": "Adicionar ao feed",
+    "topics": "Assuntos",
+    "topic": "Assunto",
+    "server": "Servidor",
+    "client": "Cliente",
+    "clientFeed": "Cliente do feed",
+    "clientFeedSubtitle": "Os registros do feed são gravados e arquivados localmente no dispositivo do usuário. Podendo ser usados em outras instâncias.",
+    "serverFeed": "Servidor do feed",
+    "serverFeedSubtitle": "Os registros do feed são gravados no servidor. Correspodendo a um feed do Piefed.",
+    "serverTopic": "Assuntos do servidor",
+    "serverTopicSubtitle": "Os registros do feed são gravados no servidor. Correspodendo a um tópico do Piefed.",
+    "color": "Cor",
+    "tags_new": "Nova tag",
+    "tags_exist": "Tag existente",
+    "tags_users": "Usuários marcados",
+    "tags_noUsers": "Nenhum usuário encontrado com essa tag. Atribuir uma tag a um usuário através de sua página de perfil para começar.",
+    "pickColor": "Escolha uma cor",
+    "post": "Postagens",
+    "postDeleted": "Post excluído",
+    "crossPosts": "Postagens cruzadas",
+    "crossPostCount": "{count} cross {count, plural, =1{post} other{posts}}",
+    "@crossPostCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "crossPostComments": "Origem dos comentários: {community}",
+    "@crossPostComments": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "comment": "Comentário",
+    "comments": "Comentários",
+    "commentDeleted": "Comentário excluído",
+    "commentBy": "Comentário por {username}",
+    "@commentBy": {
+        "placeholders": {
+            "username": {
+                "type": "String"
+            }
+        }
+    },
+    "comment_openOriginalPost": "OP aberto",
+    "comment_openRoot": "Root aberto",
+    "comment_openParent": "Superior aberto",
+    "openReplies": "Aberto {count} {conta, plural, =1{reply} outros{replies}}",
+    "@openReplies": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "search": "Busca",
+    "searchSource": "Busca {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "communities": "Comunidades",
+    "people": "Pessoas",
+    "domains": "Domínios",
+    "openInBrowser": "Abrir no Navegador",
+    "openItem": "Abrir {item}",
+    "@openItem": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "modsOf": "Mods de {community}",
+    "@modsOf": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "viewMods": "Ver moderadores",
+    "modPanel": "Painel de Mod",
+    "ownerPanel": "Painel do proprietário",
+    "reportStatus_any": "Todos",
+    "reportStatus_appeal": "Recurso",
+    "reportStatus_approved": "Aprovado",
+    "reportStatus_closed": "Fechado",
+    "reportStatus_pending": "Pendente",
+    "reportStatus_rejected": "Rejeitado",
+    "report_accept": "Aceitar",
+    "report_reject": "Rejeição",
+    "reportedUser": "Usuário reportado: ",
+    "reportedBy": "Relatório por: ",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "share": "Compartilhar",
+    "postingRestricted": "Postagem restrita a mods",
+    "owner": "Proprietário",
+    "account": "Conta",
+    "account_switch": "Trocar de conta",
+    "account_overview": "Visão geral",
+    "account_edit": "Editar perfil de conta",
+    "account_settings_about": "Sobre",
+    "account_settings_settings": "Configurações",
+    "account_settings_showNSFW": "Mostrar NSFW",
+    "account_settings_blurNSFW": "Esconder NSFW",
+    "account_settings_showReadPosts": "Mostrar postagens lidas",
+    "account_settings_showSubscribedUsers": "Mostrar usuários inscritos",
+    "account_settings_showSubscribedCommunities": "Mostrar comunidades inscritas",
+    "account_settings_showSubscribedDomains": "Mostrar domínios inscritos",
+    "account_settings_showProfileSubscriptions": "Mostrar publicamente perfis inscritos",
+    "account_settings_showProfileFollowings": "Mostrar seguidores de perfil publicamente",
+    "account_settings_notifyOnThread": "Notifique novos fios em comunidades inscritas",
+    "account_settings_notifyOnMicroblog": "Informe sobre novos microblogs em comunidades inscritas",
+    "account_settings_notifyOnThreadReply": "Notifique sobre comentários em fios autorizados",
+    "account_settings_notifyOnThreadCommentReply": "Notifique os comentários de resposta aos fios",
+    "account_settings_notifyOnMicroblogReply": "Notifique sobre comentários em microblogs autorizados",
+    "account_settings_notifyOnMicroblogCommentReply": "Notifique sobre respostas em comentários em microblog",
+    "inbox": "Caixa de entrada",
+    "notifications": "Notificações",
+    "notifications_readAll": "Marcar tudo como lido",
+    "notifications_registerPush": "Registrar para notificações push",
+    "notifications_unregisterPush": "Não registrar notificações push",
+    "messages": "Mensagens",
+    "newChat": "Novo chat",
+    "reply": "Responder",
+    "replying_toX": "Responder a {user}",
+    "@replying_toX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "send": "Enviar",
+    "notLoggedIn": "Não logado",
+    "settings": "Configurações",
+    "settings_behavior": "Comportamento",
+    "settings_display": "Exposição",
+    "settings_feedActions": "Ações do Feed",
+    "settings_feedDefaults": "Padrões do Feed",
+    "settings_notifications": "Notificações",
+    "settings_notificationsForX": "Notificações para {account}",
+    "@settings_notificationsForX": {
+        "placeholders": {
+            "account": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_debug": "Depuração",
+    "settings_about": "Sobre",
+    "settings_defaultCreateLanguage": "Idioma padrão de criação de postagens/comentários",
+    "settings_disableTabSwiping": "Desabilitar deslize de aba",
+    "settings_askBeforeUnsubscribing": "Pergunte antes de cancelar a inscrição / não seguir",
+    "settings_askBeforeDeleting": "Pergunte antes de excluir",
+    "settings_autoPlayVideos": "Auto reproduzir vídeos",
+    "settings_hapticFeedback": "Feedback tátil",
+    "settings_autoTranslate": "Auto traduzir postagens/comentários",
+    "settings_markThreadsReadOnScroll": "Marcar fios como lidos ao scrolar",
+    "settings_fullImageSizeThreads": "Tamanho de imagem completo para fios",
+    "settings_feedDefaults_threadsSort": "Ordenar fios",
+    "settings_markMicroblogsReadOnScroll": "Marcar microblogs como lidos ao scrolar",
+    "settings_animationSpeed": "Velocidade de animação",
+    "settings_animationDisabled": "Disabilitar",
+    "settings_inlineReplies": "Responder em linha",
+    "settings_crosspostComments": "Mostrar sessão de comentários de postagens cruzadas",
+    "settings_crossPostMarkAsRead": "Marcar postagens cruzadas como lidas",
+    "settings_imageStore": "Arquivo de imagens padrão",
+    "settings_defaultDownloadDir": "Diretório padrão de download",
+    "settings_themeMode": "Modo tema",
+    "settings_themeMode_system": "Sistema",
+    "settings_themeMode_light": "Claro",
+    "settings_themeMode_dark": "Escuro",
+    "settings_enableTrueBlack": "Habilitar preto verdadeiro",
+    "settings_enableTrueBlack_help": "Pode economizar energia em monitores AMOLED",
+    "settings_compactMode": "Modo compacto",
+    "settings_hideActionButtons": "Ocultar botões de ação",
+    "settings_hideActionButtons_help": "Esconde os botões de ação (votar, repostar, responder, etc.) abaixo de cada post e comentário. Os controles ainda são acessíveis no menu expandido. Recomenda-se permitir gestos de deslizamento em uníssono com esta configuração.",
+    "settings_hideFeedUIOnScroll": "Ocultar a interface do feed ao scrolar",
+    "settings_dividerThickness": "Espessura do divisor",
+    "settings_globalTextScale": "Escala de texto global",
+    "settings_alwaysShowInstance": "Sempre mostrar a instância",
+    "settings_alwaysShowInstance_help": "Quando ativado, a instância de um usuário/comunidade sempre será exibida após seu nome de usuário",
+    "settings_coverMediaMarkedSensitive": "Cobrir mídia marcada como sensível",
+    "settings_fullImageSizeMicroblogs": "Tamanho de imagem completo para microblogs",
+    "settings_postsAsCards": "Mostrar postagens como cartões",
+    "settings_postLayoutOrder": "Ordem de layout da postagem",
+    "settings_reduceAnimationMotion": "Reduzir o movimento em animações",
+    "settings_aboutInterstellar": "Sobre o Interstellar",
+    "settings_donate": "Doação",
+    "settings_contribute": "Contribuir",
+    "settings_translate": "Traduzir",
+    "settings_reportIssue": "Reportar problema",
+    "settings_matrixSpace": "Espaço de Matriz",
+    "settings_mbinCommunity": "Comunidade Mbin",
+    "settings_mbinConfigsCommunity": "Configs Compartilhar Comunidade",
+    "settings_colorScheme": "Esquema de cor",
+    "settings_colorScheme_dynamic": "Dinâmico (sistema)",
+    "settings_colorScheme_blue": "Azul",
+    "settings_colorScheme_indigo": "Indigo",
+    "settings_colorScheme_hippieBlue": "Azul Hippie",
+    "settings_colorScheme_aquaBlue": "Aqua Azul",
+    "settings_colorScheme_brandBlue": "Marca azul",
+    "settings_colorScheme_deepBlue": "Azul profundo",
+    "settings_colorScheme_sakura": "Sakura",
+    "settings_colorScheme_mandyRed": "Vermelho Mandy",
+    "settings_colorScheme_red": "Vermelho",
+    "settings_colorScheme_redWine": "Vinho Tinto",
+    "settings_colorScheme_purpleBrown": "Roxo marrom",
+    "settings_colorScheme_green": "Verde",
+    "settings_colorScheme_money": "Dinheiro",
+    "settings_colorScheme_jungle": "Selva",
+    "settings_colorScheme_greyLaw": "Lei Cinza",
+    "settings_colorScheme_wasabi": "Wasabi",
+    "settings_colorScheme_gold": "Ouro",
+    "settings_colorScheme_mango": "Mango",
+    "settings_colorScheme_amber": "Amber",
+    "settings_colorScheme_vesuviusBurn": "Vesúvio Burn",
+    "settings_colorScheme_deepPurple": "Roxo profundo",
+    "settings_colorScheme_ebonyClay": "Ebony Clay",
+    "settings_colorScheme_barossa": "Barossa",
+    "settings_colorScheme_shark": "Tubarão",
+    "settings_colorScheme_bigStone": "Pedra grande",
+    "settings_colorScheme_damask": "Damask",
+    "settings_colorScheme_bahamaBlue": "Bahama Azul",
+    "settings_colorScheme_mallardGreen": "Mallard Green",
+    "settings_colorScheme_espresso": "Espresso",
+    "settings_colorScheme_outerSpace": "Espaço exterior",
+    "settings_colorScheme_blueWhale": "Baleia azul",
+    "settings_colorScheme_sanJuanBlue": "San Juan Azul",
+    "settings_colorScheme_rosewood": "Madeira rosa",
+    "settings_colorScheme_blumineBlue": "Blumine Azul",
+    "settings_colorScheme_flutterDash": "Flutter Dash",
+    "settings_feedDefaults_view": "Visualização",
+    "settings_feedDefaults_filter": "Filtro",
+    "settings_feedDefaults_microblogSort": "Ordenar Microblog",
+    "settings_feedDefaults_combinedSort": "Ordenar por combinação",
+    "settings_feedDefaults_exploreSort": "Ordenar por exploração",
+    "settings_feedDefaults_commentSort": "Ordenar por comentário",
+    "settings_feedDefaults_hideReadPosts": "Ocultar postagens lidas",
+    "settings_feedSourceOrder": "Ordenar por fonte de feed",
+    "settings_feedViewOrder": "Ordenar por visualização de feed",
+    "settings_feedSortOrder": "Ordenar por tipo de feed",
+    "settings_swipeActionLeftShort": "Curto esquerdo",
+    "settings_swipeActionLeftLong": "Esquerda Longa",
+    "settings_swipeActionRightShort": "Curto direito",
+    "settings_swipeActionRightLong": "Direita longa",
+    "settings_enableSwipeActions": "Ativar ações de deslizamento",
+    "settings_swipeThreshold": "Limiar da ação de deslizamento",
+    "settings_debug_showErrors": "Mostrar erros",
+    "settings_debug_inspectDatabase": "Inspecionar banco de dados",
+    "settings_debug_exportDatabase": "Exportar banco de dados",
+    "settings_debug_importDatabase": "Importar banco de dados",
+    "settings_debug_clearDatabase": "Limpar banco de dados",
+    "settings_debug_clearAccounts": "Apagar contas",
+    "settings_debug_clearProfiles": "Apagar perfis",
+    "settings_debug_clearReadPosts": "Apagar postagens lidas",
+    "settings_debug_clearFeedCache": "Apagar cache de feeds",
+    "settings_debug_clearTags": "Apagar tags de usuários",
+    "settings_debug_log": "Logs",
+    "profiles": "Perfis",
+    "profile_switch": "Trocar de perfil",
+    "profile_main": "Perfil principal",
+    "profile_new": "Novo perfil",
+    "profile_edit": "Editar perfil",
+    "profile_import": "Importar perfil",
+    "profile_delete": "Excluir perfil",
+    "profile_name": "Nome",
+    "profile_setAsMain": "Definir como perfil principal",
+    "profile_setAsMain_help": "O perfil principal serve como base para todos os outros perfis. As alterações feitas a ele se aplicam a todos os perfis, a menos que uma configuração específica tenha sido substituída.",
+    "profile_autoSelect": "Selecione automaticamente no início do aplicativo",
+    "profile_autoSelectAccount": "Selecione automaticamente a conta quando o perfil estiver ativado",
+    "profile_autoSelectAccount_none": "Nenhuma",
+    "profile_about_title": "Sobre perfis",
+    "profile_about_body": "Os perfis permitem que você salve e alterne entre grupos de configurações facilmente. O perfil **main** serve como padrão, com outros perfis substituindo configurações específicas conforme necessário.\n\n# Modificando perfis\n\nPara alterar um perfil, mude para ele e ajuste as configurações. Atualmente, para redefinir uma configuração modificada de volta ao padrão, você deve excluir e recriar o perfil.\n\n## Configurações incluídas\n\n- Configurações de comportamento\n- Configurações de exibição\n- Ações de feed\n- Padrões de feed\n- Status de ativação da lista de filtros\n\n# # Opções adicionais\n\n- Trocar o perfil principal\n- Ativar automaticamente um perfil específico na inicialização\n- Mudar automaticamente para uma conta quando um determinado perfil é ativado\n\n\nSe você não usar perfis, basta ficar no perfil principal e o aplicativo funcionará como de costume.",
+    "unsupportedSoftware": "{host} está usando software não suportado",
+    "@unsupportedSoftware": {
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "originalPoster_short": "OP",
+    "originalPoster_long": "Postador original",
+    "pin": "Fixar",
+    "pinnedInCommunity": "Fixado em Comunidade",
+    "notSafeForWork_short": "NSFW",
+    "notSafeForWork_long": "Não seguro para o trabalho",
+    "notSafeForWork_mark": "Marcar NSFW",
+    "originalContent_short": "OC",
+    "originalContent_long": "Conteúdo original",
+    "createdAt": "Criado em {datetime}",
+    "@createdAt": {
+        "placeholders": {
+            "datetime": {
+                "type": "String"
+            }
+        }
+    },
+    "editedAt": "Editado em {datetime}",
+    "@editedAt": {
+        "placeholders": {
+            "datetime": {
+                "type": "String"
+            }
+        }
+    },
+    "expand": "Expandir",
+    "collapse": "Colapsar",
+    "moreFrom": "Mais de {name}",
+    "@moreFrom": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "report": "Reportar",
+    "reportX": "Reportar {name}",
+    "@reportX": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleteX": "Excluir {name}",
+    "@deleteX": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "editFlairs": "Editar toques",
+    "addFlair": "Adicionar toque",
+    "viewSource": "Ver Fonte",
+    "close": "Fechar",
+    "banUser": "Banir usuário",
+    "banUserX": "Banir {user}",
+    "@banUserX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "banUser_help": "Você está prestes a banir {user} de {community}.",
+    "@banUser_help": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            },
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "status": "Status",
+    "reason": "Razão",
+    "moderate": "Moderação",
+    "submit": "Submeter",
+    "alternativeSources": "Fontes alternativas",
+    "markdownEditor_heading": "Cabeçalho",
+    "markdownEditor_bold": "Negrito",
+    "markdownEditor_italic": "Itálico",
+    "markdownEditor_strikethrough": "Tachado",
+    "markdownEditor_inlineCode": "Código embutido",
+    "markdownEditor_codeBlock": "Código de bloqueio",
+    "markdownEditor_link": "Link",
+    "markdownEditor_image": "Imagem",
+    "markdownEditor_subscript": "Subscrito",
+    "markdownEditor_superscript": "Superinscrito",
+    "markdownEditor_quote": "Citação",
+    "markdownEditor_horizontalRule": "Regra horizontal",
+    "markdownEditor_bulletedList": "Lista de tópicos",
+    "markdownEditor_numberedList": "Lista numerada",
+    "markdownEditor_spoiler": "Spoiler",
+    "markdownEditor_edit": "Editar",
+    "markdownEditor_preview": "Prévia",
+    "markdownEditor_drafts": "Rascunhos",
+    "markdownEditor_drafts_manuallySave": "Salvar manualmente",
+    "markdownEditor_drafts_discardAll": "Descartar tudo",
+    "markdownEditor_drafts_apply": "Aplicar rascunho",
+    "markdownEditor_drafts_applyAndKeep": "Aplicar e manter",
+    "markdownEditor_drafts_applyAndDiscard": "Aplicar e descartar",
+    "markdownEditor_drafts_savedAutomatically": "Salvo automaticamente",
+    "markdownEditor_drafts_savedManually": "Salvo manualmente",
+    "uploadFromGallery": "Enviar da galeria",
+    "uploadFromCamera": "Enviar da câmera",
+    "openLink": "Abrir link",
+    "webView": "WebView",
+    "browser": "Navegador",
+    "continueInBrowser": "Continuar no navegador",
+    "continueInBrowser_manual": "Se o navegador não iniciar, clique para copiar e colar manualmente",
+    "redirectReceivedMessage": "Redirect recebido. Você pode fechar esta guia agora e voltar para o aplicativo.",
+    "create_text": "Texto",
+    "create_image": "Imagem",
+    "create_link": "Link",
+    "create_link_invalid": "Url é inválida",
+    "create_microblog": "Microblog",
+    "create_community": "Comunidade",
+    "microblog_communityHelperText": "Os padrões para a comunidade 'aleatória' para microblogs visto que é onde o Mbin armazena microblogs não categorizados.",
+    "selectCommunity": "Selecione uma comunidade ...",
+    "title": "Título",
+    "body": "Corpo",
+    "link": "Link",
+    "tags": "Tags",
+    "tags_hint": "Separado com espaços",
+    "language": "Idioma",
+    "community": "Comunidade",
+    "translate": "Traduzir",
+    "user": "Usuário",
+    "subscribe": "Inscrever-se",
+    "poll": "Enquete",
+    "addChoice": "Adicionar escolha",
+    "pollDuration": "Duração da enquete",
+    "pollDuration_minutes": "{count} {count, plural, =1{minute} outro{minutes}}",
+    "@pollDuration_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_hours": "{count} {count, plural, =1{hour} outro{hours}}",
+    "@pollDuration_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_days": "{count} {count, plural, =1{day} outro{days}}",
+    "@pollDuration_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollMode": "Permitir selecionar várias",
+    "pollShowResults": "Mostrar resultados",
+    "pollHideResults": "Ocultar resultados",
+    "pollSubmitError": "É preciso selecionar pelo menos uma escolha antes de enviar.",
+    "pollVotes": "{count} {count, plural, =1{vote} outro{votes}}",
+    "@pollVotes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_days": "Faltam {count} {count, plural, =1{day} other{days}}",
+    "@pollExpiry_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_hours": "Faltam {count} {count, plural, =1{hour} other{hours}}",
+    "@pollExpiry_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_minutes": "Faltam {count} {count, plural, =1{minute} other{minutes}}",
+    "@pollExpiry_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_seconds": "Faltam {count} {count, plural, =1{second} other{seconds}}",
+    "@pollExpiry_seconds": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "action_setLocation": "Definir local da ação",
+    "action_hide": "Esconder",
+    "action_appBar": "Barra de aplicativos",
+    "action_fabTap": "Toque em FAB",
+    "action_fabHold": "Segurar FAB",
+    "action_fabMenu": "Menu FAB",
+    "action_tabs": "Abas",
+    "action_backToTop": "Voltar ao topo",
+    "action_createNew": "Criar novo ...",
+    "action_expandFABMenu": "Expandir o menu FAB",
+    "action_refresh": "Atualizar",
+    "action_setFilter": "Definir filtro",
+    "action_setSort": "Ordenar por",
+    "action_setView": "Definir visualização",
+    "action_showReadPosts": "Mostrar postagens lidas",
+    "action_upvote": "Votos a favor",
+    "action_downvote": "Votos negativos",
+    "action_boost": "Repostar",
+    "action_bookmark": "Favoritos",
+    "action_reply": "Responder",
+    "action_markRead": "Marcar como lido",
+    "action_markUnread": "Marcar como não lido",
+    "action_moderatePin": "Fixar postagem",
+    "action_moderateMarkNSFW": "Marcar NSFW",
+    "action_moderateDelete": "Deletar Mod",
+    "action_moderateBan": "Banir",
+    "save": "Salvar",
+    "saveChanges": "Salvar alterações",
+    "searchTheFediverse": "Pesquisar no fediverso",
+    "languages": "Idiomas",
+    "systemLanguage": "Idioma do sistema",
+    "settings_appLanguage": "Idioma do App",
+    "pointsX": "{num} Pontos",
+    "@pointsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "commentsX": "{num} Comentários",
+    "@commentsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "filterLists": "Listas de filtros",
+    "filterList_activateFilter": "Ativar filtro",
+    "filterList_new": "Nova lista de filtros",
+    "filterList_edit": "Editar lista de filtros",
+    "filterList_import": "Importar lista de filtros",
+    "filterList_delete": "Excluir lista de filtros",
+    "filterList_name": "Nome",
+    "filterList_phrases": "Frases",
+    "filterList_addPhrase": "Adicionar frase",
+    "filterList_showWithContentWarning": "Mostrar como conteúdo sensível",
+    "filterList_matchMode": "Modo de correspondência",
+    "filterList_matchMode_simple": "Simples",
+    "filterList_matchMode_simple_help": "Irá literalmente corresponder a qualquer ocorrência da frase. Por exemplo, a frase \"app\" vai combinar \"app\", e também \"apps\", \"applicação\", \"yapp\", etc.",
+    "filterList_matchMode_wholeWords": "Palavras inteiras",
+    "filterList_matchMode_wholeWords_help": "Só corresponderá se houver um limite de palavras em ambas as extremidades do texto verificado, em outras palavras, a frase deve ser toda a palavra e não pode estar no meio de uma palavra. Por exemplo, a frase \"app\" corresponderá a \"app\", mas não \"apps\", \"applicação\", \"yapp\", etc.",
+    "filterList_matchMode_regex": "Expressão regular",
+    "filterList_matchMode_regex_help": "Irá combinar o conteúdo que é encontrado pela expressão regular especificada, que é derivado da frase.",
+    "filterList_caseSensitive": "Caso sensível",
+    "filterList_caseSensitive_help": "Quando ativado, só corresponderá ao conteúdo com o mesmo formato que a frase.",
+    "filterListWarningX": "Lista de filtros encontrados: {lists}",
+    "@filterListWarningX": {
+        "placeholders": {
+            "lists": {
+                "type": "String"
+            }
+        }
+    },
+    "confirmUnsubscribe": "Você está prestes a se desinscrever. Deseja continuar?",
+    "confirmUnfollow": "Você está prestes a deixar de seguir. Continuar?",
+    "altText": "Texto alternativo",
+    "settings_dataUtilities": "BETA: Utilitários de dados",
+    "settings_accountMigration": "Migração da conta",
+    "settings_accountMigration_help": "Migrar inscrições, contas seguidas e bloqueios entre contas",
+    "settings_accountMigration_step1": "Selecionar contas de origem e destinação",
+    "settings_accountMigration_step1_source": "Conta de origem",
+    "settings_accountMigration_step1_destination": "Conta de destino",
+    "settings_accountMigration_step2": "Habilitar/desativar categorias de migração",
+    "settings_accountMigration_step2_migrateCommunitySubscriptions": "Migrar inscrições em comunidades",
+    "settings_accountMigration_step2_migrateCommunityBlocks": "Migrar comunidades bloqueadas",
+    "settings_accountMigration_step2_migrateUserFollows": "Migrar usuários seguidos",
+    "settings_accountMigration_step2_migrateUserBlocks": "Migrar usuários bloqueados",
+    "settings_accountMigration_step3": "Confirmar migração de dados",
+    "settings_accountMigration_readingFromSource": "Lendo conta de origem",
+    "settings_accountMigration_writingFromSource": "Registrando na conta de destino",
+    "settings_accountMigration_complete": "O processo de migração foi finalizado!",
+    "settings_accountMigration_failed": "A migração da conta falhou devido a um erro",
+    "settings_accountMigration_foundXItems": "{count} Itens encontrados",
+    "@settings_accountMigration_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountMigration_completeXItems": "Itens {current}/{total} finalizados",
+    "@settings_accountMigration_completeXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountMigration_failedXItems": "Itens {current}/{total} falharam",
+    "@settings_accountMigration_failedXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset": "Reiniciar a conta",
+    "settings_accountReset_help": "Remover inscrições, usuários seguidos e bloqueios de uma conta",
+    "settings_accountReset_step1": "Selecione a conta",
+    "settings_accountReset_step2": "Habilitar/desativar categorias a serem resetadas",
+    "settings_accountReset_step2_resetCommunitySubscriptions": "Resetar inscrições em comunidades",
+    "settings_accountReset_step2_resetCommunityBlocks": "Resetar bloqueios de comunidades",
+    "settings_accountReset_step2_resetUserFollows": "Resetar usuários seguidos",
+    "settings_accountReset_step2_resetUserBlocks": "Resetar usuários bloqueados",
+    "settings_accountReset_step3": "Confirmar redefinição de dados",
+    "settings_accountReset_readingFromAccount": "Lendo conta de origem",
+    "settings_accountReset_removingItems": "Removendo itens",
+    "settings_accountReset_complete": "Reinicialização da conta completa!",
+    "settings_accountReset_failed": "A reinicialização da conta falhou devido a um erro",
+    "settings_accountReset_foundXItems": "{count} Itens encontrados",
+    "@settings_accountReset_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset_completeXItems": "Itens {current}/{total} finalizados",
+    "@settings_accountReset_completeXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset_failedXItems": "Itens {current}/{total} falharam",
+    "@settings_accountReset_failedXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "notificationControlStatus_default": "Notificações atuais",
+    "notificationControlStatus_muted": "Notificações desativadas",
+    "notificationControlStatus_loud": "Notificações de atenção",
+    "bookmark": "Favoritos",
+    "bookmark_addToX": "Adicionar a {name}",
+    "bookmark_removeFromX": "Remover de {name}",
+    "bookmarks": "Favoritos",
+    "bookmarkLists": "Listas de favoritos",
+    "bookmarkLists_create": "Criar lista",
+    "bookmarkLists_setDefault": "Definir como padrão",
+    "bookmarkLists_createHint": "Nome da lista nova",
+    "configShare": "Compartilhar configuração",
+    "configShare_profile_title": "Perfil interestelar",
+    "configShare_profile_info": "Modifica {count} configurações",
+    "@configShare_profile_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_filterList_title": "Lista de filtro interestelar",
+    "configShare_filterList_info": "Contém {count} frases",
+    "@configShare_filterList_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_feed_title": "Feed interstellar",
+    "configShare_feed_info": "Contém {count} entradas",
+    "@configShare_feed_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_created": "Criado {date} com {version}",
+    "@configShare_created": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            },
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "errorPage_firstPage": "Algo de errado aconteceu",
+    "errorPage_firstPage_button": "Tente novamente",
+    "errorPage_newPage": "Algo correu mal. Toque para tentar novamente.",
+    "errorPage_caughtUp": "Você está a par de tudo.\nCarregar itens mais antigos?",
+    "errorPage_authError": "Parece que houve um problema com a autorização da conta.\nPressione o botão abaixo para atualizar a autorização.",
+    "exitMessage": "Pressione novamente para sair.",
+    "pushNotificationsDialog_title": "Notificações de push",
+    "pushNotificationsDialog_noDistributor": "Você precisa instalar um distribuidor UnifiedPush para que as notificações push funcionem.\nVocê pode encontrar mais informações em: {url}",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_selectDistributor": "Selecione o distribuidor push",
+    "crossPost": "Postagens cruzadas",
+    "modlog": "Modificação",
+    "modlog_deletedPost": "Postagem deletada",
+    "modlog_restoredPost": "Postagem restaurada",
+    "modlog_deletedComment": "Comentário excluído",
+    "modlog_restoredComment": "Comentário restaurado",
+    "modlog_pinnedPost": "Postagem fixada",
+    "modlog_unpinnedPost": "Postagem desfixada",
+    "modlog_bannedUser": "Usuário banido",
+    "modlog_unbannedUser": "Usuário reintegrado",
+    "modlog_addModerator": "Moderador adicionado",
+    "modlog_removedModerator": "Moderador removido",
+    "modlog_reason": "Razão: {reason}",
+    "@modlog_reason": {
+        "placeholders": {
+            "reason": {
+                "type": "String"
+            }
+        }
+    },
+    "modlog_all": "Todos",
+    "modlog_communityAdded": "Comunidade adicionada",
+    "modlog_communityRemoved": "Comunidade removida",
+    "modlog_postLocked": "Postagem fechada",
+    "modlog_postUnlocked": "Postagem reaberta"
 }
