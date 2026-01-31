@@ -58,6 +58,7 @@ class _CommunityPickerState extends State<CommunityPicker> {
                   helperText: widget.microblogMode
                       ? l(context).microblog_communityHelperText
                       : null,
+                  helperMaxLines: 3,
                 ),
                 focusNode: focusNode,
                 onSubmitted: (_) => onFieldSubmitted(),
