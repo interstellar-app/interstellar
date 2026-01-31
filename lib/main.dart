@@ -12,13 +12,18 @@ import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 
 import 'src/app.dart';
 import 'src/init_push_notifications.dart';
 
-void main() async {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
+
+  if (runWebViewTitleBarWidget(args)) {
+    return;
+  }
 
   appVersion = (await PackageInfo.fromPlatform()).version;
   appHttpClient = UserAgentHttpClient('Interstellar/$appVersion');

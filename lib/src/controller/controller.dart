@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -20,8 +19,6 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
-import 'package:interstellar/src/utils/router.gr.dart';
-import 'package:interstellar/src/widgets/redirect_listen.dart' show redirectUri;
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:path/path.dart';
@@ -512,16 +509,35 @@ class AppController with ChangeNotifier {
           scopes: oauthScopes,
         );
 
-        if (!context!.mounted) return;
-        Map<String, String>? result = await context.router.push(
-          RedirectListener(initUri: authorizationUrl, title: server),
-        );
+        // Technically not needed on linux however I get an error when using the webview. The error is
+        // embedder.cc (2575): 'FlutterEngineRemoveView' returned 'kInvalidArguments'. Remove view info was invalid. The implicit view cannot be removed.
+        HttpServer? httpServer;
+        if (PlatformUtils.isDesktop) {
+          httpServer = await HttpServer.bind(redirectHost, redirectPort);
+          httpServer.listen((req) async {
+            req.response.statusCode = 200;
+            req.response.headers.set('content-type', 'text/plain');
+            req.response.writeln(l(context!).redirectReceivedMessage);
 
-        if (result == null || !result.containsKey('code')) {
+            await req.response.close();
+          });
+        }
+
+
+        final callbackUrlScheme = PlatformUtils.isWeb ? Uri.base.scheme : PlatformUtils.isMobile ? 'interstellar' : redirectUri;
+        final result = Uri.parse(await FlutterWebAuth2.authenticate(
+          url: authorizationUrl.toString(),
+          callbackUrlScheme: callbackUrlScheme,
+          options: FlutterWebAuth2Options(
+            useWebview: !PlatformUtils.isDesktop
+          )
+        )).queryParameters;
+
+        httpServer?.close();
+
+        if (!result.containsKey('code')) {
           throw Exception(
-            result?['message'] != null
-                ? result!['message']
-                : 'unsuccessful login',
+            result['message'] ?? 'unsuccessful login',
           );
         }
 

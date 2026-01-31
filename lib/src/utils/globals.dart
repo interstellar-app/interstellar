@@ -9,3 +9,9 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
 
 late final String appVersion;
 late final http.Client appHttpClient;
+
+const redirectHost = 'localhost';
+const redirectPort = 46837;
+final redirectUri = PlatformUtils.isWeb
+    ? '${Uri.base.origin}/auth.html'
+    : PlatformUtils.isMobile ? 'interstellar://redirect' : 'http://$redirectHost:$redirectPort';

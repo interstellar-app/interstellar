@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/utils/globals.dart';
-import 'package:interstellar/src/widgets/redirect_listen.dart';
 
 const oauthName = 'Interstellar';
 const oauthContact = 'appstore@jwr.one';
