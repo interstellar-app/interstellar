@@ -5,7 +5,7 @@ import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
-import 'package:interstellar/src/utils/router.dart';
+import 'package:interstellar/src/controller/router.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:intl/locale.dart' as intl_locale;

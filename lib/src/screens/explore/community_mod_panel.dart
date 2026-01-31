@@ -1,12 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
-import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/api/community_moderation.dart';

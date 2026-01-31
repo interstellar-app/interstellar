@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart';
@@ -10,7 +11,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/controller/database.dart';
-import 'package:interstellar/src/utils/router.gr.dart';
 
 import 'package:interstellar/src/utils/sqlite/sqlite.dart'
     if (dart.library.io) 'package:interstellar/src/utils/sqlite/sqlite_native.dart'

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
-import '../controller/database.dart';
+import 'database.dart';
 import 'router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')

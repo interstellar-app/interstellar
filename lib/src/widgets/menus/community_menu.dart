@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
@@ -13,7 +14,6 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/utils/router.gr.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 

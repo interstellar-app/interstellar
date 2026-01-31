@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/utils/router.gr.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';

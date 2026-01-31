@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/utils/router.gr.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/api/feed_source.dart';
