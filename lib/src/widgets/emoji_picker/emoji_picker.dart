@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/widgets/emoji_picker/emoji_class.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
@@ -12,7 +13,6 @@ import 'package:provider/provider.dart';
 import './emojis.g.dart';
 
 // TODO: Allow custom emoji groups (quick access, and server specific emojis)
-// TODO: If screen is too narrow, split emoji groups across two lines
 
 final emojiGroupIcons = [
   Symbols.emoji_emotions_rounded,
@@ -132,8 +132,12 @@ class _EmojiPickerState extends State<EmojiPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = Breakpoints.isCompact(context);
+
     const double buttonSize = 40;
-    final int buttonsWide = emojiGroups.length;
+    final int buttonsWide = isCompact
+        ? (emojiGroups.length / 2).ceil()
+        : emojiGroups.length;
 
     final buttonStyle = IconButton.styleFrom(
       fixedSize: const Size.square(buttonSize),
@@ -151,115 +155,117 @@ class _EmojiPickerState extends State<EmojiPicker> {
       menuChildren: [
         Card(
           margin: EdgeInsets.all(8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Symbols.search_rounded),
-                  suffixIcon: IconButton(
-                    onPressed: _searchController.text.isEmpty
-                        ? null
-                        : () {
-                            _searchController.text = '';
-                            _searchEmojis();
-                          },
-                    icon: Icon(Symbols.close_rounded),
-                    disabledColor: Theme.of(context).disabledColor,
+          child: SizedBox(
+            width: buttonSize * buttonsWide,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Symbols.search_rounded),
+                    suffixIcon: IconButton(
+                      onPressed: _searchController.text.isEmpty
+                          ? null
+                          : () {
+                              _searchController.text = '';
+                              _searchEmojis();
+                            },
+                      icon: Icon(Symbols.close_rounded),
+                      disabledColor: Theme.of(context).disabledColor,
+                    ),
+                    border: const OutlineInputBorder(),
+                    hintText: l(context).search,
                   ),
-                  border: const OutlineInputBorder(),
-                  hintText: l(context).search,
+                  onChanged: (newSearch) => _searchDebounce.run(_searchEmojis),
                 ),
-                onChanged: (newSearch) => _searchDebounce.run(_searchEmojis),
-              ),
-              SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 2,
-                      color: Theme.of(context).dividerColor,
+                SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        width: 2,
+                        color: Theme.of(context).dividerColor,
+                      ),
                     ),
                   ),
-                ),
-                child: Row(
-                  children: emojiGroups
-                      .asMap()
-                      .entries
-                      .map(
-                        (group) => IconButton(
-                          onPressed: _emojis[group.key].isEmpty
-                              ? null
-                              : () => _scrollToEmojiGroup(group.key),
-                          icon: Icon(
-                            emojiGroupIcons[group.key],
-                            size: 24,
-                            weight: _visibleEmojiGroups.contains(group.key)
-                                ? 800
-                                : 400,
+                  child: Wrap(
+                    children: emojiGroups
+                        .asMap()
+                        .entries
+                        .map(
+                          (group) => IconButton(
+                            onPressed: _emojis[group.key].isEmpty
+                                ? null
+                                : () => _scrollToEmojiGroup(group.key),
+                            icon: Icon(
+                              emojiGroupIcons[group.key],
+                              size: 24,
+                              weight: _visibleEmojiGroups.contains(group.key)
+                                  ? 800
+                                  : 400,
+                            ),
+                            color: _visibleEmojiGroups.contains(group.key)
+                                ? Theme.of(context).primaryColor
+                                : null,
+                            style: buttonStyle,
+                            tooltip: group.value,
                           ),
-                          color: _visibleEmojiGroups.contains(group.key)
-                              ? Theme.of(context).primaryColor
-                              : null,
-                          style: buttonStyle,
-                          tooltip: group.value,
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: buttonSize * buttonsWide,
-                height: 300,
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    for (
-                      var groupIndex = 0;
-                      groupIndex < emojiGroups.length;
-                      groupIndex++
-                    )
-                      if (_emojis[groupIndex].isNotEmpty) ...[
-                        SliverToBoxAdapter(
-                          key: _emojiGroupGlobalKeys[groupIndex],
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8, left: 4),
-                            child: Text(
-                              emojiGroups[groupIndex],
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                SizedBox(
+                  height: 300,
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      for (
+                        var groupIndex = 0;
+                        groupIndex < emojiGroups.length;
+                        groupIndex++
+                      )
+                        if (_emojis[groupIndex].isNotEmpty) ...[
+                          SliverToBoxAdapter(
+                            key: _emojiGroupGlobalKeys[groupIndex],
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8, left: 4),
+                              child: Text(
+                                emojiGroups[groupIndex],
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
-                        ),
-                        SliverGrid.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: buttonsWide,
-                              ),
-                          itemCount: _emojis[groupIndex].length,
-                          itemBuilder: (context, index) {
-                            final emoji = _emojis[groupIndex][index];
+                          SliverGrid.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: buttonsWide,
+                                ),
+                            itemCount: _emojis[groupIndex].length,
+                            itemBuilder: (context, index) {
+                              final emoji = _emojis[groupIndex][index];
 
-                            return IconButton(
-                              onPressed: () {
-                                _menuController.close();
-                                widget.onSelect(emoji.unicode);
-                              },
-                              icon: Text(
-                                emoji.unicode,
-                                style: TextStyle(fontSize: 24),
-                              ),
-                              style: buttonStyle,
-                              tooltip: emoji.label,
-                            );
-                          },
-                        ),
-                      ],
-                  ],
+                              return IconButton(
+                                onPressed: () {
+                                  _menuController.close();
+                                  widget.onSelect(emoji.unicode);
+                                },
+                                icon: Text(
+                                  emoji.unicode,
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                                style: buttonStyle,
+                                tooltip: emoji.label,
+                              );
+                            },
+                          ),
+                        ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
