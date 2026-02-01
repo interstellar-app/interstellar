@@ -509,31 +509,12 @@ class AppController with ChangeNotifier {
           scopes: oauthScopes,
         );
 
-        // Technically not needed on linux however I get an error when using the webview. The error is
-        // embedder.cc (2575): 'FlutterEngineRemoveView' returned 'kInvalidArguments'. Remove view info was invalid. The implicit view cannot be removed.
-        HttpServer? httpServer;
-        if (PlatformUtils.isDesktop) {
-          httpServer = await HttpServer.bind(redirectHost, redirectPort);
-          httpServer.listen((req) async {
-            req.response.statusCode = 200;
-            req.response.headers.set('content-type', 'text/plain');
-            req.response.writeln(l(context!).redirectReceivedMessage);
-
-            await req.response.close();
-          });
-        }
-
-
         final callbackUrlScheme = PlatformUtils.isWeb ? Uri.base.scheme : PlatformUtils.isMobile ? 'interstellar' : redirectUri;
         final result = Uri.parse(await FlutterWebAuth2.authenticate(
           url: authorizationUrl.toString(),
           callbackUrlScheme: callbackUrlScheme,
-          options: FlutterWebAuth2Options(
-            useWebview: !PlatformUtils.isDesktop
-          )
+          options: FlutterWebAuth2Options(useWebview: false)
         )).queryParameters;
-
-        httpServer?.close();
 
         if (!result.containsKey('code')) {
           throw Exception(
