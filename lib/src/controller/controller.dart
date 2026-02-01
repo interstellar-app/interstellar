@@ -142,7 +142,7 @@ class AppController with ChangeNotifier {
       .write(MiscCacheCompanion(expandNavDomains: Value(value)));
 
   Future<File?> get logFile async {
-    if (PlatformUtils.isWeb) return null;
+    if (PlatformIs.web) return null;
     final logDir = await getApplicationSupportDirectory();
     final logFile = join(logDir.path, 'log.log');
     return File(logFile);
@@ -509,17 +509,21 @@ class AppController with ChangeNotifier {
           scopes: oauthScopes,
         );
 
-        final callbackUrlScheme = PlatformUtils.isWeb ? Uri.base.scheme : PlatformUtils.isMobile ? 'interstellar' : redirectUri;
-        final result = Uri.parse(await FlutterWebAuth2.authenticate(
-          url: authorizationUrl.toString(),
-          callbackUrlScheme: callbackUrlScheme,
-          options: FlutterWebAuth2Options(useWebview: false)
-        )).queryParameters;
+        final callbackUrlScheme = PlatformIs.web
+            ? Uri.base.scheme
+            : PlatformIs.mobile
+            ? 'interstellar'
+            : redirectUri;
+        final result = Uri.parse(
+          await FlutterWebAuth2.authenticate(
+            url: authorizationUrl.toString(),
+            callbackUrlScheme: callbackUrlScheme,
+            options: FlutterWebAuth2Options(useWebview: false),
+          ),
+        ).queryParameters;
 
         if (!result.containsKey('code')) {
-          throw Exception(
-            result['message'] ?? 'unsuccessful login',
-          );
+          throw Exception(result['message'] ?? 'unsuccessful login');
         }
 
         final client = await grant.handleAuthorizationResponse(result);

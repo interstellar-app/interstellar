@@ -65,7 +65,7 @@ class _LogConsoleState extends State<LogConsole> {
           ),
           IconButton(
             onPressed: () async {
-              final useBytes = PlatformUtils.isMobile;
+              final useBytes = PlatformIs.mobile;
               String? filePath;
               try {
                 filePath = await FilePicker.platform.saveFile(

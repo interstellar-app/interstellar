@@ -250,7 +250,7 @@ class _CreateScreenState extends State<CreateScreen> {
             key: Key(index.toString()),
             title: TextEditor(_pollOptions[index]),
             trailing: Wrapper(
-              shouldWrap: PlatformUtils.isMobile,
+              shouldWrap: PlatformIs.mobile,
               parentBuilder: (child) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [child, const Icon(Symbols.drag_handle_rounded)],

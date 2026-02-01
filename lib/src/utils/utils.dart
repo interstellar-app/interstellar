@@ -329,13 +329,15 @@ Future<void> pushRoute(
 }
 
 // apparently Platform is unsupported on web so have to check for web before checking specific platform
-class PlatformUtils {
-  static const bool isWeb = kIsWeb;
-  static final bool isAndroid = !isWeb && Platform.isAndroid;
-  static final bool isIOS = !isWeb && Platform.isIOS;
-  static final bool isLinux = !isWeb && Platform.isLinux;
-  static final bool isMacOS = !isWeb && Platform.isMacOS;
-  static final bool isWindows = !isWeb && Platform.isWindows;
-  static final bool isMobile = isAndroid || isIOS;
-  static final bool isDesktop = isLinux || isMacOS || isWindows;
+class PlatformIs {
+  static const bool web = kIsWeb;
+
+  static final bool android = !web && Platform.isAndroid;
+  static final bool iOS = !web && Platform.isIOS;
+  static final bool linux = !web && Platform.isLinux;
+  static final bool macOS = !web && Platform.isMacOS;
+  static final bool windows = !web && Platform.isWindows;
+
+  static final bool mobile = android || iOS;
+  static final bool desktop = linux || macOS || windows;
 }

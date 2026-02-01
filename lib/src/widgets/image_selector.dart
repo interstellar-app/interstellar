@@ -52,7 +52,7 @@ class _ImageSelectorState extends State<ImageSelector> {
                     icon: const Icon(Symbols.image_rounded),
                   ),
                 ),
-                if (PlatformUtils.isMobile)
+                if (PlatformIs.mobile)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                     child: IconButton(

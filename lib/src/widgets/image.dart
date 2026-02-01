@@ -182,7 +182,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
             },
             icon: const Icon(Symbols.download_rounded),
           ),
-          if (!PlatformUtils.isLinux)
+          if (!PlatformIs.linux)
             LoadingIconButton(
               onPressed: () async => await shareFile(
                 Uri.parse(widget.image.src),

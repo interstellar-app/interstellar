@@ -67,7 +67,7 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
                   PostComponent.flairs => Symbols.flag_rounded,
                 }),
                 title: Text(item.name.capitalize),
-                trailing: PlatformUtils.isMobile
+                trailing: PlatformIs.mobile
                     ? const Icon(Symbols.drag_handle_rounded)
                     : null,
               ),

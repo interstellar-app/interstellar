@@ -59,7 +59,7 @@ class _NotificationSettingsScreenState
       ),
       body: ListView(
         children: [
-          if (PlatformUtils.isAndroid) ...[
+          if (PlatformIs.android) ...[
             ListTileSwitch(
               leading: const Icon(Symbols.notifications_active_rounded),
               title: Text(

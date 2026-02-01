@@ -484,7 +484,7 @@ Future<void> deleteTables() async {
 }
 
 Future<bool> migrateDatabase() async {
-  if (PlatformUtils.isWeb) return false;
+  if (PlatformIs.web) return false;
   final dir = await getApplicationSupportDirectory();
   final dbPath = join(dir.path, 'database');
   if (!await File(dbPath).exists()) {

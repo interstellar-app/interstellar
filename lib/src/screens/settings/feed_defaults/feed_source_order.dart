@@ -59,7 +59,7 @@ class _FeedSourceOrderSettingsScreen
                 key: Key(item.index.toString()),
                 leading: Icon(item.icon),
                 title: Text(item.name.capitalize),
-                trailing: PlatformUtils.isMobile
+                trailing: PlatformIs.mobile
                     ? const Icon(Symbols.drag_handle_rounded)
                     : null,
               ),

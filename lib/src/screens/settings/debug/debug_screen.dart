@@ -41,7 +41,7 @@ class DebugSettingsScreen extends StatelessWidget {
             title: Text(l(context).settings_debug_inspectDatabase),
             onTap: () => context.router.push(NamedRoute('DriftDbViewer')),
           ),
-          if (!PlatformUtils.isWeb) ...[
+          if (!PlatformIs.web) ...[
             ListTile(
               title: Text(l(context).settings_debug_exportDatabase),
               onTap: () async {

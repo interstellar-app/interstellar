@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 Future<ShareResult> shareUri(Uri uri) async {
-  if (PlatformUtils.isMobile) {
+  if (PlatformIs.mobile) {
     return await Share.shareUri(uri);
   } else {
     return await Share.share(uri.toString());
@@ -36,7 +36,7 @@ Future<void> downloadFile(
   final response = await http.get(uri);
 
   // Whether to use bytes property or need to manually write file
-  final useBytes = PlatformUtils.isMobile;
+  final useBytes = PlatformIs.mobile;
 
   String? filePath;
   if (defaultDir == null) {

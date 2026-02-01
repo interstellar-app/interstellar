@@ -30,7 +30,7 @@ void main(List<String> args) async {
 
   await initDatabase();
 
-  if (PlatformUtils.isDesktop) {
+  if (PlatformIs.desktop) {
     await windowManager.ensureInitialized();
 
     // Get smallest dimensions of available displays and set minimum window
@@ -80,7 +80,7 @@ void main(List<String> args) async {
     return false;
   };
 
-  if (PlatformUtils.isAndroid) {
+  if (PlatformIs.android) {
     await initPushNotifications(ac);
   }
 
