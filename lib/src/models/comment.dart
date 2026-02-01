@@ -333,9 +333,11 @@ abstract class CommentModel with _$CommentModel {
         if (json['saved'] as bool) '',
       ],
       apId: piefedComment['ap_id'] as String,
-      emojiReactions: (piefedComment['emoji_reactions'] as List<dynamic>?)
-          ?.map((item) => EmojiReactionModel.fromPieFed(item))
-          .toList(),
+      emojiReactions:
+          (piefedComment['emoji_reactions'] as List<dynamic>?)
+              ?.map((item) => EmojiReactionModel.fromPieFed(item))
+              .toList() ??
+          [],
     );
   }
 }

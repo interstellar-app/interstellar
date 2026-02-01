@@ -376,9 +376,11 @@ abstract class PostModel with _$PostModel {
             )
           : null,
       apId: piefedPost['ap_id'] as String,
-      emojiReactions: (piefedPost['emoji_reactions'] as List<dynamic>?)
-          ?.map((item) => EmojiReactionModel.fromPieFed(item))
-          .toList(),
+      emojiReactions:
+          (piefedPost['emoji_reactions'] as List<dynamic>?)
+              ?.map((item) => EmojiReactionModel.fromPieFed(item))
+              .toList() ??
+          [],
     );
   }
 }
