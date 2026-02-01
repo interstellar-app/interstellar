@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';

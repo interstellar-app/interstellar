@@ -4,6 +4,9 @@ targets:
       drift_dev:
         options:
           store_date_time_values_as_text: true
+          schema_dir: lib/src/controller/database
+          databases:
+            schemas: lib/src/controller/database/database.dart
 
 builders:
   emoji_builder:
