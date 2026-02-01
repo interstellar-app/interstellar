@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interstellar/emojis/emoji_picker.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:interstellar/src/utils/utils.dart';

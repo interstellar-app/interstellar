@@ -1,5 +1,6 @@
-import 'package:interstellar/emojis/emojis.g.dart';
 import 'package:interstellar/src/utils/trie.dart';
+
+import './emojis.g.dart';
 
 class Emoji {
   final String unicode;

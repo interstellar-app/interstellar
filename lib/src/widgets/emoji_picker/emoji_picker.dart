@@ -2,13 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:interstellar/emojis/emoji_class.dart';
-import 'package:interstellar/emojis/emojis.g.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_class.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
+
+import './emojis.g.dart';
 
 // TODO: Allow custom emoji groups (quick access, and server specific emojis)
 // TODO: If screen is too narrow, split emoji groups across two lines

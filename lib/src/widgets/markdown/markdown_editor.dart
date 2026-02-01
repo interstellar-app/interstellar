@@ -3,7 +3,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:interstellar/emojis/emoji_picker.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/debouncer.dart';

@@ -15,14 +15,17 @@ class EmojiBuilder implements Builder {
   @override
   Future build(BuildStep buildStep) async {
     await buildStep.writeAsString(
-      AssetId(buildStep.inputId.package, 'lib/emojis/emojis.g.dart'),
+      AssetId(
+        buildStep.inputId.package,
+        'lib/src/widgets/emoji_picker/emojis.g.dart',
+      ),
       await _generateContent(),
     );
   }
 
   @override
   final buildExtensions = const {
-    r'$package$': ['lib/emojis/emojis.g.dart'],
+    r'$package$': ['lib/src/widgets/emoji_picker/emojis.g.dart'],
   };
 
   Future<String> _generateContent() async {

@@ -7,9 +7,10 @@ targets:
 
 builders:
   emoji_builder:
-    import: 'package:interstellar/emojis/emoji_builder.dart'
+    import: 'package:interstellar/src/widgets/emoji_picker/emoji_builder.dart'
     builder_factories: ['emojiBuilder']
-    build_extensions: { '$package$': ['lib/emojis/emojis.g.dart'] }
+    build_extensions:
+      { '$package$': ['lib/src/widgets/emoji_picker/emojis.g.dart'] }
     build_to: source
     auto_apply: root_package
     defaults:
