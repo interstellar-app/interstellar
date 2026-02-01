@@ -30,7 +30,7 @@ Future<void> showContentMenu(
   return ContextMenu(
     actionSpacing: 50,
     actions: [
-      if (widget.onEmojiReact != null)
+      if (widget.onEmojiReact != null && !ac.profile.hideEmojiReactions)
         ContextMenuAction(
           child: EmojiPicker(
             childBuilder: (onClick, focusNode) => IconButton(

@@ -527,7 +527,8 @@ class _ContentItemState extends State<ContentItem> {
                       ],
                     ),
                   if (widget.emojiReactions != null &&
-                      widget.emojiReactions!.isNotEmpty)
+                      widget.emojiReactions!.isNotEmpty &&
+                      !ac.profile.hideEmojiReactions)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Wrap(
