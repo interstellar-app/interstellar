@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
@@ -102,6 +103,7 @@ abstract class PostModel with _$PostModel {
     required List<Tag> flairs,
     required PollModel? poll,
     required String? apId,
+    required List<EmojiReactionModel>? emojiReactions,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -151,6 +153,7 @@ abstract class PostModel with _$PostModel {
     flairs: [],
     poll: null,
     apId: json['apId'] as String?,
+    emojiReactions: null,
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -162,7 +165,7 @@ abstract class PostModel with _$PostModel {
     title: null,
     url: null,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
-    body: json['body'] as String,
+    body: json['body'] as String?,
     lang: json['lang'] as String,
     numComments: json['comments'] as int,
     upvotes: json['favourites'] as int?,
@@ -191,6 +194,7 @@ abstract class PostModel with _$PostModel {
     flairs: [],
     poll: null,
     apId: json['apId'] as String?,
+    emojiReactions: null,
   );
 
   factory PostModel.fromLemmy(
@@ -272,6 +276,7 @@ abstract class PostModel with _$PostModel {
       flairs: [],
       poll: null,
       apId: lemmyPost['ap_id'] as String,
+      emojiReactions: null,
     );
   }
 
@@ -371,6 +376,11 @@ abstract class PostModel with _$PostModel {
             )
           : null,
       apId: piefedPost['ap_id'] as String,
+      emojiReactions:
+          (piefedPost['emoji_reactions'] as List<dynamic>?)
+              ?.map((item) => EmojiReactionModel.fromPieFed(item))
+              .toList() ??
+          [],
     );
   }
 }

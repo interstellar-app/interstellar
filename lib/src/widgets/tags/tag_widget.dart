@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 
 class TagWidget extends StatelessWidget {
   const TagWidget({super.key, required this.tag});

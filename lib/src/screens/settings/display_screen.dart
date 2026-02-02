@@ -223,6 +223,15 @@ class DisplaySettingsScreen extends StatelessWidget {
                   ),
             enabled: ac.serverSoftware == ServerSoftware.mbin,
           ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.add_reaction_rounded),
+            title: Text(l(context).settings_hideEmojiReactions),
+            value: ac.profile.hideEmojiReactions,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(hideEmojiReactions: newValue),
+            ),
+            enabled: ac.serverSoftware == ServerSoftware.piefed,
+          ),
         ],
       ),
     );

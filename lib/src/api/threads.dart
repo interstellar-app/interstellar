@@ -185,7 +185,12 @@ class APIThreads {
     }
   }
 
-  Future<PostModel> vote(int postId, int choice, int newScore) async {
+  Future<PostModel> vote(
+    int postId,
+    int choice,
+    int newScore, {
+    String? emoji,
+  }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = choice == 1
@@ -210,7 +215,11 @@ class APIThreads {
       case ServerSoftware.piefed:
         final response = await client.post(
           '/post/like',
-          body: {'post_id': postId, 'score': newScore},
+          body: {
+            'post_id': postId,
+            'score': newScore,
+            if (emoji != null) 'emoji': emoji,
+          },
         );
 
         return PostModel.fromPiefed(

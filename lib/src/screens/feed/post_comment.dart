@@ -354,6 +354,24 @@ class _PostCommentState extends State<PostComment> {
             },
       onClick: widget.onClick ?? collapse,
       shareLinks: genCommentUrls(context, widget.comment),
+      emojiReactions: widget.comment.emojiReactions,
+      onEmojiReact: widget.comment.emojiReactions == null
+          ? null
+          : whenLoggedIn(context, (emoji) async {
+              var newValue = await ac.api.comments.vote(
+                widget.comment.postType,
+                widget.comment.id,
+                1,
+                1,
+                emoji: emoji,
+              );
+              widget.onUpdate(
+                newValue.copyWith(
+                  childCount: widget.comment.childCount,
+                  children: widget.comment.children,
+                ),
+              );
+            }),
     );
 
     final menuWidget = IconButton(

@@ -380,6 +380,24 @@ class _PostPageState extends State<PostPage> {
             },
       crossPost: crossPost,
       shareLinks: genPostUrls(context, crossPost),
+      emojiReactions: crossPost.emojiReactions,
+      onEmojiReact: crossPost.emojiReactions == null
+          ? null
+          : whenLoggedIn(context, (emoji) async {
+              _updateCrossPost(
+                (await ac.markAsRead([
+                  await switch (crossPost.type) {
+                    PostType.thread => ac.api.threads.vote(
+                      crossPost.id,
+                      1,
+                      1,
+                      emoji: emoji,
+                    ),
+                    PostType.microblog => throw 'Unreachable',
+                  },
+                ], true)).first,
+              );
+            }),
     );
     showContentMenu(context, contentItem);
   }
