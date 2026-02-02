@@ -22,7 +22,6 @@ import 'package:drift/drift.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path/path.dart';
 import 'database.steps.dart';
-import 'package:drift_dev/api/migrations_native.dart';
 
 part 'database.g.dart';
 
@@ -443,12 +442,6 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     return MigrationStrategy(
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
-
-        if (kDebugMode) {
-          // This check pulls in a fair amount of code that's not needed
-          // anywhere else, so we recommend only doing it in debug builds.
-          await validateDatabaseSchema();
-        }
       },
 
       onUpgrade: stepByStep(
