@@ -512,7 +512,9 @@ class AppController with ChangeNotifier {
         final result = Uri.parse(
           await FlutterWebAuth2.authenticate(
             url: authorizationUrl.toString(),
-            callbackUrlScheme: oauthRedirectUri.scheme,
+            callbackUrlScheme: PlatformIs.linux || PlatformIs.windows
+                ? oauthRedirectUri.toString()
+                : oauthRedirectUri.scheme,
           ),
         ).queryParameters;
 
