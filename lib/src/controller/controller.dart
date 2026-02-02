@@ -505,20 +505,14 @@ class AppController with ChangeNotifier {
         );
 
         final authorizationUrl = grant.getAuthorizationUrl(
-          Uri.parse(redirectUri),
+          oauthRedirectUri,
           scopes: oauthScopes,
         );
 
-        final callbackUrlScheme = PlatformIs.web
-            ? Uri.base.scheme
-            : PlatformIs.mobile
-            ? 'interstellar'
-            : redirectUri;
         final result = Uri.parse(
           await FlutterWebAuth2.authenticate(
             url: authorizationUrl.toString(),
-            callbackUrlScheme: callbackUrlScheme,
-            options: FlutterWebAuth2Options(useWebview: false),
+            callbackUrlScheme: oauthRedirectUri.scheme,
           ),
         ).queryParameters;
 

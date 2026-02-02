@@ -21,19 +21,21 @@ const oauthScopes = [
 
 Future<String> registerOauthApp(String instanceHost) async {
   const path = '/api/client';
+  final url = Uri.https(instanceHost, path);
 
   final response = await appHttpClient.post(
-    Uri.https(instanceHost, path),
+    url,
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
     body: jsonEncode({
       'name': oauthName,
       'contactEmail': oauthContact,
       'public': true,
-      'redirectUris': [redirectUri],
+      'redirectUris': [oauthRedirectUri.toString()],
       'grants': oauthGrants,
       'scopes': oauthScopes,
     }),
   );
+  ServerClient.checkResponseSuccess(url, response);
 
   return response.bodyJson['identifier'] as String;
 }
