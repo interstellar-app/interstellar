@@ -249,14 +249,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
-  desktop_webview_window:
-    dependency: "direct main"
-    description:
-      name: desktop_webview_window
-      sha256: "57cf20d81689d5cbb1adfd0017e96b669398a669d927906073b0e42fc64111c0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.3"
   drift:
     dependency: "direct main"
     description:
@@ -531,10 +523,11 @@ packages:
   flutter_web_auth_2:
     dependency: "direct main"
     description:
-      name: flutter_web_auth_2
-      sha256: "432ff8c7b2834eaeec3378d99e24a0210b9ac2f453b3f7a7d739a5c09069fba3"
-      url: "https://pub.dev"
-    source: hosted
+      path: flutter_web_auth_2
+      ref: b1af971b79160979320a4865e238dcaacf69b624
+      resolved-ref: b1af971b79160979320a4865e238dcaacf69b624
+      url: "https://github.com/interstellar-app/flutter_web_auth_2.git"
+    source: git
     version: "5.0.1"
   flutter_web_auth_2_platform_interface:
     dependency: transitive
@@ -785,10 +778,10 @@ packages:
     dependency: transitive
     description:
       name: lean_builder
-      sha256: "6af3cfbf34400eb14b89fe20111e5981e7083362f00ea10b9ed2a6e833250d76"
+      sha256: "4f3d70c34c52cc5034e8cc6f53d35aa3a32fb373b78fb4c29cf45cd1dcf06942"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.6"
+    version: "0.1.5"
   lints:
     dependency: transitive
     description:
@@ -1598,10 +1591,10 @@ packages:
     dependency: transitive
     description:
       name: watcher
-      sha256: "592ab6e2892f67760543fb712ff0177f4ec76c031f02f5b4ff8d3fc5eb9fb61a"
+      sha256: f52385d4f73589977c80797e60fe51014f7f2b957b5e9a62c3f6ada439889249
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.2.0"
   web:
     dependency: transitive
     description:

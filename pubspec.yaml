@@ -61,8 +61,11 @@ dependencies:
   collection: ^1.19.1
   flutter_colorpicker: ^1.1.0
   auto_route: ^11.1.0
-  flutter_web_auth_2: ^5.0.1
-  desktop_webview_window: ^0.2.3
+  flutter_web_auth_2:
+    git:
+      url: https://github.com/interstellar-app/flutter_web_auth_2.git
+      path: flutter_web_auth_2
+      ref: b1af971b79160979320a4865e238dcaacf69b624
 
 dev_dependencies:
   flutter_lints: ^6.0.0
