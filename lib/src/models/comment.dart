@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
@@ -134,6 +135,7 @@ abstract class CommentModel with _$CommentModel {
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
     required String? apId,
+    required List<EmojiReactionModel>? emojiReactions,
   }) = _CommentModel;
 
   factory CommentModel.fromMbin(JsonMap json) => CommentModel(
@@ -165,6 +167,7 @@ abstract class CommentModel with _$CommentModel {
     notificationControlStatus: null,
     bookmarks: optionalStringList(json['bookmarks']),
     apId: json['apId'] as String?,
+    emojiReactions: null,
   );
 
   factory CommentModel.fromLemmy(
@@ -230,9 +233,11 @@ abstract class CommentModel with _$CommentModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (((json['saved'] as bool?) != null) ? json['saved'] as bool : false) '',
+        if (((json['saved'] as bool?) != null) ? json['saved'] as bool : false)
+          '',
       ],
       apId: lemmyComment['ap_id'] as String,
+      emojiReactions: null,
     );
   }
 
@@ -328,6 +333,11 @@ abstract class CommentModel with _$CommentModel {
         if (json['saved'] as bool) '',
       ],
       apId: piefedComment['ap_id'] as String,
+      emojiReactions:
+          (piefedComment['emoji_reactions'] as List<dynamic>?)
+              ?.map((item) => EmojiReactionModel.fromPieFed(item))
+              .toList() ??
+          [],
     );
   }
 }

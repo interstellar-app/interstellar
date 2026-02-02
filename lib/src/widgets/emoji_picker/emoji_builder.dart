@@ -1,0 +1,110 @@
+import 'dart:convert';
+
+import 'package:build/build.dart';
+import 'package:http/http.dart' as http;
+import 'package:interstellar/src/utils/trie.dart';
+
+Builder emojiBuilder(BuilderOptions options) =>
+    EmojiBuilder(options.config['sourcePrefix']);
+
+class EmojiBuilder implements Builder {
+  String _sourcePrefix;
+
+  EmojiBuilder(this._sourcePrefix);
+
+  @override
+  Future build(BuildStep buildStep) async {
+    await buildStep.writeAsString(
+      AssetId(
+        buildStep.inputId.package,
+        'lib/src/widgets/emoji_picker/emojis.g.dart',
+      ),
+      await _generateContent(),
+    );
+  }
+
+  @override
+  final buildExtensions = const {
+    r'$package$': ['lib/src/widgets/emoji_picker/emojis.g.dart'],
+  };
+
+  Future<String> _generateContent() async {
+    final dataResponse = await http.get(
+      Uri.parse('$_sourcePrefix/compact.raw.json'),
+    );
+    final dataJson = jsonDecode(dataResponse.body);
+
+    final messagesResponse = await http.get(
+      Uri.parse('$_sourcePrefix/messages.raw.json'),
+    );
+    final messagesJson = jsonDecode(messagesResponse.body);
+
+    final s = StringBuffer();
+
+    s.write('''
+// ignore_for_file: prefer_single_quotes
+
+import 'package:interstellar/src/utils/trie.dart';
+
+import "./emoji_class.dart";
+
+''');
+
+    final List<String> emojiGroups = [];
+
+    for (var i = 0; i < (messagesJson['groups'] as List).length; i++) {
+      final group = messagesJson['groups'][i];
+
+      assert(group['order'] == i);
+
+      emojiGroups.add(group['message']);
+    }
+
+    s.write('final emojiGroups = ');
+    s.write(jsonEncode(emojiGroups));
+    s.write(';\n');
+
+    final trie = Trie<int>();
+
+    s.write('final emojiList = [\n');
+
+    {
+      int i = 0;
+      for (var emoji in dataJson) {
+        if (emoji['group'] == null || emoji['order'] == null) continue;
+
+        assert(emoji['order'] == i + 1);
+
+        final tags = [
+          ...?emoji['tags'],
+          ...?(emoji['emoticon'] is String
+              ? [emoji['emoticon']]
+              : emoji['emoticon']),
+        ];
+
+        trie.addChild(Trie.normalizeTerm(emoji['label']), {i});
+        for (var tag in tags) {
+          trie.addChild(Trie.normalizeTerm(tag), {i});
+        }
+
+        s.write('Emoji("');
+        s.write(emoji['unicode']);
+        s.write('","');
+        s.write(emoji['label']);
+        s.write('",');
+        s.write(emoji['group']);
+        s.write('),\n');
+
+        i++;
+      }
+    }
+
+    s.write('];\n\n');
+
+    s.write('final Trie<int> emojiTrie = ');
+    s.write(trie.toString());
+    s.write(';\n');
+
+    return s.toString();
+  }
+}

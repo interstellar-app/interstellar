@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/tags/post_flairs.dart';
@@ -29,6 +30,17 @@ Future<void> showContentMenu(
   return ContextMenu(
     actionSpacing: 50,
     actions: [
+      if (widget.onEmojiReact != null && !ac.profile.hideEmojiReactions)
+        ContextMenuAction(
+          child: EmojiPicker(
+            childBuilder: (onClick, focusNode) => IconButton(
+              onPressed: onClick,
+              focusNode: focusNode,
+              icon: Icon(Symbols.add_reaction_rounded),
+            ),
+            onSelect: (emoji) => widget.onEmojiReact!(emoji),
+          ),
+        ),
       if (widget.boosts != null)
         ContextMenuAction(
           child: Row(

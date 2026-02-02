@@ -7,7 +7,7 @@ import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/oauth.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
@@ -605,9 +605,7 @@ class AppController with ChangeNotifier {
         .write(MiscCacheCompanion(selectedAccount: Value(_selectedAccount)));
 
     // Ensure default guest account remains
-    if (_servers.isEmpty ||
-        _accounts.isEmpty ||
-        _selectedAccount.isEmpty) {
+    if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
       await saveServer(ServerSoftware.mbin, 'kbin.earth');
       await setAccount(
         '@kbin.earth',

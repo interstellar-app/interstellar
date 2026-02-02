@@ -4,3 +4,19 @@ targets:
       drift_dev:
         options:
           store_date_time_values_as_text: true
+          schema_dir: lib/src/controller/database
+          databases:
+            schemas: lib/src/controller/database/database.dart
+
+builders:
+  emoji_builder:
+    import: 'package:interstellar/src/widgets/emoji_picker/emoji_builder.dart'
+    builder_factories: ['emojiBuilder']
+    build_extensions:
+      { '$package$': ['lib/src/widgets/emoji_picker/emojis.g.dart'] }
+    build_to: source
+    auto_apply: root_package
+    defaults:
+      options:
+        # Update git ref to use latest source
+        sourcePrefix: https://raw.githubusercontent.com/milesj/emojibase/a5fc630a91ca42cddf3f4a66492965600fd3bce8/packages/data/en

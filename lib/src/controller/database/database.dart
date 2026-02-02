@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -21,6 +22,8 @@ import 'package:drift/drift.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path/path.dart';
+import 'database.steps.dart';
+import 'package:drift_dev/api/migrations_native.dart';
 
 part 'database.g.dart';
 
@@ -285,6 +288,7 @@ class Profiles extends Table {
   TextColumn get postComponentOrder =>
       text().map(const PostComponentConverter()).nullable()();
   RealColumn get dividerThickness => real().nullable()();
+  BoolColumn get hideEmojiReactions => boolean().nullable()();
   // Feed defaults
   TextColumn get feedViewOrder =>
       text().map(const FeedViewListConverter()).nullable()();
@@ -433,14 +437,29 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
+
+        if (kDebugMode) {
+          // This check pulls in a fair amount of code that's not needed
+          // anywhere else, so we recommend only doing it in debug builds.
+          await validateDatabaseSchema();
+        }
       },
+
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          await m.addColumn(
+            schema.profiles,
+            schema.profiles.hideEmojiReactions,
+          );
+        },
+      ),
     );
   }
 

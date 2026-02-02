@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
@@ -102,6 +103,7 @@ abstract class PostModel with _$PostModel {
     required List<Tag> flairs,
     required PollModel? poll,
     required String? apId,
+    required List<EmojiReactionModel>? emojiReactions,
   }) = _PostModel;
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
@@ -151,6 +153,7 @@ abstract class PostModel with _$PostModel {
     flairs: [],
     poll: null,
     apId: json['apId'] as String?,
+    emojiReactions: null,
   );
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
@@ -191,6 +194,7 @@ abstract class PostModel with _$PostModel {
     flairs: [],
     poll: null,
     apId: json['apId'] as String?,
+    emojiReactions: null,
   );
 
   factory PostModel.fromLemmy(
@@ -244,13 +248,18 @@ abstract class PostModel with _$PostModel {
           lemmyPost['featured_local'] as bool,
       createdAt: DateTime.parse(lemmyPost['published'] as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
-      lastActive: lemmyCounts == null ? DateTime.now() : DateTime.parse(lemmyCounts['newest_comment_time'] as String),
+      lastActive: lemmyCounts == null
+          ? DateTime.now()
+          : DateTime.parse(lemmyCounts['newest_comment_time'] as String),
       visibility: 'visible',
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (((postView['saved'] as bool?) != null) ? postView['saved'] as bool : false) '',
+        if (((postView['saved'] as bool?) != null)
+            ? postView['saved'] as bool
+            : false)
+          '',
       ],
       read: postView['read'] as bool? ?? false,
       crossPosts:
@@ -267,6 +276,7 @@ abstract class PostModel with _$PostModel {
       flairs: [],
       poll: null,
       apId: lemmyPost['ap_id'] as String,
+      emojiReactions: null,
     );
   }
 
@@ -345,17 +355,32 @@ abstract class PostModel with _$PostModel {
               )
               .toList() ??
           [],
-      flairs: (postView['flair_list'] as List<dynamic>?)?.map((flair) => Tag(
-        id: flair['id'] as int,
-        tag: flair['flair_title'] as String,
-        textColor: getColorFromHex(flair['text_color'] as String),
-        backgroundColor: getColorFromHex(flair['background_color'] as String),
-      )).toList() ?? [],
-      poll: piefedPost['post_type'] == 'Poll' ? PollModel.fromPiefed(
-          piefedPost['id'] as int,
-          piefedPost['poll'] as Map<String, Object?>
-      ) : null,
+      flairs:
+          (postView['flair_list'] as List<dynamic>?)
+              ?.map(
+                (flair) => Tag(
+                  id: flair['id'] as int,
+                  tag: flair['flair_title'] as String,
+                  textColor: getColorFromHex(flair['text_color'] as String),
+                  backgroundColor: getColorFromHex(
+                    flair['background_color'] as String,
+                  ),
+                ),
+              )
+              .toList() ??
+          [],
+      poll: piefedPost['post_type'] == 'Poll'
+          ? PollModel.fromPiefed(
+              piefedPost['id'] as int,
+              piefedPost['poll'] as Map<String, Object?>,
+            )
+          : null,
       apId: piefedPost['ap_id'] as String,
+      emojiReactions:
+          (piefedPost['emoji_reactions'] as List<dynamic>?)
+              ?.map((item) => EmojiReactionModel.fromPieFed(item))
+              .toList() ??
+          [],
     );
   }
 }
