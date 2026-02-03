@@ -766,14 +766,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  lints:
+  lean_builder:
     dependency: transitive
     description:
-      name: lints
-      sha256: a5e2b223cb7c9c8efdc663ef484fdd95bb243bff242ef5b13e26883547fce9a0
+      name: lean_builder
+      sha256: "4f3d70c34c52cc5034e8cc6f53d35aa3a32fb373b78fb4c29cf45cd1dcf06942"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "0.1.5"
   logger:
     dependency: "direct main"
     description:

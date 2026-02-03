@@ -42,6 +42,7 @@ class EmojiBuilder implements Builder {
     final s = StringBuffer();
 
     s.write('''
+// ignore_for_file: type=lint
 // ignore_for_file: prefer_single_quotes
 
 import 'package:interstellar/src/utils/trie.dart';
@@ -87,7 +88,7 @@ import "./emoji_class.dart";
           trie.addChild(Trie.normalizeTerm(tag), {i});
         }
 
-        s.write('Emoji("');
+        s.write('const Emoji("');
         s.write(emoji['unicode']);
         s.write('","');
         s.write(emoji['label']);
