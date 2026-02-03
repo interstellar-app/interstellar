@@ -2,19 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:interstellar/src/utils/breakpoints.dart';
-import 'package:interstellar/src/widgets/emoji_picker/emoji_class.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_class.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emojis.g.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import './emojis.g.dart';
-
 // TODO: Allow custom emoji groups (quick access, and server specific emojis)
 
-final emojiGroupIcons = [
+final List<IconData> emojiGroupIcons = [
   Symbols.emoji_emotions_rounded,
   Symbols.emoji_people_rounded,
   Symbols.invert_colors_rounded,
@@ -29,9 +28,9 @@ final emojiGroupIcons = [
 
 class EmojiPicker extends StatefulWidget {
   const EmojiPicker({
-    super.key,
     required this.childBuilder,
     required this.onSelect,
+    super.key,
   });
 
   final Widget Function(void Function() onClick, FocusNode focusNode)
@@ -67,28 +66,24 @@ class _EmojiPickerState extends State<EmojiPicker> {
   }
 
   void _calculateVisibleEmojiGroups() {
-    Set<int> newVisibleEmojiGroups = {};
+    final newVisibleEmojiGroups = <int>{};
 
     final viewportStart = _scrollController.offset;
     final viewportEnd =
         viewportStart + _scrollController.position.viewportDimension;
 
-    final List<double?> groupPositions = _emojiGroupGlobalKeys
-        .asMap()
-        .entries
-        .map((entry) {
-          final context = entry.value.currentContext;
-          if (context == null) return null;
+    final groupPositions = _emojiGroupGlobalKeys.asMap().entries.map((entry) {
+      final context = entry.value.currentContext;
+      if (context == null) return null;
 
-          final renderObject = context.findRenderObject();
-          if (renderObject == null) return null;
-          final viewport = RenderAbstractViewport.of(renderObject);
+      final renderObject = context.findRenderObject();
+      if (renderObject == null) return null;
+      final viewport = RenderAbstractViewport.of(renderObject);
 
-          final reveal = viewport.getOffsetToReveal(renderObject, 0.0);
+      final reveal = viewport.getOffsetToReveal(renderObject, 0);
 
-          return reveal.offset;
-        })
-        .toList();
+      return reveal.offset;
+    }).toList();
 
     for (var i = 0; i < emojiGroups.length; i++) {
       final currPos = groupPositions[i];
@@ -135,7 +130,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
     final isCompact = Breakpoints.isCompact(context);
 
     const double buttonSize = 40;
-    final int buttonsWide = isCompact
+    final buttonsWide = isCompact
         ? (emojiGroups.length / 2).ceil()
         : emojiGroups.length;
 
@@ -154,7 +149,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
       ),
       menuChildren: [
         Card(
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
           child: SizedBox(
             width: buttonSize * buttonsWide,
             child: Column(
@@ -164,7 +159,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Symbols.search_rounded),
+                    prefixIcon: const Icon(Symbols.search_rounded),
                     suffixIcon: IconButton(
                       onPressed: _searchController.text.isEmpty
                           ? null
@@ -172,7 +167,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
                               _searchController.text = '';
                               _searchEmojis();
                             },
-                      icon: Icon(Symbols.close_rounded),
+                      icon: const Icon(Symbols.close_rounded),
                       disabledColor: Theme.of(context).disabledColor,
                     ),
                     border: const OutlineInputBorder(),
@@ -180,7 +175,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
                   ),
                   onChanged: (newSearch) => _searchDebounce.run(_searchEmojis),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -233,7 +228,9 @@ class _EmojiPickerState extends State<EmojiPicker> {
                               padding: const EdgeInsets.only(top: 8, left: 4),
                               child: Text(
                                 emojiGroups[groupIndex],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -253,7 +250,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
                                 },
                                 icon: Text(
                                   emoji.unicode,
-                                  style: TextStyle(fontSize: 24),
+                                  style: const TextStyle(fontSize: 24),
                                 ),
                                 style: buttonStyle,
                                 tooltip: emoji.label,

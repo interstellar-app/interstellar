@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
@@ -116,21 +116,24 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
   Widget build(BuildContext context) {
     final language = Localizations.localeOf(context).languageCode;
 
-    genServerList(List<(String, ServerSoftware)> servers) => servers
-        .map(
-          (v) => ListTile(
-            title: Row(
-              children: [ServerSoftwareIndicator(label: v.$1, software: v.$2)],
-            ),
-            onTap: () => _initiateLogin(v.$1),
-          ),
-        )
-        .toList();
+    List<ListTile> genServerList(List<(String, ServerSoftware)> servers) =>
+        servers
+            .map(
+              (v) => ListTile(
+                title: Row(
+                  children: [
+                    ServerSoftwareIndicator(label: v.$1, software: v.$2),
+                  ],
+                ),
+                onTap: () => _initiateLogin(v.$1),
+              ),
+            )
+            .toList();
 
     return Scaffold(
       appBar: AppBar(title: Text(l(context).addAccount)),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         children: [
           TextEditor(
             _instanceHostController,
@@ -153,7 +156,7 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
           ),
           if (_recommendedInstances.containsKey(language)) ...[
             ...genServerList(_recommendedInstances[language]!),
-            Divider(),
+            const Divider(),
           ],
           ...genServerList(_recommendedInstances['']!),
         ],

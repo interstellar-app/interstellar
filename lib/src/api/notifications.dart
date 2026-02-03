@@ -69,7 +69,7 @@ class APINotifications {
         );
 
       case ServerSoftware.piefed:
-        final path = '/user/notifications';
+        const path = '/user/notifications';
         final status = switch (filter) {
           NotificationsFilter.new_ => 'Unread',
           NotificationsFilter.read => 'Read',
@@ -205,7 +205,7 @@ class APINotifications {
         };
 
       case ServerSoftware.piefed:
-        final path = '/user/notification_state';
+        const path = '/user/notification_state';
 
         final body = {'notif_id': notificationId, 'read_state': readState};
 

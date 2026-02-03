@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/utils/models.dart';
-import 'image.dart';
+import 'package:interstellar/src/utils/utils.dart';
 
 part 'feed.freezed.dart';
 

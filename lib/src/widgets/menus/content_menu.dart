@@ -1,22 +1,22 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/language.dart';
+import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
+import 'package:interstellar/src/widgets/notification_control_segment.dart';
+import 'package:interstellar/src/widgets/report_content.dart';
 import 'package:interstellar/src/widgets/tags/post_flairs.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/notification_control_segment.dart';
-import 'package:interstellar/src/widgets/report_content.dart';
-import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:interstellar/src/widgets/context_menu.dart';
-import 'package:interstellar/src/controller/server.dart';
 
 Future<void> showContentMenu(
   BuildContext context,
@@ -36,7 +36,7 @@ Future<void> showContentMenu(
             childBuilder: (onClick, focusNode) => IconButton(
               onPressed: onClick,
               focusNode: focusNode,
-              icon: Icon(Symbols.add_reaction_rounded),
+              icon: const Icon(Symbols.add_reaction_rounded),
             ),
             onSelect: (emoji) => widget.onEmojiReact!(emoji),
           ),
@@ -110,7 +110,7 @@ Future<void> showContentMenu(
         ContextMenuItem(
           title: l(context).crossPost,
           onTap: () =>
-              context.router.push(CreateRoute(crossPost: widget.crossPost!)),
+              context.router.push(CreateRoute(crossPost: widget.crossPost)),
         ),
       if (widget.domain != null)
         ContextMenuItem(
@@ -301,7 +301,7 @@ Future<void> showContentMenu(
               if (!context.mounted) return;
               context.router.pop();
             },
-            icon: Icon(Symbols.arrow_right_rounded),
+            icon: const Icon(Symbols.arrow_right_rounded),
           ),
         ),
       if (widget.user != null)

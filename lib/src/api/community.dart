@@ -258,7 +258,7 @@ class APICommunity {
 
       case ServerSoftware.lemmy:
         const path = '/community';
-        final query = {'name': communityName.toString()};
+        final query = {'name': communityName};
 
         final response = await client.get(path, queryParams: query);
 
@@ -268,7 +268,7 @@ class APICommunity {
 
       case ServerSoftware.piefed:
         const path = '/community';
-        final query = {'name': communityName.toString()};
+        final query = {'name': communityName};
 
         final response = await client.get(path, queryParams: query);
 

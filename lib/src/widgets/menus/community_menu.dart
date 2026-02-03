@@ -2,18 +2,18 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
-import 'package:interstellar/src/utils/ap_urls.dart';
-import 'package:interstellar/src/widgets/subscription_button.dart';
-import 'package:interstellar/src/widgets/star_button.dart';
-import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/star_button.dart';
+import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
@@ -29,13 +29,13 @@ Future<void> showCommunityMenu(
   if (detailedCommunity == null && community == null) return;
 
   final name = detailedCommunity?.name ?? community!.name;
-  final globalName = (name).contains('@')
+  final globalName = name.contains('@')
       ? '!$name'
       : '!$name@${ac.instanceHost}';
 
-  final isModerator = detailedCommunity == null
-      ? false
-      : detailedCommunity.moderators.any((mod) => mod.name == ac.localName);
+  final isModerator =
+      !(detailedCommunity == null) &&
+      detailedCommunity.moderators.any((mod) => mod.name == ac.localName);
 
   return ContextMenu(
     actions: [
@@ -44,7 +44,7 @@ Future<void> showCommunityMenu(
           isSubscribed: detailedCommunity?.isUserSubscribed,
           subscriptionCount: detailedCommunity?.subscriptionsCount,
           onSubscribe: (selected) async {
-            var newValue = await ac.api.community.subscribe(
+            final newValue = await ac.api.community.subscribe(
               detailedCommunity?.id ?? community!.id,
               selected,
             );
@@ -73,7 +73,7 @@ Future<void> showCommunityMenu(
             style: ButtonStyle(
               foregroundColor: WidgetStatePropertyAll(
                 detailedCommunity != null &&
-                        detailedCommunity.isBlockedByUser == true
+                        (detailedCommunity.isBlockedByUser ?? false)
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).disabledColor,
               ),

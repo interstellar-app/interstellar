@@ -19,10 +19,10 @@ class CommunityOwnerPanelScreen extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityOwnerPanelScreen({
-    super.key,
     @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -42,7 +42,7 @@ class _CommunityOwnerPanelScreenState extends State<CommunityOwnerPanelScreen> {
 
   @override
   Widget build(BuildContext context) {
-    onUpdate(DetailedCommunityModel newValue) {
+    void onUpdate(DetailedCommunityModel newValue) {
       setState(() {
         _data = newValue;
         widget.onUpdate(newValue);
@@ -81,9 +81,9 @@ class CommunityOwnerPanelGeneral extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityOwnerPanelGeneral({
-    super.key,
     required this.data,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -226,9 +226,9 @@ class CommunityOwnerPanelModerators extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityOwnerPanelModerators({
-    super.key,
     required this.data,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -371,9 +371,9 @@ class CommunityOwnerPanelDeletion extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityOwnerPanelDeletion({
-    super.key,
     required this.data,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -418,7 +418,7 @@ class _CommunityOwnerPanelDeletionState
                     CommunityOwnerPanelDeletionDialog(data: widget.data),
               );
 
-              if (result == true) {
+              if (result ?? false) {
                 if (!context.mounted) return;
                 context.router.pop();
               }
@@ -434,7 +434,7 @@ class _CommunityOwnerPanelDeletionState
 class CommunityOwnerPanelDeletionDialog extends StatefulWidget {
   final DetailedCommunityModel data;
 
-  const CommunityOwnerPanelDeletionDialog({super.key, required this.data});
+  const CommunityOwnerPanelDeletionDialog({required this.data, super.key});
 
   @override
   State<CommunityOwnerPanelDeletionDialog> createState() =>

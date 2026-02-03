@@ -12,13 +12,13 @@ class ListTileSelect<T> extends StatelessWidget {
   final bool enabled;
 
   const ListTileSelect({
-    super.key,
     required this.title,
-    this.icon,
     required this.selectionMenu,
     required this.value,
     required this.oldValue,
     required this.onChange,
+    super.key,
+    this.icon,
     this.enabled = true,
   });
 

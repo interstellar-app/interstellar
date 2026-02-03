@@ -6,9 +6,9 @@ class ServerSoftwareIndicator extends StatelessWidget {
   final ServerSoftware software;
 
   const ServerSoftwareIndicator({
-    super.key,
     required this.label,
     required this.software,
+    super.key,
   });
 
   @override
@@ -18,7 +18,7 @@ class ServerSoftwareIndicator extends StatelessWidget {
       backgroundColor: software.color,
       textColor: Colors.white,
       alignment: Alignment.centerRight,
-      offset: Offset(20, -6),
+      offset: const Offset(20, -6),
       child: Text(label),
     );
   }

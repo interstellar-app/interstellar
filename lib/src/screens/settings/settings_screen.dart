@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -24,42 +24,42 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.settings_rounded),
             title: Text(l(context).settings_behavior),
-            onTap: () => context.router.push(BehaviorSettingsRoute()),
+            onTap: () => context.router.push(const BehaviorSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.palette_rounded),
             title: Text(l(context).settings_display),
-            onTap: () => context.router.push(DisplaySettingsRoute()),
+            onTap: () => context.router.push(const DisplaySettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.feed_rounded),
             title: Text(l(context).feeds),
-            onTap: () => context.router.push(FeedSettingsRoute()),
+            onTap: () => context.router.push(const FeedSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.filter_list_rounded),
             title: Text(l(context).settings_feedActions),
-            onTap: () => context.router.push(FeedActionsSettingsRoute()),
+            onTap: () => context.router.push(const FeedActionsSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.tune_rounded),
             title: Text(l(context).settings_feedDefaults),
-            onTap: () => context.router.push(FeedDefaultSettingsRoute()),
+            onTap: () => context.router.push(const FeedDefaultSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.label_rounded),
             title: Text(l(context).tags),
-            onTap: () => context.router.push(TagsRoute()),
+            onTap: () => context.router.push(const TagsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.filter_1_rounded),
             title: Text(l(context).filterLists),
-            onTap: () => context.router.push(FilterListsRoute()),
+            onTap: () => context.router.push(const FilterListsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.notifications_rounded),
             title: Text(l(context).settings_notifications),
-            onTap: () => context.router.push(NotificationSettingsRoute()),
+            onTap: () => context.router.push(const NotificationSettingsRoute()),
             enabled:
                 ac.serverSoftware == ServerSoftware.mbin &&
                 context
@@ -72,12 +72,12 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.database_rounded),
             title: Text(l(context).settings_dataUtilities),
-            onTap: () => context.router.push(DataUtilitiesRoute()),
+            onTap: () => context.router.push(const DataUtilitiesRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.info_rounded),
             title: Text(l(context).settings_about),
-            onTap: () => context.router.push(AboutRoute()),
+            onTap: () => context.router.push(const AboutRoute()),
           ),
           const Divider(),
           ListTile(

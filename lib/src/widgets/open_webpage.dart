@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:interstellar/src/controller/router.gr.dart';
 
 void openWebpagePrimary(BuildContext context, Uri uri) {
   launchUrl(uri);
@@ -45,7 +45,7 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
             onPressed: () {
               context.router.pop();
 
-              var controller = WebViewController()
+              final controller = WebViewController()
                 ..setJavaScriptMode(JavaScriptMode.unrestricted)
                 ..loadRequest(uri);
 
@@ -71,7 +71,7 @@ void openWebpageSecondary(BuildContext context, Uri uri) {
 
 @RoutePage()
 class WebViewScreen extends StatelessWidget {
-  const WebViewScreen({super.key, required this.controller});
+  const WebViewScreen({required this.controller, super.key});
 
   final WebViewController controller;
 

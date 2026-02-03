@@ -152,7 +152,7 @@ enum NotificationType {
   newSignup,
 }
 
-const notificationTypeMap = {
+const Map<String, NotificationType> notificationTypeMap = {
   'entry_created_notification': NotificationType.entryCreated,
   'entry_edited_notification': NotificationType.entryEdited,
   'entry_deleted_notification': NotificationType.entryDeleted,

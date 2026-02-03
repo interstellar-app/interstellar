@@ -3,15 +3,14 @@ import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
+import 'package:interstellar/src/screens/account/notification/notification_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import 'notification_count_controller.dart';
-import 'notification_item.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -120,7 +119,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
               context.watch<AppController>().serverSoftware ==
                       ServerSoftware.lemmy &&
                   item.creator?.name == context.watch<AppController>().localName
-          ? SizedBox()
+          ? const SizedBox()
           : Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
               child: NotificationItem(

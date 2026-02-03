@@ -1,8 +1,8 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/widgets.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/utils/utils.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 enum FeedView {
   threads(icon: Symbols.feed_rounded),
@@ -30,8 +30,8 @@ enum FeedView {
   };
 
   static List<FeedView> match({
-    List<FeedView> values = FeedView.values,
     required int software,
+    List<FeedView> values = FeedView.values,
   }) {
     return values
         .where((item) => (item.software & software) == software)
@@ -105,46 +105,11 @@ enum FeedSort {
     parent: FeedSort.top,
     icon: Symbols.trending_up_rounded,
   ),
-  topSixHour(
-    software:
-        ServerSoftware.mbinFlag |
-        ServerSoftware.piefedFlag |
-        ServerSoftware.lemmyFlag,
-    parent: FeedSort.top,
-    icon: Symbols.trending_up_rounded,
-  ),
-  topTwelveHour(
-    software:
-        ServerSoftware.mbinFlag |
-        ServerSoftware.piefedFlag |
-        ServerSoftware.lemmyFlag,
-    parent: FeedSort.top,
-    icon: Symbols.trending_up_rounded,
-  ),
-  topDay(
-    software:
-        ServerSoftware.mbinFlag |
-        ServerSoftware.piefedFlag |
-        ServerSoftware.lemmyFlag,
-    parent: FeedSort.top,
-    icon: Symbols.trending_up_rounded,
-  ),
-  topWeek(
-    software:
-        ServerSoftware.mbinFlag |
-        ServerSoftware.piefedFlag |
-        ServerSoftware.lemmyFlag,
-    parent: FeedSort.top,
-    icon: Symbols.trending_up_rounded,
-  ),
-  topMonth(
-    software:
-        ServerSoftware.mbinFlag |
-        ServerSoftware.piefedFlag |
-        ServerSoftware.lemmyFlag,
-    parent: FeedSort.top,
-    icon: Symbols.trending_up_rounded,
-  ),
+  topSixHour(parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topTwelveHour(parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topDay(parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topWeek(parent: FeedSort.top, icon: Symbols.trending_up_rounded),
+  topMonth(parent: FeedSort.top, icon: Symbols.trending_up_rounded),
   topThreeMonths(
     software: ServerSoftware.piefedFlag | ServerSoftware.lemmyFlag,
     parent: FeedSort.top,
@@ -160,14 +125,7 @@ enum FeedSort {
     parent: FeedSort.top,
     icon: Symbols.trending_up_rounded,
   ),
-  topYear(
-    software:
-        ServerSoftware.mbinFlag |
-        ServerSoftware.piefedFlag |
-        ServerSoftware.lemmyFlag,
-    parent: FeedSort.top,
-    icon: Symbols.trending_up_rounded,
-  ),
+  topYear(parent: FeedSort.top, icon: Symbols.trending_up_rounded),
 
   commentedThreeHour(
     software: ServerSoftware.mbinFlag,

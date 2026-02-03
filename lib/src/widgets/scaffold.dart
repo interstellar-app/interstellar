@@ -33,7 +33,7 @@ class AdvancedScaffold extends StatelessWidget {
             Expandable(
               controller: controller,
               collapsed: Container(),
-              expanded: SizedBox(width: 360, child: drawer!),
+              expanded: SizedBox(width: 360, child: drawer),
             ),
           Expanded(child: body),
         ],

@@ -1,15 +1,16 @@
 import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 double calcLemmyRanking(PostModel post, DateTime time) {
-  final scaleFactor = 10000;
-  final gravity = 1.8;
+  const scaleFactor = 10000;
+  const gravity = 1.8;
   final score = (post.upvotes ?? 0) - (post.downvotes ?? 0);
 
   return scaleFactor *
@@ -36,13 +37,13 @@ int mbinActive(PostModel lhs, PostModel rhs) {
 }
 
 double calcMbinRanking(PostModel post) {
-  final netscoreMultiplier = 4500;
-  final commentMultiplier = 1500;
+  const netscoreMultiplier = 4500;
+  const commentMultiplier = 1500;
   // final commentUniqueMultiplier = 5000;
-  final downvotedCutoff = -5;
-  final commentDownvotedMultiplier = 500;
-  final maxAdvantage = 86400;
-  final maxPenalty = 43200;
+  const downvotedCutoff = -5;
+  const commentDownvotedMultiplier = 500;
+  const maxAdvantage = 86400;
+  const maxPenalty = 43200;
 
   final score =
       (post.boosts ?? 0) + (post.upvotes ?? 0) - (post.downvotes ?? 0);
@@ -67,7 +68,7 @@ double calcMbinRanking(PostModel post) {
     DateTime.now().millisecondsSinceEpoch / 1000,
   );
 
-  return min((dateAdvantage + advantage), pow(2, 31) - 1);
+  return min(dateAdvantage + advantage, pow(2, 31) - 1);
 }
 
 int mbinHot(PostModel lhs, PostModel rhs) {
@@ -76,7 +77,7 @@ int mbinHot(PostModel lhs, PostModel rhs) {
 
 int top(PostModel lhs, PostModel rhs) {
   return ((rhs.upvotes ?? 0) - (rhs.downvotes ?? 0)).compareTo(
-    ((lhs.upvotes ?? 0) - (lhs.downvotes ?? 0)),
+    (lhs.upvotes ?? 0) - (lhs.downvotes ?? 0),
   );
 }
 
@@ -141,29 +142,29 @@ int commented(PostModel lhs, PostModel rhs) {
   };
 
   // Copy inputs into mutable lists and include previous remainders if included
-  var mutableInputs = inputs
+  final mutableInputs = inputs
       .map((input) => input.isNotEmpty ? input.toList() : null)
       .nonNulls
       .toList();
-  int remainderIndex = mutableInputs.length;
+  final remainderIndex = mutableInputs.length;
   if (previousRemainder != null) {
     previousRemainder.sort(sortFunc);
     mutableInputs.add(previousRemainder);
   }
   // Create room for remainders from merge inputs
-  List<List<PostModel>> remainder = List.generate(
+  final remainder = List<List<PostModel>>.generate(
     inputs.length + (previousRemainder != null ? 1 : 0),
     (index) => [],
   );
-  List<PostModel> posts = [];
+  final posts = <PostModel>[];
 
   // Merge until one of the inputs (excluding previous remainders) is drained
   while (mutableInputs
       .sublist(0, remainderIndex)
       .every((input) => input.isNotEmpty)) {
     // Get first post of each input
-    List<(int, PostModel)> firsts = [];
-    for (var (index, input) in mutableInputs.indexed) {
+    final firsts = <(int, PostModel)>[];
+    for (final (index, input) in mutableInputs.indexed) {
       if (input.isNotEmpty) {
         firsts.add((index, input.first));
       }
@@ -181,7 +182,7 @@ int commented(PostModel lhs, PostModel rhs) {
   }
 
   // Save remaining posts for next pass
-  for (var (index, input) in mutableInputs.indexed) {
+  for (final (index, input) in mutableInputs.indexed) {
     remainder[index] = input;
   }
 
@@ -276,7 +277,7 @@ class FeedInputState {
             : [];
 
         // if final page of input also return leftover posts
-        var result = [..._leftover, ...merged.$1];
+        final result = [..._leftover, ...merged.$1];
         if (_nextPage == null) {
           result.addAll(_combinedThreadsLeftover);
         }
@@ -299,8 +300,7 @@ class FeedAggregator {
 
   const FeedAggregator({required this.name, required this.inputs});
 
-  factory FeedAggregator.fromSingleSource(
-    AppController ac, {
+  factory FeedAggregator.fromSingleSource({
     required String name,
     required FeedSource source,
     int? sourceId,
@@ -349,7 +349,7 @@ class FeedAggregator {
     final merged = merge(ac.serverSoftware, postInputs, sort);
 
     // store leftover posts
-    for (var (index, posts) in merged.$2.indexed) {
+    for (final (index, posts) in merged.$2.indexed) {
       inputs[index]._leftover = posts;
     }
 
@@ -360,7 +360,7 @@ class FeedAggregator {
     final result = merged.$1;
     // if final page also return all leftover posts
     if (nextPage == null) {
-      for (var input in inputs) {
+      for (final input in inputs) {
         result.addAll(input._leftover);
       }
     }
@@ -379,7 +379,7 @@ class FeedAggregator {
   }
 
   void refresh() {
-    for (var input in inputs) {
+    for (final input in inputs) {
       input._leftover = [];
       input._nextPage = '';
       input._combinedPage = '';

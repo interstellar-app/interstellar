@@ -6,10 +6,10 @@ class Wrapper extends StatelessWidget {
   final Widget child;
 
   const Wrapper({
-    super.key,
     required this.shouldWrap,
     required this.parentBuilder,
     required this.child,
+    super.key,
   });
 
   @override

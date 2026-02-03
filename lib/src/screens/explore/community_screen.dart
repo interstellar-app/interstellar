@@ -12,10 +12,10 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
+import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
-import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -93,7 +93,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             isSubscribed: _data!.isUserSubscribed,
                             subscriptionCount: _data!.subscriptionsCount,
                             onSubscribe: (selected) async {
-                              var newValue = await ac.api.community.subscribe(
+                              final newValue = await ac.api.community.subscribe(
                                 _data!.id,
                                 selected,
                               );
@@ -108,7 +108,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             followMode: false,
                           ),
                           StarButton(globalName!),
-                          if (whenLoggedIn(context, true) == true)
+                          if (whenLoggedIn(context, true) ?? false)
                             LoadingIconButton(
                               onPressed: () async {
                                 final newValue = await ac.api.community.block(
@@ -126,7 +126,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               icon: const Icon(Symbols.block_rounded),
                               style: ButtonStyle(
                                 foregroundColor: WidgetStatePropertyAll(
-                                  _data!.isBlockedByUser == true
+                                  _data!.isBlockedByUser ?? false
                                       ? Theme.of(context).colorScheme.error
                                       : Theme.of(context).disabledColor,
                                 ),
@@ -145,7 +145,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 }
                               },
                             ),
-                            icon: Icon(Symbols.more_vert_rounded),
+                            icon: const Icon(Symbols.more_vert_rounded),
                           ),
                         ],
                       ),

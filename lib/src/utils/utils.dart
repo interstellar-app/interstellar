@@ -39,36 +39,36 @@ String dateDiffFormat(DateTime input) {
   final difference = DateTime.now().difference(input);
 
   if (difference.inDays > 0) {
-    var years = (difference.inDays / 365).truncate();
+    final years = (difference.inDays / 365).truncate();
     if (years >= 1) {
       return '${years}Y';
     }
 
-    var months = (difference.inDays / 30).truncate();
+    final months = (difference.inDays / 30).truncate();
     if (months >= 1) {
       return '${months}M';
     }
 
-    var weeks = (difference.inDays / 7).truncate();
+    final weeks = (difference.inDays / 7).truncate();
     if (weeks >= 1) {
       return '${weeks}w';
     }
 
-    var days = difference.inDays;
+    final days = difference.inDays;
     return '${days}d';
   }
 
-  var hours = difference.inHours;
+  final hours = difference.inHours;
   if (hours > 0) {
     return '${hours}h';
   }
 
-  var minutes = difference.inMinutes;
+  final minutes = difference.inMinutes;
   if (minutes > 0) {
     return '${minutes}m';
   }
 
-  var seconds = difference.inSeconds;
+  final seconds = difference.inSeconds;
   return '${seconds}s';
 }
 
@@ -132,7 +132,7 @@ String readableShortcut(SingleActivator shortcut) {
   if (shortcut.meta) text += 'Meta+';
   text += switch (shortcut.trigger.keyLabel) {
     ' ' => 'Space',
-    String key => key,
+    final String key => key,
   };
 
   return text;
@@ -148,12 +148,7 @@ List<T> reverseList<T>(List<T> list, bool enabled) {
   return list;
 }
 
-const chipDropdownPadding = EdgeInsets.only(
-  left: 4,
-  top: 6,
-  right: 0,
-  bottom: 6,
-);
+const chipDropdownPadding = EdgeInsets.only(left: 4, top: 6, bottom: 6);
 
 ScrollPhysics? appTabViewPhysics(BuildContext context) =>
     context.watch<AppController>().profile.disableTabSwiping
@@ -162,9 +157,9 @@ ScrollPhysics? appTabViewPhysics(BuildContext context) =>
 
 class DefaultTabControllerListener extends StatefulWidget {
   const DefaultTabControllerListener({
+    required this.child,
     super.key,
     this.onTabSelected,
-    required this.child,
   });
 
   final void Function(int index)? onTabSelected;

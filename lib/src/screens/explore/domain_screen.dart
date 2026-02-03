@@ -72,7 +72,7 @@ class _DomainScreenState extends State<DomainScreen> {
                         isSubscribed: _data!.isUserSubscribed,
                         subscriptionCount: _data!.subscriptionsCount,
                         onSubscribe: (selected) async {
-                          var newValue = await context
+                          final newValue = await context
                               .read<AppController>()
                               .api
                               .domains
@@ -87,7 +87,7 @@ class _DomainScreenState extends State<DomainScreen> {
                         },
                         followMode: false,
                       ),
-                      if (whenLoggedIn(context, true) == true)
+                      if (whenLoggedIn(context, true) ?? false)
                         LoadingIconButton(
                           onPressed: () async {
                             final newValue = await context
@@ -106,7 +106,7 @@ class _DomainScreenState extends State<DomainScreen> {
                           icon: const Icon(Symbols.block_rounded),
                           style: ButtonStyle(
                             foregroundColor: WidgetStatePropertyAll(
-                              _data!.isBlockedByUser == true
+                              _data!.isBlockedByUser ?? false
                                   ? Theme.of(context).colorScheme.error
                                   : Theme.of(context).disabledColor,
                             ),

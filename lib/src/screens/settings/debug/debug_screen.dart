@@ -1,20 +1,20 @@
 import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/utils/sqlite/sqlite.dart'
+    if (dart.library.io) 'package:interstellar/src/utils/sqlite/sqlite_native.dart'
+    if (dart.library.js_interop) 'package:interstellar/src/utils/sqlite/sqlite_web.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/widgets/list_tile_switch.dart';
-import 'package:interstellar/src/controller/database/database.dart';
-
-import 'package:interstellar/src/utils/sqlite/sqlite.dart'
-    if (dart.library.io) 'package:interstellar/src/utils/sqlite/sqlite_native.dart'
-    if (dart.library.js_interop) 'package:interstellar/src/utils/sqlite/sqlite_web.dart';
 
 @RoutePage()
 class DebugSettingsScreen extends StatelessWidget {
@@ -39,7 +39,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.schema_rounded),
             title: Text(l(context).settings_debug_inspectDatabase),
-            onTap: () => context.router.push(NamedRoute('DriftDbViewer')),
+            onTap: () => context.router.push(const NamedRoute('DriftDbViewer')),
           ),
           if (!PlatformIs.web) ...[
             ListTile(
@@ -158,7 +158,7 @@ class DebugSettingsScreen extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       final accountKeys = ac.accounts.keys.toList();
-                      for (var account in accountKeys) {
+                      for (final account in accountKeys) {
                         await ac.removeAccount(account);
                       }
                       ac.logger.i('Cleared accounts');
@@ -186,7 +186,7 @@ class DebugSettingsScreen extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       final profileNames = await ac.getProfileNames();
-                      for (var profile in profileNames) {
+                      for (final profile in profileNames) {
                         ac.deleteProfile(profile);
                       }
                       ac.logger.i('Cleared profiles');
@@ -278,7 +278,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.list_rounded),
             title: Text(l(context).settings_debug_log),
-            onTap: () => context.router.push(LogConsole()),
+            onTap: () => context.router.push(const LogConsole()),
           ),
         ],
       ),

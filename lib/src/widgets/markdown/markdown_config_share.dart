@@ -4,10 +4,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/filter_list.dart';
-import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/feed.dart';
+import 'package:interstellar/src/controller/filter_list.dart';
+import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -19,13 +19,13 @@ class ConfigShareMarkdownSyntax extends md.BlockSyntax {
   @override
   RegExp get pattern => RegExp(r'^```interstellar$');
 
-  final String endString = r'```';
+  final String endString = '```';
 
   @override
   md.Node parse(md.BlockParser parser) {
     parser.advance();
 
-    final List<String> body = [];
+    final body = <String>[];
 
     while (!parser.isDone) {
       if (parser.current.content == endString) {
@@ -57,7 +57,7 @@ class ConfigShareMarkdownBuilder extends mdf.MarkdownElementBuilder {
 class ConfigShareWidget extends StatefulWidget {
   final String text;
 
-  const ConfigShareWidget({super.key, required this.text});
+  const ConfigShareWidget({required this.text, super.key});
 
   @override
   State<ConfigShareWidget> createState() => _ConfigShareWidgetState();
@@ -90,13 +90,11 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
             ...config.payload,
             'name': config.name,
           });
-          break;
         case ConfigShareType.filterList:
           configFilterList = FilterList.fromJson({
             ...config.payload,
             'name': config.name,
           });
-          break;
         case ConfigShareType.feed:
           configFeed = Feed.fromJson(config.payload);
       }
@@ -166,7 +164,7 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                           EditProfileRoute(
                             profile: config.name,
                             profileList: profileList,
-                            importProfile: configProfile!,
+                            importProfile: configProfile,
                           ),
                         );
                       },
@@ -174,7 +172,7 @@ class _ConfigShareWidgetState extends State<ConfigShareWidget> {
                         () async => context.router.push(
                           EditFilterListRoute(
                             filterList: config.name,
-                            importFilterList: configFilterList!,
+                            importFilterList: configFilterList,
                           ),
                         ),
                       ConfigShareType.feed => () async => context.router.push(

@@ -80,7 +80,7 @@ class APICommunityModeration {
         throw Exception('List banned users not allowed on lemmy');
 
       case ServerSoftware.piefed:
-        final path = '/community/moderate/bans';
+        const path = '/community/moderate/bans';
 
         final query = {'community_id': communityId.toString(), 'page': page};
 
@@ -111,7 +111,7 @@ class APICommunityModeration {
         throw Exception('Ban update not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        final path = '/community/moderate/ban';
+        const path = '/community/moderate/ban';
         final body = {
           'community_id': communityId,
           'user_id': userId,
@@ -138,7 +138,7 @@ class APICommunityModeration {
         throw Exception('Ban update not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        final path = '/community/moderate/unban';
+        const path = '/community/moderate/unban';
 
         final body = {'community_id': communityId, 'user_id': userId};
 
@@ -157,7 +157,7 @@ class APICommunityModeration {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/moderate/magazine/new';
+        const path = '/moderate/magazine/new';
 
         final response = await client.post(
           path,

@@ -1,11 +1,11 @@
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:image_picker/image_picker.dart';
 
 enum ImageStore { platform, catbox, imgLink }
 
@@ -15,8 +15,8 @@ class APIImages {
   APIImages(this.client);
 
   Future<String> uploadImage({
-    ImageStore store = ImageStore.platform,
     required XFile image,
+    ImageStore store = ImageStore.platform,
   }) async {
     // Use software default image store with catbox as a fallback for mbin.
     if (store == ImageStore.platform &&

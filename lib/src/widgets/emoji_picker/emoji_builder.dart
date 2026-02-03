@@ -8,7 +8,7 @@ Builder emojiBuilder(BuilderOptions options) =>
     EmojiBuilder(options.config['sourcePrefix']);
 
 class EmojiBuilder implements Builder {
-  String _sourcePrefix;
+  final String _sourcePrefix;
 
   EmojiBuilder(this._sourcePrefix);
 
@@ -51,7 +51,7 @@ import "./emoji_class.dart";
 
 ''');
 
-    final List<String> emojiGroups = [];
+    final emojiGroups = <String>[];
 
     for (var i = 0; i < (messagesJson['groups'] as List).length; i++) {
       final group = messagesJson['groups'][i];
@@ -70,8 +70,8 @@ import "./emoji_class.dart";
     s.write('final emojiList = [\n');
 
     {
-      int i = 0;
-      for (var emoji in dataJson) {
+      var i = 0;
+      for (final emoji in dataJson) {
         if (emoji['group'] == null || emoji['order'] == null) continue;
 
         assert(emoji['order'] == i + 1);
@@ -84,7 +84,7 @@ import "./emoji_class.dart";
         ];
 
         trie.addChild(Trie.normalizeTerm(emoji['label']), {i});
-        for (var tag in tags) {
+        for (final tag in tags) {
           trie.addChild(Trie.normalizeTerm(tag), {i});
         }
 

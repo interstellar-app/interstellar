@@ -8,9 +8,9 @@ import 'package:share_plus/share_plus.dart';
 
 Future<ShareResult> shareUri(Uri uri) async {
   if (PlatformIs.mobile) {
-    return await Share.shareUri(uri);
+    return Share.shareUri(uri);
   } else {
-    return await Share.share(uri.toString());
+    return Share.share(uri.toString());
   }
 }
 

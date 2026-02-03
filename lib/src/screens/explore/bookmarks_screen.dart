@@ -1,19 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/bookmark_list.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/screens/feed/post_comment.dart';
+import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/models/bookmark_list.dart';
-import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/screens/feed/post_comment.dart';
-import 'package:interstellar/src/screens/feed/post_item.dart';
 
 @RoutePage()
 class BookmarkListScreen extends StatefulWidget {
@@ -109,7 +109,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                               onPressed: () => showDialog(
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
-                                  title: Text('Delete bookmark list'),
+                                  title: const Text('Delete bookmark list'),
                                   content: Text(_bookmarkLists[index].name),
                                   actions: [
                                     OutlinedButton(

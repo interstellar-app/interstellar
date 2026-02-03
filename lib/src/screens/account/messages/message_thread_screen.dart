@@ -1,8 +1,11 @@
+import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/message.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/account/messages/message_thread_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -11,10 +14,6 @@ import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:auto_route/annotations.dart';
-import 'package:auto_route/auto_route.dart';
-
-import '../../../models/user.dart';
 
 @RoutePage()
 class MessageThreadScreen extends StatefulWidget {

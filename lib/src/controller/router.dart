@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
-import 'database/database.dart';
-import 'router.gr.dart';
+import 'package:interstellar/src/controller/database/database.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
 class AppRouter extends RootStackRouter {
   @override
-  RouteType get defaultRouteType => RouteType.material();
+  RouteType get defaultRouteType => const RouteType.material();
 
   @override
   List<AutoRoute> get routes => [

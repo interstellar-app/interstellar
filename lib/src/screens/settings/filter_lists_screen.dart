@@ -58,7 +58,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                         );
 
                         if (!context.mounted) return;
-                        String communityName = mbinConfigsCommunityName;
+                        var communityName = mbinConfigsCommunityName;
                         if (communityName.endsWith(
                           context.read<AppController>().instanceHost,
                         )) {
@@ -89,7 +89,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Switch(
-                    value: ac.profile.filterLists[name] == true,
+                    value: ac.profile.filterLists[name] ?? false,
                     onChanged: (value) {
                       ac.updateProfile(
                         ac.selectedProfileValue.copyWith(
@@ -173,7 +173,7 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
           if (widget.filterList != null && widget.importFilterList == null) ...[
             ListTileSwitch(
               title: Text(l(context).filterList_activateFilter),
-              value: ac.profile.filterLists[widget.filterList] == true,
+              value: ac.profile.filterLists[widget.filterList] ?? false,
               onChanged: (value) {
                 ac.updateProfile(
                   ac.selectedProfileValue.copyWith(

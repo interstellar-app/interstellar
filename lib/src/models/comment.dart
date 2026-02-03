@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
-import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -152,7 +152,7 @@ abstract class CommentModel with _$CommentModel {
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
-    myVote: (json['isFavourited'] as bool?) == true
+    myVote: (json['isFavourited'] as bool?) ?? false
         ? 1
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
@@ -172,21 +172,18 @@ abstract class CommentModel with _$CommentModel {
 
   factory CommentModel.fromLemmy(
     JsonMap json, {
-    List<dynamic> possibleChildrenJson = const [],
     required List<(String, int)> langCodeIdPairs,
+    List<dynamic> possibleChildrenJson = const [],
   }) {
     final lemmyComment = json['comment'] as JsonMap;
     final lemmyCounts = json['counts'] as JsonMap?;
 
     final lemmyPath = lemmyComment['path'] as String;
-    final lemmyPathSegments = lemmyPath
-        .split('.')
-        .map((e) => int.parse(e))
-        .toList();
+    final lemmyPathSegments = lemmyPath.split('.').map(int.parse).toList();
 
     final children = possibleChildrenJson
         .where((c) {
-          String childPath = c['comment']['path'];
+          final String childPath = c['comment']['path'];
 
           return childPath.startsWith('$lemmyPath.') &&
               (childPath.split('.').length == lemmyPathSegments.length + 1);
@@ -233,8 +230,7 @@ abstract class CommentModel with _$CommentModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (((json['saved'] as bool?) != null) ? json['saved'] as bool : false)
-          '',
+        if (((json['saved'] as bool?) != null) && json['saved'] as bool) '',
       ],
       apId: lemmyComment['ap_id'] as String,
       emojiReactions: null,
@@ -243,8 +239,8 @@ abstract class CommentModel with _$CommentModel {
 
   factory CommentModel.fromPiefed(
     JsonMap json, {
-    List<dynamic> possibleChildrenJson = const [],
     required List<(String, int)> langCodeIdPairs,
+    List<dynamic> possibleChildrenJson = const [],
     CommunityModel? community,
     int? postId,
   }) {
@@ -252,14 +248,11 @@ abstract class CommentModel with _$CommentModel {
     final piefedCounts = json['counts'] as JsonMap;
 
     final piefedPath = piefedComment['path'] as String;
-    final piefedPathSegments = piefedPath
-        .split('.')
-        .map((e) => int.parse(e))
-        .toList();
+    final piefedPathSegments = piefedPath.split('.').map(int.parse).toList();
 
     var children = possibleChildrenJson
         .where((c) {
-          String childPath = c['comment']['path'];
+          final String childPath = c['comment']['path'];
 
           return childPath.startsWith('$piefedPath.') &&
               (childPath.split('.').length == piefedPathSegments.length + 1);

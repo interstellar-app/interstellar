@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
+import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 

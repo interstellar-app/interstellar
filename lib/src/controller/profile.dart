@@ -1,14 +1,15 @@
+import 'package:drift/drift.dart' show Expression, Insertable, Value;
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/images.dart' show ImageStore;
+import 'package:interstellar/src/controller/database/database.dart'
+    show ProfilesCompanion;
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart'
     show ActionLocation, ActionLocationWithTabs, SwipeAction;
-import 'package:drift/drift.dart' show Insertable, Value, Expression;
-import 'database/database.dart' show ProfilesCompanion;
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 
 part 'profile.freezed.dart';
@@ -19,8 +20,6 @@ enum OpenLinksIn { inAppBrowser, externalBrowser }
 /// Profile class where all fields are required.
 @freezed
 abstract class ProfileRequired with _$ProfileRequired {
-  const ProfileRequired._();
-
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory ProfileRequired({
     // If the autoSwitchAccount key is ever changed, be sure to update the AppController code that removes accounts, which references this key.
@@ -88,6 +87,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     required Map<String, bool> filterLists,
     required bool showErrors,
   }) = _ProfileRequired;
+  const ProfileRequired._();
 
   factory ProfileRequired.fromJson(JsonMap json) =>
       _$ProfileRequiredFromJson(json);
@@ -214,7 +214,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     autoTranslate: false,
     markThreadsReadOnScroll: false,
     markMicroblogsReadOnScroll: false,
-    animationSpeed: 1.0,
+    animationSpeed: 1,
     inlineReplies: true,
     showCrossPostComments: true,
     markCrossPostsAsRead: false,
@@ -281,8 +281,6 @@ abstract class ProfileRequired with _$ProfileRequired {
 abstract class ProfileOptional
     with _$ProfileOptional
     implements Insertable<ProfileOptional> {
-  const ProfileOptional._();
-
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory ProfileOptional({
     required String name,
@@ -349,6 +347,7 @@ abstract class ProfileOptional
     required Map<String, bool>? filterLists,
     required bool? showErrors,
   }) = _ProfileOptional;
+  const ProfileOptional._();
 
   factory ProfileOptional.fromJson(JsonMap json) =>
       _$ProfileOptionalFromJson(json);
@@ -540,30 +539,22 @@ abstract class ProfileOptional
       feedViewOrder: other.feedViewOrder ?? feedViewOrder,
       feedSourceOrder: other.feedSourceOrder ?? feedSourceOrder,
       feedSortOrder: other.feedSortOrder ?? feedSortOrder,
-      feedActionBackToTop:
-          other.feedActionBackToTop ?? this.feedActionBackToTop,
-      feedActionCreateNew:
-          other.feedActionCreateNew ?? this.feedActionCreateNew,
-      feedActionExpandFab:
-          other.feedActionExpandFab ?? this.feedActionExpandFab,
-      feedActionRefresh: other.feedActionRefresh ?? this.feedActionRefresh,
-      feedActionSetFilter:
-          other.feedActionSetFilter ?? this.feedActionSetFilter,
-      feedActionSetSort: other.feedActionSetSort ?? this.feedActionSetSort,
-      feedActionSetView: other.feedActionSetView ?? this.feedActionSetView,
+      feedActionBackToTop: other.feedActionBackToTop ?? feedActionBackToTop,
+      feedActionCreateNew: other.feedActionCreateNew ?? feedActionCreateNew,
+      feedActionExpandFab: other.feedActionExpandFab ?? feedActionExpandFab,
+      feedActionRefresh: other.feedActionRefresh ?? feedActionRefresh,
+      feedActionSetFilter: other.feedActionSetFilter ?? feedActionSetFilter,
+      feedActionSetSort: other.feedActionSetSort ?? feedActionSetSort,
+      feedActionSetView: other.feedActionSetView ?? feedActionSetView,
       feedActionHideReadPosts:
-          other.feedActionHideReadPosts ?? this.feedActionHideReadPosts,
-      enableSwipeActions: other.enableSwipeActions ?? this.enableSwipeActions,
-      swipeActionLeftShort:
-          other.swipeActionLeftShort ?? this.swipeActionLeftShort,
-      swipeActionLeftLong:
-          other.swipeActionLeftLong ?? this.swipeActionLeftLong,
+          other.feedActionHideReadPosts ?? feedActionHideReadPosts,
+      enableSwipeActions: other.enableSwipeActions ?? enableSwipeActions,
+      swipeActionLeftShort: other.swipeActionLeftShort ?? swipeActionLeftShort,
+      swipeActionLeftLong: other.swipeActionLeftLong ?? swipeActionLeftLong,
       swipeActionRightShort:
-          other.swipeActionRightShort ?? this.swipeActionRightShort,
-      swipeActionRightLong:
-          other.swipeActionRightLong ?? this.swipeActionRightLong,
-      swipeActionThreshold:
-          other.swipeActionThreshold ?? this.swipeActionThreshold,
+          other.swipeActionRightShort ?? swipeActionRightShort,
+      swipeActionRightLong: other.swipeActionRightLong ?? swipeActionRightLong,
+      swipeActionThreshold: other.swipeActionThreshold ?? swipeActionThreshold,
       filterLists: filterLists != null && other.filterLists != null
           ? {...filterLists!, ...other.filterLists!}
           : other.filterLists ?? filterLists,
@@ -587,25 +578,25 @@ abstract class ProfileOptional
     return copyWith(
       feedActionBackToTop: builtProfile.feedActionBackToTop.name == actionName
           ? ActionLocation.hide
-          : this.feedActionBackToTop,
+          : feedActionBackToTop,
       feedActionCreateNew: builtProfile.feedActionCreateNew.name == actionName
           ? ActionLocation.hide
-          : this.feedActionCreateNew,
+          : feedActionCreateNew,
       feedActionExpandFab: builtProfile.feedActionExpandFab.name == actionName
           ? ActionLocation.hide
-          : this.feedActionExpandFab,
+          : feedActionExpandFab,
       feedActionRefresh: builtProfile.feedActionRefresh.name == actionName
           ? ActionLocation.hide
-          : this.feedActionRefresh,
+          : feedActionRefresh,
       feedActionSetFilter: builtProfile.feedActionSetFilter.name == actionName
           ? ActionLocationWithTabs.hide
-          : this.feedActionSetFilter,
+          : feedActionSetFilter,
       feedActionSetSort: builtProfile.feedActionSetSort.name == actionName
           ? ActionLocationWithTabs.hide
-          : this.feedActionSetSort,
+          : feedActionSetSort,
       feedActionSetView: builtProfile.feedActionSetView.name == actionName
           ? ActionLocationWithTabs.hide
-          : this.feedActionSetView,
+          : feedActionSetView,
     );
   }
 

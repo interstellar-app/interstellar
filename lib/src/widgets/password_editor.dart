@@ -32,7 +32,7 @@ class _PasswordEditorState extends State<PasswordEditor> {
         ),
       ),
       onChanged: widget.onChanged,
-      autofillHints: [AutofillHints.password],
+      autofillHints: const [AutofillHints.password],
       obscureText: obscureText,
     );
   }

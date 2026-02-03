@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +14,8 @@ import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
 import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
-import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/globals.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -72,11 +73,7 @@ class _AppHomeState extends State<AppHome> {
                 onTap: (selected, item) async {
                   context.router.pop();
                   context.router.push(
-                    MessageThreadRoute(
-                      threadId: null,
-                      userId: item.id,
-                      otherUser: item,
-                    ),
+                    MessageThreadRoute(userId: item.id, otherUser: item),
                   );
                 },
               ),
@@ -93,7 +90,7 @@ class _AppHomeState extends State<AppHome> {
     _pageController.jumpToPage(_navIndex);
   }
 
-  void _handleExit(bool didPop, result) async {
+  Future<void> _handleExit(bool didPop, result) async {
     if (didPop) return;
     if (_navIndex != 0) {
       _changeNav(0);
@@ -231,7 +228,7 @@ class _AppHomeState extends State<AppHome> {
                   ExploreScreen(key: _exploreKey, focusNode: _exploreFocusNode),
                   SelfFeed(key: _accountKey),
                   InboxScreen(key: _inboxKey),
-                  SettingsScreen(),
+                  const SettingsScreen(),
                 ],
               ),
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
-import 'package:markdown/markdown.dart' as md;
 import 'package:interstellar/src/widgets/video.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class VideoMarkdownSyntax extends md.InlineSyntax {
   VideoMarkdownSyntax() : super(r'!\[video\/mp4\]\((https:\/\/[^\s]+\.mp4)\)');
@@ -21,11 +21,7 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
   static const String _mdLinkPattern =
       r'\[(.*?)\]\(\s*' + _youtubePattern + r'(?:\s*".*?")?\s*\)';
 
-  static final _mdLinkPatternRegExp = RegExp(
-    _mdLinkPattern,
-    multiLine: true,
-    caseSensitive: true,
-  );
+  static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
 
   YoutubeEmbedSyntax() : super(_youtubePattern);
@@ -37,7 +33,7 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
     startMatchPos ??= parser.pos;
 
     _isMarkdownLink = String.fromCharCode(parser.charAt(parser.pos)) == '[';
-    bool isAutoLink = String.fromCharCode(parser.charAt(parser.pos)) == '<';
+    final isAutoLink = String.fromCharCode(parser.charAt(parser.pos)) == '<';
     if (isAutoLink) {
       startMatchPos += 1;
     }
@@ -91,7 +87,7 @@ class VideoMarkdownBuilder extends mdf.MarkdownElementBuilder {
 
   @override
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    var textContent = element.textContent;
+    final textContent = element.textContent;
 
     return VideoPlayer(Uri.parse(textContent), enableBlur: enableBlur);
   }

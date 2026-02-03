@@ -4,9 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
-import 'package:interstellar/src/utils/utils.dart';
 
 class MbinAPIMicroblogs {
   final ServerClient client;
@@ -134,7 +134,7 @@ class MbinAPIMicroblogs {
     request.fields['lang'] = lang;
     request.fields['isAdult'] = isAdult.toString();
     request.fields['alt'] = alt;
-    var response = await client.sendRequest(request);
+    final response = await client.sendRequest(request);
 
     return PostModel.fromMbinPost(response.bodyJson);
   }

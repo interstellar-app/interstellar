@@ -64,7 +64,7 @@ class SelectionMenu<T> {
                             option.subItems != null &&
                                 option.subItems!.isNotEmpty
                             ? IconButton(
-                                icon: Icon(Icons.arrow_right),
+                                icon: const Icon(Icons.arrow_right),
                                 onPressed: () async {
                                   final subSelection = await option
                                       .subItemsSelectionMenu!
@@ -86,7 +86,7 @@ class SelectionMenu<T> {
       );
 
   SelectionMenuItem<T> getOption(T value) {
-    for (var option in options) {
+    for (final option in options) {
       if (option.subItems == null) continue;
       try {
         return option.subItemsSelectionMenu!.getOption(value);

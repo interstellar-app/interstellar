@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -13,10 +15,7 @@ import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import '../../feed/post_page.dart';
-import 'notification_count_controller.dart';
-
-const notificationTitle = {
+const Map<NotificationType, String> notificationTitle = {
   NotificationType.mention: 'mentioned you',
   NotificationType.postMention: 'mentioned you in a post',
   NotificationType.commentMention: 'mentioned you in a comment',
@@ -60,7 +59,7 @@ class _NotificationItemState extends State<NotificationItem> {
 
     final software = context.watch<AppController>().serverSoftware;
 
-    CommunityModel? bannedCommunity = switch (software) {
+    final bannedCommunity = switch (software) {
       ServerSoftware.mbin =>
         widget.item.type == NotificationType.ban &&
                 widget.item.subject['magazine'] != null
@@ -72,7 +71,7 @@ class _NotificationItemState extends State<NotificationItem> {
       ServerSoftware.piefed => null,
     };
 
-    final String body = switch (software) {
+    final body = switch (software) {
       ServerSoftware.mbin =>
         (widget.item.subject['body'] ?? widget.item.subject['reason'] ?? '')
             as String,
@@ -88,7 +87,7 @@ class _NotificationItemState extends State<NotificationItem> {
       ServerSoftware.piefed => (widget.item.subject['notif_body']) as String,
     };
 
-    final void Function()? onTap = switch (software) {
+    final onTap = switch (software) {
       ServerSoftware.mbin =>
         widget.item.subject.containsKey('threadId')
             ? () => context.router.push(

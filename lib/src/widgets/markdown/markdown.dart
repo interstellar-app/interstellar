@@ -3,13 +3,12 @@ import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_config_share.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_spoiler.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_subscript_superscript.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_video.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/video.dart';
-
-import './markdown_mention.dart';
-import './markdown_spoiler.dart';
-import './markdown_subscript_superscript.dart';
-import './markdown_video.dart';
 
 class Markdown extends StatelessWidget {
   final String data;
@@ -36,7 +35,7 @@ class Markdown extends StatelessWidget {
             mdf.MarkdownStyleSheet(
               blockquoteDecoration: BoxDecoration(
                 color: Colors.blue.shade500.withAlpha(50),
-                borderRadius: BorderRadius.circular(2.0),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),

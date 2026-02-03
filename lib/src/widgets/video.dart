@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/share.dart';
+import 'package:interstellar/src/widgets/blur.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -9,9 +12,6 @@ import 'package:media_kit_video/media_kit_video_controls/media_kit_video_control
 import 'package:provider/provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart'
     as youtube_explode_dart;
-import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/widgets/wrapper.dart';
-import 'package:interstellar/src/widgets/blur.dart';
 
 bool isSupportedYouTubeVideo(Uri link) {
   return [
@@ -97,7 +97,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         children: [
           if (error != null)
             DecoratedBox(
-              decoration: BoxDecoration(color: Colors.black),
+              decoration: const BoxDecoration(color: Colors.black),
               child: Center(child: Text(error!)),
             ),
           if (error == null)
@@ -127,7 +127,9 @@ class _VideoPlayerState extends State<VideoPlayer> {
                     children: [
                       media_kit_video_controls.AdaptiveVideoControls(state),
                       if (!_isPlaying)
-                        Center(child: MaterialPlayOrPauseButton(iconSize: 56)),
+                        const Center(
+                          child: MaterialPlayOrPauseButton(iconSize: 56),
+                        ),
                       if (!state.isFullscreen())
                         Align(
                           alignment: Alignment.topRight,
@@ -135,8 +137,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               LoadingIconButton(
-                                onPressed: () async =>
-                                    await shareUri(widget.uri),
+                                onPressed: () async => shareUri(widget.uri),
                                 icon: const Icon(Symbols.share_rounded),
                               ),
                             ],

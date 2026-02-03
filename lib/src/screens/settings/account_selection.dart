@@ -11,7 +11,7 @@ Future<String?> switchAccount(
   BuildContext context, [
   String? oldAccount,
 ]) async {
-  return await showModalBottomSheet(
+  return showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
       return AccountSelectWidget(
@@ -26,7 +26,7 @@ Future<String?> selectAccountWithNone(
   BuildContext context, [
   String? oldAccount,
 ]) async {
-  return await showModalBottomSheet<String>(
+  return showModalBottomSheet<String>(
     context: context,
     builder: (BuildContext context) {
       return AccountSelectWidget(oldAccount: oldAccount, showNoneOption: true);
@@ -154,7 +154,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                 ListTile(
                   title: Text(l(context).addAccount),
                   leading: const Icon(Symbols.login_rounded),
-                  onTap: () => context.router.push(LoginSelectRoute()),
+                  onTap: () => context.router.push(const LoginSelectRoute()),
                 ),
               const SizedBox(height: 16),
             ],

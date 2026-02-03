@@ -1,13 +1,14 @@
 import 'dart:io';
+
 import 'package:auto_route/annotations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:logger/logger.dart';
 
 @RoutePage()
 class LogConsole extends StatefulWidget {
@@ -22,9 +23,9 @@ class _LogConsoleState extends State<LogConsole> {
   List<String> _logLines = [];
   final ScrollController _controller = ScrollController();
 
-  void _fetchLogFile() async {
+  Future<void> _fetchLogFile() async {
     final logFile = await context.read<AppController>().logFile;
-    List<String> lines = await logFile?.readAsLines() ?? [];
+    final lines = await logFile?.readAsLines() ?? [];
     setState(() {
       _logFile = logFile;
       _logLines = lines;
@@ -91,10 +92,9 @@ class _LogConsoleState extends State<LogConsole> {
         ],
       ),
       body: Container(
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         color: Colors.black,
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
           controller: _controller,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -118,7 +118,7 @@ class _LogConsoleState extends State<LogConsole> {
                     children: [
                       Text(
                         '${line.key}: ',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.amberAccent,
                         ),

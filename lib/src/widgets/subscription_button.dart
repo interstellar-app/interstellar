@@ -58,7 +58,7 @@ class SubscriptionButton extends StatelessWidget {
                         ),
                       );
 
-                if (confirm == true) await onSubscribe(newValue);
+                if (confirm ?? false) await onSubscribe(newValue);
               }
             : onSubscribe,
       ),

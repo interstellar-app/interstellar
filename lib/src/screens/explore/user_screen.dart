@@ -5,8 +5,8 @@ import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -22,6 +22,7 @@ import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
+import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
@@ -29,7 +30,6 @@ import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
-import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -111,7 +111,7 @@ class _UserScreenState extends State<UserScreen> {
     final isLoggedIn = ac.isLoggedIn;
     final isMyUser =
         isLoggedIn &&
-        whenLoggedIn(context, true, matchesUsername: user.name) == true;
+        (whenLoggedIn(context, true, matchesUsername: user.name) ?? false);
 
     final currentFeedSortOption = feedSortSelect(context).getOption(_sort);
 
@@ -127,10 +127,10 @@ class _UserScreenState extends State<UserScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: ActionChip(
-                label: Icon(Symbols.bookmarks_rounded, size: 20),
+                label: const Icon(Symbols.bookmarks_rounded, size: 20),
                 onPressed: () => context.router.push(
                   ac.serverSoftware == ServerSoftware.mbin
-                      ? BookmarkListRoute()
+                      ? const BookmarkListRoute()
                       : BookmarksRoute(bookmarkList: 'default'),
                 ),
               ),
@@ -232,7 +232,7 @@ class _UserScreenState extends State<UserScreen> {
                                       subscriptionCount:
                                           user.followersCount ?? 0,
                                       onSubscribe: (selected) async {
-                                        var newValue = await ac.api.users
+                                        final newValue = await ac.api.users
                                             .follow(user.id, selected);
                                         setState(() {
                                           _data = newValue;
@@ -263,7 +263,7 @@ class _UserScreenState extends State<UserScreen> {
                                       icon: const Icon(Symbols.block_rounded),
                                       style: ButtonStyle(
                                         foregroundColor: WidgetStatePropertyAll(
-                                          user.isBlockedByUser == true
+                                          user.isBlockedByUser ?? false
                                               ? Theme.of(
                                                   context,
                                                 ).colorScheme.error
@@ -275,7 +275,6 @@ class _UserScreenState extends State<UserScreen> {
                                     IconButton(
                                       onPressed: () => context.router.push(
                                         MessageThreadRoute(
-                                          threadId: null,
                                           userId: _data?.id,
                                           otherUser: _data,
                                         ),
@@ -487,7 +486,7 @@ class _UserScreenState extends State<UserScreen> {
         shouldWrap: ac.profile.hideFeedUIOnScroll,
         parentBuilder: (child) => HideOnScroll(
           controller: _scrollController,
-          hiddenOffset: Offset(0, 2),
+          hiddenOffset: const Offset(0, 2),
           duration: ac.calcAnimationDuration(),
           child: child,
         ),
@@ -514,9 +513,9 @@ class UserScreenBody extends StatefulWidget {
   final bool isActive;
 
   const UserScreenBody({
-    super.key,
     required this.mode,
     required this.sort,
+    super.key,
     this.data,
     this.isActive = false,
   });
@@ -535,7 +534,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
 
-      const Map<FeedSort, CommentSort> feedToCommentSortMap = {
+      const feedToCommentSortMap = <FeedSort, CommentSort>{
         FeedSort.active: CommentSort.active,
         FeedSort.commented: CommentSort.active,
         FeedSort.hot: CommentSort.hot,
@@ -581,15 +580,15 @@ class _UserScreenBodyState extends State<UserScreenBody>
 
       return (
         switch (newPage) {
-          PostListModel newPage => newPage.items,
-          CommentListModel newPage => newPage.items,
-          DetailedUserListModel newPage => newPage.items,
+          final PostListModel newPage => newPage.items,
+          final CommentListModel newPage => newPage.items,
+          final DetailedUserListModel newPage => newPage.items,
           Object _ => [],
         },
         switch (newPage) {
-          PostListModel newPage => newPage.nextPage,
-          CommentListModel newPage => newPage.nextPage,
-          DetailedUserListModel newPage => newPage.nextPage,
+          final PostListModel newPage => newPage.nextPage,
+          final CommentListModel newPage => newPage.nextPage,
+          final DetailedUserListModel newPage => newPage.nextPage,
           Object _ => null,
         },
       );

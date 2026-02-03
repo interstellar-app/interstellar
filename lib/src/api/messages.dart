@@ -118,7 +118,7 @@ class APIMessages {
         return MessageThreadModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        final path = '/private_message';
+        const path = '/private_message';
 
         final response = await client.post(
           path,
@@ -135,7 +135,7 @@ class APIMessages {
         ).items.first;
 
       case ServerSoftware.piefed:
-        final path = '/private_message';
+        const path = '/private_message';
 
         final response = await client.post(
           path,
@@ -166,10 +166,10 @@ class APIMessages {
         return MessageThreadModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        return await create(threadId, body);
+        return create(threadId, body);
 
       case ServerSoftware.piefed:
-        return await create(threadId, body);
+        return create(threadId, body);
     }
   }
 }

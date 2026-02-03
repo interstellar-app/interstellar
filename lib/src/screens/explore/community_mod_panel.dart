@@ -1,20 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:material_symbols_icons/symbols.dart';
-
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -24,10 +23,10 @@ class CommunityModPanelScreen extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityModPanelScreen({
-    super.key,
     @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -47,7 +46,7 @@ class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
 
   @override
   Widget build(BuildContext context) {
-    onUpdate(DetailedCommunityModel newValue) {
+    void onUpdate(DetailedCommunityModel newValue) {
       setState(() {
         _data = newValue;
         widget.onUpdate(newValue);
@@ -64,10 +63,10 @@ class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
           title: Text('Mod Panel for ${widget.initData.name}'),
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Bans'),
+              const Tab(text: 'Bans'),
               if (context.read<AppController>().serverSoftware ==
                   ServerSoftware.mbin)
-                Tab(text: 'Reports'),
+                const Tab(text: 'Reports'),
             ],
           ),
         ),
@@ -90,9 +89,9 @@ class CommunityModPanelBans extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityModPanelBans({
-    super.key,
     required this.data,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -153,9 +152,9 @@ class CommunityModPanelReports extends StatefulWidget {
   final void Function(DetailedCommunityModel) onUpdate;
 
   const CommunityModPanelReports({
-    super.key,
     required this.data,
     required this.onUpdate,
+    super.key,
   });
 
   @override
@@ -196,7 +195,6 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ActionChip(
                   padding: chipDropdownPadding,
@@ -247,7 +245,6 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Column(

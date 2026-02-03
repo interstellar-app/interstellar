@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,8 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
@@ -24,12 +25,11 @@ import 'package:interstellar/src/widgets/hide_on_scroll.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
-import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/subordinate_scroll.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:collection/collection.dart';
 
 @RoutePage()
 class FeedScreen extends StatefulWidget {
@@ -86,19 +86,17 @@ class _FeedScreenState extends State<FeedScreen>
             context.read<AppController>().profile.feedDefaultCombinedSort,
         };
 
-  void _initNavExpanded() async {
+  Future<void> _initNavExpanded() async {
     final initExpanded = await context.read<AppController>().expandNavDrawer;
     if (initExpanded != _drawerController.expanded) {
       if (!mounted) return;
-      setState(() {
-        _drawerController.toggle();
-      });
+      setState(_drawerController.toggle);
     }
   }
 
   List<Tab> _getFeedTabs(AppController ac, ActionItem tabsAction) {
     return switch (tabsAction.name) {
-      String name when name == feedActionSetFilter(context).name =>
+      final String name when name == feedActionSetFilter(context).name =>
         ac.profile.feedSourceOrder
             .map(
               (option) => Tab(
@@ -107,7 +105,7 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
-      String name when name == feedActionSetView(context).name =>
+      final String name when name == feedActionSetView(context).name =>
         FeedView.match(
               values: ac.profile.feedViewOrder,
               software: ac.serverSoftware.bitFlag,
@@ -119,7 +117,7 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
-      String name when name == feedActionSetSort(context).name =>
+      final String name when name == feedActionSetSort(context).name =>
         FeedSort.match(
               values: ac.profile.feedSortOrder,
               software: ac.serverSoftware.bitFlag,
@@ -142,7 +140,7 @@ class _FeedScreenState extends State<FeedScreen>
     TabController? controller,
   ) {
     return switch (tabsAction.name) {
-      String name when name == feedActionSetFilter(context).name =>
+      final String name when name == feedActionSetFilter(context).name =>
         ac.profile.feedSourceOrder
             .mapIndexed(
               (index, feed) => FeedScreenBody(
@@ -163,7 +161,7 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
-      String name when name == feedActionSetView(context).name =>
+      final String name when name == feedActionSetView(context).name =>
         FeedView.match(
               values: ac.profile.feedViewOrder,
               software: ac.serverSoftware.bitFlag,
@@ -187,7 +185,7 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             )
             .toList(),
-      String name when name == feedActionSetSort(context).name =>
+      final String name when name == feedActionSetSort(context).name =>
         FeedSort.match(
               values: ac.profile.feedSortOrder,
               software: context.read<AppController>().serverSoftware.bitFlag,
@@ -261,11 +259,11 @@ class _FeedScreenState extends State<FeedScreen>
     // canAuthUserModerate with content items
     // lemmy and piefed don't return this info
     final localUserPart = ac.localName;
-    final userCanModerate = widget.createPostCommunity == null
-        ? false
-        : widget.createPostCommunity!.moderators.any(
-            (mod) => mod.name == localUserPart,
-          );
+    final userCanModerate =
+        !(widget.createPostCommunity == null) &&
+        widget.createPostCommunity!.moderators.any(
+          (mod) => mod.name == localUserPart,
+        );
 
     final actions = [
       feedActionCreateNew(context).withProps(
@@ -334,14 +332,14 @@ class _FeedScreenState extends State<FeedScreen>
         },
       ),
       feedActionRefresh(context).withProps(ac.profile.feedActionRefresh, () {
-        for (var key in _feedKeyList) {
+        for (final key in _feedKeyList) {
           key.currentState?.refresh();
         }
       }),
       feedActionBackToTop(context).withProps(
         ac.profile.feedActionBackToTop,
         () {
-          for (var key in _feedKeyList) {
+          for (final key in _feedKeyList) {
             key.currentState?.backToTop();
           }
         },
@@ -352,25 +350,26 @@ class _FeedScreenState extends State<FeedScreen>
           _fabKey.currentState?.toggle();
         },
       ),
-      _hideReadPosts
-          ? feedActionShowReadPosts(context).withProps(
-              ac.profile.feedActionHideReadPosts,
-              () => setState(() {
-                _hideReadPosts = !_hideReadPosts;
-                for (var key in _feedKeyList) {
-                  key.currentState?.refresh();
-                }
-              }),
-            )
-          : feedActionHideReadPosts(context).withProps(
-              ac.profile.feedActionHideReadPosts,
-              () => setState(() {
-                _hideReadPosts = !_hideReadPosts;
-                for (var key in _feedKeyList) {
-                  key.currentState?.refresh();
-                }
-              }),
-            ),
+      if (_hideReadPosts)
+        feedActionShowReadPosts(context).withProps(
+          ac.profile.feedActionHideReadPosts,
+          () => setState(() {
+            _hideReadPosts = !_hideReadPosts;
+            for (final key in _feedKeyList) {
+              key.currentState?.refresh();
+            }
+          }),
+        )
+      else
+        feedActionHideReadPosts(context).withProps(
+          ac.profile.feedActionHideReadPosts,
+          () => setState(() {
+            _hideReadPosts = !_hideReadPosts;
+            for (final key in _feedKeyList) {
+              key.currentState?.refresh();
+            }
+          }),
+        ),
     ];
 
     final tabsAction = [
@@ -397,7 +396,7 @@ class _FeedScreenState extends State<FeedScreen>
       shouldWrap: tabsAction != null,
       parentBuilder: (child) => DefaultTabController(
         initialIndex: switch (tabsAction?.name) {
-          String name when name == feedActionSetSort(context).name =>
+          final String name when name == feedActionSetSort(context).name =>
             tabs
                     ?.asMap()
                     .entries
@@ -453,9 +452,7 @@ class _FeedScreenState extends State<FeedScreen>
                       widget.feed == null && Breakpoints.isExpanded(context)
                       ? IconButton(
                           onPressed: () {
-                            setState(() {
-                              _drawerController.toggle();
-                            });
+                            setState(_drawerController.toggle);
                             ac.setExpandNavDrawer(_drawerController.expanded);
                           },
                           icon: const Icon(Symbols.menu_rounded),
@@ -552,7 +549,7 @@ class _FeedScreenState extends State<FeedScreen>
           shouldWrap: ac.profile.hideFeedUIOnScroll,
           parentBuilder: (child) => HideOnScroll(
             controller: _scrollController,
-            hiddenOffset: Offset(0, 0.2),
+            hiddenOffset: const Offset(0, 0.2),
             duration: ac.calcAnimationDuration(),
             child: child,
           ),
@@ -578,7 +575,7 @@ class _FeedScreenState extends State<FeedScreen>
 
                   if (!mounted) return;
                   setState(() {
-                    _navDrawPersistentState = drawerState!;
+                    _navDrawPersistentState = drawerState;
                   });
                 },
               ),
@@ -661,10 +658,10 @@ class FeedScreenBody extends StatefulWidget {
   final bool isActive;
 
   const FeedScreenBody({
-    super.key,
     required this.feed,
     required this.sort,
     required this.view,
+    super.key,
     this.details,
     this.userCanModerate = false,
     this.hideReadPosts = false,
@@ -686,7 +683,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
           if (pageKey.isEmpty) _filterListWarnings.clear();
 
           var (newItems, nextPageKey) = await _tryFetchPage(pageKey);
-          int emptyPageCount = 0;
+          var emptyPageCount = 0;
           while ((emptyPageCount < 2) &&
               newItems.isEmpty &&
               nextPageKey != null &&
@@ -709,7 +706,9 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   final Map<(PostType, int), Set<String>> _filterListWarnings = {};
 
   int _lastVisibleIndex = 0;
-  final _markAsReadDebounce = Debouncer(duration: Duration(milliseconds: 500));
+  final _markAsReadDebounce = Debouncer(
+    duration: const Duration(milliseconds: 500),
+  );
   bool _lastPageFilteredOut = false;
 
   late FeedAggregator _aggregator;
@@ -754,8 +753,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
       // Skip feed filters if it's an explore page
       // if (widget.sourceId != null) return true;
 
-      for (var filterListEntry in ac.filterLists.entries) {
-        if (filterListActivations[filterListEntry.key] == true) {
+      for (final filterListEntry in ac.filterLists.entries) {
+        if (filterListActivations[filterListEntry.key] ?? false) {
           final filterList = filterListEntry.value;
 
           if ((post.title != null && filterList.hasMatch(post.title!)) ||
@@ -826,7 +825,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
     final ac = context.read<AppController>();
     super.build(context);
     return RefreshIndicator(
-      onRefresh: () => Future.sync(() => refresh()),
+      onRefresh: () => Future.sync(refresh),
       child: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -883,8 +882,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                               final items = _pagingController.value.items;
                               if (items == null) return;
 
-                              List<PostModel> readPosts = [];
-                              for (int i = index; i >= 0; i--) {
+                              final readPosts = <PostModel>[];
+                              for (var i = index; i >= 0; i--) {
                                 final post = items[i];
                                 if (post.read || readPosts.contains(post)) {
                                   continue;
@@ -892,7 +891,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                 readPosts.add(post);
                               }
                               if (readPosts.isNotEmpty) {
-                                var postsMarkedAsRead = await ac.markAsRead(
+                                final postsMarkedAsRead = await ac.markAsRead(
                                   readPosts,
                                   true,
                                 );

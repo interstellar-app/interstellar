@@ -1,11 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/api/moderation.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
-
-import '../api/moderation.dart';
 
 part 'modlog.freezed.dart';
 

@@ -20,9 +20,9 @@ class DisplayName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var nameTuple = name.split('@');
-    String localName = displayName ?? nameTuple.first;
-    String? hostName = nameTuple.length > 1 ? nameTuple[1] : null;
+    final nameTuple = name.split('@');
+    final localName = displayName ?? nameTuple.first;
+    final hostName = nameTuple.length > 1 ? nameTuple[1] : null;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -30,13 +30,13 @@ class DisplayName extends StatelessWidget {
         if (icon != null)
           Padding(
             padding: const EdgeInsets.only(right: 3),
-            child: Avatar(icon!, radius: 14),
+            child: Avatar(icon, radius: 14),
           ),
         Flexible(
           child: InkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(3.0),
+              padding: const EdgeInsets.all(3),
               child: Text(
                 localName +
                     (context.watch<AppController>().profile.alwaysShowInstance

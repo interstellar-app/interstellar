@@ -6,9 +6,9 @@ import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/widgets/list_tile_switch.dart';
 
 @RoutePage()
 class FeedDefaultSettingsScreen extends StatelessWidget {
@@ -25,17 +25,20 @@ class FeedDefaultSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.filter_list_rounded),
             title: Text(l(context).settings_feedSourceOrder),
-            onTap: () => context.router.push(FeedSourceOrderSettingsRoute()),
+            onTap: () =>
+                context.router.push(const FeedSourceOrderSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.tab_rounded),
             title: Text(l(context).settings_feedViewOrder),
-            onTap: () => context.router.push(FeedViewOrderSettingsRoute()),
+            onTap: () =>
+                context.router.push(const FeedViewOrderSettingsRoute()),
           ),
           ListTile(
             leading: const Icon(Symbols.sort_rounded),
             title: Text(l(context).settings_feedSortOrder),
-            onTap: () => context.router.push(FeedSortOrderSettingsRoute()),
+            onTap: () =>
+                context.router.push(const FeedSortOrderSettingsRoute()),
           ),
           ListTileSelect(
             title: l(context).settings_feedDefaults_threadsSort,

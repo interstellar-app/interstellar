@@ -16,18 +16,18 @@ abstract class SearchListModel with _$SearchListModel {
   }) = _SearchListModel;
 
   factory SearchListModel.fromMbin(Map<String, dynamic> json) {
-    List<Object> items = [];
+    final items = <Object>[];
 
-    for (var actor in json['apActors']) {
-      var type = actor['type'];
+    for (final actor in json['apActors']) {
+      final type = actor['type'];
       if (type == 'user') {
         items.add(DetailedUserModel.fromMbin(actor['object'] as JsonMap));
       } else if (type == 'magazine') {
         items.add(DetailedCommunityModel.fromMbin(actor['object'] as JsonMap));
       }
     }
-    for (var item in json['apObjects']) {
-      var itemType = item['itemType'];
+    for (final item in json['apObjects']) {
+      final itemType = item['itemType'];
       if (itemType == 'entry') {
         items.add(PostModel.fromMbinEntry(item as JsonMap));
       } else if (itemType == 'post') {
@@ -36,8 +36,8 @@ abstract class SearchListModel with _$SearchListModel {
         items.add(CommentModel.fromMbin(item as JsonMap));
       }
     }
-    for (var item in json['items']) {
-      var itemType = item['itemType'];
+    for (final item in json['items']) {
+      final itemType = item['itemType'];
       if (itemType == 'entry') {
         items.add(PostModel.fromMbinEntry(item as JsonMap));
       } else if (itemType == 'post') {
@@ -57,17 +57,17 @@ abstract class SearchListModel with _$SearchListModel {
     Map<String, dynamic> json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    List<Object> items = [];
+    final items = <Object>[];
 
-    for (var user in json['users']) {
+    for (final user in json['users']) {
       items.add(DetailedUserModel.fromLemmy(user));
     }
 
-    for (var community in json['communities']) {
+    for (final community in json['communities']) {
       items.add(DetailedCommunityModel.fromLemmy(community as JsonMap));
     }
 
-    for (var post in json['posts']) {
+    for (final post in json['posts']) {
       items.add(
         PostModel.fromLemmy({
           'post_view': post as JsonMap,
@@ -75,7 +75,7 @@ abstract class SearchListModel with _$SearchListModel {
       );
     }
 
-    for (var comment in json['comments']) {
+    for (final comment in json['comments']) {
       items.add(
         CommentModel.fromLemmy(
           comment as JsonMap,
@@ -94,17 +94,17 @@ abstract class SearchListModel with _$SearchListModel {
     Map<String, dynamic> json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    List<Object> items = [];
+    final items = <Object>[];
 
-    for (var user in json['users']) {
+    for (final user in json['users']) {
       items.add(DetailedUserModel.fromPiefed(user));
     }
 
-    for (var community in json['communities']) {
+    for (final community in json['communities']) {
       items.add(DetailedCommunityModel.fromPiefed(community as JsonMap));
     }
 
-    for (var post in json['posts']) {
+    for (final post in json['posts']) {
       items.add(
         PostModel.fromPiefed({
           'post_view': post as JsonMap,
@@ -112,7 +112,7 @@ abstract class SearchListModel with _$SearchListModel {
       );
     }
 
-    for (var comment in json['comments']) {
+    for (final comment in json['comments']) {
       items.add(
         CommentModel.fromPiefed(
           comment as JsonMap,

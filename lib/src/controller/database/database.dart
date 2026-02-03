@@ -1,27 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show ThemeMode;
+
+import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/images.dart';
+import 'package:interstellar/src/controller/database/database.steps.dart';
 import 'package:interstellar/src/controller/feed.dart';
-import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
+import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:oauth2/oauth2.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:drift/drift.dart';
-import 'package:sembast/sembast_io.dart';
 import 'package:path/path.dart';
-import 'database.steps.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast_io.dart';
 
 part 'database.g.dart';
 
@@ -55,7 +56,8 @@ class Accounts extends Table {
       text().withLength(min: 1).clientDefault(() => '@kbin.earth')();
   TextColumn get oauth => text().map(const CredentialsConverter()).nullable()();
   TextColumn get jwt => text().nullable()();
-  BoolColumn get isPushRegistered => boolean().withDefault(Constant(false))();
+  BoolColumn get isPushRegistered =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column<Object>> get primaryKey => {handle};
@@ -356,13 +358,18 @@ class MiscCache extends Table {
       .clientDefault(() => '@kbin.earth')();
   TextColumn get webPushKeys => text().nullable()();
   TextColumn get downloadsDir => text().nullable()();
-  BoolColumn get expandNavDrawer => boolean().withDefault(Constant(true))();
-  BoolColumn get expandNavStars => boolean().withDefault(Constant(true))();
-  BoolColumn get expandNavFeeds => boolean().withDefault(Constant(true))();
+  BoolColumn get expandNavDrawer =>
+      boolean().withDefault(const Constant(true))();
+  BoolColumn get expandNavStars =>
+      boolean().withDefault(const Constant(true))();
+  BoolColumn get expandNavFeeds =>
+      boolean().withDefault(const Constant(true))();
   BoolColumn get expandNavSubscriptions =>
-      boolean().withDefault(Constant(true))();
-  BoolColumn get expandNavFollows => boolean().withDefault(Constant(true))();
-  BoolColumn get expandNavDomains => boolean().withDefault(Constant(true))();
+      boolean().withDefault(const Constant(true))();
+  BoolColumn get expandNavFollows =>
+      boolean().withDefault(const Constant(true))();
+  BoolColumn get expandNavDomains =>
+      boolean().withDefault(const Constant(true))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -395,12 +402,12 @@ class Tags extends Table {
   IntColumn get backgroundColor => integer()
       .map(const ColorConverter())
       .clientDefault(
-        () => Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit,
+        () => const Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit,
       )();
   IntColumn get textColor => integer()
       .map(const ColorConverter())
       .clientDefault(
-        () => Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit,
+        () => const Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit,
       )();
 }
 
@@ -489,7 +496,7 @@ Future<void> initDatabase() async {
 Future<void> deleteTables() async {
   // Ensure miscCache is deleted before accounts
   await database.delete(database.miscCache).go();
-  for (var table in database.allTables) {
+  for (final table in database.allTables) {
     await database.delete(table).go();
   }
 }
@@ -501,7 +508,7 @@ Future<bool> migrateDatabase() async {
   if (!await File(dbPath).exists()) {
     return false;
   }
-  final Database db = await databaseFactoryIo.openDatabase(dbPath);
+  final db = await databaseFactoryIo.openDatabase(dbPath);
   database = InterstellarDatabase();
 
   final mainStore = StoreRef.main();
@@ -546,7 +553,7 @@ Future<bool> migrateDatabase() async {
       ),
     ),
   );
-  for (var entry in accounts.entries) {
+  for (final entry in accounts.entries) {
     await database.into(database.accounts).insertOnConflictUpdate(entry.value);
   }
 
@@ -558,7 +565,7 @@ Future<bool> migrateDatabase() async {
       ),
     ),
   );
-  for (var entry in servers.entries) {
+  for (final entry in servers.entries) {
     await database.into(database.servers).insertOnConflictUpdate(entry.value);
   }
 
@@ -568,11 +575,11 @@ Future<bool> migrateDatabase() async {
     )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
   );
   await database.transaction(() async {
-    for (var entry in feeds.entries) {
+    for (final entry in feeds.entries) {
       await database
           .into(database.feeds)
           .insertOnConflictUpdate(FeedsCompanion.insert(name: entry.key));
-      for (var input in entry.value.inputs) {
+      for (final input in entry.value.inputs) {
         await database
             .into(database.feedInputs)
             .insertOnConflictUpdate(
@@ -594,7 +601,7 @@ Future<bool> migrateDatabase() async {
       ),
     ),
   );
-  for (var entry in filterLists.entries) {
+  for (final entry in filterLists.entries) {
     await database
         .into(database.filterLists)
         .insertOnConflictUpdate(
@@ -609,7 +616,7 @@ Future<bool> migrateDatabase() async {
   }
 
   final profiles = await profileStore.find(db);
-  for (var entry in profiles) {
+  for (final entry in profiles) {
     await database
         .into(database.profiles)
         .insertOnConflictUpdate(
@@ -619,7 +626,7 @@ Future<bool> migrateDatabase() async {
 
   final readPosts = await readStore.find(db);
   await database.transaction(() async {
-    for (var entry in readPosts) {
+    for (final entry in readPosts) {
       await database
           .into(database.readPostCache)
           .insertOnConflictUpdate(
@@ -637,7 +644,7 @@ Future<bool> migrateDatabase() async {
   final drafts = (await draftsStore.find(
     db,
   )).map((d) => Draft.fromJson({...d.value, 'id': d.key}));
-  for (var entry in drafts) {
+  for (final entry in drafts) {
     await database.into(database.drafts).insertOnConflictUpdate(entry);
   }
 

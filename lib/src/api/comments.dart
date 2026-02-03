@@ -1,5 +1,5 @@
-import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
@@ -56,8 +56,11 @@ SelectionMenu<CommentSort> commentSortSelect(BuildContext context) =>
         ),
     ]);
 
-const _postTypeMbin = {PostType.thread: 'entry', PostType.microblog: 'posts'};
-const _postTypeMbinComment = {
+const Map<PostType, String> _postTypeMbin = {
+  PostType.thread: 'entry',
+  PostType.microblog: 'posts',
+};
+const Map<PostType, String> _postTypeMbinComment = {
   PostType.thread: 'comments',
   PostType.microblog: 'post-comments',
 };
@@ -243,11 +246,7 @@ class APIComments {
 
         final response = await client.post(
           path,
-          body: {
-            'comment_id': commentId,
-            'score': newScore,
-            if (emoji != null) 'emoji': emoji,
-          },
+          body: {'comment_id': commentId, 'score': newScore, 'emoji': ?emoji},
         );
 
         return CommentModel.fromPiefed(
@@ -278,8 +277,8 @@ class APIComments {
     PostType postType,
     int postId,
     String body, {
-    int? parentCommentId,
     required String lang,
+    int? parentCommentId,
     XFile? image,
     String? alt,
     bool isAdult = false,
@@ -347,7 +346,7 @@ class APIComments {
           body: {
             'body': body,
             'post_id': postId,
-            if (parentCommentId != null) 'parent_id': parentCommentId,
+            'parent_id': ?parentCommentId,
             'language_id': await client.languageIdFromCode(lang),
           },
         );

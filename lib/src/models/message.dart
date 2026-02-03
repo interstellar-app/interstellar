@@ -24,11 +24,11 @@ abstract class MessageListModel with _$MessageListModel {
     int myUserId, {
     int? filterByThreadId,
   }) {
-    Map<int, JsonMap> threads = {};
+    final threads = <int, JsonMap>{};
 
     for (final message in json['private_messages'] as List<dynamic>) {
-      final creator = (message)['creator'] as JsonMap;
-      final recipient = (message)['recipient'] as JsonMap;
+      final creator = message['creator'] as JsonMap;
+      final recipient = message['recipient'] as JsonMap;
 
       // Use the userId of the other person as the threadId
       final threadId = (creator['id'] as int) == myUserId
@@ -50,9 +50,7 @@ abstract class MessageListModel with _$MessageListModel {
     }
 
     return MessageListModel(
-      items: threads.values
-          .map((thread) => MessageThreadModel.fromLemmy(thread))
-          .toList(),
+      items: threads.values.map(MessageThreadModel.fromLemmy).toList(),
       nextPage: json['next_page'] as String?,
     );
   }
@@ -62,11 +60,11 @@ abstract class MessageListModel with _$MessageListModel {
     int myUserId, {
     int? filterByThreadId,
   }) {
-    Map<int, JsonMap> threads = {};
+    final threads = <int, JsonMap>{};
 
     for (final message in json['private_messages'] as List<dynamic>) {
-      final creator = (message)['creator'] as JsonMap;
-      final recipient = (message)['recipient'] as JsonMap;
+      final creator = message['creator'] as JsonMap;
+      final recipient = message['recipient'] as JsonMap;
 
       // Use the userId of the other person as the threadId
       final threadId = (creator['id'] as int) == myUserId
@@ -88,9 +86,7 @@ abstract class MessageListModel with _$MessageListModel {
     }
 
     return MessageListModel(
-      items: threads.values
-          .map((thread) => MessageThreadModel.fromPiefed(thread))
-          .toList(),
+      items: threads.values.map(MessageThreadModel.fromPiefed).toList(),
       nextPage: json['next_page'] as String?,
     );
   }
@@ -129,7 +125,7 @@ abstract class MessageThreadModel with _$MessageThreadModel {
         )
         .toList(),
     messages: (json['messages'] as List<JsonMap>)
-        .map((message) => MessageThreadItemModel.fromLemmy(message))
+        .map(MessageThreadItemModel.fromLemmy)
         .toList(),
     nextPage: json['next_page'] as String?,
   );
@@ -143,7 +139,7 @@ abstract class MessageThreadModel with _$MessageThreadModel {
         )
         .toList(),
     messages: (json['messages'] as List<JsonMap>).reversed
-        .map((message) => MessageThreadItemModel.fromPiefed(message))
+        .map(MessageThreadItemModel.fromPiefed)
         .toList(),
     nextPage: json['next_page'] as String?,
   );

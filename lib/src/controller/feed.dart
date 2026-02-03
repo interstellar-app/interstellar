@@ -7,24 +7,22 @@ part 'feed.g.dart';
 
 @freezed
 abstract class FeedInput with _$FeedInput {
-  const FeedInput._();
-
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory FeedInput({
     required String name,
     required FeedSource sourceType,
     int? serverId,
   }) = _FeedInput;
+  const FeedInput._();
 
   factory FeedInput.fromJson(JsonMap json) => _$FeedInputFromJson(json);
 }
 
 @freezed
 abstract class Feed with _$Feed {
-  const Feed._();
-
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory Feed({required Set<FeedInput> inputs}) = _Feed;
+  const Feed._();
 
   factory Feed.fromJson(JsonMap json) => _$FeedFromJson(json);
 

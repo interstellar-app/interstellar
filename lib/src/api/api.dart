@@ -1,9 +1,9 @@
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/comments.dart';
-import 'package:interstellar/src/api/domains.dart';
-import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/api/community.dart';
+import 'package:interstellar/src/api/community_moderation.dart';
+import 'package:interstellar/src/api/domains.dart';
 import 'package:interstellar/src/api/feed.dart';
 import 'package:interstellar/src/api/images.dart';
 import 'package:interstellar/src/api/messages.dart';

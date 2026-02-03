@@ -18,9 +18,9 @@ enum ServerSoftware {
   };
 
   Color get color => switch (this) {
-    ServerSoftware.mbin => Color(0xff4f2696),
-    ServerSoftware.lemmy => Color(0xff03a80e),
-    ServerSoftware.piefed => Color(0xff0e6ef9),
+    ServerSoftware.mbin => const Color(0xff4f2696),
+    ServerSoftware.lemmy => const Color(0xff03a80e),
+    ServerSoftware.piefed => const Color(0xff0e6ef9),
   };
 
   // Use const ints as bitflags since using enums directly as bitflags is a bit awkward in dart.

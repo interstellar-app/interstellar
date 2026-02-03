@@ -23,8 +23,7 @@ Future<ByteArrayAndroidBitmap> _downloadImageToAndroidBitmap(String url) async {
 }
 
 Future<void> initPushNotifications(AppController ac) async {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(

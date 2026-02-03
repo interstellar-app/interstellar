@@ -1,10 +1,10 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/bookmark_list.dart';
+import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/models/comment.dart';
 
 enum BookmarkListSubject {
   thread,
@@ -50,7 +50,7 @@ class APIBookmark {
         final itemList = json['items'] as List<dynamic>;
         final items = itemList
             .map((item) {
-              var itemType = item['itemType'];
+              final itemType = item['itemType'];
               if (itemType == 'entry') {
                 return PostModel.fromMbinEntry(item as JsonMap);
               } else if (itemType == 'post') {
@@ -189,7 +189,7 @@ class APIBookmark {
 
         final response = await client.put(path);
 
-        return optionalStringList((response.bodyJson['bookmarks']));
+        return optionalStringList(response.bodyJson['bookmarks']);
 
       case ServerSoftware.lemmy:
         final path = switch (subjectType) {
@@ -246,7 +246,7 @@ class APIBookmark {
 
         final response = await client.put(path);
 
-        return optionalStringList((response.bodyJson['bookmarks']));
+        return optionalStringList(response.bodyJson['bookmarks']);
 
       case ServerSoftware.lemmy:
         throw Exception('Bookmark lists not on Lemmy');
@@ -266,7 +266,7 @@ class APIBookmark {
 
         final response = await client.delete(path);
 
-        return optionalStringList((response.bodyJson['bookmarks']));
+        return optionalStringList(response.bodyJson['bookmarks']);
 
       case ServerSoftware.lemmy:
         final path = switch (subjectType) {
@@ -323,7 +323,7 @@ class APIBookmark {
 
         final response = await client.delete(path);
 
-        return optionalStringList((response.bodyJson['bookmarks']));
+        return optionalStringList(response.bodyJson['bookmarks']);
 
       case ServerSoftware.lemmy:
         throw Exception('Bookmark lists not on Lemmy');

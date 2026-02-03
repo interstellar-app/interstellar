@@ -5,18 +5,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/menus/content_menu.dart';
+import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/widgets/display_name.dart';
-import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
 class PostComment extends StatefulWidget {
@@ -80,9 +80,7 @@ class _PostCommentState extends State<PostComment> {
   }
 
   void collapse() {
-    setState(() {
-      _expandableController.toggle();
-    });
+    setState(_expandableController.toggle);
   }
 
   @override
@@ -146,9 +144,9 @@ class _PostCommentState extends State<PostComment> {
           widget.onUpdate(widget.comment.copyWith(user: user)),
       opUserId: widget.opUserId,
       boosts: widget.comment.boosts,
-      isBoosted: widget.comment.myBoost == true,
+      isBoosted: widget.comment.myBoost ?? false,
       onBoost: whenLoggedIn(context, () async {
-        var newValue = await ac.api.comments.boost(
+        final newValue = await ac.api.comments.boost(
           widget.comment.postType,
           widget.comment.id,
         );
@@ -161,7 +159,7 @@ class _PostCommentState extends State<PostComment> {
       }),
       upVotes: widget.comment.upvotes,
       onUpVote: whenLoggedIn(context, () async {
-        var newValue = await ac.api.comments.vote(
+        final newValue = await ac.api.comments.vote(
           widget.comment.postType,
           widget.comment.id,
           1,
@@ -178,7 +176,7 @@ class _PostCommentState extends State<PostComment> {
       downVotes: widget.comment.downvotes,
       isDownVoted: widget.comment.myVote == -1,
       onDownVote: whenLoggedIn(context, () async {
-        var newValue = await ac.api.comments.vote(
+        final newValue = await ac.api.comments.vote(
           widget.comment.postType,
           widget.comment.id,
           -1,
@@ -198,7 +196,7 @@ class _PostCommentState extends State<PostComment> {
         XFile? image,
         String? alt,
       }) async {
-        var newSubComment = await ac.api.comments.create(
+        final newSubComment = await ac.api.comments.create(
           widget.comment.postType,
           widget.comment.postId,
           body,
@@ -224,7 +222,7 @@ class _PostCommentState extends State<PostComment> {
       }),
       onEdit: widget.comment.visibility != 'soft_deleted'
           ? whenLoggedIn(context, (body) async {
-              var newValue = await ac.api.comments.edit(
+              final newValue = await ac.api.comments.edit(
                 widget.comment.postType,
                 widget.comment.id,
                 body,
@@ -295,7 +293,7 @@ class _PostCommentState extends State<PostComment> {
             .toList(),
         matchesSoftware: ServerSoftware.mbin,
       ),
-      onAddBookmark: whenLoggedIn(context, (() async {
+      onAddBookmark: whenLoggedIn(context, () async {
         final newBookmarks = await ac.api.bookmark.addBookmarkToDefault(
           subjectType: BookmarkListSubject.fromPostType(
             postType: widget.comment.postType,
@@ -304,7 +302,7 @@ class _PostCommentState extends State<PostComment> {
           subjectId: widget.comment.id,
         );
         widget.onUpdate(widget.comment.copyWith(bookmarks: newBookmarks));
-      })),
+      }),
       onAddBookmarkToList: whenLoggedIn(context, (String listName) async {
         final newBookmarks = await ac.api.bookmark.addBookmarkToList(
           subjectType: BookmarkListSubject.fromPostType(
@@ -358,7 +356,7 @@ class _PostCommentState extends State<PostComment> {
       onEmojiReact: widget.comment.emojiReactions == null
           ? null
           : whenLoggedIn(context, (emoji) async {
-              var newValue = await ac.api.comments.vote(
+              final newValue = await ac.api.comments.vote(
                 widget.comment.postType,
                 widget.comment.id,
                 1,
@@ -376,7 +374,7 @@ class _PostCommentState extends State<PostComment> {
 
     final menuWidget = IconButton(
       padding: EdgeInsets.zero,
-      constraints: BoxConstraints(),
+      constraints: const BoxConstraints(),
       icon: const Icon(Symbols.more_vert_rounded),
       onPressed: () {
         showContentMenu(
@@ -484,7 +482,7 @@ class _PostCommentState extends State<PostComment> {
                         (item) => PostComment(
                           item.value,
                           (newValue) {
-                            var newChildren = [...widget.comment.children!];
+                            final newChildren = [...widget.comment.children!];
                             newChildren[item.key] = newValue;
                             widget.onUpdate(
                               widget.comment.copyWith(

@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
+import 'package:interstellar/src/screens/settings/account_migration.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-import './account_migration.dart';
 
 @RoutePage()
 class AccountResetScreen extends StatefulWidget {
@@ -40,7 +39,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         ac.servers[_selectedAccount!.split('@').last]!.software ==
             ServerSoftware.mbin;
 
-    void resetCommand() async {
+    Future<void> resetCommand() async {
       try {
         if (_resetProgress != MigrationOrResetProgress.pending) return;
 
@@ -118,7 +117,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
         setState(() {
           _resetProgress = MigrationOrResetProgress.writingDestination;
         });
-        for (var item in _resetCommunitySubscriptions.found) {
+        for (final item in _resetCommunitySubscriptions.found) {
           try {
             await api.community.subscribe(item, false);
             _resetCommunitySubscriptions.complete.add(item);
@@ -127,7 +126,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _resetCommunityBlocks.found) {
+        for (final item in _resetCommunityBlocks.found) {
           try {
             await api.community.block(item, false);
             _resetCommunityBlocks.complete.add(item);
@@ -136,7 +135,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _resetUserFollows.found) {
+        for (final item in _resetUserFollows.found) {
           try {
             await api.users.follow(item, false);
             _resetUserFollows.complete.add(item);
@@ -145,7 +144,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _resetUserBlocks.found) {
+        for (final item in _resetUserBlocks.found) {
           try {
             await api.users.putBlock(item, false);
             _resetUserBlocks.complete.add(item);
@@ -296,7 +295,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                 Step(
                   state: step1Complete ? StepState.indexed : StepState.disabled,
                   title: Text(l(context).settings_accountReset_step3),
-                  content: const Row(children: []),
+                  content: const Row(),
                 ),
               ],
             ),

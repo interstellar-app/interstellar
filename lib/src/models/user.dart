@@ -138,26 +138,36 @@ abstract class DetailedUserModel with _$DetailedUserModel {
             : Tag(
                 id: -1,
                 tag: piefedPerson['note'] as String,
-                backgroundColor: Color.from(
+                backgroundColor: const Color.from(
                   alpha: 1,
                   red: 0,
                   green: 0,
                   blue: 0,
                 ),
-                textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1),
+                textColor: const Color.from(
+                  alpha: 1,
+                  red: 1,
+                  green: 1,
+                  blue: 1,
+                ),
               ),
         ?piefedPerson['flair'] == null
             ? null
             : Tag(
                 id: -1,
                 tag: piefedPerson['flair'] as String,
-                backgroundColor: Color.from(
+                backgroundColor: const Color.from(
                   alpha: 1,
                   red: 0,
                   green: 0,
                   blue: 0,
                 ),
-                textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1),
+                textColor: const Color.from(
+                  alpha: 1,
+                  red: 1,
+                  green: 1,
+                  blue: 1,
+                ),
               ),
       ],
       apId: piefedPerson['actor_id'] as String,

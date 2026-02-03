@@ -1,21 +1,22 @@
 import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/database/database.dart';
-import './markdown.dart';
 
 class MarkdownEditor extends StatefulWidget {
   final TextEditingController controller;
@@ -353,7 +354,6 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   ],
                                 ),
                                 Flexible(
-                                  fit: FlexFit.loose,
                                   child: Builder(
                                     builder: (context) {
                                       return ListView(
@@ -410,7 +410,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
       bindings: <ShortcutActivator, VoidCallback>{
         const SingleActivator(LogicalKeyboardKey.enter): () =>
             execAction(const _MarkdownEditorActionEnter()),
-        for (var action in _actions(
+        for (final action in _actions(
           context,
         ).where((action) => action.shortcut != null))
           action.shortcut!: () => execAction(action.action),
@@ -705,7 +705,7 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
-    _MarkdownEditorData line = getCurrentLine(input);
+    final line = getCurrentLine(input);
 
     if (line.selectionText.startsWith(startChars) &&
         line.selectionText.endsWith(endChars)) {
@@ -743,7 +743,7 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
 class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
   final bool isImage;
 
-  const _MarkdownEditorActionLink({this.isImage = false});
+  const _MarkdownEditorActionLink();
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -808,16 +808,16 @@ class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
-    final imageStartChar = '!';
+    const imageStartChar = '!';
 
-    final helpMessage = 'altr';
+    const helpMessage = 'altr';
 
     var text = input.text;
 
     if (input.selectionText.isEmpty) {
-      XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      String url = '';
+      var url = '';
       if (image != null && context.mounted) {
         url = await context.read<AppController>().api.images.uploadImage(
           store: context.read<AppController>().profile.defaultImageStore,
@@ -881,7 +881,7 @@ class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
-    int prefixNewlines = 2;
+    var prefixNewlines = 2;
     if (input.selectionStart - 1 >= 0 &&
         text[input.selectionStart - 1] == '\n') {
       prefixNewlines--;
@@ -892,7 +892,7 @@ class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
       }
     }
 
-    int suffixNewlines = 2;
+    var suffixNewlines = 2;
     if (input.selectionStart < text.length &&
         text[input.selectionStart] == '\n') {
       suffixNewlines--;
@@ -925,7 +925,7 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
-    var text = input.text;
+    final text = input.text;
 
     final line = getCurrentLine(input);
 
@@ -1025,7 +1025,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
 
   @override
   Widget build(BuildContext context) {
-    discardDraft() {
+    void discardDraft() {
       context.read<DraftsController>().removeByDate(widget.draft.at);
     }
 
@@ -1145,7 +1145,7 @@ class _MarkdownEditorConfigShareDialogState
     loadNames();
   }
 
-  void loadNames() async {
+  Future<void> loadNames() async {
     final ac = context.read<AppController>();
     _profiles = await ac.getProfileNames();
     _filterLists = ac.filterLists.keys.toList();

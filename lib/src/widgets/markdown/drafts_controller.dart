@@ -1,6 +1,6 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/database/database.dart';
-import 'package:drift/drift.dart';
 
 class DraftAutoController {
   final Draft? Function() read;
@@ -31,7 +31,7 @@ class DraftsController with ChangeNotifier {
   DraftAutoController auto(String resourceId) {
     return DraftAutoController(
       read: () {
-        for (var draft in _drafts) {
+        for (final draft in _drafts) {
           if (draft.resourceId == resourceId) return draft;
         }
 
@@ -63,7 +63,7 @@ class DraftsController with ChangeNotifier {
   }
 
   Draft? readByDate(DateTime at) {
-    for (var draft in _drafts) {
+    for (final draft in _drafts) {
       if (draft.at == at) return draft;
     }
 

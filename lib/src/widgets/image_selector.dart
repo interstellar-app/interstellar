@@ -39,7 +39,7 @@ class _ImageSelectorState extends State<ImageSelector> {
                   child: IconButton(
                     onPressed: widget.enabled
                         ? () async {
-                            XFile? image = await ImagePicker().pickImage(
+                            final image = await ImagePicker().pickImage(
                               source: ImageSource.gallery,
                             );
                             if (image != null) {
@@ -58,7 +58,7 @@ class _ImageSelectorState extends State<ImageSelector> {
                     child: IconButton(
                       onPressed: widget.enabled
                           ? () async {
-                              XFile? image = await ImagePicker().pickImage(
+                              final image = await ImagePicker().pickImage(
                                 source: ImageSource.camera,
                               );
                               widget.onSelected(image, _altTextController.text);

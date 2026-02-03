@@ -1,9 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/controller/database/database.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
-import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -126,7 +126,7 @@ abstract class PostModel with _$PostModel {
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
-    myVote: (json['isFavourited'] as bool?) == true
+    myVote: (json['isFavourited'] as bool?) ?? false
         ? 1
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
@@ -171,7 +171,7 @@ abstract class PostModel with _$PostModel {
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
-    myVote: (json['isFavourited'] as bool?) == true
+    myVote: (json['isFavourited'] as bool?) ?? false
         ? 1
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
@@ -206,11 +206,11 @@ abstract class PostModel with _$PostModel {
     final lemmyCounts = postView['counts'] as JsonMap?;
 
     final isImagePost =
-        ((lemmyPost['url_content_type'] != null &&
+        (lemmyPost['url_content_type'] != null &&
             (lemmyPost['url_content_type'] as String).startsWith('image/')) ||
         (lemmyPost['url'] != null &&
             (lookupMimeType(lemmyPost['url'] as String)?.startsWith('image/') ??
-                false)));
+                false));
 
     final imageDetails = json['image_details'] as JsonMap?;
 
@@ -256,9 +256,7 @@ abstract class PostModel with _$PostModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (((postView['saved'] as bool?) != null)
-            ? postView['saved'] as bool
-            : false)
+        if (((postView['saved'] as bool?) != null) && postView['saved'] as bool)
           '',
       ],
       read: postView['read'] as bool? ?? false,
@@ -289,13 +287,13 @@ abstract class PostModel with _$PostModel {
     final piefedCounts = postView['counts'] as JsonMap;
 
     final isImagePost =
-        ((piefedPost['url_content_type'] != null &&
+        (piefedPost['url_content_type'] != null &&
             (piefedPost['url_content_type'] as String).startsWith('image/')) ||
         (piefedPost['url'] != null &&
             (lookupMimeType(
                   piefedPost['url'] as String,
                 )?.startsWith('image/') ??
-                false)));
+                false));
 
     final imageDetails = piefedPost['image_details'] as JsonMap?;
 

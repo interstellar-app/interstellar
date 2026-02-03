@@ -33,7 +33,7 @@ class _ProfileSelectWidget extends StatefulWidget {
 class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
   List<String>? profileList;
 
-  void getProfiles() async {
+  Future<void> getProfiles() async {
     final profileNames = await context.read<AppController>().getProfileNames();
     setState(() {
       profileList = profileNames;
@@ -140,7 +140,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                             );
 
                             if (!context.mounted) return;
-                            String communityName = mbinConfigsCommunityName;
+                            var communityName = mbinConfigsCommunityName;
                             if (communityName.endsWith(
                               context.read<AppController>().instanceHost,
                             )) {

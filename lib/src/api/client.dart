@@ -65,7 +65,7 @@ class ServerClient {
     JsonMap? body,
     Map<String, String?>? queryParams,
   }) async {
-    var request = http.Request(
+    final request = http.Request(
       method,
       Uri.https(
         domain,
@@ -80,7 +80,7 @@ class ServerClient {
     }
     if (headers != null) request.headers.addAll(headers);
 
-    return await sendRequest(request);
+    return sendRequest(request);
   }
 
   Future<http.Response> sendRequest(http.BaseRequest request) async {
@@ -98,7 +98,7 @@ class ServerClient {
       Map<String, String>.from(
         Map.fromEntries(
           queryParams.entries.where(
-            (e) => (e.value != null && e.value!.isNotEmpty),
+            (e) => e.value != null && e.value!.isNotEmpty,
           ),
         ),
       );

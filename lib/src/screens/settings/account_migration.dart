@@ -48,7 +48,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         ac.servers[_destinationAccount!.split('@').last]!.software ==
             ServerSoftware.mbin;
 
-    void migrationCommand() async {
+    Future<void> migrationCommand() async {
       try {
         if (_migrationProgress != MigrationOrResetProgress.pending) return;
 
@@ -135,7 +135,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
         });
         final destAPI = await ac.getApiForAccount(_destinationAccount!);
         final destAccountHost = _destinationAccount!.split('@').last;
-        for (var item in _migrateCommunitySubscriptions.found) {
+        for (final item in _migrateCommunitySubscriptions.found) {
           try {
             final res = await destAPI.community.getByName(
               denormalizeName(item, destAccountHost),
@@ -149,7 +149,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _migrateCommunityBlocks.found) {
+        for (final item in _migrateCommunityBlocks.found) {
           try {
             final res = await destAPI.community.getByName(
               denormalizeName(item, destAccountHost),
@@ -163,7 +163,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _migrateUserFollows.found) {
+        for (final item in _migrateUserFollows.found) {
           try {
             final res = await destAPI.users.getByName(
               denormalizeName(item, destAccountHost),
@@ -177,7 +177,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
           }
           if (progressAndCheckCancel()) return;
         }
-        for (var item in _migrateUserBlocks.found) {
+        for (final item in _migrateUserBlocks.found) {
           try {
             final res = await destAPI.users.getByName(
               denormalizeName(item, destAccountHost),
@@ -368,7 +368,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                 Step(
                   state: step1Complete ? StepState.indexed : StepState.disabled,
                   title: Text(l(context).settings_accountMigration_step3),
-                  content: const Row(children: []),
+                  content: const Row(),
                 ),
               ],
             ),

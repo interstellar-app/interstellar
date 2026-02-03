@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/loading_list_tile.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
 class ContextMenuAction {
   final Widget? child;
@@ -53,9 +53,7 @@ class ContextMenu {
     this.actionSpacing = 12,
   });
 
-  Future<void> openMenu(
-    BuildContext context,
-  ) async => await showModalBottomSheet(
+  Future<void> openMenu(BuildContext context) async => showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
       return Column(
@@ -73,7 +71,6 @@ class ContextMenu {
           Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Wrap(
-              direction: Axis.horizontal,
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: actionSpacing,
@@ -113,18 +110,14 @@ class ContextMenu {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     if (entry.key == 0)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 4,
-                                        ),
-                                        child: const Icon(Symbols.home_rounded),
+                                      const Padding(
+                                        padding: EdgeInsets.only(right: 4),
+                                        child: Icon(Symbols.home_rounded),
                                       ),
                                     if (entry.key == links.length - 1)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 4,
-                                        ),
-                                        child: const ImageIcon(
+                                      const Padding(
+                                        padding: EdgeInsets.only(right: 4),
+                                        child: ImageIcon(
                                           AssetImage(
                                             'assets/icons/fediverse.png',
                                           ),
@@ -195,7 +188,9 @@ class ContextMenu {
                                     onPressed: () async => item
                                         .subItemsContextMenu!
                                         .openMenu(context),
-                                    icon: Icon(Symbols.arrow_right_rounded),
+                                    icon: const Icon(
+                                      Symbols.arrow_right_rounded,
+                                    ),
                                   )
                                 : null),
                       ),

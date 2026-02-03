@@ -1,6 +1,6 @@
 import 'package:interstellar/src/utils/trie.dart';
 
-import './emojis.g.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emojis.g.dart';
 
 class Emoji {
   final String unicode;
@@ -17,12 +17,9 @@ List<List<Emoji>> searchEmojis(String term) {
             .map((index) => emojiList[index])
             .toList();
 
-  final List<List<Emoji>> results = List.generate(
-    emojiGroups.length,
-    (i) => [],
-  );
+  final results = List<List<Emoji>>.generate(emojiGroups.length, (i) => []);
 
-  for (var match in matches) {
+  for (final match in matches) {
     results[match.group].add(match);
   }
 

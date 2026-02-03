@@ -4,23 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database/database.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/community_picker.dart';
 import 'package:interstellar/src/widgets/image_selector.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/community_picker.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/tags/post_flairs.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
-import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -62,7 +62,7 @@ class _CreateScreenState extends State<CreateScreen> {
     TextEditingController(text: 'Option 0'),
   ];
   bool _pollModeMultiple = false;
-  Duration _pollDuration = Duration(days: 3);
+  Duration _pollDuration = const Duration(days: 3);
 
   @override
   void initState() {
@@ -81,7 +81,7 @@ class _CreateScreenState extends State<CreateScreen> {
         _titleTextController.text = post.title!;
       }
 
-      String body = 'Cross posted from ';
+      var body = 'Cross posted from ';
       body += genPostUrls(context, post).last.toString();
       if (post.body != null && post.body!.trim().isNotEmpty) {
         body += '\n\n';
@@ -132,7 +132,7 @@ class _CreateScreenState extends State<CreateScreen> {
         _urlTextController.text.isNotEmpty &&
         (Uri.tryParse(_urlTextController.text)?.isAbsolute ?? false);
 
-    linkEditorFetchDataCB(bool override) async {
+    Future<void> linkEditorFetchDataCB(bool override) async {
       if (!linkIsValid) return;
       if (!override &&
           (_titleTextController.text.isNotEmpty ||
@@ -160,7 +160,7 @@ class _CreateScreenState extends State<CreateScreen> {
           label: Text(l(context).link),
           suffixIcon: LoadingIconButton(
             onPressed: !linkIsValid ? null : () => linkEditorFetchDataCB(true),
-            icon: Icon(Symbols.globe_rounded),
+            icon: const Icon(Symbols.globe_rounded),
           ),
           errorText: _urlTextController.text.isEmpty || linkIsValid
               ? null
@@ -327,7 +327,7 @@ class _CreateScreenState extends State<CreateScreen> {
               ..._postFlairs.map((flair) => TagWidget(tag: flair)),
               OutlinedButton.icon(
                 label: Text(l(context).editFlairs),
-                icon: Icon(Symbols.edit_rounded),
+                icon: const Icon(Symbols.edit_rounded),
                 onPressed: () => showModalBottomSheet(
                   context: context,
                   builder: (BuildContext context) => PostFlairsModal(
@@ -360,26 +360,29 @@ class _CreateScreenState extends State<CreateScreen> {
             tabs: [
               Tab(
                 text: l(context).create_text,
-                icon: Icon(Symbols.article_rounded),
+                icon: const Icon(Symbols.article_rounded),
               ),
               Tab(
                 text: l(context).create_image,
-                icon: Icon(Symbols.image_rounded),
+                icon: const Icon(Symbols.image_rounded),
               ),
               Tab(
                 text: l(context).create_link,
-                icon: Icon(Symbols.link_rounded),
+                icon: const Icon(Symbols.link_rounded),
               ),
               if (ac.serverSoftware == ServerSoftware.mbin)
                 Tab(
                   text: l(context).create_microblog,
-                  icon: Icon(Symbols.edit_note_rounded),
+                  icon: const Icon(Symbols.edit_note_rounded),
                 ),
               if (ac.serverSoftware == ServerSoftware.piefed)
-                Tab(text: l(context).poll, icon: Icon(Symbols.poll_rounded)),
+                Tab(
+                  text: l(context).poll,
+                  icon: const Icon(Symbols.poll_rounded),
+                ),
               Tab(
                 text: l(context).create_community,
-                icon: Icon(Symbols.group_rounded),
+                icon: const Icon(Symbols.group_rounded),
               ),
             ],
           ),
@@ -565,7 +568,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   _community == null
                       ? null
                       : () async {
-                          final endDate = _pollDuration == Duration()
+                          final endDate = _pollDuration == const Duration()
                               ? null
                               : DateTime.now().add(_pollDuration);
 
@@ -614,35 +617,35 @@ class _CreateScreenState extends State<CreateScreen> {
 SelectionMenu<Duration?> pollDuration(BuildContext context) =>
     SelectionMenu(l(context).pollDuration, [
       SelectionMenuItem(
-        value: Duration(minutes: 30),
+        value: const Duration(minutes: 30),
         title: l(context).pollDuration_minutes(30),
       ),
       SelectionMenuItem(
-        value: Duration(hours: 1),
+        value: const Duration(hours: 1),
         title: l(context).pollDuration_hours(1),
       ),
       SelectionMenuItem(
-        value: Duration(hours: 6),
+        value: const Duration(hours: 6),
         title: l(context).pollDuration_hours(6),
       ),
       SelectionMenuItem(
-        value: Duration(hours: 12),
+        value: const Duration(hours: 12),
         title: l(context).pollDuration_hours(12),
       ),
       SelectionMenuItem(
-        value: Duration(days: 1),
+        value: const Duration(days: 1),
         title: l(context).pollDuration_days(1),
       ),
       SelectionMenuItem(
-        value: Duration(days: 3),
+        value: const Duration(days: 3),
         title: l(context).pollDuration_days(3),
       ),
       SelectionMenuItem(
-        value: Duration(days: 7),
+        value: const Duration(days: 7),
         title: l(context).pollDuration_days(7),
       ),
       SelectionMenuItem(
-        value: Duration(days: 365),
+        value: const Duration(days: 365),
         title: l(context).pollDuration_days(365),
       ),
     ]);

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -46,11 +46,7 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
   */
   static const String _mdLinkPattern =
       r'\[.*?\]\(\s*' + _mentionPattern + r'(?:\s*".*?")?\s*\)';
-  static final _mdLinkPatternRegExp = RegExp(
-    _mdLinkPattern,
-    multiLine: true,
-    caseSensitive: true,
-  );
+  static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
 
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
 
@@ -151,7 +147,7 @@ class MentionWidgetState extends State<MentionWidget> {
     _fetchData();
   }
 
-  void _fetchData() async {
+  Future<void> _fetchData() async {
     final modifier = widget.name[0];
     final split = widget.name.substring(1).split('@');
     final name = split[0];
@@ -214,7 +210,7 @@ class MentionWidgetState extends State<MentionWidget> {
   Widget build(BuildContext context) {
     return InputChip(
       label: Text(_displayName),
-      avatar: _icon != null ? Avatar(_icon!) : null,
+      avatar: _icon != null ? Avatar(_icon) : null,
       onPressed: _onClick,
       visualDensity: const VisualDensity(
         vertical: VisualDensity.minimumDensity,

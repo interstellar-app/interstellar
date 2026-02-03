@@ -1,14 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/controller/database/database.dart';
+import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
-import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/post.dart';
 
 part 'community.freezed.dart';
 
@@ -344,15 +344,15 @@ abstract class CommunityReportModel with _$CommunityReportModel {
   }) = _CommunityReportModel;
 
   factory CommunityReportModel.fromMbin(JsonMap json) {
-    String? type = json['type'] as String?;
-    PostModel? subjectPost = (switch (type) {
+    final type = json['type'] as String?;
+    final subjectPost = switch (type) {
       'entry_report' => PostModel.fromMbinEntry(json['subject'] as JsonMap),
       'post_report' => PostModel.fromMbinPost(json['subject'] as JsonMap),
       null => null,
       String() => null,
-    });
+    };
 
-    CommentModel? subjectComment = (switch (type) {
+    final subjectComment = switch (type) {
       'entry_comment_report' => CommentModel.fromMbin(
         json['subject'] as JsonMap,
       ),
@@ -361,7 +361,7 @@ abstract class CommunityReportModel with _$CommunityReportModel {
       ),
       null => null,
       String() => null,
-    });
+    };
 
     return CommunityReportModel(
       id: json['reportId'] as int,

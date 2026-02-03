@@ -5,11 +5,11 @@ import 'package:oauth2/oauth2.dart';
 import 'package:provider/provider.dart';
 
 class AuthErrorPage extends StatelessWidget {
-  const AuthErrorPage({super.key, required this.error});
+  const AuthErrorPage({required this.error, super.key});
 
   final AuthorizationException error;
 
-  void relogin(BuildContext context) async {
+  Future<void> relogin(BuildContext context) async {
     final ac = context.read<AppController>();
     final software = ac.serverSoftware;
     final server = ac.instanceHost;
@@ -142,7 +142,7 @@ class _NoItemsFoundIndicatorState extends State<NoItemsFoundIndicator> {
     if (_loading) {
       return Container(
         alignment: Alignment.center,
-        child: CircularProgressIndicator(),
+        child: const CircularProgressIndicator(),
       );
     } else {
       return InkWell(

@@ -5,8 +5,11 @@ import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-const _postTypeMbin = {PostType.thread: 'entry', PostType.microblog: 'post'};
-const _postTypeMbinComment = {
+const Map<PostType, String> _postTypeMbin = {
+  PostType.thread: 'entry',
+  PostType.microblog: 'post',
+};
+const Map<PostType, String> _postTypeMbinComment = {
   PostType.thread: 'comments',
   PostType.microblog: 'post-comment',
 };
@@ -116,7 +119,7 @@ class APIModeration {
         throw Exception('Moderation not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        final path = '/post/feature';
+        const path = '/post/feature';
 
         final response = await client.post(
           path,
@@ -155,7 +158,7 @@ class APIModeration {
         throw Exception('Moderation not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        final path = '/community/moderate/post/nsfw';
+        const path = '/community/moderate/post/nsfw';
         final body = {'post_id': postId, 'nsfw_status': status};
 
         final response = await client.post(path, body: body);
@@ -188,7 +191,7 @@ class APIModeration {
         throw Exception('Moderation not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        final path = '/post/remove';
+        const path = '/post/remove';
 
         final response = await client.post(
           path,
@@ -220,7 +223,7 @@ class APIModeration {
         throw Exception('Moderation not implemented on Lemmy yet');
 
       case ServerSoftware.piefed:
-        final path = '/comment/remove';
+        const path = '/comment/remove';
 
         final response = await client.post(
           path,

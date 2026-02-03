@@ -1,13 +1,12 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:provider/provider.dart';
 
-import 'package:interstellar/src/controller/controller.dart';
-
 class SwipeItem extends StatefulWidget {
   const SwipeItem({
+    required this.child,
     super.key,
     this.onUpVote,
     this.onDownVote,
@@ -19,7 +18,6 @@ class SwipeItem extends StatefulWidget {
     this.onModerateMarkNSFW,
     this.onModerateDelete,
     this.onModerateBan,
-    required this.child,
   });
 
   final Widget child;
@@ -84,9 +82,9 @@ class _SwipeItemState extends State<SwipeItem> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
-    double actionThreshold = ac.profile.swipeActionThreshold;
+    final actionThreshold = ac.profile.swipeActionThreshold;
 
-    List<ActionItem> actions = [
+    final actions = <ActionItem>[
       getSwipeAction(ac.profile.swipeActionLeftShort),
       getSwipeAction(ac.profile.swipeActionLeftLong),
       getSwipeAction(ac.profile.swipeActionRightShort),
@@ -98,7 +96,7 @@ class _SwipeItemState extends State<SwipeItem> {
         final actionSelectorValue =
             _dismissDirection == DismissDirection.endToStart ? 2 : 0;
 
-        for (int i = 0; i < 2; i++) {
+        for (var i = 0; i < 2; i++) {
           if (_dismissThreshold > actionThreshold &&
               (_dismissThreshold < (actionThreshold * (i + 2)) || i == 1)) {
             _dismissThreshold = 0;

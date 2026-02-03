@@ -33,7 +33,7 @@ class MessageThreadItem extends StatelessWidget {
 
     final showDate =
         prevMessage == null ||
-        !DateUtils.isSameDay(currCreatedAt, prevCreatedAt!);
+        !DateUtils.isSameDay(currCreatedAt, prevCreatedAt);
     final showTime =
         prevMessage == null ||
         currCreatedAt.difference(prevCreatedAt!).inMinutes > 15;
