@@ -15,8 +15,10 @@ jobs:
         with:
           flutter-version-file: pubspec.yaml
 
-      - name: Run build_runner
-        run: dart run build_runner build
+      - name: Generate source files
+        run: |
+          flutter gen-l10n
+          dart run build_runner build
 
       - name: Analyze Dart
         uses: zgosalvez/github-actions-analyze-dart@v3
