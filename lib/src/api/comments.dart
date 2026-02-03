@@ -147,7 +147,7 @@ class APIComments {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['comments'] as List<dynamic>,
+          json['comments']! as List<dynamic>,
           page,
         );
 
@@ -189,10 +189,10 @@ class APIComments {
         final response = await client.get(path, queryParams: query);
 
         return CommentModel.fromLemmy(
-          (response.bodyJson['comments'] as List<dynamic>).firstWhere(
+          (response.bodyJson['comments']! as List<dynamic>).firstWhere(
             (item) => item['comment']['id'] == commentId,
           ),
-          possibleChildrenJson: response.bodyJson['comments'] as List<dynamic>,
+          possibleChildrenJson: response.bodyJson['comments']! as List<dynamic>,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -203,7 +203,7 @@ class APIComments {
         final response = await client.get(path, queryParams: query);
 
         return CommentModel.fromPiefed(
-          (response.bodyJson['comments'] as List<dynamic>).firstWhere(
+          (response.bodyJson['comments']! as List<dynamic>).firstWhere(
             (item) => item['comment']['id'] == commentId,
           ),
           langCodeIdPairs: await client.languageCodeIdPairs(),
@@ -237,7 +237,7 @@ class APIComments {
         );
 
         return CommentModel.fromLemmy(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -250,7 +250,7 @@ class APIComments {
         );
 
         return CommentModel.fromPiefed(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -334,7 +334,7 @@ class APIComments {
         );
 
         return CommentModel.fromLemmy(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -352,7 +352,7 @@ class APIComments {
         );
 
         return CommentModel.fromPiefed(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }
@@ -380,7 +380,7 @@ class APIComments {
         );
 
         return CommentModel.fromLemmy(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
 
@@ -393,7 +393,7 @@ class APIComments {
         );
 
         return CommentModel.fromPiefed(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }

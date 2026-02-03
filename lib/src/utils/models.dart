@@ -8,8 +8,8 @@ List<String>? optionalStringList(Object? json) =>
     json == null ? null : (json as List<dynamic>).cast<String>();
 
 String? mbinCalcNextPaginationPage(JsonMap pagination) {
-  return (pagination['currentPage'] as int) < (pagination['maxPage'] as int)
-      ? ((pagination['currentPage'] as int) + 1).toString()
+  return (pagination['currentPage']! as int) < (pagination['maxPage']! as int)
+      ? ((pagination['currentPage']! as int) + 1).toString()
       : null;
 }
 
@@ -33,11 +33,11 @@ String mbinNormalizeUsername(String username) {
 
 /// Converts lemmy and piefed's local name to Mbin's standard name
 String getLemmyPiefedActorName(JsonMap json) {
-  final name = (json['user_name'] ?? json['name']) as String;
+  final name = (json['user_name'] ?? json['name'])! as String;
 
-  return (json['local'] as bool)
+  return (json['local']! as bool)
       ? name
-      : '$name@${Uri.parse(json['actor_id'] as String).host}';
+      : '$name@${Uri.parse(json['actor_id']! as String).host}';
 }
 
 String? lemmyCalcNextIntPage(List<dynamic> list, String? currentPage) =>

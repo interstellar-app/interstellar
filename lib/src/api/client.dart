@@ -133,7 +133,7 @@ class ServerClient {
 
           final json = response.bodyJson;
 
-          allLanguages = json['all_languages'] as List<dynamic>;
+          allLanguages = json['all_languages']! as List<dynamic>;
 
         case ServerSoftware.piefed:
           final response = await get('/site');
@@ -141,7 +141,7 @@ class ServerClient {
           final json = response.bodyJson;
 
           allLanguages =
-              (json['site'] as JsonMap)['all_languages'] as List<dynamic>;
+              (json['site']! as JsonMap)['all_languages']! as List<dynamic>;
       }
 
       _langCodeIdPairs = allLanguages

@@ -12,10 +12,10 @@ abstract class DomainListModel with _$DomainListModel {
   }) = _DomainListModel;
 
   factory DomainListModel.fromMbin(JsonMap json) => DomainListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((post) => DomainModel.fromMbin(post as JsonMap))
         .toList(),
-    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 }
 
@@ -31,10 +31,10 @@ abstract class DomainModel with _$DomainModel {
   }) = _DomainModel;
 
   factory DomainModel.fromMbin(JsonMap json) => DomainModel(
-    id: json['domainId'] as int,
-    name: json['name'] as String,
-    entryCount: json['entryCount'] as int,
-    subscriptionsCount: json['subscriptionsCount'] as int,
+    id: json['domainId']! as int,
+    name: json['name']! as String,
+    entryCount: json['entryCount']! as int,
+    subscriptionsCount: json['subscriptionsCount']! as int,
     isUserSubscribed: json['isUserSubscribed'] as bool?,
     isBlockedByUser: json['isBlockedByUser'] as bool?,
   );

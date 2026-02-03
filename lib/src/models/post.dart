@@ -23,24 +23,24 @@ abstract class PostListModel with _$PostListModel {
   }) = _PostListModel;
 
   factory PostListModel.fromMbinEntries(JsonMap json) => PostListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((post) => PostModel.fromMbinEntry(post as JsonMap))
         .toList(),
-    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
   factory PostListModel.fromMbinPosts(JsonMap json) => PostListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((post) => PostModel.fromMbinPost(post as JsonMap))
         .toList(),
-    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
   factory PostListModel.fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => PostListModel(
-    items: (json['posts'] as List<dynamic>)
+    items: (json['posts']! as List<dynamic>)
         .map((post) => {'post_view': post})
         .map(
           (post) => PostModel.fromLemmy(
@@ -56,7 +56,7 @@ abstract class PostListModel with _$PostListModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => PostListModel(
-    items: (json['posts'] as List<dynamic>)
+    items: (json['posts']! as List<dynamic>)
         .map((post) => {'post_view': post})
         .map(
           (post) => PostModel.fromPiefed(
@@ -108,12 +108,12 @@ abstract class PostModel with _$PostModel {
 
   factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
     type: PostType.thread,
-    id: json['entryId'] as int,
-    user: DetailedUserModel.fromMbin(json['user'] as JsonMap),
-    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
+    id: json['entryId']! as int,
+    user: DetailedUserModel.fromMbin(json['user']! as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
     domain: json['domain'] == null
         ? null
-        : DomainModel.fromMbin(json['domain'] as JsonMap),
+        : DomainModel.fromMbin(json['domain']! as JsonMap),
     title: json['title'] as String?,
     // Only include link if it's not an Image post
     url: (json['type'] == 'image' && json['image'] != null)
@@ -121,8 +121,8 @@ abstract class PostModel with _$PostModel {
         : json['url'] as String?,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
     body: json['body'] as String?,
-    lang: json['lang'] as String,
-    numComments: json['numComments'] as int,
+    lang: json['lang']! as String,
+    numComments: json['numComments']! as int,
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
@@ -130,18 +130,18 @@ abstract class PostModel with _$PostModel {
         ? 1
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
-    isOC: json['isOc'] as bool,
-    isNSFW: json['isAdult'] as bool,
-    isPinned: json['isPinned'] as bool,
-    createdAt: DateTime.parse(json['createdAt'] as String),
+    isOC: json['isOc']! as bool,
+    isNSFW: json['isAdult']! as bool,
+    isPinned: json['isPinned']! as bool,
+    createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
-    lastActive: DateTime.parse(json['lastActive'] as String),
-    visibility: json['visibility'] as String,
+    lastActive: DateTime.parse(json['lastActive']! as String),
+    visibility: json['visibility']! as String,
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: json['notificationStatus'] == null
         ? null
         : NotificationControlStatus.fromJson(
-            json['notificationStatus'] as String,
+            json['notificationStatus']! as String,
           ),
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
@@ -158,16 +158,16 @@ abstract class PostModel with _$PostModel {
 
   factory PostModel.fromMbinPost(JsonMap json) => PostModel(
     type: PostType.microblog,
-    id: json['postId'] as int,
-    user: DetailedUserModel.fromMbin(json['user'] as JsonMap),
-    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
+    id: json['postId']! as int,
+    user: DetailedUserModel.fromMbin(json['user']! as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
     domain: null,
     title: null,
     url: null,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
     body: json['body'] as String?,
-    lang: json['lang'] as String,
-    numComments: json['comments'] as int,
+    lang: json['lang']! as String,
+    numComments: json['comments']! as int,
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
@@ -176,17 +176,17 @@ abstract class PostModel with _$PostModel {
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
     isOC: null,
-    isNSFW: json['isAdult'] as bool,
-    isPinned: json['isPinned'] as bool,
-    createdAt: DateTime.parse(json['createdAt'] as String),
+    isNSFW: json['isAdult']! as bool,
+    isPinned: json['isPinned']! as bool,
+    createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
-    lastActive: DateTime.parse(json['lastActive'] as String),
-    visibility: json['visibility'] as String,
+    lastActive: DateTime.parse(json['lastActive']! as String),
+    visibility: json['visibility']! as String,
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: json['notificationStatus'] == null
         ? null
         : NotificationControlStatus.fromJson(
-            json['notificationStatus'] as String,
+            json['notificationStatus']! as String,
           ),
     bookmarks: optionalStringList(json['bookmarks']),
     read: false,
@@ -201,26 +201,26 @@ abstract class PostModel with _$PostModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    final postView = json['post_view'] as JsonMap;
-    final lemmyPost = postView['post'] as JsonMap;
+    final postView = json['post_view']! as JsonMap;
+    final lemmyPost = postView['post']! as JsonMap;
     final lemmyCounts = postView['counts'] as JsonMap?;
 
     final isImagePost =
         (lemmyPost['url_content_type'] != null &&
-            (lemmyPost['url_content_type'] as String).startsWith('image/')) ||
+            (lemmyPost['url_content_type']! as String).startsWith('image/')) ||
         (lemmyPost['url'] != null &&
-            (lookupMimeType(lemmyPost['url'] as String)?.startsWith('image/') ??
+            (lookupMimeType(lemmyPost['url']! as String)?.startsWith('image/') ??
                 false));
 
     final imageDetails = json['image_details'] as JsonMap?;
 
     return PostModel(
       type: PostType.thread,
-      id: lemmyPost['id'] as int,
-      user: DetailedUserModel.fromLemmy(postView['creator'] as JsonMap),
-      community: CommunityModel.fromLemmy(postView['community'] as JsonMap),
+      id: lemmyPost['id']! as int,
+      user: DetailedUserModel.fromLemmy(postView['creator']! as JsonMap),
+      community: CommunityModel.fromLemmy(postView['community']! as JsonMap),
       domain: null,
-      title: lemmyPost['name'] as String,
+      title: lemmyPost['name']! as String,
       // Only include link if it's not an Image post
       url: isImagePost ? null : lemmyPost['url'] as String?,
       image: lemmyGetOptionalImage(
@@ -232,7 +232,7 @@ abstract class PostModel with _$PostModel {
       ),
       body: lemmyPost['body'] as String?,
       lang: langCodeIdPairs
-          .where((pair) => pair.$2 == lemmyPost['language_id'] as int)
+          .where((pair) => pair.$2 == lemmyPost['language_id']! as int)
           .firstOrNull
           ?.$1,
       numComments: lemmyCounts?['comments'] as int? ?? 0,
@@ -242,21 +242,21 @@ abstract class PostModel with _$PostModel {
       myVote: postView['my_vote'] as int?,
       myBoost: null,
       isOC: null,
-      isNSFW: lemmyPost['nsfw'] as bool,
+      isNSFW: lemmyPost['nsfw']! as bool,
       isPinned:
-          lemmyPost['featured_community'] as bool ||
-          lemmyPost['featured_local'] as bool,
-      createdAt: DateTime.parse(lemmyPost['published'] as String),
+          lemmyPost['featured_community']! as bool ||
+          lemmyPost['featured_local']! as bool,
+      createdAt: DateTime.parse(lemmyPost['published']! as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
       lastActive: lemmyCounts == null
           ? DateTime.now()
-          : DateTime.parse(lemmyCounts['newest_comment_time'] as String),
+          : DateTime.parse(lemmyCounts['newest_comment_time']! as String),
       visibility: 'visible',
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (((postView['saved'] as bool?) != null) && postView['saved'] as bool)
+        if (((postView['saved'] as bool?) != null) && postView['saved']! as bool)
           '',
       ],
       read: postView['read'] as bool? ?? false,
@@ -273,7 +273,7 @@ abstract class PostModel with _$PostModel {
           [],
       flairs: [],
       poll: null,
-      apId: lemmyPost['ap_id'] as String,
+      apId: lemmyPost['ap_id']! as String,
       emojiReactions: null,
     );
   }
@@ -283,15 +283,15 @@ abstract class PostModel with _$PostModel {
     required List<(String, int)> langCodeIdPairs,
   }) {
     final postView = json['post_view'] as JsonMap? ?? json;
-    final piefedPost = postView['post'] as JsonMap;
-    final piefedCounts = postView['counts'] as JsonMap;
+    final piefedPost = postView['post']! as JsonMap;
+    final piefedCounts = postView['counts']! as JsonMap;
 
     final isImagePost =
         (piefedPost['url_content_type'] != null &&
-            (piefedPost['url_content_type'] as String).startsWith('image/')) ||
+            (piefedPost['url_content_type']! as String).startsWith('image/')) ||
         (piefedPost['url'] != null &&
             (lookupMimeType(
-                  piefedPost['url'] as String,
+                  piefedPost['url']! as String,
                 )?.startsWith('image/') ??
                 false));
 
@@ -299,11 +299,11 @@ abstract class PostModel with _$PostModel {
 
     return PostModel(
       type: PostType.thread,
-      id: piefedPost['id'] as int,
-      user: DetailedUserModel.fromPiefed(postView['creator'] as JsonMap),
-      community: CommunityModel.fromPiefed(postView['community'] as JsonMap),
+      id: piefedPost['id']! as int,
+      user: DetailedUserModel.fromPiefed(postView['creator']! as JsonMap),
+      community: CommunityModel.fromPiefed(postView['community']! as JsonMap),
       domain: null,
-      title: piefedPost['title'] as String,
+      title: piefedPost['title']! as String,
       // Only include link if it's not an Image post
       url: isImagePost ? null : piefedPost['url'] as String?,
       image: lemmyGetOptionalImage(
@@ -315,31 +315,31 @@ abstract class PostModel with _$PostModel {
       ),
       body: piefedPost['body'] as String?,
       lang: langCodeIdPairs
-          .where((pair) => pair.$2 == piefedPost['language_id'] as int)
+          .where((pair) => pair.$2 == piefedPost['language_id']! as int)
           .firstOrNull
           ?.$1,
-      numComments: piefedCounts['comments'] as int,
-      upvotes: piefedCounts['upvotes'] as int,
-      downvotes: piefedCounts['downvotes'] as int,
+      numComments: piefedCounts['comments']! as int,
+      upvotes: piefedCounts['upvotes']! as int,
+      downvotes: piefedCounts['downvotes']! as int,
       boosts: null,
       myVote: postView['my_vote'] as int?,
       myBoost: null,
       isOC: null,
-      isNSFW: piefedPost['nsfw'] as bool,
-      isPinned: piefedPost['sticky'] as bool,
-      createdAt: DateTime.parse(piefedPost['published'] as String),
+      isNSFW: piefedPost['nsfw']! as bool,
+      isPinned: piefedPost['sticky']! as bool,
+      createdAt: DateTime.parse(piefedPost['published']! as String),
       editedAt: optionalDateTime(piefedPost['updated'] as String?),
-      lastActive: DateTime.parse(piefedCounts['newest_comment_time'] as String),
+      lastActive: DateTime.parse(piefedCounts['newest_comment_time']! as String),
       visibility: 'visible',
       canAuthUserModerate: postView['can_auth_user_moderate'] as bool?,
       notificationControlStatus: postView['activity_alert'] == null
           ? null
-          : postView['activity_alert'] as bool
+          : postView['activity_alert']! as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (postView['saved'] as bool) '',
+        if (postView['saved']! as bool) '',
       ],
       read: postView['read'] as bool? ?? false,
       crossPosts:
@@ -369,11 +369,11 @@ abstract class PostModel with _$PostModel {
           [],
       poll: piefedPost['post_type'] == 'Poll'
           ? PollModel.fromPiefed(
-              piefedPost['id'] as int,
-              piefedPost['poll'] as Map<String, Object?>,
+              piefedPost['id']! as int,
+              piefedPost['poll']! as Map<String, Object?>,
             )
           : null,
-      apId: piefedPost['ap_id'] as String,
+      apId: piefedPost['ap_id']! as String,
       emojiReactions:
           (piefedPost['emoji_reactions'] as List<dynamic>?)
               ?.map((item) => EmojiReactionModel.fromPieFed(item))

@@ -12,7 +12,7 @@ abstract class FeedListModel with _$FeedListModel {
 
   factory FeedListModel.fromPiefed(JsonMap json) {
     final items =
-        ((json['feeds'] as List<dynamic>?) ?? (json['topics'] as List<dynamic>))
+        ((json['feeds'] as List<dynamic>?) ?? (json['topics']! as List<dynamic>))
             .map((feed) => FeedModel.fromPiefed(feed))
             .toList();
 
@@ -58,15 +58,15 @@ abstract class FeedModel with _$FeedModel {
 
   factory FeedModel.fromPiefed(JsonMap json) {
     return FeedModel(
-      id: json['id'] as int,
+      id: json['id']! as int,
       userId: json['user_id'] as int?,
-      title: json['title'] as String,
-      name: json['name'] as String,
+      title: json['title']! as String,
+      name: json['name']! as String,
       description: json['description'] as String?,
       isNSFW: json['nsfw'] as bool?,
       isNSFL: json['nsfl'] as bool?,
       subscriptionCount: json['subscriptions_count'] as int?,
-      communityCount: json['communities_count'] as int,
+      communityCount: json['communities_count']! as int,
       public: json['public'] as bool?,
       parentId:
           (json['parent_feed_id'] as int?) ?? (json['parent_topic_id'] as int?),
@@ -77,13 +77,13 @@ abstract class FeedModel with _$FeedModel {
       owner: json['owner'] as bool?,
       published: json['published'] == null
           ? null
-          : DateTime.parse(json['published'] as String),
+          : DateTime.parse(json['published']! as String),
       updated: json['updated'] == null
           ? null
-          : DateTime.parse(json['updated'] as String),
+          : DateTime.parse(json['updated']! as String),
       children: json['children'] == null
           ? []
-          : (json['children'] as List<dynamic>)
+          : (json['children']! as List<dynamic>)
                 .map((child) => FeedModel.fromPiefed(child))
                 .toList(),
     );

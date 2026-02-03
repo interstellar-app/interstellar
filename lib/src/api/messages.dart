@@ -27,7 +27,7 @@ class APIMessages {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['private_messages'] as List<dynamic>,
+          json['private_messages']! as List<dynamic>,
           page,
         );
 
@@ -68,7 +68,7 @@ class APIMessages {
 
         final json = response.bodyJson;
         final nextPage = lemmyCalcNextIntPage(
-          json['private_messages'] as List<dynamic>,
+          json['private_messages']! as List<dynamic>,
           page,
         );
         json['next_page'] = nextPage;

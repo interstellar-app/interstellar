@@ -87,7 +87,7 @@ class APIThreads {
           final json = response.bodyJson;
 
           json['next_page'] = lemmyCalcNextIntPage(
-            json['posts'] as List<dynamic>,
+            json['posts']! as List<dynamic>,
             page,
           );
 
@@ -563,7 +563,7 @@ class APIThreads {
         final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
                     as JsonMap)['file']
                 as String?;
 

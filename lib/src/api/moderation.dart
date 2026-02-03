@@ -235,7 +235,7 @@ class APIModeration {
         );
 
         return CommentModel.fromPiefed(
-          response.bodyJson['comment_view'] as JsonMap,
+          response.bodyJson['comment_view']! as JsonMap,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
     }

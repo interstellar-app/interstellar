@@ -132,7 +132,7 @@ class APICommunity {
           final json = response.bodyJson;
 
           json['next_page'] = lemmyCalcNextIntPage(
-            json['communities'] as List<dynamic>,
+            json['communities']! as List<dynamic>,
             page,
           );
 
@@ -162,7 +162,7 @@ class APICommunity {
           final json = response.bodyJson;
 
           json['next_page'] = lemmyCalcNextIntPage(
-            json['communities'] as List<dynamic>,
+            json['communities']! as List<dynamic>,
             page,
           );
 
@@ -234,7 +234,7 @@ class APICommunity {
         final response = await client.get(path, queryParams: query);
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -263,7 +263,7 @@ class APICommunity {
         final response = await client.get(path, queryParams: query);
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -295,7 +295,7 @@ class APICommunity {
         );
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -328,7 +328,7 @@ class APICommunity {
         );
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:

@@ -59,7 +59,7 @@ Future<ServerSoftware?> getServerSoftware(String server) async {
 
   try {
     return ServerSoftware.values.byName(
-      ((response.bodyJson['software'] as JsonMap)['name'] as String)
+      ((response.bodyJson['software']! as JsonMap)['name']! as String)
           .toLowerCase(),
     );
   } catch (_) {

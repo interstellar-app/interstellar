@@ -18,10 +18,10 @@ abstract class CommentListModel with _$CommentListModel {
   }) = _CommentListModel;
 
   factory CommentListModel.fromMbin(JsonMap json) => CommentListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((post) => CommentModel.fromMbin(post as JsonMap))
         .toList(),
-    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
   // Lemmy comment list that needs to be converted to tree format. Used for post comments and comment replies.
@@ -29,12 +29,12 @@ abstract class CommentListModel with _$CommentListModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
-    items: (json['comments'] as List<dynamic>)
+    items: (json['comments']! as List<dynamic>)
         .where((c) => (c['comment']['path'] as String).split('.').length == 2)
         .map(
           (c) => CommentModel.fromLemmy(
             c as JsonMap,
-            possibleChildrenJson: json['comments'] as List<dynamic>,
+            possibleChildrenJson: json['comments']! as List<dynamic>,
             langCodeIdPairs: langCodeIdPairs,
           ),
         )
@@ -47,7 +47,7 @@ abstract class CommentListModel with _$CommentListModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
-    items: (json['comments'] as List<dynamic>)
+    items: (json['comments']! as List<dynamic>)
         .map(
           (c) => CommentModel.fromLemmy(
             c as JsonMap,
@@ -62,7 +62,7 @@ abstract class CommentListModel with _$CommentListModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
-    items: (json['comments'] as List<dynamic>)
+    items: (json['comments']! as List<dynamic>)
         .map(
           (post) => CommentModel.fromPiefed(
             post as JsonMap,
@@ -78,12 +78,12 @@ abstract class CommentListModel with _$CommentListModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
-    items: (json['comments'] as List<dynamic>)
+    items: (json['comments']! as List<dynamic>)
         .where((c) => (c['comment']['path'] as String).split('.').length == 2)
         .map(
           (c) => CommentModel.fromPiefed(
             c as JsonMap,
-            possibleChildrenJson: json['comments'] as List<dynamic>,
+            possibleChildrenJson: json['comments']! as List<dynamic>,
             langCodeIdPairs: langCodeIdPairs,
           ),
         )
@@ -96,7 +96,7 @@ abstract class CommentListModel with _$CommentListModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
-    items: (json['comments'] as List<dynamic>)
+    items: (json['comments']! as List<dynamic>)
         .map(
           (c) => CommentModel.fromPiefed(
             c as JsonMap,
@@ -139,16 +139,16 @@ abstract class CommentModel with _$CommentModel {
   }) = _CommentModel;
 
   factory CommentModel.fromMbin(JsonMap json) => CommentModel(
-    id: json['commentId'] as int,
-    user: DetailedUserModel.fromMbin(json['user'] as JsonMap),
-    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
+    id: json['commentId']! as int,
+    user: DetailedUserModel.fromMbin(json['user']! as JsonMap),
+    community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
     postType: (json['postId'] != null ? PostType.microblog : PostType.thread),
-    postId: (json['entryId'] ?? json['postId']) as int,
+    postId: (json['entryId'] ?? json['postId'])! as int,
     rootId: json['rootId'] as int?,
     parentId: json['parentId'] as int?,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
     body: json['body'] as String?,
-    lang: json['lang'] as String,
+    lang: json['lang']! as String,
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
@@ -156,13 +156,13 @@ abstract class CommentModel with _$CommentModel {
         ? 1
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
-    createdAt: DateTime.parse(json['createdAt'] as String),
+    createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
-    children: (json['children'] as List<dynamic>)
+    children: (json['children']! as List<dynamic>)
         .map((c) => CommentModel.fromMbin(c as JsonMap))
         .toList(),
-    childCount: json['childCount'] as int,
-    visibility: json['visibility'] as String,
+    childCount: json['childCount']! as int,
+    visibility: json['visibility']! as String,
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: null,
     bookmarks: optionalStringList(json['bookmarks']),
@@ -175,10 +175,10 @@ abstract class CommentModel with _$CommentModel {
     required List<(String, int)> langCodeIdPairs,
     List<dynamic> possibleChildrenJson = const [],
   }) {
-    final lemmyComment = json['comment'] as JsonMap;
+    final lemmyComment = json['comment']! as JsonMap;
     final lemmyCounts = json['counts'] as JsonMap?;
 
-    final lemmyPath = lemmyComment['path'] as String;
+    final lemmyPath = lemmyComment['path']! as String;
     final lemmyPathSegments = lemmyPath.split('.').map(int.parse).toList();
 
     final children = possibleChildrenJson
@@ -198,22 +198,22 @@ abstract class CommentModel with _$CommentModel {
         .toList();
 
     return CommentModel(
-      id: lemmyComment['id'] as int,
-      user: DetailedUserModel.fromLemmy(json['creator'] as JsonMap),
-      community: CommunityModel.fromLemmy(json['community'] as JsonMap),
+      id: lemmyComment['id']! as int,
+      user: DetailedUserModel.fromLemmy(json['creator']! as JsonMap),
+      community: CommunityModel.fromLemmy(json['community']! as JsonMap),
       postType: PostType.thread,
-      postId: (json['post'] as JsonMap)['id'] as int,
+      postId: (json['post']! as JsonMap)['id']! as int,
       rootId: lemmyPathSegments.length > 2 ? lemmyPathSegments[1] : null,
       parentId: lemmyPathSegments.length > 2
           ? lemmyPathSegments[lemmyPathSegments.length - 2]
           : null,
       image: null,
       body:
-          (lemmyComment['deleted'] as bool) || (lemmyComment['removed'] as bool)
+          (lemmyComment['deleted']! as bool) || (lemmyComment['removed']! as bool)
           ? null
-          : lemmyComment['content'] as String,
+          : lemmyComment['content']! as String,
       lang: langCodeIdPairs
-          .where((pair) => pair.$2 == lemmyComment['language_id'] as int)
+          .where((pair) => pair.$2 == lemmyComment['language_id']! as int)
           .firstOrNull
           ?.$1,
       upvotes: lemmyCounts?['upvotes'] as int? ?? 0,
@@ -221,7 +221,7 @@ abstract class CommentModel with _$CommentModel {
       boosts: null,
       myVote: json['my_vote'] as int?,
       myBoost: null,
-      createdAt: DateTime.parse(lemmyComment['published'] as String),
+      createdAt: DateTime.parse(lemmyComment['published']! as String),
       editedAt: optionalDateTime(json['updated'] as String?),
       children: children,
       childCount: lemmyCounts?['child_count'] as int? ?? 0,
@@ -230,9 +230,9 @@ abstract class CommentModel with _$CommentModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (((json['saved'] as bool?) != null) && json['saved'] as bool) '',
+        if (((json['saved'] as bool?) != null) && json['saved']! as bool) '',
       ],
-      apId: lemmyComment['ap_id'] as String,
+      apId: lemmyComment['ap_id']! as String,
       emojiReactions: null,
     );
   }
@@ -244,10 +244,10 @@ abstract class CommentModel with _$CommentModel {
     CommunityModel? community,
     int? postId,
   }) {
-    final piefedComment = json['comment'] as JsonMap;
-    final piefedCounts = json['counts'] as JsonMap;
+    final piefedComment = json['comment']! as JsonMap;
+    final piefedCounts = json['counts']! as JsonMap;
 
-    final piefedPath = piefedComment['path'] as String;
+    final piefedPath = piefedComment['path']! as String;
     final piefedPathSegments = piefedPath.split('.').map(int.parse).toList();
 
     var children = possibleChildrenJson
@@ -266,8 +266,8 @@ abstract class CommentModel with _$CommentModel {
         )
         .toList();
 
-    postId ??= (json['post'] as JsonMap)['id'] as int;
-    community ??= CommunityModel.fromPiefed(json['community'] as JsonMap);
+    postId ??= (json['post']! as JsonMap)['id']! as int;
+    community ??= CommunityModel.fromPiefed(json['community']! as JsonMap);
 
     if (children.isEmpty) {
       final replies = (json['replies'] as List<dynamic>?)
@@ -286,8 +286,8 @@ abstract class CommentModel with _$CommentModel {
     }
 
     return CommentModel(
-      id: piefedComment['id'] as int,
-      user: DetailedUserModel.fromPiefed(json['creator'] as JsonMap),
+      id: piefedComment['id']! as int,
+      user: DetailedUserModel.fromPiefed(json['creator']! as JsonMap),
       community: community,
       postType: PostType.thread,
       postId: postId,
@@ -297,35 +297,35 @@ abstract class CommentModel with _$CommentModel {
           : null,
       image: null,
       body:
-          (piefedComment['deleted'] as bool) ||
-              (piefedComment['removed'] as bool)
+          (piefedComment['deleted']! as bool) ||
+              (piefedComment['removed']! as bool)
           ? null
-          : piefedComment['body'] as String,
+          : piefedComment['body']! as String,
       lang: langCodeIdPairs
-          .where((pair) => pair.$2 == piefedComment['language_id'] as int)
+          .where((pair) => pair.$2 == piefedComment['language_id']! as int)
           .firstOrNull
           ?.$1,
-      upvotes: piefedCounts['upvotes'] as int,
-      downvotes: piefedCounts['downvotes'] as int,
+      upvotes: piefedCounts['upvotes']! as int,
+      downvotes: piefedCounts['downvotes']! as int,
       boosts: null,
       myVote: json['my_vote'] as int?,
       myBoost: null,
-      createdAt: DateTime.parse(piefedComment['published'] as String),
+      createdAt: DateTime.parse(piefedComment['published']! as String),
       editedAt: optionalDateTime(json['updated'] as String?),
       children: children,
-      childCount: piefedCounts['child_count'] as int,
+      childCount: piefedCounts['child_count']! as int,
       visibility: 'visible',
       canAuthUserModerate: json['can_auth_user_moderate'] as bool?,
       notificationControlStatus: json['activity_alert'] == null
           ? null
-          : json['activity_alert'] as bool
+          : json['activity_alert']! as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (json['saved'] as bool) '',
+        if (json['saved']! as bool) '',
       ],
-      apId: piefedComment['ap_id'] as String,
+      apId: piefedComment['ap_id']! as String,
       emojiReactions:
           (piefedComment['emoji_reactions'] as List<dynamic>?)
               ?.map((item) => EmojiReactionModel.fromPieFed(item))

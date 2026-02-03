@@ -187,7 +187,7 @@ class APICommunityModeration {
         );
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:

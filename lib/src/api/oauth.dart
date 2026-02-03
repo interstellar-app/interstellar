@@ -37,5 +37,5 @@ Future<String> registerOauthApp(String instanceHost) async {
   );
   ServerClient.checkResponseSuccess(url, response);
 
-  return response.bodyJson['identifier'] as String;
+  return response.bodyJson['identifier']! as String;
 }

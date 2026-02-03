@@ -474,7 +474,7 @@ class AppController with ChangeNotifier {
         );
         ServerClient.checkResponseSuccess(loginEndpoint, response);
 
-        final jwt = response.bodyJson['jwt'] as String;
+        final jwt = response.bodyJson['jwt']! as String;
         final user = await API(
           ServerClient(
             httpClient: JwtHttpClient(jwt, appHttpClient),

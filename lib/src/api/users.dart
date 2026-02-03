@@ -59,7 +59,7 @@ class APIUsers {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['users'] as List<dynamic>,
+          json['users']! as List<dynamic>,
           page,
         );
 
@@ -85,7 +85,7 @@ class APIUsers {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['users'] as List<dynamic>,
+          json['users']! as List<dynamic>,
           page,
         );
 
@@ -109,7 +109,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromLemmy(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -119,7 +119,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromPiefed(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
     }
   }
@@ -141,7 +141,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromLemmy(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -151,7 +151,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromPiefed(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
     }
   }
@@ -247,7 +247,7 @@ class APIUsers {
         );
 
         return DetailedUserModel.fromLemmy(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -259,7 +259,7 @@ class APIUsers {
         );
 
         return DetailedUserModel.fromPiefed(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
           blocked: response.bodyJson['blocked'] as bool? ?? false,
         );
     }
@@ -302,7 +302,7 @@ class APIUsers {
         final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
                     as JsonMap)['file']
                 as String?;
 
@@ -402,7 +402,7 @@ class APIUsers {
         final pictrsResponse = await client.sendRequest(request);
 
         final imageName =
-            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
                     as JsonMap)['file']
                 as String?;
 

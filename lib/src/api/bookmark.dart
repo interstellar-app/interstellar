@@ -47,7 +47,7 @@ class APIBookmark {
         final response = await client.get(path, queryParams: query);
 
         final json = response.bodyJson;
-        final itemList = json['items'] as List<dynamic>;
+        final itemList = json['items']! as List<dynamic>;
         final items = itemList
             .map((item) {
               final itemType = item['itemType'];
@@ -65,7 +65,7 @@ class APIBookmark {
 
         return (
           items,
-          mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+          mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
         );
 
       case ServerSoftware.lemmy:
@@ -86,13 +86,13 @@ class APIBookmark {
 
         final postJson = postResponse.bodyJson;
         postJson['next_page'] = lemmyCalcNextIntPage(
-          postJson['posts'] as List<dynamic>,
+          postJson['posts']! as List<dynamic>,
           page,
         );
 
         final commentJson = commentResponse.bodyJson;
         commentJson['next_page'] = lemmyCalcNextIntPage(
-          commentJson['comments'] as List<dynamic>,
+          commentJson['comments']! as List<dynamic>,
           page,
         );
 

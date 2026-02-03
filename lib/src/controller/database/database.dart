@@ -530,7 +530,7 @@ Future<bool> migrateDatabase() async {
   late final webPushKeysRecord = mainStore.record('webPushKeys');
 
   final stars = (await starsRecord.get(db) as List<Object?>? ?? [])
-      .map((v) => v as String)
+      .map((v) => v! as String)
       .toList();
 
   await database.transaction(() async {
@@ -631,11 +631,11 @@ Future<bool> migrateDatabase() async {
           .into(database.readPostCache)
           .insertOnConflictUpdate(
             ReadPostCacheCompanion.insert(
-              account: entry.value['account'] as String,
+              account: entry.value['account']! as String,
               postType: PostType.values.byName(
                 entry.value['postType'] as String? ?? 'thread',
               ),
-              postId: entry.value['postId'] as int,
+              postId: entry.value['postId']! as int,
             ),
           );
     }

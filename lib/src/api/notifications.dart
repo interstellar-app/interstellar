@@ -108,23 +108,23 @@ class APINotifications {
 
         final response = await client.get(path);
 
-        return response.bodyJson['count'] as int;
+        return response.bodyJson['count']! as int;
 
       case ServerSoftware.lemmy:
         const path = '/user/unread_count';
 
         final response = await client.get(path);
 
-        return (response.bodyJson['replies'] as int) +
-            (response.bodyJson['mentions'] as int) +
-            (response.bodyJson['private_messages'] as int);
+        return (response.bodyJson['replies']! as int) +
+            (response.bodyJson['mentions']! as int) +
+            (response.bodyJson['private_messages']! as int);
 
       case ServerSoftware.piefed:
         const path = '/user/notifications_count';
 
         final response = await client.get(path);
 
-        return response.bodyJson['count'] as int;
+        return response.bodyJson['count']! as int;
     }
   }
 
@@ -193,10 +193,10 @@ class APINotifications {
 
         return switch (notificationType) {
           NotificationType.message => NotificationModel.fromLemmyMessage(
-            response.bodyJson['private_message_view'] as JsonMap,
+            response.bodyJson['private_message_view']! as JsonMap,
           ),
           NotificationType.mention => NotificationModel.fromLemmyMention(
-            response.bodyJson['person_mention_view'] as JsonMap,
+            response.bodyJson['person_mention_view']! as JsonMap,
           ),
           NotificationType.reply => throw Exception(
             "can't mark Lemmy reply as read",
