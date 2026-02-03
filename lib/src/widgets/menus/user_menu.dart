@@ -1,18 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
-import 'package:interstellar/src/screens/explore/mod_log.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/widgets/tags/tag_screen.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -47,7 +46,7 @@ Future<void> showUserMenu(
                 update(newValue);
               }
               if (!context.mounted) return;
-              Navigator.pop(context);
+              context.router.pop();
             },
             followMode: true,
           ),
@@ -66,7 +65,7 @@ Future<void> showUserMenu(
                 update(newValue);
               }
               if (!context.mounted) return;
-              Navigator.pop(context);
+              context.router.pop();
             },
             icon: const Icon(Symbols.block_rounded),
             style: ButtonStyle(
@@ -81,10 +80,12 @@ Future<void> showUserMenu(
       if (ac.isLoggedIn && !isMe)
         ContextMenuAction(
           icon: Symbols.mail_rounded,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) =>
-                MessageThreadScreen(threadId: null, otherUser: user),
+          onTap: () => context.router.push(
+            MessageThreadRoute(
+              threadId: null,
+              userId: user.id,
+              otherUser: user,
+            ),
           ),
         ),
     ],
@@ -93,10 +94,8 @@ Future<void> showUserMenu(
       if (navigateOption)
         ContextMenuItem(
           title: l(context).openItem(user.name),
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => UserScreen(user.id, initData: user),
-          ),
+          onTap: () =>
+              context.router.push(UserRoute(userId: user.id, initData: user)),
         ),
       ContextMenuItem(
         title: l(context).feeds_addTo,
@@ -109,9 +108,8 @@ Future<void> showUserMenu(
       if (ac.serverSoftware != ServerSoftware.piefed)
         ContextMenuItem(
           title: l(context).search,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => ExploreScreen(
+          onTap: () => context.router.push(
+            ExploreRoute(
               mode: ExploreType.people,
               id: user.id,
               title: l(context).searchSource(user.name),
@@ -122,23 +120,20 @@ Future<void> showUserMenu(
         title: l(context).tags,
         onTap: () async {
           showModalBottomSheet(
-              context: context,
-              builder: (context) => TagsList(
-                username: user.name,
-                onUpdate: (tags) async {
-                  await ac.reassignTagsToUser(tags, user.name);
-                },
-              )
+            context: context,
+            builder: (context) => TagsList(
+              username: user.name,
+              onUpdate: (tags) async {
+                await ac.reassignTagsToUser(tags, user.name);
+              },
+            ),
           );
-        }
+        },
       ),
       if (ac.serverSoftware == ServerSoftware.lemmy)
         ContextMenuItem(
-            title: l(context).modlog,
-            onTap: () => pushRoute(
-                context,
-                builder: (context) => ModLog(userId: user.id),
-            )
+          title: l(context).modlog,
+          onTap: () => context.router.push(ModLogUserRoute(userId: user.id)),
         ),
     ],
   ).openMenu(context);

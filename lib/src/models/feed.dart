@@ -68,7 +68,8 @@ abstract class FeedModel with _$FeedModel {
       subscriptionCount: json['subscriptions_count'] as int?,
       communityCount: json['communities_count'] as int,
       public: json['public'] as bool?,
-      parentId: (json['parent_feed_id'] as int?) ?? (json['parent_topic_id'] as int?),
+      parentId:
+          (json['parent_feed_id'] as int?) ?? (json['parent_topic_id'] as int?),
       isInstanceFeed: json['is_instance_feed'] as bool?,
       icon: lemmyGetOptionalImage(json['icon'] as String?),
       banner: lemmyGetOptionalImage(json['banner'] as String?),

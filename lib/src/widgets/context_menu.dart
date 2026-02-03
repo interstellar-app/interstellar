@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
@@ -145,17 +146,17 @@ class ContextMenu {
                                 ),
                               ),
                               onTap: () {
-                                Navigator.of(context).pop();
+                                context.router.pop();
 
                                 openWebpagePrimary(context, entry.value);
                               },
                               onLongPress: () {
-                                Navigator.of(context).pop();
+                                context.router.pop();
 
                                 openWebpageSecondary(context, entry.value);
                               },
                               onSecondaryTap: () {
-                                Navigator.of(context).pop();
+                                context.router.pop();
 
                                 openWebpageSecondary(context, entry.value);
                               },

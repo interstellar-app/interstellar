@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/utils/models.dart';
@@ -136,19 +136,29 @@ abstract class DetailedUserModel with _$DetailedUserModel {
         ?piefedPerson['note'] == null
             ? null
             : Tag(
-              id: -1,
-              tag: piefedPerson['note'] as String,
-              backgroundColor: Color.from(alpha: 1, red: 0, green: 0, blue: 0),
-              textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1)
-            ),
+                id: -1,
+                tag: piefedPerson['note'] as String,
+                backgroundColor: Color.from(
+                  alpha: 1,
+                  red: 0,
+                  green: 0,
+                  blue: 0,
+                ),
+                textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1),
+              ),
         ?piefedPerson['flair'] == null
             ? null
             : Tag(
-              id: -1,
-              tag: piefedPerson['flair'] as String,
-              backgroundColor: Color.from(alpha: 1, red: 0, green: 0, blue: 0),
-              textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1)
-            ),
+                id: -1,
+                tag: piefedPerson['flair'] as String,
+                backgroundColor: Color.from(
+                  alpha: 1,
+                  red: 0,
+                  green: 0,
+                  blue: 0,
+                ),
+                textColor: Color.from(alpha: 1, red: 1, green: 1, blue: 1),
+              ),
       ],
       apId: piefedPerson['actor_id'] as String,
     );

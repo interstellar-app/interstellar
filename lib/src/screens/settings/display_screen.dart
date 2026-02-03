@@ -1,9 +1,10 @@
 import 'dart:math';
+import 'package:auto_route/auto_route.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/screens/settings/post_layout.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -11,6 +12,7 @@ import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class DisplaySettingsScreen extends StatelessWidget {
   const DisplaySettingsScreen({super.key});
 
@@ -108,10 +110,7 @@ class DisplaySettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.vertical_split_rounded),
             title: Text(l(context).settings_postLayoutOrder),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => PostLayoutSettingsScreen(),
-            ),
+            onTap: () => context.router.push(PostLayoutSettingsRoute()),
           ),
           ListTileSwitch(
             leading: const Icon(Symbols.view_day_rounded),
@@ -134,7 +133,8 @@ class DisplaySettingsScreen extends StatelessWidget {
                   value: ac.profile.dividerThickness,
                   max: 10,
                   min: 0,
-                  onChanged: ac.profile.showPostsCards && !ac.profile.compactMode
+                  onChanged:
+                      ac.profile.showPostsCards && !ac.profile.compactMode
                       ? null
                       : (newValue) => ac.updateProfile(
                           ac.selectedProfileValue.copyWith(
@@ -222,6 +222,15 @@ class DisplaySettingsScreen extends StatelessWidget {
                     ),
                   ),
             enabled: ac.serverSoftware == ServerSoftware.mbin,
+          ),
+          ListTileSwitch(
+            leading: const Icon(Symbols.add_reaction_rounded),
+            title: Text(l(context).settings_hideEmojiReactions),
+            value: ac.profile.hideEmojiReactions,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(hideEmojiReactions: newValue),
+            ),
+            enabled: ac.serverSoftware == ServerSoftware.piefed,
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
@@ -6,8 +7,9 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/password_editor.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 
+@RoutePage()
 class LoginConfirmScreen extends StatefulWidget {
   final ServerSoftware software;
   final String server;
@@ -91,7 +93,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                     switchNow: true,
                   );
 
-                  Navigator.pop(context, true);
+                  context.router.pop(true);
                 },
                 child: Text(l(context).guest),
               ),
@@ -115,7 +117,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
 
                         if (!context.mounted) return;
 
-                        Navigator.pop(context, true);
+                        context.router.pop(true);
                       },
               ),
             ],

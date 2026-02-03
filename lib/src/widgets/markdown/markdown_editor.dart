@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
@@ -12,7 +14,7 @@ import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import './markdown.dart';
 
 class MarkdownEditor extends StatefulWidget {
@@ -204,6 +206,48 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                         child: SizedBox(
                                           width: 40,
                                           height: 40,
+                                          child: EmojiPicker(
+                                            childBuilder:
+                                                (
+                                                  onClick,
+                                                  focusNode,
+                                                ) => IconButton(
+                                                  onPressed: onClick,
+                                                  focusNode: focusNode,
+                                                  icon: const Icon(
+                                                    Symbols
+                                                        .add_reaction_rounded,
+                                                  ),
+                                                  style: TextButton.styleFrom(
+                                                    shape: const LinearBorder(),
+                                                  ),
+                                                ),
+                                            onSelect: (emoji) {
+                                              _focusNodeTextField
+                                                  .requestFocus();
+
+                                              execAction(
+                                                _MarkdownEditorActionReplace(
+                                                  emoji,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            right: BorderSide(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.outlineVariant,
+                                            ),
+                                          ),
+                                        ),
+                                        child: SizedBox(
+                                          width: 40,
+                                          height: 40,
                                           child: IconButton(
                                             onPressed: () async {
                                               final config = await showDialog<String?>(
@@ -238,50 +282,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   ),
                                 ),
                                 const Divider(height: 1, thickness: 1),
-                                Expanded(
-                                  child: CallbackShortcuts(
-                                    bindings: <ShortcutActivator, VoidCallback>{
-                                      const SingleActivator(
-                                        LogicalKeyboardKey.enter,
-                                      ): () => execAction(
-                                        const _MarkdownEditorActionEnter(),
-                                      ),
-                                      for (var action
-                                          in _actions(context).where(
-                                            (action) => action.shortcut != null,
-                                          ))
-                                        action.shortcut!: () =>
-                                            execAction(action.action),
-                                    },
-                                    child: TextField(
-                                      controller: widget.controller,
-                                      keyboardType: TextInputType.multiline,
-                                      minLines: 2,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.all(12),
-                                      ),
-                                      onChanged: (String value) {
-                                        widget.onChanged?.call(value);
-
-                                        draftDebounce.run(() async {
-                                          if (value.isNotEmpty) {
-                                            await widget.draftController.save(
-                                              value,
-                                            );
-                                          } else {
-                                            await widget.draftController
-                                                .discard();
-                                          }
-                                        });
-                                      },
-                                      enabled: widget.enabled,
-                                      focusNode: _focusNodeTextField,
-                                      autofocus: widget.autoFocus,
-                                    ),
-                                  ),
-                                ),
+                                _textbox(),
                               ],
                             );
                           case 1:
@@ -402,6 +403,45 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         ),
       ],
     );
+  }
+
+  Widget _textbox() {
+    final box = CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        const SingleActivator(LogicalKeyboardKey.enter): () =>
+            execAction(const _MarkdownEditorActionEnter()),
+        for (var action in _actions(
+          context,
+        ).where((action) => action.shortcut != null))
+          action.shortcut!: () => execAction(action.action),
+      },
+      child: TextField(
+        controller: widget.controller,
+        keyboardType: TextInputType.multiline,
+        minLines: 2,
+        maxLines: null,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(12),
+        ),
+        onChanged: (String value) {
+          widget.onChanged?.call(value);
+
+          draftDebounce.run(() async {
+            if (value.isNotEmpty) {
+              await widget.draftController.save(value);
+            } else {
+              await widget.draftController.discard();
+            }
+          });
+        },
+        enabled: widget.enabled,
+        focusNode: _focusNodeTextField,
+        autofocus: widget.autoFocus,
+      ),
+    );
+
+    return widget.inline ? Expanded(child: box) : Flexible(child: box);
   }
 }
 
@@ -588,6 +628,27 @@ class _MarkdownEditorData {
     required this.selectionStart,
     required this.selectionEnd,
   }) : selectionText = text.substring(selectionStart, selectionEnd);
+}
+
+class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
+  final String chars;
+
+  const _MarkdownEditorActionReplace(this.chars);
+
+  @override
+  Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
+    var text = input.text;
+
+    text = text.replaceRange(input.selectionStart, input.selectionEnd, chars);
+
+    final selection = input.selectionStart + chars.length;
+
+    return _MarkdownEditorData(
+      text: text,
+      selectionStart: selection,
+      selectionEnd: selection,
+    );
+  }
 }
 
 class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
@@ -1000,13 +1061,13 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                         actions: [
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
                             },
                             child: Text(l(context).close),
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
 
                               widget.onApply();
                             },
@@ -1016,7 +1077,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
                           ),
                           FilledButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.pop();
 
                               widget.onApply();
 
@@ -1115,7 +1176,7 @@ class _MarkdownEditorConfigShareDialogState
                   payload: profile.toJson(),
                 );
                 if (!context.mounted) return;
-                Navigator.pop(context, config.toMarkdown());
+                context.router.pop(config.toMarkdown());
               },
             ),
           ),
@@ -1140,7 +1201,7 @@ class _MarkdownEditorConfigShareDialogState
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
-                Navigator.pop(context, configStr);
+                context.router.pop(configStr);
               },
             ),
           ),
@@ -1163,7 +1224,7 @@ class _MarkdownEditorConfigShareDialogState
                 );
                 final configStr = jsonEncode(config.toJson());
                 if (!context.mounted) return;
-                Navigator.pop(context, configStr);
+                context.router.pop(configStr);
               },
             ),
           ),

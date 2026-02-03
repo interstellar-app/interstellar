@@ -13,10 +13,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   url_launcher_windows
   webcrypto
   window_manager
+  window_to_front
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  blurhash_ffi
   flutter_local_notifications_windows
 )
 

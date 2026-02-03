@@ -1,4 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
@@ -9,10 +13,9 @@ import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
-import 'package:interstellar/src/screens/feed/post_page.dart';
 
+@RoutePage()
 class BookmarkListScreen extends StatefulWidget {
   const BookmarkListScreen({super.key});
 
@@ -110,7 +113,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                   content: Text(_bookmarkLists[index].name),
                                   actions: [
                                     OutlinedButton(
-                                      onPressed: () => Navigator.pop(context),
+                                      onPressed: () => context.router.pop(),
                                       child: Text(l(context).cancel),
                                     ),
                                     FilledButton(
@@ -121,7 +124,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                                             );
                                         _fetch();
                                         if (!context.mounted) return;
-                                        Navigator.pop(context);
+                                        context.router.pop();
                                       },
                                       child: Text(l(context).delete),
                                     ),
@@ -136,10 +139,8 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                   ],
                 ),
                 trailing: Text(_bookmarkLists[index].count.toString()),
-                onTap: () => pushRoute(
-                  context,
-                  builder: (context) =>
-                      BookmarksScreen(bookmarkList: _bookmarkLists[index].name),
+                onTap: () => context.router.push(
+                  BookmarksRoute(bookmarkList: _bookmarkLists[index].name),
                 ),
               );
             },
@@ -150,10 +151,14 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
   }
 }
 
+@RoutePage()
 class BookmarksScreen extends StatefulWidget {
   final String? bookmarkList;
 
-  const BookmarksScreen({super.key, this.bookmarkList});
+  const BookmarksScreen({
+    super.key,
+    @PathParam('bookmarkList') this.bookmarkList,
+  });
 
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();
@@ -181,7 +186,11 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.bookmarkList ?? ''} ${l(context).bookmarks}'),
+        title: Text(
+          context.read<AppController>().serverSoftware == ServerSoftware.mbin
+              ? '${widget.bookmarkList ?? ''} ${l(context).bookmarks}'
+              : l(context).bookmarks,
+        ),
       ),
       body: AdvancedPagedScrollView(
         controller: _pagingController,
@@ -194,13 +203,13 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 item,
                 (newValue) =>
                     _pagingController.updateItem(newValue.id, newValue),
-                onTap: () => pushRoute(
+                onTap: () => pushPostPage(
                   context,
-                  builder: (context) => PostPage(
-                    initData: item,
-                    onUpdate: (newValue) =>
-                        _pagingController.updateItem(newValue.id, newValue),
-                  ),
+                  postId: item.id,
+                  postType: item.type,
+                  initData: item,
+                  onUpdate: (newValue) =>
+                      _pagingController.updateItem(item, newValue),
                 ),
                 isPreview: item.type == PostType.thread,
                 isTopLevel: true,
@@ -212,10 +221,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 item,
                 (newValue) =>
                     _pagingController.updateItem(newValue.id, newValue),
-                onClick: () => pushRoute(
-                  context,
-                  builder: (context) =>
-                      PostCommentScreen(item.postType, item.id),
+                onClick: () => context.router.push(
+                  PostCommentRoute(postType: item.postType, commentId: item.id),
                 ),
               ),
             ),

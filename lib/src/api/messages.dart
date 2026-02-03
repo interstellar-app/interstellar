@@ -138,8 +138,8 @@ class APIMessages {
         final path = '/private_message';
 
         final response = await client.post(
-            path,
-            body: {'recipient_id': userId, 'content': body}
+          path,
+          body: {'recipient_id': userId, 'content': body},
         );
 
         final json = response.bodyJson;

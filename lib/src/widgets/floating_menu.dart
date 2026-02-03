@@ -29,7 +29,9 @@ class FloatingMenuState extends State<FloatingMenu>
     super.initState();
 
     final animationSpeed = context.read<AppController>().profile.animationSpeed;
-    final totalDuration = animationSpeed == 0 ? 0 : (250 / animationSpeed).toInt();
+    final totalDuration = animationSpeed == 0
+        ? 0
+        : (250 / animationSpeed).toInt();
     final gapDuration = (150 / widget.menuActions.length) / animationSpeed;
 
     _animationController = AnimationController(

@@ -1,8 +1,9 @@
-import 'dart:io';
 import 'dart:math';
-import 'package:blurhash_ffi/blurhash_ffi.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -51,13 +52,12 @@ class AdvancedImage extends StatelessWidget {
       parentBuilder: (child) => SuperHero(
         tag: tag,
         child: GestureDetector(
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => AdvancedImagePage(
-              image,
+          onTap: () => context.router.push(
+            AdvancedImageRoute(
+              image: image,
               title: openTitle!,
-              hero: tag,
               fit: BoxFit.contain,
+              hero: tag,
             ),
           ),
           child: child,
@@ -90,13 +90,13 @@ class AdvancedImage extends StatelessWidget {
                       fit: fit,
                       borderRadius: BorderRadius.circular(15),
                       shape: BoxShape.rectangle,
-                      image: BlurhashFfiImage(
+                      image: BlurHashImage(
                         image.blurHash!,
-                        decodingWidth:
-                            (blurHashSizeFactor! * image.blurHashWidth!).ceil(),
                         decodingHeight:
-                            (blurHashSizeFactor * image.blurHashHeight!).ceil(),
-                        scale: blurHashSizeFactor,
+                            (blurHashSizeFactor! * image.blurHashHeight!)
+                                .ceil(),
+                        decodingWidth:
+                            (blurHashSizeFactor * image.blurHashWidth!).ceil(),
                       ),
                       enableSlideOutPage: true,
                     );
@@ -124,6 +124,7 @@ class AdvancedImage extends StatelessWidget {
   }
 }
 
+@RoutePage()
 class AdvancedImagePage extends StatefulWidget {
   final ImageModel image;
   final String title;
@@ -181,7 +182,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
             },
             icon: const Icon(Symbols.download_rounded),
           ),
-          if (!Platform.isLinux)
+          if (!PlatformIs.linux)
             LoadingIconButton(
               onPressed: () async => await shareFile(
                 Uri.parse(widget.image.src),
@@ -219,7 +220,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                         content: Text(widget.image.altText!),
                         actions: [
                           OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.router.pop(),
                             child: Text(l(context).close),
                           ),
                         ],

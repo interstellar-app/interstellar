@@ -1,22 +1,24 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
-class TagEditor extends StatefulWidget {
-  const TagEditor({super.key, required this.tag, required this.onUpdate});
+@RoutePage()
+class TagEditorScreen extends StatefulWidget {
+  const TagEditorScreen({super.key, required this.tag, required this.onUpdate});
 
   final Tag tag;
   final void Function(Tag?) onUpdate;
 
   @override
-  State<TagEditor> createState() => _TagEditorState();
+  State<TagEditorScreen> createState() => _TagEditorScreenState();
 }
 
-class _TagEditorState extends State<TagEditor> {
+class _TagEditorScreenState extends State<TagEditorScreen> {
   late final TextEditingController _tagController;
   late Color _textColor;
   late Color _backgroundColor;
@@ -65,7 +67,7 @@ class _TagEditorState extends State<TagEditor> {
                       ),
                       actions: [
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).cancel),
                         ),
                         FilledButton(
@@ -75,7 +77,7 @@ class _TagEditorState extends State<TagEditor> {
                               final tc = ColorScheme.fromSeed(seedColor: c);
                               _textColor = tc.primaryFixed;
                             });
-                            Navigator.pop(context);
+                            context.router.pop();
                           },
                           child: Text(l(context).save),
                         ),
@@ -91,7 +93,7 @@ class _TagEditorState extends State<TagEditor> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                 ),
@@ -102,7 +104,7 @@ class _TagEditorState extends State<TagEditor> {
                       await ac.removeTag(widget.tag);
                       if (!context.mounted) return;
                       widget.onUpdate(null);
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).delete),
                   ),
@@ -129,7 +131,7 @@ class _TagEditorState extends State<TagEditor> {
                             title: Text(l(context).tags_exist),
                             actions: [
                               OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => context.router.pop(),
                                 child: Text(l(context).okay),
                               ),
                             ],
@@ -139,7 +141,7 @@ class _TagEditorState extends State<TagEditor> {
                       }
                       widget.onUpdate(tag);
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
                     child: Text(l(context).save),
                   ),

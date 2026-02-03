@@ -1,13 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
-import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/paging.dart';
@@ -17,21 +17,25 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:provider/provider.dart';
 
-class CommunityModPanel extends StatefulWidget {
+@RoutePage()
+class CommunityModPanelScreen extends StatefulWidget {
+  final int communityId;
   final DetailedCommunityModel initData;
   final void Function(DetailedCommunityModel) onUpdate;
 
-  const CommunityModPanel({
+  const CommunityModPanelScreen({
     super.key,
+    @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
   });
 
   @override
-  State<CommunityModPanel> createState() => _CommunityModPanelState();
+  State<CommunityModPanelScreen> createState() =>
+      _CommunityModPanelScreenState();
 }
 
-class _CommunityModPanelState extends State<CommunityModPanel> {
+class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
   late DetailedCommunityModel _data;
 
   @override
@@ -224,17 +228,18 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
         return InkWell(
           onTap: () {
             if (item.subjectPost != null) {
-              pushRoute(
+              pushPostPage(
                 context,
-                builder: (context) =>
-                    PostPage(initData: item.subjectPost, userCanModerate: true),
+                postId: item.subjectPost!.id,
+                postType: item.subjectPost!.type,
+                initData: item.subjectPost,
+                userCanModerate: true,
               );
             } else if (item.subjectComment != null) {
-              pushRoute(
-                context,
-                builder: (context) => PostCommentScreen(
-                  item.subjectComment!.postType,
-                  item.subjectComment!.id,
+              context.router.push(
+                PostCommentRoute(
+                  postType: item.subjectComment!.postType,
+                  commentId: item.subjectComment!.id,
                 ),
               );
             }
@@ -254,10 +259,8 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                           DisplayName(
                             item.reportedBy!.name,
                             icon: item.reportedBy!.avatar,
-                            onTap: () => pushRoute(
-                              context,
-                              builder: (context) =>
-                                  UserScreen(item.reportedBy!.id),
+                            onTap: () => context.router.push(
+                              UserRoute(userId: item.reportedBy!.id),
                             ),
                           ),
                         ],

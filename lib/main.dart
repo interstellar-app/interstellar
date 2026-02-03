@@ -1,12 +1,12 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/globals.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -16,7 +16,7 @@ import 'package:window_manager/window_manager.dart';
 import 'src/app.dart';
 import 'src/init_push_notifications.dart';
 
-void main() async {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
 
@@ -25,7 +25,7 @@ void main() async {
 
   await initDatabase();
 
-  if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+  if (PlatformIs.desktop) {
     await windowManager.ensureInitialized();
 
     // Get smallest dimensions of available displays and set minimum window
@@ -33,7 +33,7 @@ void main() async {
     final screenSize = PlatformDispatcher.instance.displays
         .map((display) => display.size)
         .reduce((a, b) => Size(min(a.width, b.width), min(a.height, b.height)));
-    final minWindowSize = screenSize / 4;
+    final minWindowSize = screenSize / 8;
 
     WindowOptions windowOptions = WindowOptions(minimumSize: minWindowSize);
 
@@ -75,7 +75,7 @@ void main() async {
     return false;
   };
 
-  if (Platform.isAndroid) {
+  if (PlatformIs.android) {
     await initPushNotifications(ac);
   }
 

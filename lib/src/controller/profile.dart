@@ -8,7 +8,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart'
     show ActionLocation, ActionLocationWithTabs, SwipeAction;
 import 'package:drift/drift.dart' show Insertable, Value, Expression;
-import 'database.dart' show ProfilesCompanion;
+import 'database/database.dart' show ProfilesCompanion;
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 
 part 'profile.freezed.dart';
@@ -56,6 +56,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool showPostsCards,
     required List<PostComponent> postComponentOrder,
     required double dividerThickness,
+    required bool hideEmojiReactions,
     // Feed defaults
     required FeedSort feedDefaultThreadsSort,
     required FeedSort feedDefaultMicroblogSort,
@@ -146,6 +147,8 @@ abstract class ProfileRequired with _$ProfileRequired {
         profile?.postComponentOrder ?? defaultProfile.postComponentOrder,
     dividerThickness:
         profile?.dividerThickness ?? defaultProfile.dividerThickness,
+    hideEmojiReactions:
+        profile?.hideEmojiReactions ?? defaultProfile.hideEmojiReactions,
     feedDefaultThreadsSort:
         profile?.feedDefaultThreadsSort ??
         defaultProfile.feedDefaultThreadsSort,
@@ -238,6 +241,7 @@ abstract class ProfileRequired with _$ProfileRequired {
       PostComponent.body,
     ],
     dividerThickness: 1,
+    hideEmojiReactions: false,
     feedDefaultThreadsSort: FeedSort.hot,
     feedDefaultMicroblogSort: FeedSort.hot,
     feedDefaultCombinedSort: FeedSort.hot,
@@ -314,6 +318,7 @@ abstract class ProfileOptional
     required bool? showPostsCards,
     required List<PostComponent>? postComponentOrder,
     required double? dividerThickness,
+    required bool? hideEmojiReactions,
     // Feed defaults
     required FeedSort? feedDefaultThreadsSort,
     required FeedSort? feedDefaultMicroblogSort,
@@ -384,6 +389,7 @@ abstract class ProfileOptional
       showPostsCards: Value(showPostsCards),
       postComponentOrder: Value(postComponentOrder),
       dividerThickness: Value(dividerThickness),
+      hideEmojiReactions: Value(hideEmojiReactions),
       // Feed defaults
       feedDefaultThreadsSort: Value(feedDefaultThreadsSort),
       feedDefaultMicroblogSort: Value(feedDefaultMicroblogSort),
@@ -448,6 +454,7 @@ abstract class ProfileOptional
     showPostsCards: null,
     postComponentOrder: null,
     dividerThickness: null,
+    hideEmojiReactions: null,
     feedDefaultThreadsSort: null,
     feedDefaultMicroblogSort: null,
     feedDefaultCombinedSort: null,
@@ -517,6 +524,7 @@ abstract class ProfileOptional
       showPostsCards: other.showPostsCards ?? showPostsCards,
       postComponentOrder: other.postComponentOrder ?? postComponentOrder,
       dividerThickness: other.dividerThickness ?? dividerThickness,
+      hideEmojiReactions: other.hideEmojiReactions ?? hideEmojiReactions,
       feedDefaultThreadsSort:
           other.feedDefaultThreadsSort ?? feedDefaultThreadsSort,
       feedDefaultMicroblogSort:

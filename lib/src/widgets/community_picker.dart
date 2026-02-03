@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -45,10 +46,9 @@ class _CommunityPickerState extends State<CommunityPicker> {
                   suffixIcon: widget.value == null
                       ? null
                       : IconButton(
-                          onPressed: () => pushRoute(
-                            context,
-                            builder: (context) => CommunityScreen(
-                              widget.value!.id,
+                          onPressed: () => context.router.push(
+                            CommunityRoute(
+                              communityId: widget.value!.id,
                               initData: widget.value!,
                               onUpdate: (newValue) => widget.onChange(newValue),
                             ),
@@ -58,6 +58,7 @@ class _CommunityPickerState extends State<CommunityPicker> {
                   helperText: widget.microblogMode
                       ? l(context).microblog_communityHelperText
                       : null,
+                  helperMaxLines: 3,
                 ),
                 focusNode: focusNode,
                 onSubmitted: (_) => onFieldSubmitted(),

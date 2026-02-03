@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -18,9 +19,9 @@ import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:drift/drift.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path/path.dart';
+import 'database.steps.dart';
 
 part 'database.g.dart';
 
@@ -285,6 +286,7 @@ class Profiles extends Table {
   TextColumn get postComponentOrder =>
       text().map(const PostComponentConverter()).nullable()();
   RealColumn get dividerThickness => real().nullable()();
+  BoolColumn get hideEmojiReactions => boolean().nullable()();
   // Feed defaults
   TextColumn get feedViewOrder =>
       text().map(const FeedViewListConverter()).nullable()();
@@ -433,7 +435,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -441,6 +443,15 @@ class InterstellarDatabase extends _$InterstellarDatabase {
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       },
+
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          await m.addColumn(
+            schema.profiles,
+            schema.profiles.hideEmojiReactions,
+          );
+        },
+      ),
     );
   }
 
@@ -451,6 +462,18 @@ class InterstellarDatabase extends _$InterstellarDatabase {
       name: databaseFilename,
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationSupportDirectory,
+      ),
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.dart.js'),
+        onResult: (result) {
+          if (result.missingFeatures.isNotEmpty) {
+            debugPrint(
+              'Using ${result.chosenImplementation} due to unsupported '
+              'browser features: ${result.missingFeatures}',
+            );
+          }
+        },
       ),
     );
   }
@@ -472,6 +495,7 @@ Future<void> deleteTables() async {
 }
 
 Future<bool> migrateDatabase() async {
+  if (PlatformIs.web) return false;
   final dir = await getApplicationSupportDirectory();
   final dbPath = join(dir.path, 'database');
   if (!await File(dbPath).exists()) {

@@ -16,6 +16,7 @@
 #include <url_launcher_windows/url_launcher_windows.h>
 #include <webcrypto/webcrypto_plugin.h>
 #include <window_manager/window_manager_plugin.h>
+#include <window_to_front/window_to_front_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   DynamicColorPluginCApiRegisterWithRegistrar(
@@ -38,4 +39,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("WebcryptoPlugin"));
   WindowManagerPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("WindowManagerPlugin"));
+  WindowToFrontPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("WindowToFrontPlugin"));
 }

@@ -11,16 +11,16 @@ class SubordinateScrollController extends ScrollController {
     required ScrollController parent,
     String? debugLabel,
   }) : _parent = parent,
-        super(
-        initialScrollOffset: parent.initialScrollOffset,
-        keepScrollOffset: parent.keepScrollOffset,
-        debugLabel: switch ((parent.debugLabel, debugLabel)) {
-          (null, null) => null,
-          (null, String label) => label,
-          (String label, null) => '$label/sub',
-          (String parentLabel, String label) => '$parentLabel/$label',
-        },
-      );
+       super(
+         initialScrollOffset: parent.initialScrollOffset,
+         keepScrollOffset: parent.keepScrollOffset,
+         debugLabel: switch ((parent.debugLabel, debugLabel)) {
+           (null, null) => null,
+           (null, String label) => label,
+           (String label, null) => '$label/sub',
+           (String parentLabel, String label) => '$parentLabel/$label',
+         },
+       );
 
   final ScrollController _parent;
   bool _isActive = false;
@@ -41,10 +41,10 @@ class SubordinateScrollController extends ScrollController {
 
   @override
   ScrollPosition createScrollPosition(
-      ScrollPhysics physics,
-      ScrollContext context,
-      ScrollPosition? oldPosition,
-      ) {
+    ScrollPhysics physics,
+    ScrollContext context,
+    ScrollPosition? oldPosition,
+  ) {
     return _parent.createScrollPosition(physics, context, oldPosition);
   }
 

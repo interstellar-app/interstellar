@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/community_moderation.dart';
-import 'package:interstellar/src/controller/database.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -177,12 +177,20 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
           : communityView['activity_alert'] as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
-      flairs: (communityView['flair_list'] as List<dynamic>?)?.map((flair) => Tag(
-          id: flair['id'] as int,
-          tag: flair['flair_title'] as String,
-          backgroundColor: getColorFromHex(flair['background_color'] as String),
-          textColor: getColorFromHex(flair['text_color'] as String)
-      )).toList() ?? [],
+      flairs:
+          (communityView['flair_list'] as List<dynamic>?)
+              ?.map(
+                (flair) => Tag(
+                  id: flair['id'] as int,
+                  tag: flair['flair_title'] as String,
+                  backgroundColor: getColorFromHex(
+                    flair['background_color'] as String,
+                  ),
+                  textColor: getColorFromHex(flair['text_color'] as String),
+                ),
+              )
+              .toList() ??
+          [],
       apId: piefedCommunity['actor_id'] as String,
     );
 
@@ -276,14 +284,18 @@ abstract class CommunityBanModel with _$CommunityBanModel {
   );
 
   factory CommunityBanModel.fromLemmy(JsonMap json) {
-    final expiration = json['expires'] != null ? DateTime.parse(json['expires'] as String) : null;
+    final expiration = json['expires'] != null
+        ? DateTime.parse(json['expires'] as String)
+        : null;
 
     return CommunityBanModel(
       reason: json['reason'] as String?,
       expiresAt: expiration,
       community: CommunityModel.fromLemmy(json['community'] as JsonMap),
       bannedUser: UserModel.fromLemmy(json['banned_person'] as JsonMap),
-      bannedBy: json['moderator'] != null ? UserModel.fromLemmy(json['moderator'] as JsonMap) : null,
+      bannedBy: json['moderator'] != null
+          ? UserModel.fromLemmy(json['moderator'] as JsonMap)
+          : null,
       expired: expiration?.isBefore(DateTime.now()) ?? false,
     );
   }

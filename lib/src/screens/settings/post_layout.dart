@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:auto_route/annotations.dart';
 import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
+@RoutePage()
 class PostLayoutSettingsScreen extends StatefulWidget {
   const PostLayoutSettingsScreen({super.key});
 
@@ -44,9 +46,7 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
                   .postComponentOrder
                   .toList();
               ac.updateProfile(
-                ac.selectedProfileValue.copyWith(
-                  postComponentOrder: null,
-                ),
+                ac.selectedProfileValue.copyWith(postComponentOrder: null),
               );
             }),
             icon: const Icon(Symbols.restore),
@@ -67,7 +67,7 @@ class _PostLayoutSettingsScreen extends State<PostLayoutSettingsScreen> {
                   PostComponent.flairs => Symbols.flag_rounded,
                 }),
                 title: Text(item.name.capitalize),
-                trailing: Platform.isIOS || Platform.isAndroid
+                trailing: PlatformIs.mobile
                     ? const Icon(Symbols.drag_handle_rounded)
                     : null,
               ),

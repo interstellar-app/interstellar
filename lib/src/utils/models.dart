@@ -19,7 +19,11 @@ ImageModel? mbinGetOptionalImage(JsonMap? json) {
       : ImageModel.fromMbin(json);
 }
 
-ImageModel? lemmyGetOptionalImage(String? src, [String? altText, JsonMap? details]) {
+ImageModel? lemmyGetOptionalImage(
+  String? src, [
+  String? altText,
+  JsonMap? details,
+]) {
   return src == null ? null : ImageModel.fromLemmy(src, altText, details);
 }
 

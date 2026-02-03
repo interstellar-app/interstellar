@@ -1,14 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
-import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -16,6 +13,7 @@ import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+import '../../feed/post_page.dart';
 import 'notification_count_controller.dart';
 
 const notificationTitle = {
@@ -93,96 +91,80 @@ class _NotificationItemState extends State<NotificationItem> {
     final void Function()? onTap = switch (software) {
       ServerSoftware.mbin =>
         widget.item.subject.containsKey('threadId')
-            ? () => pushRoute(
-                context,
-                builder: (context) => MessageThreadScreen(
+            ? () => context.router.push(
+                MessageThreadRoute(
                   threadId: widget.item.subject['threadId'] as int,
                 ),
               )
             : widget.item.subject.containsKey('commentId')
-            ? () => pushRoute(
-                context,
-                builder: (context) => PostCommentScreen(
-                  widget.item.subject.containsKey('postId')
+            ? () => context.router.push(
+                PostCommentRoute(
+                  postType: widget.item.subject.containsKey('postId')
                       ? PostType.microblog
                       : PostType.thread,
-                  widget.item.subject['commentId'] as int,
+                  commentId: widget.item.subject['commentId'] as int,
                 ),
               )
             : widget.item.subject.containsKey('entryId')
-            ? () => pushRoute(
+            ? () => pushPostPage(
                 context,
-                builder: (context) => PostPage(
-                  postType: PostType.thread,
-                  postId: widget.item.subject['entryId'] as int,
-                ),
+                postId: widget.item.subject['entryId'] as int,
+                postType: PostType.thread,
               )
             : widget.item.subject.containsKey('postId')
-            ? () => pushRoute(
+            ? () => pushPostPage(
                 context,
-                builder: (context) => PostPage(
-                  postType: PostType.microblog,
-                  postId: widget.item.subject['postId'] as int,
-                ),
+                postId: widget.item.subject['postId'] as int,
+                postType: PostType.microblog,
               )
             : null,
       ServerSoftware.lemmy => switch (widget.item.type!) {
-        NotificationType.message => () => pushRoute(
-          context,
-          builder: (context) => MessageThreadScreen(
+        NotificationType.message => () => context.router.push(
+          MessageThreadRoute(
             threadId: widget.item.subject['creator']['id'] as int,
           ),
         ),
-        NotificationType.mention => () => pushRoute(
-          context,
-          builder: (context) => PostCommentScreen(
-            PostType.thread,
-            widget.item.subject['comment']['id'] as int,
+        NotificationType.mention => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
+            commentId: widget.item.subject['comment']['id'] as int,
           ),
         ),
-        NotificationType.reply => () => pushRoute(
-          context,
-          builder: (context) => PostCommentScreen(
-            PostType.thread,
-            widget.item.subject['comment']['id'] as int,
+        NotificationType.reply => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
+            commentId: widget.item.subject['comment']['id'] as int,
           ),
         ),
         _ => throw Exception('invalid notification type for lemmy'),
       },
       ServerSoftware.piefed => switch (widget.item.type!) {
-        NotificationType.entryCreated => () => pushRoute(
+        NotificationType.entryCreated => () => pushPostPage(
           context,
-          builder: (context) => PostPage(
+          postId: widget.item.subject['post_id'] as int,
+          postType: PostType.thread,
+        ),
+        NotificationType.entryCommentCreated => () => context.router.push(
+          PostCommentRoute(
             postType: PostType.thread,
-            postId: widget.item.subject['post_id'] as int,
+            commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
-        NotificationType.entryCommentCreated => () => pushRoute(
-          context,
-          builder: (context) => PostCommentScreen(
-            PostType.thread,
-            widget.item.subject['comment_id'] as int,
-          ),
-        ),
-        NotificationType.entryCommentReply => () => pushRoute(
-          context,
-          builder: (context) => PostCommentScreen(
-            PostType.thread,
-            widget.item.subject['comment_id'] as int,
-          ),
-        ),
-        NotificationType.postMention => () => pushRoute(
-          context,
-          builder: (context) => PostPage(
+        NotificationType.entryCommentReply => () => context.router.push(
+          PostCommentRoute(
             postType: PostType.thread,
-            postId: widget.item.subject['post_id'] as int,
+            commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
-        NotificationType.commentMention => () => pushRoute(
+        NotificationType.postMention => () => pushPostPage(
           context,
-          builder: (context) => PostCommentScreen(
-            PostType.thread,
-            widget.item.subject['comment_id'] as int,
+          postId: widget.item.subject['post_id'] as int,
+          postType: PostType.thread,
+        ),
+        NotificationType.commentMention => () => context.router.push(
+          PostCommentRoute(
+            postType: PostType.thread,
+            commentId: widget.item.subject['comment_id'] as int,
           ),
         ),
         _ => throw Exception('invalid notification type for piefed'),
@@ -211,10 +193,8 @@ class _NotificationItemState extends State<NotificationItem> {
                             child: DisplayName(
                               widget.item.creator!.name,
                               icon: widget.item.creator!.avatar,
-                              onTap: () => pushRoute(
-                                context,
-                                builder: (context) =>
-                                    UserScreen(widget.item.creator!.id),
+                              onTap: () => context.router.push(
+                                UserRoute(userId: widget.item.creator!.id),
                               ),
                             ),
                           ),
@@ -227,10 +207,10 @@ class _NotificationItemState extends State<NotificationItem> {
                               child: DisplayName(
                                 bannedCommunity.name,
                                 icon: bannedCommunity.icon,
-                                onTap: () => pushRoute(
-                                  context,
-                                  builder: (context) =>
-                                      CommunityScreen(bannedCommunity.id),
+                                onTap: () => context.router.push(
+                                  CommunityRoute(
+                                    communityId: bannedCommunity.id,
+                                  ),
                                 ),
                               ),
                             ),

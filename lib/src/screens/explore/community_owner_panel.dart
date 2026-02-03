@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
@@ -11,21 +12,25 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class CommunityOwnerPanel extends StatefulWidget {
+@RoutePage()
+class CommunityOwnerPanelScreen extends StatefulWidget {
+  final int communityId;
   final DetailedCommunityModel initData;
   final void Function(DetailedCommunityModel) onUpdate;
 
-  const CommunityOwnerPanel({
+  const CommunityOwnerPanelScreen({
     super.key,
+    @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
   });
 
   @override
-  State<CommunityOwnerPanel> createState() => _CommunityOwnerPanelState();
+  State<CommunityOwnerPanelScreen> createState() =>
+      _CommunityOwnerPanelScreenState();
 }
 
-class _CommunityOwnerPanelState extends State<CommunityOwnerPanel> {
+class _CommunityOwnerPanelScreenState extends State<CommunityOwnerPanelScreen> {
   late DetailedCommunityModel _data;
 
   @override
@@ -187,28 +192,22 @@ class _CommunityOwnerPanelGeneralState
                 : () async {
                     final ac = context.read<AppController>();
                     final result = widget.data == null
-                        ? await ac
-                              .api
-                              .communityModeration
-                              .create(
-                                name: _nameController.text,
-                                title: _titleController.text,
-                                description: _descriptionController.text,
-                                isAdult: _isAdult,
-                                isPostingRestrictedToMods:
-                                    _isPostingRestrictedToMods,
-                              )
-                        : await ac
-                              .api
-                              .communityModeration
-                              .edit(
-                                widget.data!.id,
-                                title: _titleController.text,
-                                description: _descriptionController.text,
-                                isAdult: _isAdult,
-                                isPostingRestrictedToMods:
-                                    _isPostingRestrictedToMods,
-                              );
+                        ? await ac.api.communityModeration.create(
+                            name: _nameController.text,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            isAdult: _isAdult,
+                            isPostingRestrictedToMods:
+                                _isPostingRestrictedToMods,
+                          )
+                        : await ac.api.communityModeration.edit(
+                            widget.data!.id,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            isAdult: _isAdult,
+                            isPostingRestrictedToMods:
+                                _isPostingRestrictedToMods,
+                          );
 
                     await descriptionDraftController.discard();
 
@@ -279,12 +278,12 @@ class _CommunityOwnerPanelModeratorsState
                           ),
                           actions: <Widget>[
                             OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => context.router.pop(),
                               child: const Text('Cancel'),
                             ),
                             LoadingFilledButton(
                               onPressed: () async {
-                                Navigator.of(context).pop(
+                                context.router.pop(
                                   await context
                                       .read<AppController>()
                                       .api
@@ -333,12 +332,12 @@ class _CommunityOwnerPanelModeratorsState
                       ),
                       actions: <Widget>[
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: const Text('Cancel'),
                         ),
                         LoadingFilledButton(
                           onPressed: () async {
-                            Navigator.of(context).pop(
+                            context.router.pop(
                               await context
                                   .read<AppController>()
                                   .api
@@ -421,7 +420,7 @@ class _CommunityOwnerPanelDeletionState
 
               if (result == true) {
                 if (!context.mounted) return;
-                Navigator.of(context).pop();
+                context.router.pop();
               }
             },
             child: const Text('Delete Community'),
@@ -464,7 +463,7 @@ class _CommunityOwnerPanelDeletionDialogState
       ),
       actions: <Widget>[
         OutlinedButton(
-          onPressed: () => Navigator.pop(context, false),
+          onPressed: () => context.router.pop(false),
           child: const Text('Cancel'),
         ),
         LoadingFilledButton(
@@ -478,7 +477,7 @@ class _CommunityOwnerPanelDeletionDialogState
                       .delete(widget.data.id);
 
                   if (!context.mounted) return;
-                  Navigator.pop(context, true);
+                  context.router.pop(true);
                 },
           label: const Text('DELETE COMMUNITY'),
         ),
