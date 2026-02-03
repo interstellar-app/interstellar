@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
-import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
@@ -13,6 +14,7 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class FilterListsScreen extends StatefulWidget {
   const FilterListsScreen({super.key});
 
@@ -40,10 +42,8 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                 Expanded(
                   child: ListTile(
                     title: Text(name),
-                    onTap: () => pushRoute(
-                      context,
-                      builder: (context) =>
-                          EditFilterListScreen(filterList: name),
+                    onTap: () => context.router.push(
+                      EditFilterListRoute(filterList: name),
                     ),
                     trailing: IconButton(
                       onPressed: () async {
@@ -73,9 +73,8 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
 
                         if (!context.mounted) return;
 
-                        await pushRoute(
-                          context,
-                          builder: (context) => CreateScreen(
+                        await context.router.push(
+                          CreateRoute(
                             initTitle: '[Filter List] $name',
                             initBody:
                                 'Short description here...\n\n${config.toMarkdown()}',
@@ -109,11 +108,8 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
           ListTile(
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).filterList_new),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) =>
-                  const EditFilterListScreen(filterList: null),
-            ),
+            onTap: () =>
+                context.router.push(EditFilterListRoute(filterList: null)),
           ),
         ],
       ),
@@ -121,12 +117,13 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
   }
 }
 
+@RoutePage()
 class EditFilterListScreen extends StatefulWidget {
   final String? filterList;
   final FilterList? importFilterList;
 
   const EditFilterListScreen({
-    required this.filterList,
+    @PathParam('filterList') required this.filterList,
     this.importFilterList,
     super.key,
   });
@@ -238,15 +235,15 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                               actions: [
                                 OutlinedButton(
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    context.router.pop();
                                   },
                                   child: Text(l(context).cancel),
                                 ),
                                 LoadingFilledButton(
                                   onPressed: () async {
-                                    Navigator.of(
-                                      context,
-                                    ).pop(phraseTextEditingController.text);
+                                    context.router.pop(
+                                      phraseTextEditingController.text,
+                                    );
                                   },
                                   label: Text(l(context).filterList_addPhrase),
                                 ),
@@ -321,7 +318,7 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                       await ac.setFilterList(name, filterListData);
 
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
               label: Text(l(context).saveChanges),
             ),
@@ -339,7 +336,7 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                       content: Text(widget.filterList!),
                       actions: <Widget>[
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).cancel),
                         ),
                         FilledButton(
@@ -347,8 +344,8 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                             await ac.removeFilterList(widget.filterList!);
 
                             if (!context.mounted) return;
-                            Navigator.pop(context);
-                            Navigator.pop(context);
+                            context.router.pop();
+                            context.router.pop();
                           },
                           child: Text(l(context).delete),
                         ),

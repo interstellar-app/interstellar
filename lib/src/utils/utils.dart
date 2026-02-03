@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -324,4 +326,18 @@ Future<void> pushRoute(
       builder: builder,
     ),
   );
+}
+
+// apparently Platform is unsupported on web so have to check for web before checking specific platform
+class PlatformIs {
+  static const bool web = kIsWeb;
+
+  static final bool android = !web && Platform.isAndroid;
+  static final bool iOS = !web && Platform.isIOS;
+  static final bool linux = !web && Platform.isLinux;
+  static final bool macOS = !web && Platform.isMacOS;
+  static final bool windows = !web && Platform.isWindows;
+
+  static final bool mobile = android || iOS;
+  static final bool desktop = linux || macOS || windows;
 }

@@ -1,15 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
-import 'package:interstellar/src/screens/explore/mod_log.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import 'debug/debug_screen.dart';
 
 const _donateLink = 'https://github.com/sponsors/jwr1';
 const _contributeLink = 'https://github.com/interstellar-app/interstellar';
@@ -23,6 +21,7 @@ const _mbinCommunityLink = 'https://kbin.earth/m/interstellar';
 const mbinConfigsCommunityName = 'interstellar_configs@kbin.earth';
 const _mbinConfigsCommunityLink = 'https://kbin.earth/m/interstellar_configs';
 
+@RoutePage()
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
 
@@ -40,19 +39,14 @@ class _AboutScreenState extends State<AboutScreen> {
           ListTile(
             leading: const Icon(Symbols.bug_report_rounded),
             title: Text(l(context).settings_debug),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const DebugSettingsScreen(),
-            ),
+            onTap: () => context.router.push(DebugSettingsRoute()),
           ),
-          if (context.read<AppController>().serverSoftware != ServerSoftware.piefed)
+          if (context.read<AppController>().serverSoftware !=
+              ServerSoftware.piefed)
             ListTile(
               leading: const Icon(Symbols.shield_rounded),
               title: Text(l(context).modlog),
-              onTap: () => pushRoute(
-                  context,
-                  builder: (context) => ModLog()
-              ),
+              onTap: () => context.router.push(ModLogRoute()),
             ),
           ListTile(
             leading: const Icon(Symbols.favorite_rounded),
@@ -100,10 +94,11 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 if (!context.mounted) return;
 
-                pushRoute(
-                  context,
-                  builder: (context) =>
-                      CommunityScreen(community.id, initData: community),
+                context.router.push(
+                  CommunityRoute(
+                    communityId: community.id,
+                    initData: community,
+                  ),
                 );
               } catch (e) {
                 if (!mounted) return;
@@ -129,10 +124,11 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 if (!context.mounted) return;
 
-                pushRoute(
-                  context,
-                  builder: (context) =>
-                      CommunityScreen(community.id, initData: community),
+                context.router.push(
+                  CommunityRoute(
+                    communityId: community.id,
+                    initData: community,
+                  ),
                 );
               } catch (e) {
                 if (!mounted) return;

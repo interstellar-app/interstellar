@@ -106,16 +106,18 @@ class _VideoPlayerState extends State<VideoPlayer> {
               parentBuilder: (child) => Stack(
                 children: [
                   Blur(child),
-                  Center(child: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isPlaying = !_isPlaying;
-                        player.playOrPause();
-                      });
-                    },
-                    icon: const Icon(Symbols.play_arrow_rounded, fill: 1),
-                      iconSize: 56
-                  )),
+                  Center(
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isPlaying = !_isPlaying;
+                          player.playOrPause();
+                        });
+                      },
+                      icon: const Icon(Symbols.play_arrow_rounded, fill: 1),
+                      iconSize: 56,
+                    ),
+                  ),
                 ],
               ),
               child: Video(

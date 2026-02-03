@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/screens/settings/account_migration.dart';
-import 'package:interstellar/src/screens/settings/account_reset.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
+@RoutePage()
 class DataUtilitiesScreen extends StatelessWidget {
   const DataUtilitiesScreen({super.key});
 
@@ -15,18 +16,12 @@ class DataUtilitiesScreen extends StatelessWidget {
           ListTile(
             title: Text(l(context).settings_accountMigration),
             subtitle: Text(l(context).settings_accountMigration_help),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const AccountMigrationScreen(),
-            ),
+            onTap: () => context.router.push(AccountMigrationRoute()),
           ),
           ListTile(
             title: Text(l(context).settings_accountReset),
             subtitle: Text(l(context).settings_accountReset_help),
-            onTap: () => pushRoute(
-              context,
-              builder: (context) => const AccountResetScreen(),
-            ),
+            onTap: () => context.router.push(AccountResetRoute()),
           ),
         ],
       ),

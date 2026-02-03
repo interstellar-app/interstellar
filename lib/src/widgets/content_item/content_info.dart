@@ -1,13 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -138,10 +138,8 @@ class ContentInfo extends StatelessWidget {
                     user!.name,
                     displayName: user!.displayName,
                     icon: user!.avatar,
-                    onTap: () => pushRoute(
-                      context,
-                      builder: (context) => UserScreen(user!.id),
-                    ),
+                    onTap: () =>
+                        context.router.push(UserRoute(userId: user!.id)),
                   ),
                 ),
                 UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),
@@ -170,9 +168,8 @@ class ContentInfo extends StatelessWidget {
             child: DisplayName(
               community!.name,
               icon: community!.icon,
-              onTap: () => pushRoute(
-                context,
-                builder: (context) => CommunityScreen(community!.id),
+              onTap: () => context.router.push(
+                CommunityRoute(communityId: community!.id),
               ),
             ),
           );

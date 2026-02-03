@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/community.dart';
@@ -53,7 +54,7 @@ class _BanDialogState extends State<BanDialog> {
       actions: [
         OutlinedButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            context.router.pop();
           },
           child: Text(l(context).cancel),
         ),
@@ -72,7 +73,7 @@ class _BanDialogState extends State<BanDialog> {
                       );
 
                   if (!context.mounted) return;
-                  Navigator.of(context).pop();
+                  context.router.pop();
                 },
           label: Text(l(context).banUserX(widget.user.name)),
           uesHaptics: true,

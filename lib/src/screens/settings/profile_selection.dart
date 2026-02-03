@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
-import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -79,7 +80,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       ),
                       actions: [
                         OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).close),
                         ),
                       ],
@@ -103,7 +104,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                         ? Text(l(context).profile_main)
                         : null,
                     onTap: () async {
-                      Navigator.pop(context);
+                      context.router.pop();
                       await ac.switchProfiles(profileName);
                     },
                     selected: profileName == ac.selectedProfile,
@@ -115,9 +116,8 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            await pushRoute(
-                              context,
-                              builder: (context) => EditProfileScreen(
+                            await context.router.push(
+                              EditProfileRoute(
                                 profile: profileName,
                                 profileList: profileList!,
                               ),
@@ -155,9 +155,8 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
                             if (!context.mounted) return;
 
-                            await pushRoute(
-                              context,
-                              builder: (context) => CreateScreen(
+                            await context.router.push(
+                              CreateRoute(
                                 initTitle: '[Profile] $profileName',
                                 initBody:
                                     'Short description here...\n\n${config.toMarkdown()}',
@@ -175,9 +174,8 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                   leading: const Icon(Symbols.add_rounded),
                   title: Text(l(context).profile_new),
                   onTap: () async {
-                    await pushRoute(
-                      context,
-                      builder: (context) => EditProfileScreen(
+                    await context.router.push(
+                      EditProfileRoute(
                         profile: null,
                         profileList: profileList!,
                       ),
@@ -194,6 +192,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
   }
 }
 
+@RoutePage()
 class EditProfileScreen extends StatefulWidget {
   final String? profile;
   final List<String> profileList;
@@ -344,7 +343,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       }
 
                       if (!context.mounted) return;
-                      Navigator.pop(context);
+                      context.router.pop();
                     },
               label: Text(l(context).saveChanges),
             ),
@@ -364,7 +363,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             content: Text(widget.profile!),
                             actions: <Widget>[
                               OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => context.router.pop(),
                                 child: Text(l(context).cancel),
                               ),
                               FilledButton(
@@ -372,8 +371,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   await ac.deleteProfile(widget.profile!);
 
                                   if (!context.mounted) return;
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
+                                  context.router.pop();
+                                  context.router.pop();
                                 },
                                 child: Text(l(context).delete),
                               ),

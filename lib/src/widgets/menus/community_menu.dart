@@ -1,14 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/screens/explore/mod_log.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
-import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
-import 'package:interstellar/src/screens/explore/community_mod_panel.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
@@ -91,10 +89,9 @@ Future<void> showCommunityMenu(
       if (navigateOption)
         ContextMenuItem(
           title: l(context).openItem(name),
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => CommunityScreen(
-              detailedCommunity?.id ?? community!.id,
+          onTap: () => context.router.push(
+            CommunityRoute(
+              communityId: detailedCommunity?.id ?? community!.id,
               initData: detailedCommunity,
             ),
           ),
@@ -123,9 +120,9 @@ Future<void> showCommunityMenu(
       if (isModerator)
         ContextMenuItem(
           title: l(context).modPanel,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => CommunityModPanel(
+          onTap: () => context.router.push(
+            CommunityModPanelRoute(
+              communityId: detailedCommunity.id,
               initData: detailedCommunity,
               onUpdate: update!,
             ),
@@ -136,9 +133,9 @@ Future<void> showCommunityMenu(
           detailedCommunity.owner!.name == ac.localName)
         ContextMenuItem(
           title: l(context).ownerPanel,
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => CommunityOwnerPanel(
+          onTap: () => context.router.push(
+            CommunityOwnerPanelRoute(
+              communityId: detailedCommunity.id,
               initData: detailedCommunity,
               onUpdate: update!,
             ),
@@ -154,9 +151,8 @@ Future<void> showCommunityMenu(
       ),
       ContextMenuItem(
         title: l(context).search,
-        onTap: () => pushRoute(
-          context,
-          builder: (context) => ExploreScreen(
+        onTap: () => context.router.push(
+          ExploreRoute(
             mode: ExploreType.communities,
             id: detailedCommunity?.id ?? community!.id,
             title: l(
@@ -168,10 +164,11 @@ Future<void> showCommunityMenu(
       if (ac.serverSoftware != ServerSoftware.piefed)
         ContextMenuItem(
           title: l(context).modlog,
-          onTap: () => pushRoute(
-              context,
-              builder: (context) => ModLog(communityId: detailedCommunity?.id ?? community!.id)
-          )
+          onTap: () => context.router.push(
+            ModLogCommunityRoute(
+              communityId: detailedCommunity?.id ?? community!.id,
+            ),
+          ),
         ),
     ],
   ).openMenu(context);

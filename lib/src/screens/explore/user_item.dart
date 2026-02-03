@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 
@@ -21,8 +22,9 @@ class UserItemSimple extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: noTap ? null : () =>
-          pushRoute(context, builder: (context) => UserScreen(user.id)),
+      onTap: noTap
+          ? null
+          : () => context.router.push(UserRoute(userId: user.id)),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(

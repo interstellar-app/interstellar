@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,9 +7,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
@@ -30,6 +31,7 @@ import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:collection/collection.dart';
 
+@RoutePage()
 class FeedScreen extends StatefulWidget {
   final FeedAggregator? feed;
   final Widget? details;
@@ -66,7 +68,7 @@ class _FeedScreenState extends State<FeedScreen>
   @override
   bool get wantKeepAlive => true;
 
-  _getFeedKey(int index) {
+  GlobalKey<_FeedScreenBodyState> _getFeedKey(int index) {
     while (index >= _feedKeyList.length) {
       _feedKeyList.add(GlobalKey());
     }
@@ -268,13 +270,9 @@ class _FeedScreenState extends State<FeedScreen>
     final actions = [
       feedActionCreateNew(context).withProps(
         ac.isLoggedIn ? ac.profile.feedActionCreateNew : ActionLocation.hide,
-        () async {
-          await pushRoute(
-            context,
-            builder: (context) =>
-                CreateScreen(initCommunity: widget.createPostCommunity),
-          );
-        },
+        () => context.router.push(
+          CreateRoute(initCommunity: widget.createPostCommunity),
+        ),
       ),
       feedActionSetFilter(context).withProps(
         whenLoggedIn(context, widget.feed != null) ?? true
@@ -551,25 +549,25 @@ class _FeedScreenState extends State<FeedScreen>
           ),
         ),
         floatingActionButton: Wrapper(
-            shouldWrap: ac.profile.hideFeedUIOnScroll,
-            parentBuilder: (child) => HideOnScroll(
-              controller: _scrollController,
-              hiddenOffset: Offset(0, 0.2),
-              duration: ac.calcAnimationDuration(),
-              child: child
-            ),
-            child: FloatingMenu(
-              key: _fabKey,
-              tapAction: actions
-                  .where((action) => action.location == ActionLocation.fabTap)
-                  .firstOrNull,
-              holdAction: actions
-                  .where((action) => action.location == ActionLocation.fabHold)
-                  .firstOrNull,
-              menuActions: actions
-                  .where((action) => action.location == ActionLocation.fabMenu)
-                  .toList(),
-            ),
+          shouldWrap: ac.profile.hideFeedUIOnScroll,
+          parentBuilder: (child) => HideOnScroll(
+            controller: _scrollController,
+            hiddenOffset: Offset(0, 0.2),
+            duration: ac.calcAnimationDuration(),
+            child: child,
+          ),
+          child: FloatingMenu(
+            key: _fabKey,
+            tapAction: actions
+                .where((action) => action.location == ActionLocation.fabTap)
+                .firstOrNull,
+            holdAction: actions
+                .where((action) => action.location == ActionLocation.fabHold)
+                .firstOrNull,
+            menuActions: actions
+                .where((action) => action.location == ActionLocation.fabMenu)
+                .toList(),
+          ),
         ),
         drawer: (widget.feed != null)
             ? null
@@ -859,14 +857,12 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     : null,
                 itemBuilder: (context, item, index) {
                   void onPostTap() {
-                    pushRoute(
+                    pushPostPage(
                       context,
-                      builder: (context) => PostPage(
-                        initData: item,
-                        onUpdate: (newValue) =>
-                            _pagingController.updateItem(item, newValue),
-                        userCanModerate: widget.userCanModerate,
-                      ),
+                      initData: item,
+                      userCanModerate: widget.userCanModerate,
+                      onUpdate: (newValue) =>
+                          _pagingController.updateItem(item, newValue),
                     );
                   }
 
@@ -890,7 +886,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                               List<PostModel> readPosts = [];
                               for (int i = index; i >= 0; i--) {
                                 final post = items[i];
-                                if (post.read || readPosts.contains(i)) {
+                                if (post.read || readPosts.contains(post)) {
                                   continue;
                                 }
                                 readPosts.add(post);

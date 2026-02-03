@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,8 +6,8 @@ import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
@@ -16,7 +17,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
 class PostComment extends StatefulWidget {
@@ -102,9 +102,8 @@ class _PostCommentState extends State<PostComment> {
               child: DisplayName(
                 widget.comment.user.name,
                 icon: widget.comment.user.avatar,
-                onTap: () => pushRoute(
-                  context,
-                  builder: (context) => UserScreen(widget.comment.user.id),
+                onTap: () => context.router.push(
+                  UserRoute(userId: widget.comment.user.id),
                 ),
               ),
             ),
@@ -454,11 +453,10 @@ class _PostCommentState extends State<PostComment> {
                 _expandableController.expanded &&
                 (widget.comment.children?.isEmpty ?? false))
               TextButton(
-                onPressed: () => pushRoute(
-                  context,
-                  builder: (context) => PostCommentScreen(
-                    widget.comment.postType,
-                    widget.comment.id,
+                onPressed: () => context.router.push(
+                  PostCommentRoute(
+                    postType: widget.comment.postType,
+                    commentId: widget.comment.id,
                     opUserId: widget.opUserId,
                   ),
                 ),

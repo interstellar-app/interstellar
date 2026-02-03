@@ -1,6 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:interstellar/src/screens/feed/create_screen.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
@@ -9,7 +9,7 @@ import 'package:interstellar/src/widgets/tags/post_flairs.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/screens/explore/domain_screen.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
@@ -49,7 +49,7 @@ Future<void> showContentMenu(
               IconButton(
                 onPressed: () {
                   widget.onBoost!();
-                  Navigator.pop(context);
+                  context.router.pop();
                 },
                 icon: const Icon(Symbols.rocket_launch_rounded),
                 color: widget.isBoosted ? Colors.purple.shade400 : null,
@@ -66,7 +66,7 @@ Future<void> showContentMenu(
               IconButton(
                 onPressed: () {
                   widget.onUpVote!();
-                  Navigator.pop(context);
+                  context.router.pop();
                 },
                 icon: const Icon(Symbols.arrow_upward_rounded),
                 color: widget.isUpVoted ? Colors.green.shade400 : null,
@@ -83,7 +83,7 @@ Future<void> showContentMenu(
               IconButton(
                 onPressed: () {
                   widget.onDownVote!();
-                  Navigator.pop(context);
+                  context.router.pop();
                 },
                 icon: const Icon(Symbols.arrow_downward_rounded),
                 color: widget.isDownVoted ? Colors.red.shade400 : null,
@@ -109,18 +109,14 @@ Future<void> showContentMenu(
       if (widget.crossPost != null && context.read<AppController>().isLoggedIn)
         ContextMenuItem(
           title: l(context).crossPost,
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CreateScreen(crossPost: widget.crossPost!),
-            ),
-          ),
+          onTap: () =>
+              context.router.push(CreateRoute(crossPost: widget.crossPost!)),
         ),
       if (widget.domain != null)
         ContextMenuItem(
           title: l(context).moreFrom(widget.domain!),
-          onTap: () => pushRoute(
-            context,
-            builder: (context) => DomainScreen(widget.domainIdOnClick!),
+          onTap: () => context.router.push(
+            DomainRoute(domainId: widget.domainIdOnClick!),
           ),
         ),
       if (widget.onReply != null && onReply != null)
@@ -128,7 +124,7 @@ Future<void> showContentMenu(
           title: l(context).reply,
           onTap: () async {
             onReply();
-            Navigator.pop(context);
+            context.router.pop();
           },
         ),
       if (widget.activeBookmarkLists != null &&
@@ -155,7 +151,7 @@ Future<void> showContentMenu(
             } else {
               widget.onRemoveBookmark!();
             }
-            Navigator.pop(context);
+            context.router.pop();
           },
         ),
       if (widget.onMarkAsRead != null)
@@ -165,7 +161,7 @@ Future<void> showContentMenu(
               : l(context).action_markRead,
           onTap: () async {
             widget.onMarkAsRead!();
-            Navigator.of(context).pop();
+            context.router.pop();
           },
         ),
       if (widget.onReport != null)
@@ -187,7 +183,7 @@ Future<void> showContentMenu(
           title: l(context).edit,
           onTap: () async {
             onEdit();
-            Navigator.pop(context);
+            context.router.pop();
           },
         ),
       if (widget.onDelete != null)
@@ -197,7 +193,7 @@ Future<void> showContentMenu(
             // Don't show dialog if askBeforeDeleting is disabled
             if (!ac.profile.askBeforeDeleting) {
               widget.onDelete!();
-              Navigator.pop(context);
+              context.router.pop();
               return;
             }
 
@@ -207,7 +203,7 @@ Future<void> showContentMenu(
                 title: Text(l(context).deleteX(widget.contentTypeName)),
                 actions: <Widget>[
                   OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.router.pop(),
                     child: Text(l(context).cancel),
                   ),
                   LoadingFilledButton(
@@ -215,8 +211,8 @@ Future<void> showContentMenu(
                       await widget.onDelete!();
 
                       if (!context.mounted) return;
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      context.router.pop();
+                      context.router.pop();
                     },
                     label: Text(l(context).delete),
                     uesHaptics: true,
@@ -268,7 +264,7 @@ Future<void> showContentMenu(
               ),
               actions: [
                 OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => context.router.pop(),
                   child: Text(l(context).close),
                 ),
                 LoadingTonalButton(
@@ -276,7 +272,7 @@ Future<void> showContentMenu(
                     await Clipboard.setData(ClipboardData(text: widget.body!));
 
                     if (!context.mounted) return;
-                    Navigator.pop(context);
+                    context.router.pop();
                   },
                   label: Text(l(context).copy),
                 ),
@@ -290,7 +286,7 @@ Future<void> showContentMenu(
           onTap: () async {
             await onTranslate(ac.profile.defaultCreateLanguage);
             if (!context.mounted) return;
-            Navigator.pop(context);
+            context.router.pop();
           },
           trailing: LoadingIconButton(
             onPressed: () async {
@@ -303,7 +299,7 @@ Future<void> showContentMenu(
               if (langCode == null) return;
               await onTranslate(langCode);
               if (!context.mounted) return;
-              Navigator.pop(context);
+              context.router.pop();
             },
             icon: Icon(Symbols.arrow_right_rounded),
           ),
@@ -313,7 +309,7 @@ Future<void> showContentMenu(
           title: normalizeName(widget.user!.name, ac.instanceHost),
           subtitle: l(context).user,
           onTap: () async {
-            Navigator.pop(context);
+            context.router.pop();
             showUserMenu(
               context,
               user: widget.user!,
@@ -331,7 +327,7 @@ Future<void> showContentMenu(
           title: normalizeName(widget.community!.name, ac.instanceHost),
           subtitle: l(context).community,
           onTap: () async {
-            Navigator.pop(context);
+            context.router.pop();
             showCommunityMenu(
               context,
               community: widget.community,
@@ -356,8 +352,8 @@ Future<void> showContentMenu(
                 title: l(context).pin,
                 onTap: () async {
                   widget.onModeratePin!();
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.pop();
+                  context.router.pop();
                 },
               ),
             if (widget.onModerateMarkNSFW != null)
@@ -365,8 +361,8 @@ Future<void> showContentMenu(
                 title: l(context).notSafeForWork_mark,
                 onTap: () async {
                   widget.onModerateMarkNSFW!();
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.pop();
+                  context.router.pop();
                 },
               ),
             if (widget.onModerateDelete != null)
@@ -374,16 +370,16 @@ Future<void> showContentMenu(
                 title: l(context).delete,
                 onTap: () async {
                   widget.onModerateDelete!();
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.pop();
+                  context.router.pop();
                 },
               ),
             if (widget.onModerateBan != null)
               ContextMenuItem(
                 title: l(context).banUser,
                 onTap: () async {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.pop();
+                  context.router.pop();
                   widget.onModerateBan!();
                 },
               ),
@@ -408,8 +404,8 @@ Future<void> showBookmarksMenu(BuildContext context, ContentItem widget) async {
                 iconFill: 1,
                 onTap: () async {
                   widget.onRemoveBookmarkFromList!(listName);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.pop();
+                  context.router.pop();
                 },
               )
             : ContextMenuItem(
@@ -417,8 +413,8 @@ Future<void> showBookmarksMenu(BuildContext context, ContentItem widget) async {
                 icon: Symbols.bookmark_rounded,
                 onTap: () async {
                   widget.onAddBookmarkToList!(listName);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.pop();
+                  context.router.pop();
                 },
               ),
       ),

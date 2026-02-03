@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/screens/account/inbox_screen.dart';
-import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
 import 'package:interstellar/src/screens/account/self_feed.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
@@ -18,6 +19,7 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class AppHome extends StatefulWidget {
   const AppHome({super.key});
 
@@ -63,17 +65,18 @@ class _AppHomeState extends State<AppHome> {
           return;
         case 3:
           if (ac.isLoggedIn) {
-            pushRoute(
-              context,
-              builder: (context) => ExploreScreen(
+            context.router.push(
+              ExploreRoute(
                 mode: ExploreType.people,
                 title: l(context).newChat,
                 onTap: (selected, item) async {
-                  Navigator.pop(context);
-                  await pushRoute(
-                    context,
-                    builder: (context) =>
-                        MessageThreadScreen(threadId: null, otherUser: item),
+                  context.router.pop();
+                  context.router.push(
+                    MessageThreadRoute(
+                      threadId: null,
+                      userId: item.id,
+                      otherUser: item,
+                    ),
                   );
                 },
               ),

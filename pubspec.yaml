@@ -34,7 +34,7 @@ dependencies:
   dynamic_color: ^1.8.1
   markdown: ^7.3.0
   expandable: ^5.0.1
-  blurhash_ffi: ^1.2.7
+  flutter_blurhash: ^0.9.1
   unifiedpush: ^6.0.2
   webpush_encryption: 1.0.0-rc1
   flutter_local_notifications: ^19.4.2
@@ -60,6 +60,12 @@ dependencies:
   sqlite3: ^2.9.4
   collection: ^1.19.1
   flutter_colorpicker: ^1.1.0
+  auto_route: ^11.1.0
+  flutter_web_auth_2:
+    git:
+      url: https://github.com/interstellar-app/flutter_web_auth_2.git
+      path: flutter_web_auth_2
+      ref: b1af971b79160979320a4865e238dcaacf69b624
 
 dev_dependencies:
   flutter_lints: ^6.0.0
@@ -69,6 +75,7 @@ dev_dependencies:
   json_serializable: ^6.11.1
   drift_dev: ^2.28.3
   build: ^4.0.4
+  auto_route_generator: ^10.4.0
 
 # Needed for 16kb page, remove once this pr (https://github.com/google/webcrypto.dart/pull/238) is merged and the next version is released.
 dependency_overrides:

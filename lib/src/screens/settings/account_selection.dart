@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/screens/settings/login_select.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -83,7 +84,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                 ListTile(
                   title: Text(l(context).profile_autoSelectAccount_none),
                   onTap: () async {
-                    Navigator.of(context).pop('');
+                    context.router.pop('');
                   },
                 ),
               ...ac.accounts.keys
@@ -104,7 +105,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                         ],
                       ),
                       onTap: () async {
-                        Navigator.of(context).pop(account);
+                        context.router.pop(account);
                       },
                       selected: account == oldAccount,
                       selectedTileColor: Theme.of(
@@ -127,14 +128,14 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                                               actions: <Widget>[
                                                 OutlinedButton(
                                                   onPressed: () =>
-                                                      Navigator.pop(context),
+                                                      context.router.pop(),
                                                   child: Text(
                                                     l(context).cancel,
                                                   ),
                                                 ),
                                                 FilledButton(
                                                   onPressed: () {
-                                                    Navigator.pop(context);
+                                                    context.router.pop();
                                                     ac.removeAccount(account);
                                                   },
                                                   child: Text(
@@ -153,10 +154,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                 ListTile(
                   title: Text(l(context).addAccount),
                   leading: const Icon(Symbols.login_rounded),
-                  onTap: () => pushRoute(
-                    context,
-                    builder: (context) => const LoginSelectScreen(),
-                  ),
+                  onTap: () => context.router.push(LoginSelectRoute()),
                 ),
               const SizedBox(height: 16),
             ],

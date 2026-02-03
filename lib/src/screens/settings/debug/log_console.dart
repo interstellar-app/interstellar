@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:auto_route/annotations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -8,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 
+@RoutePage()
 class LogConsole extends StatefulWidget {
   const LogConsole({super.key});
 
@@ -22,7 +24,7 @@ class _LogConsoleState extends State<LogConsole> {
 
   void _fetchLogFile() async {
     final logFile = await context.read<AppController>().logFile;
-    List<String> lines = await logFile.readAsLines();
+    List<String> lines = await logFile?.readAsLines() ?? [];
     setState(() {
       _logFile = logFile;
       _logLines = lines;
@@ -63,7 +65,7 @@ class _LogConsoleState extends State<LogConsole> {
           ),
           IconButton(
             onPressed: () async {
-              final useBytes = Platform.isAndroid || Platform.isIOS;
+              final useBytes = PlatformIs.mobile;
               String? filePath;
               try {
                 filePath = await FilePicker.platform.saveFile(
@@ -73,8 +75,9 @@ class _LogConsoleState extends State<LogConsole> {
                 if (filePath == null) return;
               } catch (e) {
                 final dir = await getDownloadsDirectory();
-                if (dir == null)
+                if (dir == null) {
                   throw Exception('Downloads directory not found');
+                }
 
                 filePath = '${dir.path}/interstellar_log.log';
               }

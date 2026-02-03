@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/message.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/paging.dart';
@@ -9,7 +11,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'message_item.dart';
-import 'message_thread_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -61,9 +62,8 @@ class _MessagesScreenState extends State<MessagesScreen>
               newList![index] = newValue;
               _pagingController.value = _pagingController.value.copyWith();
             },
-            onClick: () => pushRoute(
-              context,
-              builder: (context) => MessageThreadScreen(
+            onClick: () => context.router.push(
+              MessageThreadRoute(
                 threadId: item.id,
                 initData: item,
                 onUpdate: (newValue) =>
@@ -77,24 +77,23 @@ class _MessagesScreenState extends State<MessagesScreen>
           bottom: 20,
           child: FloatingActionButton(
             heroTag: 'new-message',
-            onPressed: () {
-              pushRoute(
-                context,
-                builder: (context) => ExploreScreen(
-                  mode: ExploreType.people,
-                  title: l(context).newChat,
-                  onTap: (selected, item) async {
-                    Navigator.of(context).pop();
-                    await pushRoute(
-                      context,
-                      builder: (context) =>
-                          MessageThreadScreen(threadId: null, otherUser: item),
-                    );
-                    _pagingController.refresh();
-                  },
-                ),
-              );
-            },
+            onPressed: () => context.router.push(
+              ExploreRoute(
+                mode: ExploreType.people,
+                title: l(context).newChat,
+                onTap: (selected, item) async {
+                  context.router.pop();
+                  await context.router.push(
+                    MessageThreadRoute(
+                      threadId: null,
+                      userId: item.id,
+                      otherUser: item,
+                    ),
+                  );
+                  _pagingController.refresh();
+                },
+              ),
+            ),
             child: const Icon(Symbols.add_rounded),
           ),
         ),

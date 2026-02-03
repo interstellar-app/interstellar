@@ -1,15 +1,14 @@
-import 'dart:io';
-
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -27,6 +26,7 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class CreateScreen extends StatefulWidget {
   const CreateScreen({
     this.crossPost,
@@ -245,35 +245,32 @@ class _CreateScreenState extends State<CreateScreen> {
     Widget pollOptionsWidget() => Column(
       children: [
         ReorderableListView.builder(
-            shrinkWrap: true,
-            itemBuilder: (context, index) => ListTile(
-              key: Key(index.toString()),
-              title: TextEditor(_pollOptions[index]),
-              trailing: Wrapper(
-                  shouldWrap: Platform.isIOS || Platform.isAndroid,
-                  parentBuilder: (child) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      child,
-                      const Icon(Symbols.drag_handle_rounded)
-                    ],
-                  ),
-                  child: IconButton(
-                    onPressed: () => setState(() {
-                      _pollOptions.remove(_pollOptions[index]);
-                    }),
-                    icon: const Icon(Symbols.delete_rounded),
-                  )
+          shrinkWrap: true,
+          itemBuilder: (context, index) => ListTile(
+            key: Key(index.toString()),
+            title: TextEditor(_pollOptions[index]),
+            trailing: Wrapper(
+              shouldWrap: PlatformIs.mobile,
+              parentBuilder: (child) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [child, const Icon(Symbols.drag_handle_rounded)],
+              ),
+              child: IconButton(
+                onPressed: () => setState(() {
+                  _pollOptions.remove(_pollOptions[index]);
+                }),
+                icon: const Icon(Symbols.delete_rounded),
               ),
             ),
-            itemCount: _pollOptions.length,
-            onReorder: (int oldIndex, int newIndex) => setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              final item = _pollOptions.removeAt(oldIndex);
-              _pollOptions.insert(newIndex, item);
-            })
+          ),
+          itemCount: _pollOptions.length,
+          onReorder: (int oldIndex, int newIndex) => setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final item = _pollOptions.removeAt(oldIndex);
+            _pollOptions.insert(newIndex, item);
+          }),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -425,7 +422,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         // Check BuildContext
                         if (!context.mounted) return;
 
-                        Navigator.pop(context);
+                        context.router.pop();
                       },
               ),
             ]),
@@ -466,7 +463,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         // Check BuildContext
                         if (!context.mounted) return;
 
-                        Navigator.pop(context);
+                        context.router.pop();
                       },
               ),
             ]),
@@ -509,7 +506,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         // Check BuildContext
                         if (!context.mounted) return;
 
-                        Navigator.pop(context);
+                        context.router.pop();
                       },
               ),
             ]),
@@ -552,7 +549,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   // Check BuildContext
                   if (!context.mounted) return;
 
-                  Navigator.pop(context);
+                  context.router.pop();
                 }),
               ]),
             if (ac.serverSoftware == ServerSoftware.piefed)
@@ -591,19 +588,19 @@ class _CreateScreenState extends State<CreateScreen> {
                           );
 
                           if (!context.mounted) return;
-                          Navigator.pop(context);
+                          context.router.pop();
                         },
                 ),
               ]),
             CommunityOwnerPanelGeneral(
               data: null,
               onUpdate: (newCommunity) {
-                Navigator.pop(context);
-
-                pushRoute(
-                  context,
-                  builder: (context) =>
-                      CommunityScreen(newCommunity.id, initData: newCommunity),
+                context.router.pop();
+                context.router.push(
+                  CommunityRoute(
+                    communityId: newCommunity.id,
+                    initData: newCommunity,
+                  ),
                 );
               },
             ),
@@ -616,12 +613,36 @@ class _CreateScreenState extends State<CreateScreen> {
 
 SelectionMenu<Duration?> pollDuration(BuildContext context) =>
     SelectionMenu(l(context).pollDuration, [
-      SelectionMenuItem(value: Duration(minutes: 30), title: l(context).pollDuration_minutes(30)),
-      SelectionMenuItem(value: Duration(hours: 1), title: l(context).pollDuration_hours(1)),
-      SelectionMenuItem(value: Duration(hours: 6), title: l(context).pollDuration_hours(6)),
-      SelectionMenuItem(value: Duration(hours: 12), title: l(context).pollDuration_hours(12)),
-      SelectionMenuItem(value: Duration(days: 1), title: l(context).pollDuration_days(1)),
-      SelectionMenuItem(value: Duration(days: 3), title: l(context).pollDuration_days(3)),
-      SelectionMenuItem(value: Duration(days: 7), title: l(context).pollDuration_days(7)),
-      SelectionMenuItem(value: Duration(days: 365), title: l(context).pollDuration_days(365)),
+      SelectionMenuItem(
+        value: Duration(minutes: 30),
+        title: l(context).pollDuration_minutes(30),
+      ),
+      SelectionMenuItem(
+        value: Duration(hours: 1),
+        title: l(context).pollDuration_hours(1),
+      ),
+      SelectionMenuItem(
+        value: Duration(hours: 6),
+        title: l(context).pollDuration_hours(6),
+      ),
+      SelectionMenuItem(
+        value: Duration(hours: 12),
+        title: l(context).pollDuration_hours(12),
+      ),
+      SelectionMenuItem(
+        value: Duration(days: 1),
+        title: l(context).pollDuration_days(1),
+      ),
+      SelectionMenuItem(
+        value: Duration(days: 3),
+        title: l(context).pollDuration_days(3),
+      ),
+      SelectionMenuItem(
+        value: Duration(days: 7),
+        title: l(context).pollDuration_days(7),
+      ),
+      SelectionMenuItem(
+        value: Duration(days: 365),
+        title: l(context).pollDuration_days(365),
+      ),
     ]);

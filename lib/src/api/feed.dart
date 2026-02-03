@@ -23,7 +23,7 @@ class APIFeed {
         final path = '/${topics ? 'topic' : 'feed'}/list';
         final query = {
           if (!topics) 'mine_only': mineOnly.toString(),
-          'include_communities': includeCommunities.toString()
+          'include_communities': includeCommunities.toString(),
         };
 
         final response = await client.get(path, queryParams: query);

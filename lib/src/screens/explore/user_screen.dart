@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/api/comments.dart';
@@ -5,16 +6,13 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/account/messages/message_thread_screen.dart';
-import 'package:interstellar/src/screens/account/profile_edit_screen.dart';
-import 'package:interstellar/src/screens/explore/bookmarks_screen.dart';
 import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -38,12 +36,18 @@ import 'package:provider/provider.dart';
 
 enum UserFeedType { thread, microblog, comment, reply, follower, following }
 
+@RoutePage()
 class UserScreen extends StatefulWidget {
   final int userId;
   final DetailedUserModel? initData;
   final void Function(DetailedUserModel)? onUpdate;
 
-  const UserScreen(this.userId, {super.key, this.initData, this.onUpdate});
+  const UserScreen(
+    @PathParam('userId') this.userId, {
+    super.key,
+    this.initData,
+    this.onUpdate,
+  });
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -124,13 +128,10 @@ class _UserScreenState extends State<UserScreen> {
               padding: const EdgeInsets.only(right: 8),
               child: ActionChip(
                 label: Icon(Symbols.bookmarks_rounded, size: 20),
-                onPressed: () => pushRoute(
-                  context,
-                  builder: (context) {
-                    return ac.serverSoftware == ServerSoftware.mbin
-                        ? BookmarkListScreen()
-                        : BookmarksScreen();
-                  },
+                onPressed: () => context.router.push(
+                  ac.serverSoftware == ServerSoftware.mbin
+                      ? BookmarkListRoute()
+                      : BookmarksRoute(bookmarkList: 'default'),
                 ),
               ),
             ),
@@ -212,11 +213,10 @@ class _UserScreenState extends State<UserScreen> {
                                 children: [
                                   if (isMyUser)
                                     FilledButton(
-                                      onPressed: () => pushRoute(
-                                        context,
-                                        builder: (context) => ProfileEditScreen(
-                                          _data!,
-                                          (DetailedUserModel user) {
+                                      onPressed: () => context.router.push(
+                                        ProfileEditRoute(
+                                          user: _data!,
+                                          onUpdate: (DetailedUserModel user) {
                                             setState(() {
                                               _data = user;
                                             });
@@ -273,16 +273,13 @@ class _UserScreenState extends State<UserScreen> {
                                     ),
                                   if (isLoggedIn && !isMyUser)
                                     IconButton(
-                                      onPressed: () {
-                                        pushRoute(
-                                          context,
-                                          builder: (context) =>
-                                              MessageThreadScreen(
-                                                threadId: null,
-                                                otherUser: _data,
-                                              ),
-                                        );
-                                      },
+                                      onPressed: () => context.router.push(
+                                        MessageThreadRoute(
+                                          threadId: null,
+                                          userId: _data?.id,
+                                          otherUser: _data,
+                                        ),
+                                      ),
                                       icon: const Icon(Symbols.mail_rounded),
                                       tooltip: 'Send message',
                                     ),
@@ -495,6 +492,7 @@ class _UserScreenState extends State<UserScreen> {
           child: child,
         ),
         child: FloatingActionButton(
+          heroTag: 'user_screen_floating',
           onPressed: () {
             _scrollController.animateTo(
               _scrollController.position.minScrollExtent,
@@ -633,13 +631,13 @@ class _UserScreenBodyState extends State<UserScreenBody>
           UserFeedType.thread || UserFeedType.microblog => PostItem(
             item,
             (newValue) => _pagingController.updateItem(item, newValue),
-            onTap: () => pushRoute(
+            onTap: () => pushPostPage(
               context,
-              builder: (context) => PostPage(
-                initData: item,
-                onUpdate: (newValue) =>
-                    _pagingController.updateItem(item, newValue),
-              ),
+              postId: item.id,
+              postType: item.type,
+              initData: item,
+              onUpdate: (newValue) =>
+                  _pagingController.updateItem(item, newValue),
             ),
             isPreview: true,
             isTopLevel: true,
@@ -650,9 +648,8 @@ class _UserScreenBodyState extends State<UserScreenBody>
             child: PostComment(
               item,
               (newValue) => _pagingController.updateItem(item, newValue),
-              onClick: () => pushRoute(
-                context,
-                builder: (context) => PostCommentScreen(item.postType, item.id),
+              onClick: () => context.router.push(
+                PostCommentRoute(postType: item.postType, commentId: item.id),
               ),
               showChildren: false,
             ),

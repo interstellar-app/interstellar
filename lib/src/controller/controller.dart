@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:interstellar/src/api/api.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -18,7 +19,6 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/http_client.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
-import 'package:interstellar/src/widgets/redirect_listen.dart';
 import 'package:logger/logger.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:path/path.dart';
@@ -141,7 +141,8 @@ class AppController with ChangeNotifier {
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavDomains: Value(value)));
 
-  Future<File> get logFile async {
+  Future<File?> get logFile async {
+    if (PlatformIs.web) return null;
     final logDir = await getApplicationSupportDirectory();
     final logFile = join(logDir.path, 'log.log');
     return File(logFile);
@@ -149,9 +150,10 @@ class AppController with ChangeNotifier {
 
   Future<void> init() async {
     refreshState = () {};
+    final loggerFile = await logFile;
     _logger = Logger(
       printer: SimplePrinter(printTime: true, colors: false),
-      output: FileOutput(file: await logFile),
+      output: loggerFile == null ? null : FileOutput(file: loggerFile),
       filter: ProductionFilter(),
     );
     logger.i('Initializing interstellar');
@@ -503,25 +505,21 @@ class AppController with ChangeNotifier {
         );
 
         final authorizationUrl = grant.getAuthorizationUrl(
-          Uri.parse(redirectUri),
+          oauthRedirectUri,
           scopes: oauthScopes,
         );
 
-        if (!context!.mounted) return;
-        Map<String, String>? result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                RedirectListener(authorizationUrl, title: server),
+        final result = Uri.parse(
+          await FlutterWebAuth2.authenticate(
+            url: authorizationUrl.toString(),
+            callbackUrlScheme: PlatformIs.linux || PlatformIs.windows
+                ? oauthRedirectUri.toString()
+                : oauthRedirectUri.scheme,
           ),
-        );
+        ).queryParameters;
 
-        if (result == null || !result.containsKey('code')) {
-          throw Exception(
-            result?['message'] != null
-                ? result!['message']
-                : 'unsuccessful login',
-          );
+        if (!result.containsKey('code')) {
+          throw Exception(result['message'] ?? 'unsuccessful login');
         }
 
         final client = await grant.handleAuthorizationResponse(result);

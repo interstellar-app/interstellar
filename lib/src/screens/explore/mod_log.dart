@@ -1,13 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/screens/explore/community_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
-import 'package:interstellar/src/screens/feed/post_comment_screen.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
@@ -15,50 +14,75 @@ import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:interstellar/src/api/moderation.dart';
 
-import '../../api/moderation.dart';
+@RoutePage()
+class ModLogCommunityScreen extends StatelessWidget {
+  const ModLogCommunityScreen({
+    super.key,
+    @PathParam('communityId') required this.communityId,
+  });
 
-class ModLog extends StatefulWidget {
-  const ModLog({super.key, this.communityId, this.userId});
+  final int communityId;
+
+  @override
+  Widget build(BuildContext context) => ModLogScreen(communityId: communityId);
+}
+
+@RoutePage()
+class ModLogUserScreen extends StatelessWidget {
+  const ModLogUserScreen({
+    super.key,
+    @PathParam('userId') required this.userId,
+  });
+
+  final int userId;
+
+  @override
+  Widget build(BuildContext context) => ModLogScreen(userId: userId);
+}
+
+@RoutePage()
+class ModLogScreen extends StatefulWidget {
+  const ModLogScreen({super.key, this.communityId, this.userId});
 
   final int? communityId;
   final int? userId;
 
   @override
-  State<ModLog> createState() => _ModLogState();
+  State<ModLogScreen> createState() => _ModLogScreenState();
 }
 
-class _ModLogState extends State<ModLog> {
-  late final _pagingController =
-      AdvancedPagingController<String, ModlogItemModel, int>(
-        logger: context.read<AppController>().logger,
-        firstPageKey: '',
-        getItemId: (item) => item.hashCode,
-        fetchPage: (pageKey) async {
-          final ac = context.read<AppController>();
+class _ModLogScreenState extends State<ModLogScreen> {
+  late final _pagingController = AdvancedPagingController<String, ModlogItemModel, int>(
+    logger: context.read<AppController>().logger,
+    firstPageKey: '',
+    getItemId: (item) => item.hashCode,
+    fetchPage: (pageKey) async {
+      final ac = context.read<AppController>();
 
-          final newPage = await ac.api.moderation.modLog(
-            communityId: widget.communityId,
-            userId: widget.userId,
-            type: _filter,
-            page: pageKey,
-          );
-
-          final newItems = switch (ac.serverSoftware) {
-            ServerSoftware.mbin => newPage.items,
-            ServerSoftware.lemmy =>
-              _filter != ModLogType.all
-                  ? newPage.items.where((item) => item.type == _filter).toList()
-                  : newPage.items,
-            // Lemmy API returns both positive and negative mod action types for each filter type.
-            // e.g. passing PinnedPost to the API returns both pinned and unpinned actions.
-            // So we do a little extra filtering here to narrow it down further.
-            ServerSoftware.piefed => throw UnimplementedError(),
-          };
-
-          return (newItems, newPage.nextPage);
-        },
+      final newPage = await ac.api.moderation.modLog(
+        communityId: widget.communityId,
+        userId: widget.userId,
+        type: _filter,
+        page: pageKey,
       );
+
+      final newItems = switch (ac.serverSoftware) {
+        ServerSoftware.mbin => newPage.items,
+        ServerSoftware.lemmy =>
+          _filter != ModLogType.all
+              ? newPage.items.where((item) => item.type == _filter).toList()
+              : newPage.items,
+        // Lemmy API returns both positive and negative mod action types for each filter type.
+        // e.g. passing PinnedPost to the API returns both pinned and unpinned actions.
+        // So we do a little extra filtering here to narrow it down further.
+        ServerSoftware.piefed => throw UnimplementedError(),
+      };
+
+      return (newItems, newPage.nextPage);
+    },
+  );
   ModLogType _filter = ModLogType.all;
 
   Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
@@ -66,134 +90,124 @@ class _ModLogState extends State<ModLog> {
     ModLogType.postDeleted =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.postRestored =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.commentDeleted =>
       item.comment == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) =>
-                  PostCommentScreen(PostType.thread, item.comment!.id),
+          : () => context.router.push(
+              PostCommentRoute(
+                postType: PostType.thread,
+                commentId: item.comment!.id,
+              ),
             ),
     ModLogType.commentRestored =>
       item.comment == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) =>
-                  PostCommentScreen(PostType.thread, item.comment!.id),
+          : () => context.router.push(
+              PostCommentRoute(
+                postType: PostType.thread,
+                commentId: item.comment!.id,
+              ),
             ),
     ModLogType.postPinned =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.postUnpinned =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.microblogPostDeleted =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.microblogPostRestored =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.microblogCommentDeleted =>
       item.comment == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) =>
-                  PostCommentScreen(PostType.thread, item.comment!.id),
+          : () => context.router.push(
+              PostCommentRoute(
+                postType: PostType.microblog,
+                commentId: item.comment!.id,
+              ),
             ),
     ModLogType.microblogCommentRestored =>
       item.comment == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) =>
-                  PostCommentScreen(PostType.thread, item.comment!.id),
+          : () => context.router.push(
+              PostCommentRoute(
+                postType: PostType.microblog,
+                commentId: item.comment!.id,
+              ),
             ),
     ModLogType.ban =>
       item.user == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) => UserScreen(item.user!.id),
-            ),
+          : () => context.router.push(UserRoute(userId: item.user!.id)),
     ModLogType.unban =>
       item.user == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) => UserScreen(item.user!.id),
-            ),
+          : () => context.router.push(UserRoute(userId: item.user!.id)),
     ModLogType.moderatorAdded =>
       item.user == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) => UserScreen(item.user!.id),
-            ),
+          : () => context.router.push(UserRoute(userId: item.user!.id)),
     ModLogType.moderatorRemoved =>
       item.user == null
           ? null
-          : () => pushRoute(
-              context,
-              builder: (context) => UserScreen(item.user!.id),
-            ),
-    ModLogType.communityAdded => () => pushRoute(
-      context,
-      builder: (context) => CommunityScreen(item.community.id),
+          : () => context.router.push(UserRoute(userId: item.user!.id)),
+    ModLogType.communityAdded => () => context.router.push(
+      CommunityRoute(communityId: item.community.id),
     ),
-    ModLogType.communityRemoved => () => pushRoute(
-      context,
-      builder: (context) => CommunityScreen(item.community.id),
+    ModLogType.communityRemoved => () => context.router.push(
+      CommunityRoute(communityId: item.community.id),
     ),
     ModLogType.postLocked =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
     ModLogType.postUnlocked =>
       item.postId == null
           ? null
-          : () => pushRoute(
+          : () => pushPostPage(
               context,
-              builder: (context) =>
-                  PostPage(postType: PostType.thread, postId: item.postId),
+              postId: item.postId,
+              postType: PostType.thread,
             ),
   };
 
@@ -247,7 +261,8 @@ class _ModLogState extends State<ModLog> {
                               ModLogType.microblogPostDeleted => Colors.red,
                               ModLogType.microblogPostRestored => Colors.green,
                               ModLogType.microblogCommentDeleted => Colors.red,
-                              ModLogType.microblogCommentRestored => Colors.green,
+                              ModLogType.microblogCommentRestored =>
+                                Colors.green,
                               ModLogType.ban => Colors.red,
                               ModLogType.unban => Colors.green,
                               ModLogType.moderatorAdded => Colors.orange,
@@ -321,14 +336,15 @@ class _ModLogState extends State<ModLog> {
                       ),
                       if (item.postId != null || item.comment != null)
                         Text(
-                          'Content: ${item.postId != null
-                              ? item.postTitle ?? l(context).modlog_deletedPost
-                              : item.comment?.body ?? l(context).modlog_deletedComment}',
+                          'Content: ${item.postId != null ? item.postTitle ?? l(context).modlog_deletedPost : item.comment?.body ?? l(context).modlog_deletedComment}',
                           maxLines: 4,
                           overflow: TextOverflow.ellipsis,
                         ),
                       if (item.user != null)
-                        UserItemSimple(UserModel.fromDetailedUser(item.user!), noTap: true),
+                        UserItemSimple(
+                          UserModel.fromDetailedUser(item.user!),
+                          noTap: true,
+                        ),
                       if (item.reason != null && item.reason!.isNotEmpty)
                         Text(
                           l(context).modlog_reason(item.reason!),

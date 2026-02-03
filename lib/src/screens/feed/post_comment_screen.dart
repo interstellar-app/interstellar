@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
@@ -8,10 +10,11 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class PostCommentScreen extends StatefulWidget {
   const PostCommentScreen(
     this.postType,
-    this.commentId, {
+    @PathParam('id') this.commentId, {
     this.opUserId,
     super.key,
   });
@@ -36,14 +39,12 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
         .api
         .comments
         .get(widget.postType, widget.commentId)
-        .then(
-          (value) {
-            if (!mounted) return;
-            setState(() {
-              _comment = value;
-            });
-          }
-        );
+        .then((value) {
+          if (!mounted) return;
+          setState(() {
+            _comment = value;
+          });
+        });
   }
 
   @override
@@ -67,12 +68,10 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
-                    onPressed: () => pushRoute(
+                    onPressed: () => pushPostPage(
                       context,
-                      builder: (context) => PostPage(
-                        postType: comment.postType,
-                        postId: comment.postId,
-                      ),
+                      postId: comment.postId,
+                      postType: comment.postType,
                     ),
                     child: Text(l(context).comment_openOriginalPost),
                   ),
@@ -81,11 +80,10 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
                     onPressed: comment.rootId != null
-                        ? () => pushRoute(
-                            context,
-                            builder: (context) => PostCommentScreen(
-                              comment.postType,
-                              comment.rootId!,
+                        ? () => context.router.push(
+                            PostCommentRoute(
+                              postType: comment.postType,
+                              commentId: comment.rootId!,
                             ),
                           )
                         : null,
@@ -96,11 +94,10 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   padding: const EdgeInsets.all(4),
                   child: OutlinedButton(
                     onPressed: comment.parentId != null
-                        ? () => pushRoute(
-                            context,
-                            builder: (context) => PostCommentScreen(
-                              comment.postType,
-                              comment.parentId!,
+                        ? () => context.router.push(
+                            PostCommentRoute(
+                              postType: comment.postType,
+                              commentId: comment.parentId!,
                             ),
                           )
                         : null,
