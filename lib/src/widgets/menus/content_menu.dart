@@ -21,9 +21,9 @@ import 'package:provider/provider.dart';
 Future<void> showContentMenu(
   BuildContext context,
   ContentItem widget, {
-  Future<void> Function()? onEdit,
+  void Function()? onEdit,
   Future<void> Function(String lang)? onTranslate,
-  Future<void> Function()? onReply,
+  void Function()? onReply,
 }) async {
   final ac = context.read<AppController>();
 

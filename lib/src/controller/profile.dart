@@ -606,7 +606,7 @@ abstract class ProfileOptional
   }
 }
 
-Object? _parseFeedDefaultCombinedSort(JsonMap json, String name) {
+Object? _parseFeedDefaultCombinedSort(Map<dynamic, dynamic> json, String name) {
   final current = json[name];
   if (current != null) return current;
   return json['feedDefaultTimelineSort'];

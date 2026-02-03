@@ -684,11 +684,13 @@ class _ContentItemState extends State<ContentItem> {
   }) {
     if (widget.image == null) return null;
     final fullImage = !isThumbnail && widget.fullImageSize;
-    final imageSize = compact
-        ? 96
-        : width > 800
-        ? 128
-        : 64;
+    final imageSize =
+        (compact
+                ? 96
+                : width > 800
+                ? 128
+                : 64)
+            .toDouble();
     final imageOpenTitle = widget.title ?? widget.body ?? '';
 
     final enableBlur =
