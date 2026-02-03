@@ -21,9 +21,9 @@ import 'package:provider/provider.dart';
 Future<void> showContentMenu(
   BuildContext context,
   ContentItem widget, {
-  Function()? onEdit,
-  Function(String lang)? onTranslate,
-  Function()? onReply,
+  Future<void> Function()? onEdit,
+  Future<void> Function(String lang)? onTranslate,
+  Future<void> Function()? onReply,
 }) async {
   final ac = context.read<AppController>();
 
@@ -231,7 +231,7 @@ Future<void> showContentMenu(
           onTap: () async {
             final community = await ac.api.community.get(widget.community!.id);
             if (!context.mounted) return;
-            showModalBottomSheet(
+            showModalBottomSheet<void>(
               context: context,
               builder: (BuildContext context) => PostFlairsModal(
                 flairs: widget.flairs,
@@ -251,7 +251,7 @@ Future<void> showContentMenu(
       if (widget.body != null)
         ContextMenuItem(
           title: l(context).viewSource,
-          onTap: () => showDialog(
+          onTap: () => showDialog<void>(
             context: context,
             builder: (context) => AlertDialog(
               title: Text(l(context).viewSource),
@@ -403,7 +403,10 @@ Future<void> showBookmarksMenu(BuildContext context, ContentItem widget) async {
                 icon: Symbols.bookmark_rounded,
                 iconFill: 1,
                 onTap: () async {
-                  widget.onRemoveBookmarkFromList!(listName);
+                  await widget.onRemoveBookmarkFromList!(listName);
+
+                  if (!context.mounted) return;
+
                   context.router.pop();
                   context.router.pop();
                 },
@@ -412,7 +415,10 @@ Future<void> showBookmarksMenu(BuildContext context, ContentItem widget) async {
                 title: l(context).bookmark_addToX(listName),
                 icon: Symbols.bookmark_rounded,
                 onTap: () async {
-                  widget.onAddBookmarkToList!(listName);
+                  await widget.onAddBookmarkToList!(listName);
+
+                  if (!context.mounted) return;
+
                   context.router.pop();
                   context.router.pop();
                 },

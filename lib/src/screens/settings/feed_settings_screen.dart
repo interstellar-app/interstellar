@@ -158,13 +158,13 @@ void newFeed(BuildContext context) {
                       name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.feed,
                       serverId: item.id,
-                    ), // TODO: tmp until proper getByName method can be made
+                    ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
                 );
 
                 var title = item.title;
                 if (ac.feeds[title] != null) {
-                  await showDialog(
+                  await showDialog<void>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
@@ -223,13 +223,13 @@ void newFeed(BuildContext context) {
                       name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.topic,
                       serverId: item.id,
-                    ), // TODO: tmp until proper getByName method can be made
+                    ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
                 );
 
                 var title = item.title;
                 if (ac.feeds[title] != null) {
-                  await showDialog(
+                  await showDialog<void>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
@@ -317,8 +317,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   }
 
   void removeInput(FeedInput input) {
-    final inputs = {...feedData.inputs};
-    inputs.remove(input);
+    final inputs = {...feedData.inputs}..remove(input);
+
     setState(() {
       feedData = feedData.copyWith(inputs: inputs);
     });

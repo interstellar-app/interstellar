@@ -70,7 +70,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     return FeedScreen(
       feed: FeedAggregator.fromSingleSource(
-        ac,
         name: _data?.name ?? '',
         source: FeedSource.community,
         sourceId: widget.communityId,
@@ -101,9 +100,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               setState(() {
                                 _data = newValue;
                               });
-                              if (widget.onUpdate != null) {
-                                widget.onUpdate!(newValue);
-                              }
+                              widget.onUpdate?.call(newValue);
                             },
                             followMode: false,
                           ),
@@ -119,9 +116,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 setState(() {
                                   _data = newValue;
                                 });
-                                if (widget.onUpdate != null) {
-                                  widget.onUpdate!(newValue);
-                                }
+                                widget.onUpdate?.call(newValue);
                               },
                               icon: const Icon(Symbols.block_rounded),
                               style: ButtonStyle(
@@ -140,9 +135,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 setState(() {
                                   _data = newCommunity;
                                 });
-                                if (widget.onUpdate != null) {
-                                  widget.onUpdate!(newCommunity);
-                                }
+                                widget.onUpdate?.call(newCommunity);
                               },
                             ),
                             icon: const Icon(Symbols.more_vert_rounded),
@@ -168,9 +161,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               setState(() {
                                 _data = newValue;
                               });
-                              if (widget.onUpdate != null) {
-                                widget.onUpdate!(newValue);
-                              }
+                              widget.onUpdate?.call(newValue);
                             },
                           ),
                         ),

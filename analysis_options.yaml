@@ -5,8 +5,33 @@ formatter:
   trailing_commas: automate
 
 analyzer:
+  exclude:
+    - lib/**.g.dart
+
   errors:
     # Needed for build runner annotations (i.e., freezed, json_serializable).
     invalid_annotation_target: ignore
     # We don't need to document every single public member.
     public_member_api_docs: ignore
+    # There is no auto fix for this.
+    sort_pub_dependencies: ignore
+
+    # Ignore for now.
+    avoid_dynamic_calls: ignore
+    avoid_catches_without_on_clauses: ignore
+    avoid_positional_boolean_parameters: ignore
+    argument_type_not_assignable: ignore
+    unawaited_futures: ignore
+    discarded_futures: ignore
+    parameter_assignments: ignore
+    lines_longer_than_80_chars: ignore
+    for_in_of_invalid_type: ignore
+    not_iterable_spread: ignore
+    deprecated_member_use: ignore
+    join_return_with_assignment: ignore
+    avoid_equals_and_hash_code_on_mutable_classes: ignore
+    return_of_invalid_type_from_closure: ignore
+    not_map_spread: ignore
+    unused_local_variable: ignore
+    non_bool_condition: ignore
+    invalid_assignment: ignore

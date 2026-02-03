@@ -105,7 +105,7 @@ class DebugSettingsScreen extends StatelessWidget {
                   File(tmpPath).delete();
                 } catch (e) {
                   ac.logger.e('Attempted to import invalid database');
-                  throw 'Attempted to import invalid database';
+                  throw Exception('Attempted to import invalid database');
                 }
 
                 final dbDir = await getApplicationSupportDirectory();
@@ -121,7 +121,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.storage_rounded),
             title: Text(l(context).settings_debug_clearDatabase),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(l(context).settings_debug_clearDatabase),
@@ -146,7 +146,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.person_rounded),
             title: Text(l(context).settings_debug_clearAccounts),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(l(context).settings_debug_clearAccounts),
@@ -174,7 +174,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.tune_rounded),
             title: Text(l(context).settings_debug_clearProfiles),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(l(context).settings_debug_clearProfiles),
@@ -187,7 +187,7 @@ class DebugSettingsScreen extends StatelessWidget {
                     onPressed: () async {
                       final profileNames = await ac.getProfileNames();
                       for (final profile in profileNames) {
-                        ac.deleteProfile(profile);
+                        await ac.deleteProfile(profile);
                       }
                       ac.logger.i('Cleared profiles');
                       if (!context.mounted) return;
@@ -202,7 +202,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.mark_email_read_rounded),
             title: Text(l(context).settings_debug_clearReadPosts),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(l(context).settings_debug_clearReadPosts),
@@ -227,7 +227,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.download_for_offline_rounded),
             title: Text(l(context).settings_debug_clearFeedCache),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(l(context).settings_debug_clearFeedCache),
@@ -252,7 +252,7 @@ class DebugSettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Symbols.label_rounded),
             title: Text(l(context).settings_debug_clearTags),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
               builder: (context) => AlertDialog(
                 title: Text(l(context).settings_debug_clearTags),

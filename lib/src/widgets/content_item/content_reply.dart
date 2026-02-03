@@ -33,7 +33,7 @@ class ContentReply extends StatefulWidget {
     String? alt,
   })
   onReply;
-  final Function() onComplete;
+  final void Function() onComplete;
   final String draftResourceId;
 
   @override
@@ -155,7 +155,7 @@ class ContentReplyScreen extends StatelessWidget {
     String? alt,
   })
   onReply;
-  final Function() onComplete;
+  final void Function() onComplete;
   final String draftResourceId;
 
   @override

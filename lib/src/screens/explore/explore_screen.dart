@@ -57,7 +57,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
     firstPageKey: '',
-    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    // TODO(jwr1): this is not safe, items of different types (comment, microblog, etc.) could have the same id
     getItemId: (item) => item.id,
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
@@ -65,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen>
       final searchType = widget.id != null ? ExploreType.all : type;
 
       if (searchType == ExploreType.all && _searchController.text.isEmpty) {
-        return ([], null);
+        return (<dynamic>[], null);
       }
 
       switch (searchType) {
@@ -84,7 +84,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           if ((context.read<AppController>().serverSoftware !=
                   ServerSoftware.mbin) &&
               _searchController.text.isEmpty) {
-            return ([], null);
+            return (<dynamic>[], null);
           }
 
           final newPage = await ac.api.users.list(

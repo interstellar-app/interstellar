@@ -26,7 +26,7 @@ class ProfileEditScreen extends StatefulWidget {
 }
 
 class _ProfileEditScreen extends State<ProfileEditScreen> {
-  TextEditingController? _aboutTextController;
+  late TextEditingController? _aboutTextController;
   XFile? _avatarFile;
   bool _deleteAvatar = false;
   XFile? _coverFile;

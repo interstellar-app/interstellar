@@ -11,7 +11,7 @@ import 'package:interstellar/src/widgets/emoji_picker/emojis.g.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-// TODO: Allow custom emoji groups (quick access, and server specific emojis)
+// TODO(jwr1): Allow custom emoji groups (quick access, and server specific emojis)
 
 final List<IconData> emojiGroupIcons = [
   Symbols.emoji_emotions_rounded,

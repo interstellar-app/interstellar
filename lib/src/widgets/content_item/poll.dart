@@ -166,7 +166,7 @@ class _PollState extends State<Poll> {
                         : [_selectedAnswer!];
 
                     if (votes.isEmpty) {
-                      await showDialog(
+                      await showDialog<void>(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: Text(l(context).pollSubmitError),

@@ -713,7 +713,7 @@ class _ContentItemState extends State<ContentItem> {
   }
 
   Widget compact() {
-    // TODO: Figure out how to use full existing height of row, instead of fixed value.
+    // TODO(jwr1): Figure out how to use full existing height of row, instead of fixed value.
     final imageWidget = getImage(context, isThumbnail: true, compact: true);
     final ac = context.read<AppController>();
 

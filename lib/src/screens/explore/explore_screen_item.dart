@@ -54,7 +54,7 @@ class ExploreScreenItem extends StatelessWidget {
         final DetailedUserModel i => i.displayName ?? i.name.split('@').first,
         final DomainModel i => i.name,
         final FeedModel i => i.title,
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final subtitle = switch (item) {
         final DetailedCommunityModel i => i.name,
@@ -70,17 +70,17 @@ class ExploreScreenItem extends StatelessWidget {
         final DetailedUserModel i => i.isFollowedByUser,
         final DomainModel i => i.isUserSubscribed,
         final FeedModel i => i.subscribed,
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final subscriptions = switch (item) {
         final DetailedCommunityModel i => i.subscriptionsCount,
         final DetailedUserModel i => i.followersCount,
         final DomainModel i => i.subscriptionsCount,
         final FeedModel i => i.subscriptionCount,
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final onSubscribe = switch (item) {
-        final DetailedCommunityModel i => (selected) async {
+        final DetailedCommunityModel i => (bool selected) async {
           final newValue = await context
               .read<AppController>()
               .api
@@ -89,7 +89,7 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
-        final DetailedUserModel i => (selected) async {
+        final DetailedUserModel i => (bool selected) async {
           final newValue = await context.read<AppController>().api.users.follow(
             i.id,
             selected,
@@ -97,7 +97,7 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
-        final DomainModel i => (selected) async {
+        final DomainModel i => (bool selected) async {
           final newValue = await context
               .read<AppController>()
               .api
@@ -107,7 +107,7 @@ class ExploreScreenItem extends StatelessWidget {
           onUpdate(newValue);
         },
         FeedModel _ => null,
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final navigate = switch (item) {
         final DetailedCommunityModel i => () => context.router.push(
@@ -133,7 +133,7 @@ class ExploreScreenItem extends StatelessWidget {
             ),
           ),
         ),
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final onClick = onTap ?? navigate;
 
@@ -161,7 +161,7 @@ class ExploreScreenItem extends StatelessWidget {
           ),
           DomainModel _ => {},
           FeedModel _ => {},
-          _ => throw 'Unreachable',
+          _ => throw UnreachableError(),
         },
         subtitle: subtitle == null ? null : Text(subtitle),
         trailing: button == null

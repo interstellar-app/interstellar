@@ -130,6 +130,7 @@ String readableShortcut(SingleActivator shortcut) {
   if (shortcut.alt) text += 'Alt+';
   if (shortcut.shift) text += 'Shift+';
   if (shortcut.meta) text += 'Meta+';
+
   text += switch (shortcut.trigger.keyLabel) {
     ' ' => 'Space',
     final String key => key,
@@ -291,38 +292,6 @@ String? mbinGetSortTime(FeedSort? sort) {
 
 typedef JsonMap = Map<String, Object?>;
 
-class InterstellarRoute extends MaterialPageRoute {
-  InterstellarRoute({
-    required super.builder,
-    this.transitionDuration = const Duration(milliseconds: 300),
-    this.reverseTransitionDuration = const Duration(milliseconds: 300),
-  });
-
-  @override
-  Duration transitionDuration;
-  @override
-  Duration reverseTransitionDuration;
-}
-
-Future<void> pushRoute(
-  BuildContext context, {
-  required WidgetBuilder builder,
-  Duration duration = const Duration(milliseconds: 300),
-}) async {
-  final animationSpeed = context.read<AppController>().profile.animationSpeed;
-  final adjustedDuration = animationSpeed == 0
-      ? Duration.zero
-      : duration * (1.0 / animationSpeed);
-
-  await Navigator.of(context).push(
-    InterstellarRoute(
-      transitionDuration: adjustedDuration,
-      reverseTransitionDuration: adjustedDuration,
-      builder: builder,
-    ),
-  );
-}
-
 // apparently Platform is unsupported on web so have to check for web before checking specific platform
 class PlatformIs {
   static const bool web = kIsWeb;
@@ -335,4 +304,11 @@ class PlatformIs {
 
   static final bool mobile = android || iOS;
   static final bool desktop = linux || macOS || windows;
+}
+
+class UnreachableError extends Error {
+  UnreachableError();
+
+  @override
+  String toString() => 'Unreachable Error, you should not be seeing this!';
 }

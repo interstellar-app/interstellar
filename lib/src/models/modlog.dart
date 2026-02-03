@@ -247,7 +247,8 @@ abstract class ModlogListModel with _$ModlogListModel {
         'type': (item['mod_remove_comment'] as JsonMap)['removed']! as bool
             ? ModLogType.commentDeleted.name
             : ModLogType.commentRestored.name,
-        'createdAt': (item['mod_remove_comment'] as JsonMap)['when_']! as String,
+        'createdAt':
+            (item['mod_remove_comment'] as JsonMap)['when_']! as String,
         'reason': (item['mod_remove_comment'] as JsonMap)['reason'] as String?,
         ...item as JsonMap,
         'creator': {'person': item['commenter']! as JsonMap},
@@ -257,7 +258,8 @@ abstract class ModlogListModel with _$ModlogListModel {
     final removedCommunities = (json['removed_communities']! as List<dynamic>)
         .map(
           (item) => ModlogItemModel.fromLemmy({
-            'type': (item['mod_remove_community'] as JsonMap)['removed']! as bool
+            'type':
+                (item['mod_remove_community'] as JsonMap)['removed']! as bool
                 ? ModLogType.communityRemoved.name
                 : ModLogType.communityAdded.name,
             'createdAt':
@@ -307,9 +309,7 @@ abstract class ModlogListModel with _$ModlogListModel {
       ...removedCommunities,
       ...modBannedCommunity,
       ...modAddedToCommunity,
-    ];
-
-    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return ModlogListModel(
       items: items,

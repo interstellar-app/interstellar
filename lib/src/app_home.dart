@@ -114,6 +114,8 @@ class _AppHomeState extends State<AppHome> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
+    // AppController should be available for later if needed.
+    // ignore: cascade_invocations
     ac.refreshState = () {
       setState(() {
         _feedKey = UniqueKey();

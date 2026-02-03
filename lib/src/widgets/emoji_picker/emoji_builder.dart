@@ -13,7 +13,7 @@ class EmojiBuilder implements Builder {
   final String _sourcePrefix;
 
   @override
-  Future build(BuildStep buildStep) async {
+  Future<void> build(BuildStep buildStep) async {
     await buildStep.writeAsString(
       AssetId(
         buildStep.inputId.package,
@@ -39,9 +39,8 @@ class EmojiBuilder implements Builder {
     );
     final messagesJson = jsonDecode(messagesResponse.body);
 
-    final s = StringBuffer();
-
-    s.write('''
+    final s = StringBuffer()
+      ..write('''
 // ignore_for_file: type=lint
 // ignore_for_file: prefer_single_quotes
 
@@ -56,14 +55,15 @@ import "./emoji_class.dart";
     for (var i = 0; i < (messagesJson['groups'] as List).length; i++) {
       final group = messagesJson['groups'][i];
 
-      assert(group['order'] == i);
+      assert(group['order'] == i, 'Emoji group order value should match index');
 
       emojiGroups.add(group['message']);
     }
 
-    s.write('final emojiGroups = ');
-    s.write(jsonEncode(emojiGroups));
-    s.write(';\n');
+    s
+      ..write('final emojiGroups = ')
+      ..write(jsonEncode(emojiGroups))
+      ..write(';\n');
 
     final trie = Trie<int>();
 
@@ -74,7 +74,7 @@ import "./emoji_class.dart";
       for (final emoji in dataJson) {
         if (emoji['group'] == null || emoji['order'] == null) continue;
 
-        assert(emoji['order'] == i + 1);
+        assert(emoji['order'] == i + 1, 'Emoji order value should match index');
 
         final tags = [
           ...?emoji['tags'],
@@ -88,23 +88,24 @@ import "./emoji_class.dart";
           trie.addChild(Trie.normalizeTerm(tag), {i});
         }
 
-        s.write('const Emoji("');
-        s.write(emoji['unicode']);
-        s.write('","');
-        s.write(emoji['label']);
-        s.write('",');
-        s.write(emoji['group']);
-        s.write('),\n');
+        s
+          ..write('const Emoji("')
+          ..write(emoji['unicode'])
+          ..write('","')
+          ..write(emoji['label'])
+          ..write('",')
+          ..write(emoji['group'])
+          ..write('),\n');
 
         i++;
       }
     }
 
-    s.write('];\n\n');
-
-    s.write('final Trie<int> emojiTrie = ');
-    s.write(trie.toString());
-    s.write(';\n');
+    s
+      ..write('];\n\n')
+      ..write('final Trie<int> emojiTrie = ')
+      ..write(trie.toString())
+      ..write(';\n');
 
     return s.toString();
   }

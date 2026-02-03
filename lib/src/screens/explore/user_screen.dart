@@ -83,6 +83,9 @@ class _UserScreenState extends State<UserScreen> {
           .get(widget.userId)
           .then((value) async {
             if (!context.mounted) return value;
+
+            // Falsely detected
+            // ignore: use_build_context_synchronously
             final tags = await context.read<AppController>().getUserTags(
               value.name,
             );
@@ -237,9 +240,7 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _data = newValue;
                                         });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
+                                        widget.onUpdate?.call(newValue);
                                       },
                                       followMode: true,
                                     ),
@@ -256,9 +257,7 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _data = newValue;
                                         });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
+                                        widget.onUpdate?.call(newValue);
                                       },
                                       icon: const Icon(Symbols.block_rounded),
                                       style: ButtonStyle(
@@ -290,9 +289,7 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _data = newUser;
                                         });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newUser);
-                                        }
+                                        widget.onUpdate?.call(newUser);
                                       },
                                     ),
                                     icon: const Icon(Symbols.more_vert_rounded),
@@ -320,9 +317,7 @@ class _UserScreenState extends State<UserScreen> {
                                       setState(() {
                                         _data = newValue;
                                       });
-                                      if (widget.onUpdate != null) {
-                                        widget.onUpdate!(newValue);
-                                      }
+                                      widget.onUpdate?.call(newValue);
                                     },
                                   ),
                                 ),
@@ -528,7 +523,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
     firstPageKey: '',
-    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    // TODO(jwr1): this is not safe, items of different types (comment, microblog, etc.) could have the same id
     getItemId: (item) => item.id,
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
@@ -582,7 +577,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
           final PostListModel newPage => newPage.items,
           final CommentListModel newPage => newPage.items,
           final DetailedUserListModel newPage => newPage.items,
-          Object _ => [],
+          Object _ => const <dynamic>[],
         },
         switch (newPage) {
           final PostListModel newPage => newPage.nextPage,

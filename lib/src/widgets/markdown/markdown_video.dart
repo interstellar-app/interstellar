@@ -74,9 +74,10 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
     final anchor = md.Element.text('a', match[_isMarkdownLink ? 1 : 0]!);
     anchor.attributes['href'] = link;
 
-    parser.addNode(anchor);
+    parser
+      ..addNode(anchor)
+      ..addNode(md.Element.text('video', link));
 
-    parser.addNode(md.Element.text('video', link));
     return true;
   }
 }

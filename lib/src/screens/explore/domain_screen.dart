@@ -48,7 +48,6 @@ class _DomainScreenState extends State<DomainScreen> {
   Widget build(BuildContext context) {
     return FeedScreen(
       feed: FeedAggregator.fromSingleSource(
-        context.read<AppController>(),
         name: _data?.name ?? '',
         source: FeedSource.domain,
         sourceId: widget.domainId,
@@ -81,9 +80,7 @@ class _DomainScreenState extends State<DomainScreen> {
                           setState(() {
                             _data = newValue;
                           });
-                          if (widget.onUpdate != null) {
-                            widget.onUpdate!(newValue);
-                          }
+                          widget.onUpdate?.call(newValue);
                         },
                         followMode: false,
                       ),
@@ -99,9 +96,7 @@ class _DomainScreenState extends State<DomainScreen> {
                             setState(() {
                               _data = newValue;
                             });
-                            if (widget.onUpdate != null) {
-                              widget.onUpdate!(newValue);
-                            }
+                            widget.onUpdate?.call(newValue);
                           },
                           icon: const Icon(Symbols.block_rounded),
                           style: ButtonStyle(

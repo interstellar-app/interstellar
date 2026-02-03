@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 Future<void> showUserMenu(
   BuildContext context, {
   required DetailedUserModel user,
-  Function(DetailedUserModel)? update,
+  void Function(DetailedUserModel)? update,
   bool navigateOption = false,
 }) async {
   final ac = context.read<AppController>();
@@ -113,17 +113,15 @@ Future<void> showUserMenu(
         ),
       ContextMenuItem(
         title: l(context).tags,
-        onTap: () async {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => TagsList(
-              username: user.name,
-              onUpdate: (tags) async {
-                await ac.reassignTagsToUser(tags, user.name);
-              },
-            ),
-          );
-        },
+        onTap: () async => showModalBottomSheet<void>(
+          context: context,
+          builder: (context) => TagsList(
+            username: user.name,
+            onUpdate: (tags) async {
+              await ac.reassignTagsToUser(tags, user.name);
+            },
+          ),
+        ),
       ),
       if (ac.serverSoftware == ServerSoftware.lemmy)
         ContextMenuItem(

@@ -250,15 +250,16 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                             ? null
                             : Text(_sourceAccount!),
                         onTap: () async {
-                          final newSourceAccount = await showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AccountSelectWidget(
-                                oldAccount: _sourceAccount ?? '',
-                                onlyNonGuestAccounts: true,
+                          final newSourceAccount =
+                              await showModalBottomSheet<String>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AccountSelectWidget(
+                                    oldAccount: _sourceAccount ?? '',
+                                    onlyNonGuestAccounts: true,
+                                  );
+                                },
                               );
-                            },
-                          );
 
                           if (newSourceAccount == null) return;
 
@@ -278,7 +279,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                             : Text(_destinationAccount!),
                         onTap: () async {
                           final newDestinationAccount =
-                              await showModalBottomSheet(
+                              await showModalBottomSheet<String>(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AccountSelectWidget(

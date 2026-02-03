@@ -109,7 +109,7 @@ class APIImages {
           return ((response.bodyJson['images']! as List<dynamic>).first
                   as JsonMap)['direct_link']!
               as String;
-      } //TODO: add more image store options
+      } // TODO(olorin99): add more image store options
     } catch (e) {
       return '';
     }

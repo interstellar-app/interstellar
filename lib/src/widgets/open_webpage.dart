@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,65 +11,65 @@ import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void openWebpagePrimary(BuildContext context, Uri uri) {
-  launchUrl(uri);
-}
+void openWebpagePrimary(BuildContext context, Uri uri) => launchUrl(uri);
 
-void openWebpageSecondary(BuildContext context, Uri uri) {
-  showDialog<String>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: Text(l(context).openLink),
-      content: SelectableText(uri.toString()),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () => context.router.pop(),
-          child: Text(l(context).cancel),
-        ),
+void openWebpageSecondary(BuildContext context, Uri uri) => showDialog<String>(
+  context: context,
+  builder: (BuildContext context) => AlertDialog(
+    title: Text(l(context).openLink),
+    content: SelectableText(uri.toString()),
+    actions: <Widget>[
+      OutlinedButton(
+        onPressed: () => context.router.pop(),
+        child: Text(l(context).cancel),
+      ),
+      FilledButton.tonal(
+        onPressed: () {
+          context.router.pop();
+          unawaited(shareUri(uri));
+        },
+        child: Text(l(context).share),
+      ),
+      LoadingTonalButton(
+        onPressed: () async {
+          await Clipboard.setData(ClipboardData(text: uri.toString()));
+
+          if (!context.mounted) return;
+          context.router.pop();
+        },
+        label: Text(l(context).copy),
+      ),
+      if (isWebViewSupported)
         FilledButton.tonal(
           onPressed: () {
             context.router.pop();
-            shareUri(uri);
+
+            final controller = WebViewController();
+            unawaited(
+              controller.setJavaScriptMode(JavaScriptMode.unrestricted),
+            );
+            unawaited(controller.loadRequest(uri));
+
+            unawaited(
+              context.router.push(WebViewRoute(controller: controller)),
+            );
           },
-          child: Text(l(context).share),
+          child: Text(l(context).webView),
         ),
-        LoadingTonalButton(
-          onPressed: () async {
-            await Clipboard.setData(ClipboardData(text: uri.toString()));
+      FilledButton(
+        onPressed: () {
+          context.router.pop();
 
-            if (!context.mounted) return;
-            context.router.pop();
-          },
-          label: Text(l(context).copy),
-        ),
-        if (isWebViewSupported)
-          FilledButton.tonal(
-            onPressed: () {
-              context.router.pop();
-
-              final controller = WebViewController()
-                ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                ..loadRequest(uri);
-
-              context.router.push(WebViewRoute(controller: controller));
-            },
-            child: Text(l(context).webView),
-          ),
-        FilledButton(
-          onPressed: () {
-            context.router.pop();
-
-            launchUrl(uri);
-          },
-          child: Text(l(context).browser),
-        ),
-      ],
-      actionsOverflowAlignment: OverflowBarAlignment.center,
-      actionsOverflowButtonSpacing: 8,
-      actionsOverflowDirection: VerticalDirection.up,
-    ),
-  );
-}
+          unawaited(launchUrl(uri));
+        },
+        child: Text(l(context).browser),
+      ),
+    ],
+    actionsOverflowAlignment: OverflowBarAlignment.center,
+    actionsOverflowButtonSpacing: 8,
+    actionsOverflowDirection: VerticalDirection.up,
+  ),
+);
 
 @RoutePage()
 class WebViewScreen extends StatelessWidget {

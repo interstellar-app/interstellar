@@ -393,7 +393,7 @@ class _PostPageState extends State<PostPage> {
                       1,
                       emoji: emoji,
                     ),
-                    PostType.microblog => throw 'Unreachable',
+                    PostType.microblog => throw UnreachableError(),
                   },
                 ], true)).first,
               );
@@ -524,6 +524,9 @@ class _PostPageState extends State<PostPage> {
                               post.id,
                             ),
                           };
+
+                          if (!context.mounted) return;
+
                           _onUpdate(
                             post.copyWith(
                               body: '_${l(context).postDeleted}_',

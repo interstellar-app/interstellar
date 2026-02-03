@@ -147,11 +147,7 @@ class _FeedScreenState extends State<FeedScreen>
                 key: _getFeedKey(index),
                 feed:
                     widget.feed ??
-                    FeedAggregator.fromSingleSource(
-                      ac,
-                      name: name,
-                      source: feed,
-                    ),
+                    FeedAggregator.fromSingleSource(name: name, source: feed),
                 sort: _sort ?? _defaultSortFromMode(_view),
                 view: _view,
                 details: widget.details,
@@ -172,7 +168,6 @@ class _FeedScreenState extends State<FeedScreen>
                 feed:
                     widget.feed ??
                     FeedAggregator.fromSingleSource(
-                      ac,
                       name: name,
                       source: _filter,
                     ),
@@ -196,7 +191,6 @@ class _FeedScreenState extends State<FeedScreen>
                 feed:
                     widget.feed ??
                     FeedAggregator.fromSingleSource(
-                      ac,
                       name: name,
                       source: _filter,
                     ),
@@ -522,7 +516,6 @@ class _FeedScreenState extends State<FeedScreen>
                         feed:
                             widget.feed ??
                             FeedAggregator.fromSingleSource(
-                              ac,
                               name: widget.feed?.name ?? '',
                               source: _filter,
                             ),

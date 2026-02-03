@@ -106,7 +106,7 @@ class APIThreads {
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.community => {'community_id': sourceId!.toString()},
-            FeedSource.user => throw Exception('Unreachable'),
+            FeedSource.user => throw UnreachableError(),
             FeedSource.domain => throw Exception(
               'Domain source not allowed for lemmy',
             ),

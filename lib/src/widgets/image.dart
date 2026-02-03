@@ -205,7 +205,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: TextButton(
-                    onPressed: () => showDialog(
+                    onPressed: () => showDialog<void>(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text(l(context).altText),

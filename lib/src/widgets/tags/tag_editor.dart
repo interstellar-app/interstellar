@@ -55,7 +55,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                 title: Text(l(context).color),
                 onTap: () {
                   var c = _backgroundColor;
-                  showDialog(
+                  showDialog<void>(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l(context).pickColor),
@@ -125,7 +125,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                         );
                       } catch (err) {
                         if (!context.mounted) return;
-                        await showDialog(
+                        await showDialog<void>(
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text(l(context).tags_exist),

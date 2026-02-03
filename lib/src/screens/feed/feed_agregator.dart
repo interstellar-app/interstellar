@@ -52,10 +52,10 @@ double calcMbinRanking(PostModel post) {
   var commentAdvantage = 0;
   if (score > downvotedCutoff) {
     commentAdvantage = post.numComments * commentMultiplier;
-    //TODO: unique comment check here
+    //TODO(olorin99): unique comment check here
   } else {
     commentAdvantage = post.numComments * commentDownvotedMultiplier;
-    //TODO: unique comment check here
+    //TODO(olorin99): unique comment check here
   }
 
   final advantage = max(
@@ -243,7 +243,7 @@ class FeedInputState {
                 page: nullIfEmpty(_nextPage!),
                 sort: sort,
               )
-            : Future.value();
+            : Future<PostListModel?>.value();
         final microblogFuture =
             _combinedPage != null && _combinedMicroblogsLeftover.length < 25
             ? ac.api.microblogs.list(
@@ -252,7 +252,7 @@ class FeedInputState {
                 page: nullIfEmpty(_combinedPage!),
                 sort: sort,
               )
-            : Future.value();
+            : Future<PostListModel?>.value();
         final results = await Future.wait([threadFuture, microblogFuture]);
 
         final postLists = results
@@ -379,11 +379,12 @@ class FeedAggregator {
 
   void refresh() {
     for (final input in inputs) {
-      input._leftover = [];
-      input._nextPage = '';
-      input._combinedPage = '';
-      input._combinedThreadsLeftover = [];
-      input._combinedMicroblogsLeftover = [];
+      input
+        .._leftover = []
+        .._nextPage = ''
+        .._combinedPage = ''
+        .._combinedThreadsLeftover = []
+        .._combinedMicroblogsLeftover = [];
     }
   }
 

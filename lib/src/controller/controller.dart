@@ -466,7 +466,7 @@ class AppController with ChangeNotifier {
             switch (software) {
               ServerSoftware.lemmy => 'username_or_email',
               ServerSoftware.piefed => 'username',
-              ServerSoftware.mbin => throw Exception('unreachable'),
+              ServerSoftware.mbin => throw UnreachableError(),
             }: username,
             'password': password,
             if (software == ServerSoftware.lemmy) 'totp_2fa_token': totp,
@@ -850,8 +850,7 @@ class AppController with ChangeNotifier {
       database.profiles,
     )..where((f) => f.filterLists.contains(name))).get();
     for (final profile in profiles) {
-      final newFilterLists = {...?profile.filterLists};
-      newFilterLists.remove(name);
+      final newFilterLists = {...?profile.filterLists}..remove(name);
       setProfile(profile.name, profile.copyWith(filterLists: newFilterLists));
     }
 
@@ -876,8 +875,7 @@ class AppController with ChangeNotifier {
       final newFilterLists = {
         ...?profile.filterLists,
         newName: profile.filterLists?[oldName] ?? false,
-      };
-      newFilterLists.remove(oldName);
+      }..remove(oldName);
       setProfile(profile.name, profile.copyWith(filterLists: newFilterLists));
     }
 

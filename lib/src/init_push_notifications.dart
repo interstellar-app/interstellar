@@ -96,7 +96,7 @@ Future<String?> getUnifiedPushDistributor(BuildContext context) async {
   } else if (distributors.length == 1) {
     return distributors.single;
   } else {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l(context).pushNotificationsDialog_title),

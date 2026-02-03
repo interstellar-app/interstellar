@@ -328,7 +328,7 @@ class _CreateScreenState extends State<CreateScreen> {
               OutlinedButton.icon(
                 label: Text(l(context).editFlairs),
                 icon: const Icon(Symbols.edit_rounded),
-                onPressed: () => showModalBottomSheet(
+                onPressed: () => showModalBottomSheet<void>(
                   context: context,
                   builder: (BuildContext context) => PostFlairsModal(
                     flairs: _postFlairs,
@@ -568,7 +568,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   _community == null
                       ? null
                       : () async {
-                          final endDate = _pollDuration == const Duration()
+                          final endDate = _pollDuration == Duration.zero
                               ? null
                               : DateTime.now().add(_pollDuration);
 

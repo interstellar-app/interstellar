@@ -21,7 +21,7 @@ Future<void> showCommunityMenu(
   BuildContext context, {
   DetailedCommunityModel? detailedCommunity,
   CommunityModel? community,
-  Function(DetailedCommunityModel)? update,
+  void Function(DetailedCommunityModel)? update,
   bool navigateOption = false,
 }) async {
   final ac = context.read<AppController>();
@@ -99,7 +99,7 @@ Future<void> showCommunityMenu(
       if (detailedCommunity != null)
         ContextMenuItem(
           title: l(context).viewMods,
-          onTap: () => showDialog(
+          onTap: () => showDialog<void>(
             context: context,
             builder: (context) => AlertDialog(
               title: Text(l(context).modsOf(name)),

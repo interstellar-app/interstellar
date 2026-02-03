@@ -349,7 +349,7 @@ class _PostItemState extends State<PostItem> {
                           1,
                           emoji: emoji,
                         ),
-                        PostType.microblog => throw 'Unreachable',
+                        PostType.microblog => throw UnreachableError(),
                       },
                     ], true)).first,
                   );

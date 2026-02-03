@@ -1,3 +1,6 @@
+// Needed for drift column constraints.
+// ignore_for_file: recursive_getters
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -505,7 +508,7 @@ Future<bool> migrateDatabase() async {
   if (PlatformIs.web) return false;
   final dir = await getApplicationSupportDirectory();
   final dbPath = join(dir.path, 'database');
-  if (!await File(dbPath).exists()) {
+  if (!File(dbPath).existsSync()) {
     return false;
   }
   final db = await databaseFactoryIo.openDatabase(dbPath);

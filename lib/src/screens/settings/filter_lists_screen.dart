@@ -207,9 +207,8 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                         child: InputChip(
                           label: Text(phrase),
                           onDeleted: () async {
-                            final newPhrases = filterListData.phrases.toSet();
-
-                            newPhrases.remove(phrase);
+                            final newPhrases = filterListData.phrases.toSet()
+                              ..remove(phrase);
 
                             setState(() {
                               filterListData = filterListData.copyWith(
@@ -253,9 +252,8 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
 
                           if (phrase == null) return;
 
-                          final newPhrases = filterListData.phrases.toSet();
-
-                          newPhrases.add(phrase);
+                          final newPhrases = filterListData.phrases.toSet()
+                            ..add(phrase);
 
                           setState(() {
                             filterListData = filterListData.copyWith(

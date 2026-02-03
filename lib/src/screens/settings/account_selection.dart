@@ -11,7 +11,7 @@ Future<String?> switchAccount(
   BuildContext context, [
   String? oldAccount,
 ]) async {
-  return showModalBottomSheet(
+  return showModalBottomSheet<String>(
     context: context,
     builder: (BuildContext context) {
       return AccountSelectWidget(

@@ -15,7 +15,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 Future<void> switchProfileSelect(BuildContext context) async {
-  await showModalBottomSheet(
+  await showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
       return const _ProfileSelectWidget();
@@ -68,7 +68,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
               ),
               IconButton(
                 onPressed: () {
-                  showDialog(
+                  showDialog<void>(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l(context).profile_about_title),

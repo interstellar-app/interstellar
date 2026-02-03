@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/share.dart';
@@ -60,21 +62,26 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
         if (!mounted) return;
 
-        // Use best muxed stream if available, else use best separate video and audio streams
-        // TODO: calculate best quality for device based on screen size and data saver mode, also add manual stream selection
+        // Use best muxed stream if available, else use best separate video and
+        // audio streams
+        //
+        // TODO(jwr1): calculate best quality for device based on screen size
+        // and data saver mode, also add manual stream selection
         if (manifest.muxed.isNotEmpty) {
           final muxedStream = manifest.muxed.bestQuality;
-          player.open(Media(muxedStream.url.toString()), play: autoPlay);
+          await player.open(Media(muxedStream.url.toString()), play: autoPlay);
         } else {
           final videoStream = manifest.video.bestQuality;
           final audioStream = manifest.audio.withHighestBitrate();
           final media = Media(videoStream.url.toString());
 
-          player.open(media, play: _isPlaying);
-          player.setAudioTrack(AudioTrack.uri(audioStream.url.toString()));
+          await player.open(media, play: _isPlaying);
+          await player.setAudioTrack(
+            AudioTrack.uri(audioStream.url.toString()),
+          );
         }
       } else {
-        player.open(Media(widget.uri.toString()), play: _isPlaying);
+        await player.open(Media(widget.uri.toString()), play: _isPlaying);
       }
     } catch (e) {
       error = e.toString();
@@ -84,12 +91,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _initController();
+    unawaited(_initController());
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement top buttons by setting a MaterialVideoControls & MaterialDesktopVideoControlsTheme
+    // TODO(jwr1): implement top buttons by setting a
+    // MaterialVideoControls and MaterialDesktopVideoControlsTheme
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 9.0 / 16.0,
@@ -111,7 +119,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                       onPressed: () {
                         setState(() {
                           _isPlaying = !_isPlaying;
-                          player.playOrPause();
+                          unawaited(player.playOrPause());
                         });
                       },
                       icon: const Icon(Symbols.play_arrow_rounded, fill: 1),
@@ -156,7 +164,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void dispose() {
     yt?.close();
-    player.dispose();
+    unawaited(player.dispose());
     super.dispose();
   }
 
@@ -165,7 +173,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!(ModalRoute.of(context)?.isCurrent ?? false)) {
-        player.pause();
+        unawaited(player.pause());
       }
     });
   }

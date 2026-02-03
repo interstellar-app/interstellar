@@ -53,7 +53,9 @@ class ContextMenu {
   final List<ContextMenuItem> items;
   final double actionSpacing;
 
-  Future<void> openMenu(BuildContext context) async => showModalBottomSheet(
+  Future<void> openMenu(
+    BuildContext context,
+  ) async => showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
       return Column(

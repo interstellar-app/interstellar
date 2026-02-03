@@ -205,15 +205,16 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                             ? null
                             : Text(_selectedAccount!),
                         onTap: () async {
-                          final newSourceAccount = await showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AccountSelectWidget(
-                                oldAccount: _selectedAccount ?? '',
-                                onlyNonGuestAccounts: true,
+                          final newSourceAccount =
+                              await showModalBottomSheet<String>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AccountSelectWidget(
+                                    oldAccount: _selectedAccount ?? '',
+                                    onlyNonGuestAccounts: true,
+                                  );
+                                },
                               );
-                            },
-                          );
 
                           if (newSourceAccount == null) return;
 

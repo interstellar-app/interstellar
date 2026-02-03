@@ -65,15 +65,11 @@ class SubordinateScrollController extends ScrollController {
   }
 
   void _detachFromParent() {
-    for (final position in positions) {
-      _parent.detach(position);
-    }
+    positions.forEach(_parent.detach);
   }
 
   void _attachToParent() {
-    for (final position in positions) {
-      _parent.attach(position);
-    }
+    positions.forEach(_parent.attach);
   }
 
   @override

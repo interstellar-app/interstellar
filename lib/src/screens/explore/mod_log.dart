@@ -85,7 +85,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
   );
   ModLogType _filter = ModLogType.all;
 
-  Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
+  void Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
     ModLogType.all => null,
     ModLogType.postDeleted =>
       item.postId == null

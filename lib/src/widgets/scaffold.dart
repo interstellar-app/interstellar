@@ -2,7 +2,8 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 
-/// Wrapper of [Scaffold] which displays the drawer persistently based on screen size.
+/// Wrapper of [Scaffold] which displays the drawer persistently based on screen
+/// size.
 class AdvancedScaffold extends StatelessWidget {
   const AdvancedScaffold({
     required this.body,

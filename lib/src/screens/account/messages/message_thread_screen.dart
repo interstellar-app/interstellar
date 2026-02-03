@@ -157,9 +157,7 @@ class _MessageThreadScreenState extends State<MessageThreadScreen> {
                               newThread.messages.first,
                             ]);
 
-                            if (widget.onUpdate != null) {
-                              widget.onUpdate!(newThread);
-                            }
+                            widget.onUpdate?.call(newThread);
                           },
                           label: Text(l(context).send),
                           icon: const Icon(Symbols.send_rounded),

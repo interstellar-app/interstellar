@@ -106,7 +106,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: LoadingFilledButton(
-                              onPressed: () => showDialog(
+                              onPressed: () => showDialog<void>(
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
                                   title: const Text('Delete bookmark list'),
@@ -168,7 +168,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
     firstPageKey: '',
-    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    // TODO(jwr1): this is not safe, items of different types (comment, microblog, etc.) could have the same id
     getItemId: (item) => item.id,
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
@@ -226,7 +226,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 ),
               ),
             ),
-            _ => throw 'unreachable',
+            _ => throw UnreachableError(),
           };
         },
       ),

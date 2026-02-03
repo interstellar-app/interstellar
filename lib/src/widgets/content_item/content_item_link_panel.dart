@@ -92,7 +92,7 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
                           controller.open();
                         }
                       },
-                      style: TextButton.styleFrom(shape: const LinearBorder()),
+                      style: TextButton.styleFrom(shape: LinearBorder.none),
                     ),
                   );
                 },

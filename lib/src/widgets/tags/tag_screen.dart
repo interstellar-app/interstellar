@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -52,23 +54,27 @@ class _TagsListState extends State<TagsList> {
     if (widget.activeTags != null) {
       _activeTags = widget.activeTags!;
     } else if (widget.username != null) {
-      ac
-          .getUserTags(widget.username!)
-          .then(
-            (tags) => setState(() {
-              _activeTags = tags;
-            }),
-          );
+      unawaited(
+        ac
+            .getUserTags(widget.username!)
+            .then(
+              (tags) => setState(() {
+                _activeTags = tags;
+              }),
+            ),
+      );
     }
     if (widget.availableTags != null) {
       setState(() {
         _availableTags = widget.availableTags!;
       });
     } else {
-      ac.getTags().then(
-        (tags) => setState(() {
-          _availableTags = tags;
-        }),
+      unawaited(
+        ac.getTags().then(
+          (tags) => setState(() {
+            _availableTags = tags;
+          }),
+        ),
       );
     }
   }
@@ -191,14 +197,16 @@ class TagUsersScreenState extends State<TagUsersScreen> {
   void initState() {
     super.initState();
 
-    context
-        .read<AppController>()
-        .getTagUsers(widget.tag.id)
-        .then(
-          (users) => setState(() {
-            _users = users;
-          }),
-        );
+    unawaited(
+      context
+          .read<AppController>()
+          .getTagUsers(widget.tag.id)
+          .then(
+            (users) => setState(() {
+              _users = users;
+            }),
+          ),
+    );
   }
 
   @override
@@ -234,8 +242,10 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 
                         if (!context.mounted) return;
 
-                        context.router.push(
-                          UserRoute(userId: user.id, initData: user),
+                        unawaited(
+                          context.router.push(
+                            UserRoute(userId: user.id, initData: user),
+                          ),
                         );
                       },
                     ),
@@ -249,7 +259,7 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 class TagsFloatingButton extends StatelessWidget {
   const TagsFloatingButton({required this.onUpdate, super.key});
 
-  final Function(Tag) onUpdate;
+  final void Function(Tag) onUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +274,7 @@ class TagsFloatingButton extends StatelessWidget {
           tag = await ac.addTag();
         } catch (err) {
           if (!context.mounted) return;
-          await showDialog(
+          await showDialog<void>(
             context: context,
             builder: (context) {
               return AlertDialog(
@@ -334,10 +344,12 @@ class _TagsScreenState extends State<TagsScreen> {
   void initState() {
     super.initState();
 
-    context.read<AppController>().getTags().then(
-      (tags) => setState(() {
-        _availableTags = tags;
-      }),
+    unawaited(
+      context.read<AppController>().getTags().then(
+        (tags) => setState(() {
+          _availableTags = tags;
+        }),
+      ),
     );
   }
 

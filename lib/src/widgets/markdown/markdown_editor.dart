@@ -188,7 +188,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                                       ? ''
                                                       : ' (${readableShortcut(action.shortcut!)})'),
                                               style: TextButton.styleFrom(
-                                                shape: const LinearBorder(),
+                                                shape: LinearBorder.none,
                                               ),
                                             ),
                                           ),
@@ -220,7 +220,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                                         .add_reaction_rounded,
                                                   ),
                                                   style: TextButton.styleFrom(
-                                                    shape: const LinearBorder(),
+                                                    shape: LinearBorder.none,
                                                   ),
                                                 ),
                                             onSelect: (emoji) {
@@ -273,7 +273,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                               Symbols.share_rounded,
                                             ),
                                             style: TextButton.styleFrom(
-                                              shape: const LinearBorder(),
+                                              shape: LinearBorder.none,
                                             ),
                                             tooltip: l(context).configShare,
                                           ),
@@ -494,7 +494,7 @@ List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
     showDivider: true,
   ),
   _MarkdownEditorActionInfo(
-    action: const _MarkdownEditorActionLink(),
+    action: const _MarkdownEditorActionLink(isImage: false),
     icon: Symbols.link_rounded,
     tooltip: l(context).markdownEditor_link,
     shortcut: const SingleActivator(LogicalKeyboardKey.keyK, control: true),
@@ -741,7 +741,7 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionLink();
+  const _MarkdownEditorActionLink({required this.isImage});
 
   final bool isImage;
 
@@ -1053,7 +1053,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
             children: [
               IconButton(
                 onPressed: () {
-                  showDialog(
+                  showDialog<void>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
