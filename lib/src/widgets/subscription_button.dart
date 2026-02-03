@@ -7,11 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionButton extends StatelessWidget {
-  final bool? isSubscribed;
-  final int? subscriptionCount;
-  final Future<void> Function(bool) onSubscribe;
-  final bool followMode;
-
   const SubscriptionButton({
     required this.isSubscribed,
     required this.subscriptionCount,
@@ -19,6 +14,11 @@ class SubscriptionButton extends StatelessWidget {
     required this.followMode,
     super.key,
   });
+
+  final bool? isSubscribed;
+  final int? subscriptionCount;
+  final Future<void> Function(bool) onSubscribe;
+  final bool followMode;
 
   @override
   Widget build(BuildContext context) {

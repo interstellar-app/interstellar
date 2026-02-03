@@ -5,9 +5,9 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:provider/provider.dart';
 
 class NotificationBadge extends StatefulWidget {
-  final Widget child;
-
   const NotificationBadge({required this.child, super.key});
+
+  final Widget child;
 
   @override
   State<NotificationBadge> createState() => _NotificationBadgeState();

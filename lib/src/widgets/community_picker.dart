@@ -10,16 +10,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPicker extends StatefulWidget {
-  final DetailedCommunityModel? value;
-  final void Function(DetailedCommunityModel?) onChange;
-  final bool microblogMode;
-
   const CommunityPicker({
     required this.value,
     required this.onChange,
     this.microblogMode = false,
     super.key,
   });
+
+  final DetailedCommunityModel? value;
+  final void Function(DetailedCommunityModel?) onChange;
+  final bool microblogMode;
 
   @override
   State<CommunityPicker> createState() => _CommunityPickerState();

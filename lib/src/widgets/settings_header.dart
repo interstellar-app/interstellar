@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SettingsHeader extends StatelessWidget {
-  final String text;
-
   const SettingsHeader(this.text, {super.key});
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {

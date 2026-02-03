@@ -6,11 +6,6 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 
 class UserItemSimple extends StatelessWidget {
-  final UserModel user;
-  final bool isOwner;
-  final List<Widget>? trailingWidgets;
-  final bool noTap;
-
   const UserItemSimple(
     this.user, {
     this.isOwner = false,
@@ -18,6 +13,11 @@ class UserItemSimple extends StatelessWidget {
     this.noTap = false,
     super.key,
   });
+
+  final UserModel user;
+  final bool isOwner;
+  final List<Widget>? trailingWidgets;
+  final bool noTap;
 
   @override
   Widget build(BuildContext context) {

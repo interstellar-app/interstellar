@@ -11,10 +11,10 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class LoginConfirmScreen extends StatefulWidget {
+  const LoginConfirmScreen(this.software, this.server, {super.key});
+
   final ServerSoftware software;
   final String server;
-
-  const LoginConfirmScreen(this.software, this.server, {super.key});
 
   @override
   State<LoginConfirmScreen> createState() => _LoginConfirmScreenState();

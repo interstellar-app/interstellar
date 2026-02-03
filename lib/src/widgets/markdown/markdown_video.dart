@@ -14,6 +14,8 @@ class VideoMarkdownSyntax extends md.InlineSyntax {
 }
 
 class YoutubeEmbedSyntax extends md.InlineSyntax {
+  YoutubeEmbedSyntax() : super(_youtubePattern);
+
   //from here https://stackoverflow.com/a/61033353
   static const _youtubePattern =
       r'(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})';
@@ -23,8 +25,6 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
 
   static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
-
-  YoutubeEmbedSyntax() : super(_youtubePattern);
 
   bool _isMarkdownLink = false;
 
@@ -82,8 +82,9 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
 }
 
 class VideoMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  final bool enableBlur;
   VideoMarkdownBuilder({this.enableBlur = false});
+
+  final bool enableBlur;
 
   @override
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {

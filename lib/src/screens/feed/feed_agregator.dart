@@ -190,6 +190,12 @@ int commented(PostModel lhs, PostModel rhs) {
 }
 
 class FeedInputState {
+  FeedInputState({
+    required this.title,
+    required this.source,
+    required this.sourceId,
+  });
+
   final String title;
   final FeedSource source;
   final int? sourceId;
@@ -198,12 +204,6 @@ class FeedInputState {
   List<PostModel> _combinedMicroblogsLeftover = [];
   String? _nextPage = '';
   String? _combinedPage = '';
-
-  FeedInputState({
-    required this.title,
-    required this.source,
-    required this.sourceId,
-  });
 
   Future<(List<PostModel>, String?)> fetchPage(
     AppController ac,
@@ -295,9 +295,6 @@ class FeedInputState {
 }
 
 class FeedAggregator {
-  final String name;
-  final List<FeedInputState> inputs;
-
   const FeedAggregator({required this.name, required this.inputs});
 
   factory FeedAggregator.fromSingleSource({
@@ -310,6 +307,8 @@ class FeedAggregator {
       FeedInputState(title: source.name, source: source, sourceId: sourceId),
     ],
   );
+  final String name;
+  final List<FeedInputState> inputs;
 
   static Future<FeedAggregator> create(
     AppController ac,

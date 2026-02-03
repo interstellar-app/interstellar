@@ -35,11 +35,6 @@ Future<String?> selectAccountWithNone(
 }
 
 class AccountSelectWidget extends StatefulWidget {
-  final bool showNoneOption;
-  final bool showAccountControls;
-  final bool onlyNonGuestAccounts;
-  final String? oldAccount;
-
   const AccountSelectWidget({
     this.showNoneOption = false,
     this.showAccountControls = false,
@@ -47,6 +42,11 @@ class AccountSelectWidget extends StatefulWidget {
     this.oldAccount,
     super.key,
   });
+
+  final bool showNoneOption;
+  final bool showAccountControls;
+  final bool onlyNonGuestAccounts;
+  final String? oldAccount;
 
   @override
   State<AccountSelectWidget> createState() => _AccountSelectWidgetState();

@@ -1,10 +1,10 @@
 class Trie<T> {
-  Set<T> ends;
-  Map<int, Trie<T>> children;
-
   Trie([Set<T>? ends, Map<int, Trie<T>>? children])
     : ends = ends ?? <T>{},
       children = children ?? <int, Trie<T>>{};
+
+  Set<T> ends;
+  Map<int, Trie<T>> children;
 
   void addChild(String term, Set<T> newEnds) {
     if (term.isEmpty) {

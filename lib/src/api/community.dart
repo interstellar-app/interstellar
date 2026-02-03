@@ -75,9 +75,9 @@ enum APIExploreSort {
 }
 
 class APICommunity {
-  final ServerClient client;
-
   APICommunity(this.client);
+
+  final ServerClient client;
 
   Future<DetailedCommunityListModel> list({
     String? page,

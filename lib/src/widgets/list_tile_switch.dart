@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ListTileSwitch extends StatelessWidget {
-  final bool value;
-  final void Function(bool)? onChanged;
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
-  final bool enabled;
-
   const ListTileSwitch({
     required this.value,
     required this.onChanged,
@@ -17,6 +10,13 @@ class ListTileSwitch extends StatelessWidget {
     this.enabled = true,
     super.key,
   });
+
+  final bool value;
+  final void Function(bool)? onChanged;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {

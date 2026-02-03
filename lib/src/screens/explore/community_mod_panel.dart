@@ -18,16 +18,16 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityModPanelScreen extends StatefulWidget {
-  final int communityId;
-  final DetailedCommunityModel initData;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityModPanelScreen({
     @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
     super.key,
   });
+
+  final int communityId;
+  final DetailedCommunityModel initData;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityModPanelScreen> createState() =>
@@ -85,14 +85,13 @@ class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
 }
 
 class CommunityModPanelBans extends StatefulWidget {
-  final DetailedCommunityModel data;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityModPanelBans({
     required this.data,
     required this.onUpdate,
     super.key,
   });
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityModPanelBans> createState() => _CommunityModPanelBansState();
@@ -148,14 +147,13 @@ class _CommunityModPanelBansState extends State<CommunityModPanelBans> {
 }
 
 class CommunityModPanelReports extends StatefulWidget {
-  final DetailedCommunityModel data;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityModPanelReports({
     required this.data,
     required this.onUpdate,
     super.key,
   });
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityModPanelReports> createState() =>

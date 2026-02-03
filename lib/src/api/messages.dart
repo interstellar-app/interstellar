@@ -4,9 +4,9 @@ import 'package:interstellar/src/models/message.dart';
 import 'package:interstellar/src/utils/models.dart';
 
 class APIMessages {
-  final ServerClient client;
-
   APIMessages(this.client);
+
+  final ServerClient client;
 
   Future<MessageListModel> list({int? myUserId, String? page}) async {
     switch (client.software) {

@@ -19,14 +19,6 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ExploreScreen extends StatefulWidget {
-  final ExploreType? mode;
-  final int? id;
-  final bool subOnly;
-  final FocusNode? focusNode;
-  final void Function(bool, dynamic)? onTap;
-  final Set<String>? selected;
-  final String? title;
-
   const ExploreScreen({
     this.mode,
     this.id,
@@ -37,6 +29,14 @@ class ExploreScreen extends StatefulWidget {
     this.title,
     super.key,
   });
+
+  final ExploreType? mode;
+  final int? id;
+  final bool subOnly;
+  final FocusNode? focusNode;
+  final void Function(bool, dynamic)? onTap;
+  final Set<String>? selected;
+  final String? title;
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();

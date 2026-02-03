@@ -8,9 +8,9 @@ Builder emojiBuilder(BuilderOptions options) =>
     EmojiBuilder(options.config['sourcePrefix']);
 
 class EmojiBuilder implements Builder {
-  final String _sourcePrefix;
-
   EmojiBuilder(this._sourcePrefix);
+
+  final String _sourcePrefix;
 
   @override
   Future build(BuildStep buildStep) async {

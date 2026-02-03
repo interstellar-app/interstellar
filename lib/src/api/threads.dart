@@ -34,9 +34,9 @@ const Map<FeedSort, String> lemmyFeedSortMap = {
 };
 
 class APIThreads {
-  final ServerClient client;
-
   APIThreads(this.client);
+
+  final ServerClient client;
 
   Future<PostListModel> list(
     FeedSource source, {

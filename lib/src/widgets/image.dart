@@ -17,12 +17,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class AdvancedImage extends StatelessWidget {
-  final ImageModel image;
-  final BoxFit fit;
-  final String? openTitle;
-  final bool enableBlur;
-  final String? hero;
-
   const AdvancedImage(
     this.image, {
     super.key,
@@ -31,6 +25,12 @@ class AdvancedImage extends StatelessWidget {
     this.enableBlur = false,
     this.hero,
   });
+
+  final ImageModel image;
+  final BoxFit fit;
+  final String? openTitle;
+  final bool enableBlur;
+  final String? hero;
 
   static String getHeroTag() {
     final rng = Random();
@@ -121,11 +121,6 @@ class AdvancedImage extends StatelessWidget {
 
 @RoutePage()
 class AdvancedImagePage extends StatefulWidget {
-  final ImageModel image;
-  final String title;
-  final String? hero;
-  final BoxFit fit;
-
   const AdvancedImagePage(
     this.image, {
     required this.title,
@@ -133,6 +128,11 @@ class AdvancedImagePage extends StatefulWidget {
     this.hero,
     this.fit = BoxFit.contain,
   });
+
+  final ImageModel image;
+  final String title;
+  final String? hero;
+  final BoxFit fit;
 
   @override
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();

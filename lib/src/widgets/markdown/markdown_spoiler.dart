@@ -40,9 +40,9 @@ class SpoilerMarkdownSyntax extends md.BlockSyntax {
 }
 
 class SpoilerMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  final String originInstance;
-
   SpoilerMarkdownBuilder({required this.originInstance});
+
+  final String originInstance;
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
@@ -60,17 +60,17 @@ class SpoilerMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class SpoilerWidget extends StatefulWidget {
-  final String originInstance;
-
-  final String? title;
-  final String? body;
-
   const SpoilerWidget({
     required this.originInstance,
     super.key,
     this.title,
     this.body,
   });
+
+  final String originInstance;
+
+  final String? title;
+  final String? body;
 
   @override
   State<SpoilerWidget> createState() => _SpoilerWidgetState();

@@ -41,14 +41,14 @@ class SuperscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class SubscriptSuperscriptWidget extends StatelessWidget {
-  final String text;
-  final bool isSuperscript;
-
   const SubscriptSuperscriptWidget({
     required this.text,
     required this.isSuperscript,
     super.key,
   });
+
+  final String text;
+  final bool isSuperscript;
 
   @override
   Widget build(BuildContext context) {

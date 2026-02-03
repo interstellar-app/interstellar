@@ -99,9 +99,9 @@ enum ModLogType {
 }
 
 class APIModeration {
-  final ServerClient client;
-
   APIModeration(this.client);
+
+  final ServerClient client;
 
   Future<PostModel> postPin(PostType postType, int postId, bool pinned) async {
     switch (client.software) {

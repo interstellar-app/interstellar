@@ -3,9 +3,9 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/feed.dart';
 
 class APIFeed {
-  final ServerClient client;
-
   APIFeed(this.client);
+
+  final ServerClient client;
 
   Future<FeedListModel> list({
     bool mineOnly = false,

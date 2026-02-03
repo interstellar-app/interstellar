@@ -10,9 +10,9 @@ import 'package:path/path.dart';
 enum ImageStore { platform, catbox, imgLink }
 
 class APIImages {
-  final ServerClient client;
-
   APIImages(this.client);
+
+  final ServerClient client;
 
   Future<String> uploadImage({
     required XFile image,

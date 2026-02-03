@@ -11,11 +11,6 @@ import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/video.dart';
 
 class Markdown extends StatelessWidget {
-  final String data;
-  final String originInstance;
-  final ThemeData? themeData;
-  final bool nsfw;
-
   const Markdown(
     this.data,
     this.originInstance, {
@@ -23,6 +18,11 @@ class Markdown extends StatelessWidget {
     this.nsfw = false,
     super.key,
   });
+
+  final String data;
+  final String originInstance;
+  final ThemeData? themeData;
+  final bool nsfw;
 
   @override
   Widget build(BuildContext context) {

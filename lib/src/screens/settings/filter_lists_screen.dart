@@ -119,14 +119,14 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
 
 @RoutePage()
 class EditFilterListScreen extends StatefulWidget {
-  final String? filterList;
-  final FilterList? importFilterList;
-
   const EditFilterListScreen({
     @PathParam('filterList') required this.filterList,
     this.importFilterList,
     super.key,
   });
+
+  final String? filterList;
+  final FilterList? importFilterList;
 
   @override
   State<EditFilterListScreen> createState() => _EditFilterListScreenState();

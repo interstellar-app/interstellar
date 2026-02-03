@@ -16,9 +16,9 @@ enum NotificationControlUpdateTargetType {
 }
 
 class APINotifications {
-  final ServerClient client;
-
   APINotifications(this.client);
+
+  final ServerClient client;
 
   Future<NotificationListModel> list({
     String? page,

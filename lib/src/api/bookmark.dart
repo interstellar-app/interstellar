@@ -34,9 +34,9 @@ enum BookmarkListSubject {
 }
 
 class APIBookmark {
-  final ServerClient client;
-
   APIBookmark(this.client);
+
+  final ServerClient client;
 
   Future<(List<Object>, String?)> list({String? list, String? page}) async {
     switch (client.software) {

@@ -9,9 +9,9 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
 class MbinAPIMicroblogs {
-  final ServerClient client;
-
   MbinAPIMicroblogs(this.client);
+
+  final ServerClient client;
 
   Future<PostListModel> list(
     FeedSource source, {

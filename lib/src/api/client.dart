@@ -5,16 +5,16 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class ServerClient {
-  http.Client httpClient;
-  ServerSoftware software;
-  String domain;
-  List<(String, int)>? _langCodeIdPairs;
-
   ServerClient({
     required this.httpClient,
     required this.software,
     required this.domain,
   });
+
+  http.Client httpClient;
+  ServerSoftware software;
+  String domain;
+  List<(String, int)>? _langCodeIdPairs;
 
   Future<http.Response> get(
     String path, {

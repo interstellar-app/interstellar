@@ -22,16 +22,16 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityScreen extends StatefulWidget {
-  final int communityId;
-  final DetailedCommunityModel? initData;
-  final void Function(DetailedCommunityModel)? onUpdate;
-
   const CommunityScreen(
     @PathParam('communityId') this.communityId, {
     super.key,
     this.initData,
     this.onUpdate,
   });
+
+  final int communityId;
+  final DetailedCommunityModel? initData;
+  final void Function(DetailedCommunityModel)? onUpdate;
 
   @override
   State<CommunityScreen> createState() => _CommunityScreenState();

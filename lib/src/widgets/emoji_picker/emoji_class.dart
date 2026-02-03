@@ -3,11 +3,11 @@ import 'package:interstellar/src/utils/trie.dart';
 import 'package:interstellar/src/widgets/emoji_picker/emojis.g.dart';
 
 class Emoji {
+  const Emoji(this.unicode, this.label, this.group);
+
   final String unicode;
   final String label;
   final int group;
-
-  const Emoji(this.unicode, this.label, this.group);
 }
 
 List<List<Emoji>> searchEmojis(String term) {

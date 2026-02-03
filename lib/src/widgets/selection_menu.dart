@@ -2,13 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class SelectionMenuItem<T> {
-  final T value;
-  final String title;
-  final IconData? icon;
-  final Color? iconColor;
-  final String? subtitle;
-  final List<SelectionMenuItem<T>>? subItems;
-
   const SelectionMenuItem({
     required this.value,
     required this.title,
@@ -18,15 +11,22 @@ class SelectionMenuItem<T> {
     this.subItems,
   });
 
+  final T value;
+  final String title;
+  final IconData? icon;
+  final Color? iconColor;
+  final String? subtitle;
+  final List<SelectionMenuItem<T>>? subItems;
+
   SelectionMenu<T>? get subItemsSelectionMenu =>
       subItems == null ? null : SelectionMenu<T>(title, subItems!);
 }
 
 class SelectionMenu<T> {
+  const SelectionMenu(this.title, this.options);
+
   final String title;
   final List<SelectionMenuItem<T>> options;
-
-  const SelectionMenu(this.title, this.options);
 
   Future<T?> askSelection(BuildContext context, T? oldSelection) async =>
       showModalBottomSheet<T>(

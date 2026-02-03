@@ -280,14 +280,14 @@ void newFeed(BuildContext context) {
 
 @RoutePage()
 class EditFeedScreen extends StatefulWidget {
-  final String? feed;
-  final Feed? feedData;
-
   const EditFeedScreen({
     @PathParam('feed') required this.feed,
     this.feedData,
     super.key,
   });
+
+  final String? feed;
+  final Feed? feedData;
 
   @override
   State<EditFeedScreen> createState() => _EditFeedScreenState();

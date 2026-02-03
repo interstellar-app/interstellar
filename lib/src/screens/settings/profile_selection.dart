@@ -194,16 +194,16 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
 @RoutePage()
 class EditProfileScreen extends StatefulWidget {
-  final String? profile;
-  final List<String> profileList;
-  final ProfileOptional? importProfile;
-
   const EditProfileScreen({
     required this.profile,
     required this.profileList,
     this.importProfile,
     super.key,
   });
+
+  final String? profile;
+  final List<String> profileList;
+  final ProfileOptional? importProfile;
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();

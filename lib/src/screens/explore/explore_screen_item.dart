@@ -23,11 +23,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class ExploreScreenItem extends StatelessWidget {
-  final dynamic item;
-  final void Function(dynamic newValue) onUpdate;
-  final void Function()? onTap;
-  final Widget? button;
-
   const ExploreScreenItem(
     this.item,
     this.onUpdate, {
@@ -35,6 +30,11 @@ class ExploreScreenItem extends StatelessWidget {
     this.onTap,
     this.button,
   });
+
+  final dynamic item;
+  final void Function(dynamic newValue) onUpdate;
+  final void Function()? onTap;
+  final Widget? button;
 
   @override
   Widget build(BuildContext context) {

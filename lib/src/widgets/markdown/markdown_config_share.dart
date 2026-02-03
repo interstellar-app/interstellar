@@ -55,9 +55,9 @@ class ConfigShareMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class ConfigShareWidget extends StatefulWidget {
-  final String text;
-
   const ConfigShareWidget({required this.text, super.key});
+
+  final String text;
 
   @override
   State<ConfigShareWidget> createState() => _ConfigShareWidgetState();

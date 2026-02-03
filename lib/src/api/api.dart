@@ -18,6 +18,22 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class API {
+  API(this.client)
+    : comments = APIComments(client),
+      domains = MbinAPIDomains(client),
+      threads = APIThreads(client),
+      community = APICommunity(client),
+      communityModeration = APICommunityModeration(client),
+      feed = APIFeed(client),
+      messages = APIMessages(client),
+      moderation = APIModeration(client),
+      notifications = APINotifications(client),
+      microblogs = MbinAPIMicroblogs(client),
+      search = APISearch(client),
+      users = APIUsers(client),
+      bookmark = APIBookmark(client),
+      images = APIImages(client);
+
   final ServerClient client;
 
   final APIComments comments;
@@ -34,22 +50,6 @@ class API {
   final APIUsers users;
   final APIBookmark bookmark;
   final APIImages images;
-
-  API(this.client)
-    : comments = APIComments(client),
-      domains = MbinAPIDomains(client),
-      threads = APIThreads(client),
-      community = APICommunity(client),
-      communityModeration = APICommunityModeration(client),
-      feed = APIFeed(client),
-      messages = APIMessages(client),
-      moderation = APIModeration(client),
-      notifications = APINotifications(client),
-      microblogs = MbinAPIMicroblogs(client),
-      search = APISearch(client),
-      users = APIUsers(client),
-      bookmark = APIBookmark(client),
-      images = APIImages(client);
 }
 
 Future<ServerSoftware?> getServerSoftware(String server) async {

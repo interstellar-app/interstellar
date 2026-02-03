@@ -33,11 +33,6 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 @RoutePage()
 class FeedScreen extends StatefulWidget {
-  final FeedAggregator? feed;
-  final Widget? details;
-  final DetailedCommunityModel? createPostCommunity;
-  final ScrollController? scrollController;
-
   const FeedScreen({
     super.key,
     this.feed,
@@ -45,6 +40,11 @@ class FeedScreen extends StatefulWidget {
     this.createPostCommunity,
     this.scrollController,
   });
+
+  final FeedAggregator? feed;
+  final Widget? details;
+  final DetailedCommunityModel? createPostCommunity;
+  final ScrollController? scrollController;
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -649,14 +649,6 @@ SelectionMenu<FeedSource> feedFilterSelect(BuildContext context) =>
     );
 
 class FeedScreenBody extends StatefulWidget {
-  final FeedAggregator feed;
-  final FeedSort sort;
-  final FeedView view;
-  final Widget? details;
-  final bool userCanModerate;
-  final bool hideReadPosts;
-  final bool isActive;
-
   const FeedScreenBody({
     required this.feed,
     required this.sort,
@@ -667,6 +659,13 @@ class FeedScreenBody extends StatefulWidget {
     this.hideReadPosts = false,
     this.isActive = false,
   });
+  final FeedAggregator feed;
+  final FeedSort sort;
+  final FeedView view;
+  final Widget? details;
+  final bool userCanModerate;
+  final bool hideReadPosts;
+  final bool isActive;
 
   @override
   State<FeedScreenBody> createState() => _FeedScreenBodyState();

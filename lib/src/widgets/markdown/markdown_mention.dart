@@ -11,6 +11,8 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 
 class MentionMarkdownSyntax extends md.InlineSyntax {
+  MentionMarkdownSyntax() : super(_mentionPattern);
+
   /*
     Should match the following patterns:
 
@@ -49,8 +51,6 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
   static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
 
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
-
-  MentionMarkdownSyntax() : super(_mentionPattern);
 
   @override
   bool tryMatch(md.InlineParser parser, [int? startMatchPos]) {
@@ -103,9 +103,9 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
 }
 
 class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  final String originInstance;
-
   MentionMarkdownBuilder({required this.originInstance});
+
+  final String originInstance;
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
@@ -123,10 +123,10 @@ class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class MentionWidget extends StatefulWidget {
+  const MentionWidget(this.name, this.originInstance, {super.key});
+
   final String name;
   final String originInstance;
-
-  const MentionWidget(this.name, this.originInstance, {super.key});
 
   @override
   State<MentionWidget> createState() => MentionWidgetState();

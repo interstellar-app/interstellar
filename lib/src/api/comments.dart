@@ -66,9 +66,9 @@ const Map<PostType, String> _postTypeMbinComment = {
 };
 
 class APIComments {
-  final ServerClient client;
-
   APIComments(this.client);
+
+  final ServerClient client;
 
   Future<CommentListModel> list(
     PostType postType,

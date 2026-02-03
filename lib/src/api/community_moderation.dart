@@ -6,9 +6,9 @@ import 'package:interstellar/src/utils/utils.dart';
 enum ReportStatus { any, approved, pending, rejected }
 
 class APICommunityModeration {
-  final ServerClient client;
-
   APICommunityModeration(this.client);
+
+  final ServerClient client;
 
   Future<CommunityReportListModel> listReports(
     int communityId, {

@@ -38,16 +38,16 @@ enum UserFeedType { thread, microblog, comment, reply, follower, following }
 
 @RoutePage()
 class UserScreen extends StatefulWidget {
-  final int userId;
-  final DetailedUserModel? initData;
-  final void Function(DetailedUserModel)? onUpdate;
-
   const UserScreen(
     @PathParam('userId') this.userId, {
     super.key,
     this.initData,
     this.onUpdate,
   });
+
+  final int userId;
+  final DetailedUserModel? initData;
+  final void Function(DetailedUserModel)? onUpdate;
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -507,11 +507,6 @@ class _UserScreenState extends State<UserScreen> {
 }
 
 class UserScreenBody extends StatefulWidget {
-  final UserFeedType mode;
-  final FeedSort sort;
-  final DetailedUserModel? data;
-  final bool isActive;
-
   const UserScreenBody({
     required this.mode,
     required this.sort,
@@ -519,6 +514,10 @@ class UserScreenBody extends StatefulWidget {
     this.data,
     this.isActive = false,
   });
+  final UserFeedType mode;
+  final FeedSort sort;
+  final DetailedUserModel? data;
+  final bool isActive;
 
   @override
   State<UserScreenBody> createState() => _UserScreenBodyState();

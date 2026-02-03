@@ -19,16 +19,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class MarkdownEditor extends StatefulWidget {
-  final TextEditingController controller;
-  final String? originInstance;
-  final DraftAutoController draftController;
-  final void Function(String)? onChanged;
-  final bool? enabled;
-  final String? label;
-  final bool? draftDisableAutoLoad;
-  final bool autoFocus;
-  final bool inline;
-
   const MarkdownEditor(
     this.controller, {
     required this.originInstance,
@@ -41,6 +31,16 @@ class MarkdownEditor extends StatefulWidget {
     this.inline = true,
     super.key,
   });
+
+  final TextEditingController controller;
+  final String? originInstance;
+  final DraftAutoController draftController;
+  final void Function(String)? onChanged;
+  final bool? enabled;
+  final String? label;
+  final bool? draftDisableAutoLoad;
+  final bool autoFocus;
+  final bool inline;
 
   @override
   State<MarkdownEditor> createState() => _MarkdownEditorState();
@@ -578,12 +578,6 @@ List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
 ];
 
 class _MarkdownEditorActionInfo {
-  final _MarkdownEditorActionBase action;
-  final IconData icon;
-  final String tooltip;
-  final SingleActivator? shortcut;
-  final bool showDivider;
-
   const _MarkdownEditorActionInfo({
     required this.action,
     required this.icon,
@@ -591,6 +585,12 @@ class _MarkdownEditorActionInfo {
     this.shortcut,
     this.showDivider = false,
   });
+
+  final _MarkdownEditorActionBase action;
+  final IconData icon;
+  final String tooltip;
+  final SingleActivator? shortcut;
+  final bool showDivider;
 }
 
 abstract class _MarkdownEditorActionBase {
@@ -618,22 +618,22 @@ abstract class _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorData {
-  String text;
-  int selectionStart;
-  int selectionEnd;
-  String selectionText;
-
   _MarkdownEditorData({
     required this.text,
     required this.selectionStart,
     required this.selectionEnd,
   }) : selectionText = text.substring(selectionStart, selectionEnd);
+
+  String text;
+  int selectionStart;
+  int selectionEnd;
+  String selectionText;
 }
 
 class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
-  final String chars;
-
   const _MarkdownEditorActionReplace(this.chars);
+
+  final String chars;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -652,11 +652,11 @@ class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
-  final String startChars;
-  final String endChars;
-
   const _MarkdownEditorActionInline(this.startChars, [String? endChars])
     : endChars = endChars ?? startChars;
+
+  final String startChars;
+  final String endChars;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -696,10 +696,10 @@ class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
+  const _MarkdownEditorActionBlock(this.startChars, [this.endChars = '']);
+
   final String startChars;
   final String endChars;
-
-  const _MarkdownEditorActionBlock(this.startChars, [this.endChars = '']);
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -741,9 +741,9 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
-  final bool isImage;
-
   const _MarkdownEditorActionLink();
+
+  final bool isImage;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -802,9 +802,9 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
-  final BuildContext context;
-
   const _MarkdownEditorActionImage({required this.context});
+
+  final BuildContext context;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -873,9 +873,9 @@ class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
-  final String sectionText;
-
   const _MarkdownEditorActionInsertSection(this.sectionText);
+
+  final String sectionText;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -1003,15 +1003,15 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorDraftItem extends StatefulWidget {
-  final Draft draft;
-  final void Function() onApply;
-  final String originInstance;
-
   const _MarkdownEditorDraftItem({
     required this.draft,
     required this.onApply,
     required this.originInstance,
   });
+
+  final Draft draft;
+  final void Function() onApply;
+  final String originInstance;
 
   @override
   State<_MarkdownEditorDraftItem> createState() =>

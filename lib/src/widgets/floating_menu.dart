@@ -4,16 +4,16 @@ import 'package:interstellar/src/widgets/actions.dart';
 import 'package:provider/provider.dart';
 
 class FloatingMenu extends StatefulWidget {
-  final ActionItem? tapAction;
-  final ActionItem? holdAction;
-  final List<ActionItem> menuActions;
-
   const FloatingMenu({
     required this.tapAction,
     required this.holdAction,
     required this.menuActions,
     super.key,
   });
+
+  final ActionItem? tapAction;
+  final ActionItem? holdAction;
+  final List<ActionItem> menuActions;
 
   @override
   State<FloatingMenu> createState() => FloatingMenuState();

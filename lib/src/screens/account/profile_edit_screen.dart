@@ -16,10 +16,10 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ProfileEditScreen extends StatefulWidget {
+  const ProfileEditScreen(this.user, this.onUpdate, {super.key});
+
   final DetailedUserModel user;
   final void Function(DetailedUserModel) onUpdate;
-
-  const ProfileEditScreen(this.user, this.onUpdate, {super.key});
 
   @override
   State<ProfileEditScreen> createState() => _ProfileEditScreen();

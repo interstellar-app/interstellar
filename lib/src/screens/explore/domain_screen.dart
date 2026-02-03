@@ -13,11 +13,11 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class DomainScreen extends StatefulWidget {
+  const DomainScreen(this.domainId, {super.key, this.initData, this.onUpdate});
+
   final int domainId;
   final DomainModel? initData;
   final void Function(DomainModel)? onUpdate;
-
-  const DomainScreen(this.domainId, {super.key, this.initData, this.onUpdate});
 
   @override
   State<DomainScreen> createState() => _DomainScreenState();

@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
 
 class TextEditor extends StatelessWidget {
-  final TextEditingController controller;
-  final TextInputType? keyboardType;
-  final String? label;
-  final String? hint;
-  final void Function(String)? onChanged;
-  final bool? enabled;
-  final int? maxLength;
-  final List<String>? autofillHints;
-
   const TextEditor(
     this.controller, {
     this.keyboardType,
@@ -21,6 +12,15 @@ class TextEditor extends StatelessWidget {
     this.autofillHints,
     super.key,
   });
+
+  final TextEditingController controller;
+  final TextInputType? keyboardType;
+  final String? label;
+  final String? hint;
+  final void Function(String)? onChanged;
+  final bool? enabled;
+  final int? maxLength;
+  final List<String>? autofillHints;
 
   @override
   Widget build(BuildContext context) {

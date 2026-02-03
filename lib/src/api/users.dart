@@ -12,9 +12,9 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
 class APIUsers {
-  final ServerClient client;
-
   APIUsers(this.client);
+
+  final ServerClient client;
 
   Future<DetailedUserListModel> list({
     String? page,

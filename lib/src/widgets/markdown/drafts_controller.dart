@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 
 class DraftAutoController {
-  final Draft? Function() read;
-  final Future<void> Function(String body) save;
-  final Future<void> Function() discard;
-
   const DraftAutoController({
     required this.read,
     required this.save,
     required this.discard,
   });
+
+  final Draft? Function() read;
+  final Future<void> Function(String body) save;
+  final Future<void> Function() discard;
 }
 
 class DraftsController with ChangeNotifier {
-  List<Draft> _drafts = [];
-  List<Draft> get drafts => _drafts;
-
   DraftsController() {
     _init();
   }
+
+  List<Draft> _drafts = [];
+  List<Draft> get drafts => _drafts;
 
   Future<void> _init() async {
     _drafts = await database.select(database.drafts).get();

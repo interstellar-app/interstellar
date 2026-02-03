@@ -3,9 +3,9 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 
 class MbinAPIDomains {
-  final ServerClient client;
-
   MbinAPIDomains(this.client);
+
+  final ServerClient client;
 
   Future<DomainListModel> list({
     String? page,

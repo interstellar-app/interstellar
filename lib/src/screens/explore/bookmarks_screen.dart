@@ -153,12 +153,12 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
 
 @RoutePage()
 class BookmarksScreen extends StatefulWidget {
-  final String? bookmarkList;
-
   const BookmarksScreen({
     super.key,
     @PathParam('bookmarkList') this.bookmarkList,
   });
+
+  final String? bookmarkList;
 
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();

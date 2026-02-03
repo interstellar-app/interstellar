@@ -14,16 +14,16 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityOwnerPanelScreen extends StatefulWidget {
-  final int communityId;
-  final DetailedCommunityModel initData;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityOwnerPanelScreen({
     @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
     super.key,
   });
+
+  final int communityId;
+  final DetailedCommunityModel initData;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityOwnerPanelScreen> createState() =>
@@ -76,15 +76,14 @@ class _CommunityOwnerPanelScreenState extends State<CommunityOwnerPanelScreen> {
 }
 
 class CommunityOwnerPanelGeneral extends StatefulWidget {
-  // Data is null for community creation screen
-  final DetailedCommunityModel? data;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityOwnerPanelGeneral({
     required this.data,
     required this.onUpdate,
     super.key,
   });
+  // Data is null for community creation screen
+  final DetailedCommunityModel? data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityOwnerPanelGeneral> createState() =>
@@ -222,14 +221,13 @@ class _CommunityOwnerPanelGeneralState
 }
 
 class CommunityOwnerPanelModerators extends StatefulWidget {
-  final DetailedCommunityModel data;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityOwnerPanelModerators({
     required this.data,
     required this.onUpdate,
     super.key,
   });
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityOwnerPanelModerators> createState() =>
@@ -367,14 +365,13 @@ class _CommunityOwnerPanelModeratorsState
 }
 
 class CommunityOwnerPanelDeletion extends StatefulWidget {
-  final DetailedCommunityModel data;
-  final void Function(DetailedCommunityModel) onUpdate;
-
   const CommunityOwnerPanelDeletion({
     required this.data,
     required this.onUpdate,
     super.key,
   });
+  final DetailedCommunityModel data;
+  final void Function(DetailedCommunityModel) onUpdate;
 
   @override
   State<CommunityOwnerPanelDeletion> createState() =>
@@ -432,9 +429,8 @@ class _CommunityOwnerPanelDeletionState
 }
 
 class CommunityOwnerPanelDeletionDialog extends StatefulWidget {
-  final DetailedCommunityModel data;
-
   const CommunityOwnerPanelDeletionDialog({required this.data, super.key});
+  final DetailedCommunityModel data;
 
   @override
   State<CommunityOwnerPanelDeletionDialog> createState() =>

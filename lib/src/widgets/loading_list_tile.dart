@@ -18,13 +18,6 @@ class _LoadingTileIndicator extends StatelessWidget {
 }
 
 class LoadingListTile extends StatefulWidget {
-  final Future<void> Function()? onTap;
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
-  final Widget? trailing;
-  final bool enabled;
-
   const LoadingListTile({
     required this.onTap,
     this.leading,
@@ -34,6 +27,13 @@ class LoadingListTile extends StatefulWidget {
     this.enabled = true,
     super.key,
   });
+
+  final Future<void> Function()? onTap;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
+  final bool enabled;
 
   @override
   State<LoadingListTile> createState() => _LoadingListTileState();

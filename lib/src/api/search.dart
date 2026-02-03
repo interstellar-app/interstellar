@@ -4,9 +4,9 @@ import 'package:interstellar/src/models/search.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 
 class APISearch {
-  final ServerClient client;
-
   APISearch(this.client);
+
+  final ServerClient client;
 
   Future<SearchListModel> get({
     String? page,

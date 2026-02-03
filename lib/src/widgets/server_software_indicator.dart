@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/server.dart';
 
 class ServerSoftwareIndicator extends StatelessWidget {
-  final String label;
-  final ServerSoftware software;
-
   const ServerSoftwareIndicator({
     required this.label,
     required this.software,
     super.key,
   });
+
+  final String label;
+  final ServerSoftware software;
 
   @override
   Widget build(BuildContext context) {

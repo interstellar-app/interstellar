@@ -6,23 +6,14 @@ import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ContextMenuAction {
+  const ContextMenuAction({this.child, this.icon, this.onTap});
+
   final Widget? child;
   final IconData? icon;
   final Future<void> Function()? onTap;
-
-  const ContextMenuAction({this.child, this.icon, this.onTap});
 }
 
 class ContextMenuItem {
-  final String? title;
-  final String? subtitle;
-  final Widget? child;
-  final IconData? icon;
-  final double iconFill;
-  final Future<void> Function()? onTap;
-  final List<ContextMenuItem>? subItems;
-  final Widget? trailing;
-
   const ContextMenuItem({
     this.title,
     this.subtitle,
@@ -34,17 +25,20 @@ class ContextMenuItem {
     this.trailing,
   });
 
+  final String? title;
+  final String? subtitle;
+  final Widget? child;
+  final IconData? icon;
+  final double iconFill;
+  final Future<void> Function()? onTap;
+  final List<ContextMenuItem>? subItems;
+  final Widget? trailing;
+
   ContextMenu? get subItemsContextMenu =>
       subItems == null ? null : ContextMenu(title: title, items: subItems!);
 }
 
 class ContextMenu {
-  final String? title;
-  final List<ContextMenuAction> actions;
-  final List<Uri> links;
-  final List<ContextMenuItem> items;
-  final double actionSpacing;
-
   const ContextMenu({
     this.title,
     this.actions = const [],
@@ -52,6 +46,12 @@ class ContextMenu {
     this.items = const [],
     this.actionSpacing = 12,
   });
+
+  final String? title;
+  final List<ContextMenuAction> actions;
+  final List<Uri> links;
+  final List<ContextMenuItem> items;
+  final double actionSpacing;
 
   Future<void> openMenu(BuildContext context) async => showModalBottomSheet(
     context: context,
