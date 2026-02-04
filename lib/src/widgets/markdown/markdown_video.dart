@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
-import 'package:markdown/markdown.dart' as md;
 import 'package:interstellar/src/widgets/video.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class VideoMarkdownSyntax extends md.InlineSyntax {
   VideoMarkdownSyntax() : super(r'!\[video\/mp4\]\((https:\/\/[^\s]+\.mp4)\)');
@@ -14,6 +14,8 @@ class VideoMarkdownSyntax extends md.InlineSyntax {
 }
 
 class YoutubeEmbedSyntax extends md.InlineSyntax {
+  YoutubeEmbedSyntax() : super(_youtubePattern);
+
   //from here https://stackoverflow.com/a/61033353
   static const _youtubePattern =
       r'(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})';
@@ -21,14 +23,8 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
   static const String _mdLinkPattern =
       r'\[(.*?)\]\(\s*' + _youtubePattern + r'(?:\s*".*?")?\s*\)';
 
-  static final _mdLinkPatternRegExp = RegExp(
-    _mdLinkPattern,
-    multiLine: true,
-    caseSensitive: true,
-  );
+  static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
-
-  YoutubeEmbedSyntax() : super(_youtubePattern);
 
   bool _isMarkdownLink = false;
 
@@ -37,7 +33,7 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
     startMatchPos ??= parser.pos;
 
     _isMarkdownLink = String.fromCharCode(parser.charAt(parser.pos)) == '[';
-    bool isAutoLink = String.fromCharCode(parser.charAt(parser.pos)) == '<';
+    final isAutoLink = String.fromCharCode(parser.charAt(parser.pos)) == '<';
     if (isAutoLink) {
       startMatchPos += 1;
     }
@@ -78,20 +74,22 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
     final anchor = md.Element.text('a', match[_isMarkdownLink ? 1 : 0]!);
     anchor.attributes['href'] = link;
 
-    parser.addNode(anchor);
+    parser
+      ..addNode(anchor)
+      ..addNode(md.Element.text('video', link));
 
-    parser.addNode(md.Element.text('video', link));
     return true;
   }
 }
 
 class VideoMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  final bool enableBlur;
   VideoMarkdownBuilder({this.enableBlur = false});
+
+  final bool enableBlur;
 
   @override
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    var textContent = element.textContent;
+    final textContent = element.textContent;
 
     return VideoPlayer(Uri.parse(textContent), enableBlur: enableBlur);
   }

@@ -4,9 +4,9 @@ import 'package:interstellar/src/models/search.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 
 class APISearch {
-  final ServerClient client;
-
   APISearch(this.client);
+
+  final ServerClient client;
 
   Future<SearchListModel> get({
     String? page,
@@ -50,10 +50,10 @@ class APISearch {
 
         final json = response.bodyJson;
         String? nextPage;
-        if ((json['comments'] as List<dynamic>).isNotEmpty ||
-            (json['posts'] as List<dynamic>).isNotEmpty ||
-            (json['communities'] as List<dynamic>).isNotEmpty ||
-            (json['users'] as List<dynamic>).isNotEmpty) {
+        if ((json['comments']! as List<dynamic>).isNotEmpty ||
+            (json['posts']! as List<dynamic>).isNotEmpty ||
+            (json['communities']! as List<dynamic>).isNotEmpty ||
+            (json['users']! as List<dynamic>).isNotEmpty) {
           nextPage = (int.parse(page ?? '1') + 1).toString();
         }
 
@@ -83,10 +83,10 @@ class APISearch {
 
         final json = response.bodyJson;
         String? nextPage;
-        if ((json['comments'] as List<dynamic>).isNotEmpty ||
-            (json['posts'] as List<dynamic>).isNotEmpty ||
-            (json['communities'] as List<dynamic>).isNotEmpty ||
-            (json['users'] as List<dynamic>).isNotEmpty) {
+        if ((json['comments']! as List<dynamic>).isNotEmpty ||
+            (json['posts']! as List<dynamic>).isNotEmpty ||
+            (json['communities']! as List<dynamic>).isNotEmpty ||
+            (json['users']! as List<dynamic>).isNotEmpty) {
           nextPage = (int.parse(page ?? '1') + 1).toString();
         }
 

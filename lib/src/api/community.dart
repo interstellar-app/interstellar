@@ -75,9 +75,9 @@ enum APIExploreSort {
 }
 
 class APICommunity {
-  final ServerClient client;
-
   APICommunity(this.client);
+
+  final ServerClient client;
 
   Future<DetailedCommunityListModel> list({
     String? page,
@@ -132,7 +132,7 @@ class APICommunity {
           final json = response.bodyJson;
 
           json['next_page'] = lemmyCalcNextIntPage(
-            json['communities'] as List<dynamic>,
+            json['communities']! as List<dynamic>,
             page,
           );
 
@@ -162,7 +162,7 @@ class APICommunity {
           final json = response.bodyJson;
 
           json['next_page'] = lemmyCalcNextIntPage(
-            json['communities'] as List<dynamic>,
+            json['communities']! as List<dynamic>,
             page,
           );
 
@@ -234,7 +234,7 @@ class APICommunity {
         final response = await client.get(path, queryParams: query);
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -258,17 +258,17 @@ class APICommunity {
 
       case ServerSoftware.lemmy:
         const path = '/community';
-        final query = {'name': communityName.toString()};
+        final query = {'name': communityName};
 
         final response = await client.get(path, queryParams: query);
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
         const path = '/community';
-        final query = {'name': communityName.toString()};
+        final query = {'name': communityName};
 
         final response = await client.get(path, queryParams: query);
 
@@ -295,7 +295,7 @@ class APICommunity {
         );
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -328,7 +328,7 @@ class APICommunity {
         );
 
         return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view'] as JsonMap,
+          response.bodyJson['community_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:

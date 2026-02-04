@@ -1,34 +1,33 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/api/feed_source.dart';
+import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
+import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
-import 'package:interstellar/src/widgets/subscription_button.dart';
-import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
+import 'package:interstellar/src/widgets/star_button.dart';
+import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_screen.dart';
 import 'package:material_symbols_icons/symbols.dart';
-
 import 'package:provider/provider.dart';
 
 Future<void> showUserMenu(
   BuildContext context, {
   required DetailedUserModel user,
-  Function(DetailedUserModel)? update,
+  void Function(DetailedUserModel)? update,
   bool navigateOption = false,
 }) async {
   final ac = context.read<AppController>();
 
   final isMe =
       ac.isLoggedIn &&
-      whenLoggedIn(context, true, matchesUsername: user.name) == true;
+      (whenLoggedIn(context, true, matchesUsername: user.name) ?? false);
   final globalName = user.name.contains('@')
       ? '@${user.name}'
       : '@${user.name}@${ac.instanceHost}';
@@ -41,7 +40,7 @@ Future<void> showUserMenu(
             isSubscribed: user.isFollowedByUser,
             subscriptionCount: user.followersCount,
             onSubscribe: (selected) async {
-              var newValue = await ac.api.users.follow(user.id, selected);
+              final newValue = await ac.api.users.follow(user.id, selected);
               if (update != null) {
                 update(newValue);
               }
@@ -70,7 +69,7 @@ Future<void> showUserMenu(
             icon: const Icon(Symbols.block_rounded),
             style: ButtonStyle(
               foregroundColor: WidgetStatePropertyAll(
-                user.isBlockedByUser == true
+                user.isBlockedByUser ?? false
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).disabledColor,
               ),
@@ -81,11 +80,7 @@ Future<void> showUserMenu(
         ContextMenuAction(
           icon: Symbols.mail_rounded,
           onTap: () => context.router.push(
-            MessageThreadRoute(
-              threadId: null,
-              userId: user.id,
-              otherUser: user,
-            ),
+            MessageThreadRoute(userId: user.id, otherUser: user),
           ),
         ),
     ],
@@ -118,17 +113,15 @@ Future<void> showUserMenu(
         ),
       ContextMenuItem(
         title: l(context).tags,
-        onTap: () async {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => TagsList(
-              username: user.name,
-              onUpdate: (tags) async {
-                await ac.reassignTagsToUser(tags, user.name);
-              },
-            ),
-          );
-        },
+        onTap: () async => showModalBottomSheet<void>(
+          context: context,
+          builder: (context) => TagsList(
+            username: user.name,
+            onUpdate: (tags) async {
+              await ac.reassignTagsToUser(tags, user.name);
+            },
+          ),
+        ),
       ),
       if (ac.serverSoftware == ServerSoftware.lemmy)
         ContextMenuItem(

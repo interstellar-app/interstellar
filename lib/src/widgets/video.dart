@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/share.dart';
+import 'package:interstellar/src/widgets/blur.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -9,9 +14,6 @@ import 'package:media_kit_video/media_kit_video_controls/media_kit_video_control
 import 'package:provider/provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart'
     as youtube_explode_dart;
-import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/widgets/wrapper.dart';
-import 'package:interstellar/src/widgets/blur.dart';
 
 bool isSupportedYouTubeVideo(Uri link) {
   return [
@@ -23,10 +25,10 @@ bool isSupportedYouTubeVideo(Uri link) {
 }
 
 class VideoPlayer extends StatefulWidget {
+  const VideoPlayer(this.uri, {super.key, this.enableBlur = false});
+
   final Uri uri;
   final bool enableBlur;
-
-  const VideoPlayer(this.uri, {super.key, this.enableBlur = false});
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();
@@ -60,21 +62,26 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
         if (!mounted) return;
 
-        // Use best muxed stream if available, else use best separate video and audio streams
-        // TODO: calculate best quality for device based on screen size and data saver mode, also add manual stream selection
+        // Use best muxed stream if available, else use best separate video and
+        // audio streams
+        //
+        // TODO(jwr1): calculate best quality for device based on screen size
+        // and data saver mode, also add manual stream selection
         if (manifest.muxed.isNotEmpty) {
           final muxedStream = manifest.muxed.bestQuality;
-          player.open(Media(muxedStream.url.toString()), play: autoPlay);
+          await player.open(Media(muxedStream.url.toString()), play: autoPlay);
         } else {
           final videoStream = manifest.video.bestQuality;
           final audioStream = manifest.audio.withHighestBitrate();
           final media = Media(videoStream.url.toString());
 
-          player.open(media, play: _isPlaying);
-          player.setAudioTrack(AudioTrack.uri(audioStream.url.toString()));
+          await player.open(media, play: _isPlaying);
+          await player.setAudioTrack(
+            AudioTrack.uri(audioStream.url.toString()),
+          );
         }
       } else {
-        player.open(Media(widget.uri.toString()), play: _isPlaying);
+        await player.open(Media(widget.uri.toString()), play: _isPlaying);
       }
     } catch (e) {
       error = e.toString();
@@ -84,12 +91,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _initController();
+    unawaited(_initController());
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement top buttons by setting a MaterialVideoControls & MaterialDesktopVideoControlsTheme
+    // TODO(jwr1): implement top buttons by setting a
+    // MaterialVideoControls and MaterialDesktopVideoControlsTheme
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 9.0 / 16.0,
@@ -97,7 +105,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         children: [
           if (error != null)
             DecoratedBox(
-              decoration: BoxDecoration(color: Colors.black),
+              decoration: const BoxDecoration(color: Colors.black),
               child: Center(child: Text(error!)),
             ),
           if (error == null)
@@ -111,7 +119,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                       onPressed: () {
                         setState(() {
                           _isPlaying = !_isPlaying;
-                          player.playOrPause();
+                          unawaited(player.playOrPause());
                         });
                       },
                       icon: const Icon(Symbols.play_arrow_rounded, fill: 1),
@@ -127,7 +135,9 @@ class _VideoPlayerState extends State<VideoPlayer> {
                     children: [
                       media_kit_video_controls.AdaptiveVideoControls(state),
                       if (!_isPlaying)
-                        Center(child: MaterialPlayOrPauseButton(iconSize: 56)),
+                        const Center(
+                          child: MaterialPlayOrPauseButton(iconSize: 56),
+                        ),
                       if (!state.isFullscreen())
                         Align(
                           alignment: Alignment.topRight,
@@ -135,8 +145,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               LoadingIconButton(
-                                onPressed: () async =>
-                                    await shareUri(widget.uri),
+                                onPressed: () async => shareUri(widget.uri),
                                 icon: const Icon(Symbols.share_rounded),
                               ),
                             ],
@@ -155,7 +164,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void dispose() {
     yt?.close();
-    player.dispose();
+    unawaited(player.dispose());
     super.dispose();
   }
 
@@ -164,7 +173,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!(ModalRoute.of(context)?.isCurrent ?? false)) {
-        player.pause();
+        unawaited(player.pause());
       }
     });
   }

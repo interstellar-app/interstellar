@@ -1,9 +1,9 @@
 import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/comments.dart';
-import 'package:interstellar/src/api/domains.dart';
-import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/api/community.dart';
+import 'package:interstellar/src/api/community_moderation.dart';
+import 'package:interstellar/src/api/domains.dart';
 import 'package:interstellar/src/api/feed.dart';
 import 'package:interstellar/src/api/images.dart';
 import 'package:interstellar/src/api/messages.dart';
@@ -18,6 +18,22 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class API {
+  API(this.client)
+    : comments = APIComments(client),
+      domains = MbinAPIDomains(client),
+      threads = APIThreads(client),
+      community = APICommunity(client),
+      communityModeration = APICommunityModeration(client),
+      feed = APIFeed(client),
+      messages = APIMessages(client),
+      moderation = APIModeration(client),
+      notifications = APINotifications(client),
+      microblogs = MbinAPIMicroblogs(client),
+      search = APISearch(client),
+      users = APIUsers(client),
+      bookmark = APIBookmark(client),
+      images = APIImages(client);
+
   final ServerClient client;
 
   final APIComments comments;
@@ -34,22 +50,6 @@ class API {
   final APIUsers users;
   final APIBookmark bookmark;
   final APIImages images;
-
-  API(this.client)
-    : comments = APIComments(client),
-      domains = MbinAPIDomains(client),
-      threads = APIThreads(client),
-      community = APICommunity(client),
-      communityModeration = APICommunityModeration(client),
-      feed = APIFeed(client),
-      messages = APIMessages(client),
-      moderation = APIModeration(client),
-      notifications = APINotifications(client),
-      microblogs = MbinAPIMicroblogs(client),
-      search = APISearch(client),
-      users = APIUsers(client),
-      bookmark = APIBookmark(client),
-      images = APIImages(client);
 }
 
 Future<ServerSoftware?> getServerSoftware(String server) async {
@@ -59,7 +59,7 @@ Future<ServerSoftware?> getServerSoftware(String server) async {
 
   try {
     return ServerSoftware.values.byName(
-      ((response.bodyJson['software'] as JsonMap)['name'] as String)
+      ((response.bodyJson['software']! as JsonMap)['name']! as String)
           .toLowerCase(),
     );
   } catch (_) {

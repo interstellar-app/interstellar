@@ -11,7 +11,7 @@ Future<String?> switchAccount(
   BuildContext context, [
   String? oldAccount,
 ]) async {
-  return await showModalBottomSheet(
+  return showModalBottomSheet<String>(
     context: context,
     builder: (BuildContext context) {
       return AccountSelectWidget(
@@ -26,7 +26,7 @@ Future<String?> selectAccountWithNone(
   BuildContext context, [
   String? oldAccount,
 ]) async {
-  return await showModalBottomSheet<String>(
+  return showModalBottomSheet<String>(
     context: context,
     builder: (BuildContext context) {
       return AccountSelectWidget(oldAccount: oldAccount, showNoneOption: true);
@@ -35,11 +35,6 @@ Future<String?> selectAccountWithNone(
 }
 
 class AccountSelectWidget extends StatefulWidget {
-  final bool showNoneOption;
-  final bool showAccountControls;
-  final bool onlyNonGuestAccounts;
-  final String? oldAccount;
-
   const AccountSelectWidget({
     this.showNoneOption = false,
     this.showAccountControls = false,
@@ -47,6 +42,11 @@ class AccountSelectWidget extends StatefulWidget {
     this.oldAccount,
     super.key,
   });
+
+  final bool showNoneOption;
+  final bool showAccountControls;
+  final bool onlyNonGuestAccounts;
+  final String? oldAccount;
 
   @override
   State<AccountSelectWidget> createState() => _AccountSelectWidgetState();
@@ -154,7 +154,7 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                 ListTile(
                   title: Text(l(context).addAccount),
                   leading: const Icon(Symbols.login_rounded),
-                  onTap: () => context.router.push(LoginSelectRoute()),
+                  onTap: () => context.router.push(const LoginSelectRoute()),
                 ),
               const SizedBox(height: 16),
             ],

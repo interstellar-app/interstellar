@@ -5,10 +5,10 @@ import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 
 class PostFlairsModal extends StatefulWidget {
   const PostFlairsModal({
-    super.key,
     required this.flairs,
     required this.availableFlairs,
     required this.onUpdate,
+    super.key,
   });
 
   final List<Tag> flairs;
@@ -73,7 +73,7 @@ class _PostFlairsModalState extends State<PostFlairsModal> {
                     }
                   },
                   controlAffinity: ListTileControlAffinity.leading,
-                  secondary: SizedBox(width: 28),
+                  secondary: const SizedBox(width: 28),
                 ),
               ),
             ],

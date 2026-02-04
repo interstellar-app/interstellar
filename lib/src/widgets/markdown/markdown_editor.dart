@@ -1,33 +1,24 @@
 import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/database/database.dart';
-import './markdown.dart';
 
 class MarkdownEditor extends StatefulWidget {
-  final TextEditingController controller;
-  final String? originInstance;
-  final DraftAutoController draftController;
-  final void Function(String)? onChanged;
-  final bool? enabled;
-  final String? label;
-  final bool? draftDisableAutoLoad;
-  final bool autoFocus;
-  final bool inline;
-
   const MarkdownEditor(
     this.controller, {
     required this.originInstance,
@@ -40,6 +31,16 @@ class MarkdownEditor extends StatefulWidget {
     this.inline = true,
     super.key,
   });
+
+  final TextEditingController controller;
+  final String? originInstance;
+  final DraftAutoController draftController;
+  final void Function(String)? onChanged;
+  final bool? enabled;
+  final String? label;
+  final bool? draftDisableAutoLoad;
+  final bool autoFocus;
+  final bool inline;
 
   @override
   State<MarkdownEditor> createState() => _MarkdownEditorState();
@@ -187,7 +188,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                                       ? ''
                                                       : ' (${readableShortcut(action.shortcut!)})'),
                                               style: TextButton.styleFrom(
-                                                shape: const LinearBorder(),
+                                                shape: LinearBorder.none,
                                               ),
                                             ),
                                           ),
@@ -219,7 +220,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                                         .add_reaction_rounded,
                                                   ),
                                                   style: TextButton.styleFrom(
-                                                    shape: const LinearBorder(),
+                                                    shape: LinearBorder.none,
                                                   ),
                                                 ),
                                             onSelect: (emoji) {
@@ -272,7 +273,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                               Symbols.share_rounded,
                                             ),
                                             style: TextButton.styleFrom(
-                                              shape: const LinearBorder(),
+                                              shape: LinearBorder.none,
                                             ),
                                             tooltip: l(context).configShare,
                                           ),
@@ -353,7 +354,6 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                   ],
                                 ),
                                 Flexible(
-                                  fit: FlexFit.loose,
                                   child: Builder(
                                     builder: (context) {
                                       return ListView(
@@ -410,7 +410,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
       bindings: <ShortcutActivator, VoidCallback>{
         const SingleActivator(LogicalKeyboardKey.enter): () =>
             execAction(const _MarkdownEditorActionEnter()),
-        for (var action in _actions(
+        for (final action in _actions(
           context,
         ).where((action) => action.shortcut != null))
           action.shortcut!: () => execAction(action.action),
@@ -494,7 +494,7 @@ List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
     showDivider: true,
   ),
   _MarkdownEditorActionInfo(
-    action: const _MarkdownEditorActionLink(),
+    action: const _MarkdownEditorActionLink(isImage: false),
     icon: Symbols.link_rounded,
     tooltip: l(context).markdownEditor_link,
     shortcut: const SingleActivator(LogicalKeyboardKey.keyK, control: true),
@@ -578,12 +578,6 @@ List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
 ];
 
 class _MarkdownEditorActionInfo {
-  final _MarkdownEditorActionBase action;
-  final IconData icon;
-  final String tooltip;
-  final SingleActivator? shortcut;
-  final bool showDivider;
-
   const _MarkdownEditorActionInfo({
     required this.action,
     required this.icon,
@@ -591,6 +585,12 @@ class _MarkdownEditorActionInfo {
     this.shortcut,
     this.showDivider = false,
   });
+
+  final _MarkdownEditorActionBase action;
+  final IconData icon;
+  final String tooltip;
+  final SingleActivator? shortcut;
+  final bool showDivider;
 }
 
 abstract class _MarkdownEditorActionBase {
@@ -618,22 +618,22 @@ abstract class _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorData {
-  String text;
-  int selectionStart;
-  int selectionEnd;
-  String selectionText;
-
   _MarkdownEditorData({
     required this.text,
     required this.selectionStart,
     required this.selectionEnd,
   }) : selectionText = text.substring(selectionStart, selectionEnd);
+
+  String text;
+  int selectionStart;
+  int selectionEnd;
+  String selectionText;
 }
 
 class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
-  final String chars;
-
   const _MarkdownEditorActionReplace(this.chars);
+
+  final String chars;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -652,11 +652,11 @@ class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
-  final String startChars;
-  final String endChars;
-
   const _MarkdownEditorActionInline(this.startChars, [String? endChars])
     : endChars = endChars ?? startChars;
+
+  final String startChars;
+  final String endChars;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -696,16 +696,16 @@ class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
+  const _MarkdownEditorActionBlock(this.startChars, [this.endChars = '']);
+
   final String startChars;
   final String endChars;
-
-  const _MarkdownEditorActionBlock(this.startChars, [this.endChars = '']);
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
-    _MarkdownEditorData line = getCurrentLine(input);
+    final line = getCurrentLine(input);
 
     if (line.selectionText.startsWith(startChars) &&
         line.selectionText.endsWith(endChars)) {
@@ -741,9 +741,9 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
-  final bool isImage;
+  const _MarkdownEditorActionLink({required this.isImage});
 
-  const _MarkdownEditorActionLink({this.isImage = false});
+  final bool isImage;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -802,22 +802,22 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
-  final BuildContext context;
-
   const _MarkdownEditorActionImage({required this.context});
+
+  final BuildContext context;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
-    final imageStartChar = '!';
+    const imageStartChar = '!';
 
-    final helpMessage = 'altr';
+    const helpMessage = 'altr';
 
     var text = input.text;
 
     if (input.selectionText.isEmpty) {
-      XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      String url = '';
+      var url = '';
       if (image != null && context.mounted) {
         url = await context.read<AppController>().api.images.uploadImage(
           store: context.read<AppController>().profile.defaultImageStore,
@@ -873,15 +873,15 @@ class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
-  final String sectionText;
-
   const _MarkdownEditorActionInsertSection(this.sectionText);
+
+  final String sectionText;
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
     var text = input.text;
 
-    int prefixNewlines = 2;
+    var prefixNewlines = 2;
     if (input.selectionStart - 1 >= 0 &&
         text[input.selectionStart - 1] == '\n') {
       prefixNewlines--;
@@ -892,7 +892,7 @@ class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
       }
     }
 
-    int suffixNewlines = 2;
+    var suffixNewlines = 2;
     if (input.selectionStart < text.length &&
         text[input.selectionStart] == '\n') {
       suffixNewlines--;
@@ -925,7 +925,7 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
-    var text = input.text;
+    final text = input.text;
 
     final line = getCurrentLine(input);
 
@@ -1003,15 +1003,15 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorDraftItem extends StatefulWidget {
-  final Draft draft;
-  final void Function() onApply;
-  final String originInstance;
-
   const _MarkdownEditorDraftItem({
     required this.draft,
     required this.onApply,
     required this.originInstance,
   });
+
+  final Draft draft;
+  final void Function() onApply;
+  final String originInstance;
 
   @override
   State<_MarkdownEditorDraftItem> createState() =>
@@ -1025,7 +1025,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
 
   @override
   Widget build(BuildContext context) {
-    discardDraft() {
+    void discardDraft() {
       context.read<DraftsController>().removeByDate(widget.draft.at);
     }
 
@@ -1053,7 +1053,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
             children: [
               IconButton(
                 onPressed: () {
-                  showDialog(
+                  showDialog<void>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
@@ -1145,7 +1145,7 @@ class _MarkdownEditorConfigShareDialogState
     loadNames();
   }
 
-  void loadNames() async {
+  Future<void> loadNames() async {
     final ac = context.read<AppController>();
     _profiles = await ac.getProfileNames();
     _filterLists = ac.filterLists.keys.toList();

@@ -9,9 +9,9 @@ import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/super_hero.dart';
 import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
-import 'package:interstellar/src/widgets/super_hero.dart';
 
 class PostItem extends StatefulWidget {
   const PostItem(
@@ -109,21 +109,20 @@ class _PostItemState extends State<PostItem> {
           createdAt: widget.item.createdAt,
           editedAt: widget.item.editedAt,
           poll: widget.item.poll,
-          isPreview: widget.item.type == PostType.microblog
-              ? false
-              : widget.isPreview,
-          fullImageSize: widget.isPreview
-              ? switch (widget.item.type) {
-                  PostType.thread => ac.profile.fullImageSizeThreads,
-                  PostType.microblog => ac.profile.fullImageSizeMicroblogs,
-                }
-              : true,
+          isPreview:
+              !(widget.item.type == PostType.microblog) && widget.isPreview,
+          fullImageSize:
+              !widget.isPreview ||
+              switch (widget.item.type) {
+                PostType.thread => ac.profile.fullImageSizeThreads,
+                PostType.microblog => ac.profile.fullImageSizeMicroblogs,
+              },
           showCommunityFirst: widget.item.type == PostType.thread,
           read: widget.isTopLevel && widget.item.read,
           feedView: widget.isTopLevel,
           isPinned: widget.item.isPinned,
           isNSFW: widget.item.isNSFW,
-          isOC: widget.item.isOC == true,
+          isOC: widget.item.isOC ?? false,
           user: widget.item.user,
           updateUser: (user) async =>
               widget.onUpdate(widget.item.copyWith(user: user)),
@@ -131,7 +130,7 @@ class _PostItemState extends State<PostItem> {
           domain: widget.item.domain?.name,
           domainIdOnClick: widget.item.domain?.id,
           boosts: widget.item.boosts,
-          isBoosted: widget.item.myBoost == true,
+          isBoosted: widget.item.myBoost ?? false,
           onBoost: whenLoggedIn(context, () async {
             widget.onUpdate(
               (await ac.markAsRead([
@@ -350,7 +349,7 @@ class _PostItemState extends State<PostItem> {
                           1,
                           emoji: emoji,
                         ),
-                        PostType.microblog => throw 'Unreachable',
+                        PostType.microblog => throw UnreachableError(),
                       },
                     ], true)).first,
                   );

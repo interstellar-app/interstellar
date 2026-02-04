@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/community.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/models/feed.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen_item.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -13,21 +17,8 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-import 'package:interstellar/src/models/community.dart';
-import 'package:interstellar/src/models/domain.dart';
-import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/models/feed.dart';
-
 @RoutePage()
 class ExploreScreen extends StatefulWidget {
-  final ExploreType? mode;
-  final int? id;
-  final bool subOnly;
-  final FocusNode? focusNode;
-  final void Function(bool, dynamic)? onTap;
-  final Set<String>? selected;
-  final String? title;
-
   const ExploreScreen({
     this.mode,
     this.id,
@@ -38,6 +29,14 @@ class ExploreScreen extends StatefulWidget {
     this.title,
     super.key,
   });
+
+  final ExploreType? mode;
+  final int? id;
+  final bool subOnly;
+  final FocusNode? focusNode;
+  final void Function(bool, dynamic)? onTap;
+  final Set<String>? selected;
+  final String? title;
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -58,7 +57,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
     firstPageKey: '',
-    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    // TODO(jwr1): this is not safe, items of different types (comment, microblog, etc.) could have the same id
     getItemId: (item) => item.id,
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
@@ -66,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen>
       final searchType = widget.id != null ? ExploreType.all : type;
 
       if (searchType == ExploreType.all && _searchController.text.isEmpty) {
-        return ([], null);
+        return (<dynamic>[], null);
       }
 
       switch (searchType) {
@@ -85,7 +84,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           if ((context.read<AppController>().serverSoftware !=
                   ServerSoftware.mbin) &&
               _searchController.text.isEmpty) {
-            return ([], null);
+            return (<dynamic>[], null);
           }
 
           final newPage = await ac.api.users.list(
@@ -208,9 +207,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    _searchController.clear();
-                                  });
+                                  setState(_searchController.clear);
                                   searchDebounce.run(() {
                                     _pagingController.refresh();
                                   });
@@ -235,7 +232,6 @@ class _ExploreScreenState extends State<ExploreScreen>
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ChoiceChip(
@@ -442,20 +438,20 @@ class _ExploreScreenState extends State<ExploreScreen>
         ],
         itemBuilder: (context, item, index) {
           final selected = _selected?.contains(switch (item) {
-            DetailedCommunityModel i => i.name,
-            DetailedUserModel i => i.name,
-            DomainModel i => i.name,
-            FeedModel i => i.name,
+            final DetailedCommunityModel i => i.name,
+            final DetailedUserModel i => i.name,
+            final DomainModel i => i.name,
+            final FeedModel i => i.name,
             _ => '',
           });
 
-          onSelect(bool selected) {
+          void onSelect(bool selected) {
             widget.onTap!(selected, item);
             final name = switch (item) {
-              DetailedCommunityModel i => i.name,
-              DetailedUserModel i => i.name,
-              DomainModel i => i.name,
-              FeedModel i => i.name,
+              final DetailedCommunityModel i => i.name,
+              final DetailedUserModel i => i.name,
+              final DomainModel i => i.name,
+              final FeedModel i => i.name,
               _ => null,
             };
             if (name == null) return;
@@ -479,7 +475,7 @@ class _ExploreScreenState extends State<ExploreScreen>
             button: _selected == null || widget.onTap == null
                 ? null
                 : Checkbox(
-                    value: selected!,
+                    value: selected,
                     onChanged: (newValue) => onSelect(newValue!),
                   ),
           );
@@ -489,7 +485,7 @@ class _ExploreScreenState extends State<ExploreScreen>
         shouldWrap: ac.profile.hideFeedUIOnScroll,
         parentBuilder: (child) => HideOnScroll(
           controller: _scrollController,
-          hiddenOffset: Offset(0, 1.5),
+          hiddenOffset: const Offset(0, 1.5),
           duration: ac.calcAnimationDuration(),
           child: child,
         ),

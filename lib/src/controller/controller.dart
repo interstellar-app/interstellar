@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -26,7 +28,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
-import 'package:drift/drift.dart';
 
 enum HapticsType { light, medium, heavy, selection, vibrate }
 
@@ -122,22 +123,22 @@ class AppController with ChangeNotifier {
           .getSingleOrNull() ??
       true;
 
-  Future<void> setExpandNavDrawer(bool value) async => await database
+  Future<void> setExpandNavDrawer(bool value) async => database
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavDrawer: Value(value)));
-  Future<void> setExpandNavStars(bool value) async => await database
+  Future<void> setExpandNavStars(bool value) async => database
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavStars: Value(value)));
-  Future<void> setExpandNavFeeds(bool value) async => await database
+  Future<void> setExpandNavFeeds(bool value) async => database
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavFeeds: Value(value)));
-  Future<void> setExpandNavSubscriptions(bool value) async => await database
+  Future<void> setExpandNavSubscriptions(bool value) async => database
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavSubscriptions: Value(value)));
-  Future<void> setExpandNavFollows(bool value) async => await database
+  Future<void> setExpandNavFollows(bool value) async => database
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavFollows: Value(value)));
-  Future<void> setExpandNavDomains(bool value) async => await database
+  Future<void> setExpandNavDomains(bool value) async => database
       .update(database.miscCache)
       .write(MiscCacheCompanion(expandNavDomains: Value(value)));
 
@@ -429,7 +430,7 @@ class AppController with ChangeNotifier {
       throw Exception('Register oauth only allowed on mbin');
     }
 
-    String oauthIdentifier = await registerOauthApp(server);
+    final oauthIdentifier = await registerOauthApp(server);
     _servers[server] = Server(
       name: server,
       software: software,
@@ -465,7 +466,7 @@ class AppController with ChangeNotifier {
             switch (software) {
               ServerSoftware.lemmy => 'username_or_email',
               ServerSoftware.piefed => 'username',
-              ServerSoftware.mbin => throw Exception('unreachable'),
+              ServerSoftware.mbin => throw UnreachableError(),
             }: username,
             'password': password,
             if (software == ServerSoftware.lemmy) 'totp_2fa_token': totp,
@@ -473,7 +474,7 @@ class AppController with ChangeNotifier {
         );
         ServerClient.checkResponseSuccess(loginEndpoint, response);
 
-        final jwt = response.bodyJson['jwt'] as String;
+        final jwt = response.bodyJson['jwt']! as String;
         final user = await API(
           ServerClient(
             httpClient: JwtHttpClient(jwt, appHttpClient),
@@ -496,7 +497,7 @@ class AppController with ChangeNotifier {
         final authorizationEndpoint = Uri.https(server, '/authorize');
         final tokenEndpoint = Uri.https(server, '/token');
 
-        String identifier = await getMbinOAuthIdentifier(software, server);
+        final identifier = await getMbinOAuthIdentifier(software, server);
 
         final grant = oauth2.AuthorizationCodeGrant(
           identifier,
@@ -653,9 +654,9 @@ class AppController with ChangeNotifier {
 
     switch (software) {
       case ServerSoftware.mbin:
-        oauth2.Credentials? credentials = _accounts[account]?.oauth;
+        final credentials = _accounts[account]?.oauth;
         if (credentials != null) {
-          String identifier = _servers[instance]!.oauthIdentifier!;
+          final identifier = _servers[instance]!.oauthIdentifier!;
           httpClient = oauth2.Client(
             credentials,
             identifier: identifier,
@@ -668,14 +669,12 @@ class AppController with ChangeNotifier {
             httpClient: appHttpClient,
           );
         }
-        break;
       case ServerSoftware.lemmy:
       case ServerSoftware.piefed:
-        String? jwt = _accounts[account]!.jwt;
+        final jwt = _accounts[account]!.jwt;
         if (jwt != null) {
           httpClient = JwtHttpClient(jwt, appHttpClient);
         }
-        break;
     }
 
     return API(
@@ -785,7 +784,7 @@ class AppController with ChangeNotifier {
         .insertOnConflictUpdate(FeedsCompanion.insert(name: name));
 
     await database.transaction(() async {
-      for (var input in value.inputs) {
+      for (final input in value.inputs) {
         await database
             .into(database.feedInputs)
             .insertOnConflictUpdate(
@@ -851,8 +850,7 @@ class AppController with ChangeNotifier {
       database.profiles,
     )..where((f) => f.filterLists.contains(name))).get();
     for (final profile in profiles) {
-      final newFilterLists = {...?profile.filterLists};
-      newFilterLists.remove(name);
+      final newFilterLists = {...?profile.filterLists}..remove(name);
       setProfile(profile.name, profile.copyWith(filterLists: newFilterLists));
     }
 
@@ -877,8 +875,7 @@ class AppController with ChangeNotifier {
       final newFilterLists = {
         ...?profile.filterLists,
         newName: profile.filterLists?[oldName] ?? false,
-      };
-      newFilterLists.remove(oldName);
+      }..remove(oldName);
       setProfile(profile.name, profile.copyWith(filterLists: newFilterLists));
     }
 
@@ -900,19 +897,14 @@ class AppController with ChangeNotifier {
     switch (type) {
       case HapticsType.light:
         HapticFeedback.lightImpact();
-        break;
       case HapticsType.medium:
         HapticFeedback.mediumImpact();
-        break;
       case HapticsType.heavy:
         HapticFeedback.heavyImpact();
-        break;
       case HapticsType.selection:
         HapticFeedback.selectionClick();
-        break;
       case HapticsType.vibrate:
         HapticFeedback.vibrate();
-        break;
     }
   }
 
@@ -925,7 +917,7 @@ class AppController with ChangeNotifier {
     // If marking as read, then check for a db row first, and add one if not present.
     else if (read) {
       await database.transaction(() async {
-        for (var post in posts) {
+        for (final post in posts) {
           if (!await isRead(post)) {
             await database
                 .into(database.readPostCache)
@@ -943,7 +935,7 @@ class AppController with ChangeNotifier {
     // If marking as unread, then delete any matching database rows.
     else {
       await database.transaction(() async {
-        for (var post in posts) {
+        for (final post in posts) {
           await (database.delete(database.readPostCache)..where(
                 (f) =>
                     f.account.equals(_selectedAccount) &
@@ -1036,13 +1028,13 @@ class AppController with ChangeNotifier {
   }
 
   Future<Tag> addTag({String tag = 'Tag'}) async {
-    return await database
+    return database
         .into(database.tags)
         .insertReturning(TagsCompanion.insert(tag: tag));
   }
 
   Future<Tag> setTag(Tag tag) async {
-    return await database
+    return database
         .into(database.tags)
         .insertReturning(tag, onConflict: DoUpdate((_) => tag));
   }

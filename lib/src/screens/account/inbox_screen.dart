@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/screens/account/messages/messages_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
 import 'package:interstellar/src/screens/account/notification/notification_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-
-import 'messages/messages_screen.dart';
 
 class InboxScreen extends StatefulWidget {
   const InboxScreen({super.key});

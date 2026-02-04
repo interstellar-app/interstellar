@@ -1,20 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/password_editor.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/database/database.dart';
 
 @RoutePage()
 class LoginConfirmScreen extends StatefulWidget {
+  const LoginConfirmScreen(this.software, this.server, {super.key});
+
   final ServerSoftware software;
   final String server;
-
-  const LoginConfirmScreen(this.software, this.server, {super.key});
 
   @override
   State<LoginConfirmScreen> createState() => _LoginConfirmScreenState();
@@ -58,7 +58,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                       label: l(context).usernameOrEmail,
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (_) => setState(() {}),
-                      autofillHints: [
+                      autofillHints: const [
                         AutofillHints.username,
                         AutofillHints.email,
                       ],
@@ -86,7 +86,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  String account = '@${widget.server}';
+                  final account = '@${widget.server}';
                   context.read<AppController>().setAccount(
                     account,
                     const Account(handle: '', isPushRegistered: false),

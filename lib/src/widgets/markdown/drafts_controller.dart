@@ -1,26 +1,26 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/database/database.dart';
-import 'package:drift/drift.dart';
 
 class DraftAutoController {
-  final Draft? Function() read;
-  final Future<void> Function(String body) save;
-  final Future<void> Function() discard;
-
   const DraftAutoController({
     required this.read,
     required this.save,
     required this.discard,
   });
+
+  final Draft? Function() read;
+  final Future<void> Function(String body) save;
+  final Future<void> Function() discard;
 }
 
 class DraftsController with ChangeNotifier {
-  List<Draft> _drafts = [];
-  List<Draft> get drafts => _drafts;
-
   DraftsController() {
     _init();
   }
+
+  List<Draft> _drafts = [];
+  List<Draft> get drafts => _drafts;
 
   Future<void> _init() async {
     _drafts = await database.select(database.drafts).get();
@@ -31,7 +31,7 @@ class DraftsController with ChangeNotifier {
   DraftAutoController auto(String resourceId) {
     return DraftAutoController(
       read: () {
-        for (var draft in _drafts) {
+        for (final draft in _drafts) {
           if (draft.resourceId == resourceId) return draft;
         }
 
@@ -63,7 +63,7 @@ class DraftsController with ChangeNotifier {
   }
 
   Draft? readByDate(DateTime at) {
-    for (var draft in _drafts) {
+    for (final draft in _drafts) {
       if (draft.at == at) return draft;
     }
 

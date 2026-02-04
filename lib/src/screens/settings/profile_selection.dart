@@ -15,7 +15,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 Future<void> switchProfileSelect(BuildContext context) async {
-  await showModalBottomSheet(
+  await showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
       return const _ProfileSelectWidget();
@@ -33,7 +33,7 @@ class _ProfileSelectWidget extends StatefulWidget {
 class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
   List<String>? profileList;
 
-  void getProfiles() async {
+  Future<void> getProfiles() async {
     final profileNames = await context.read<AppController>().getProfileNames();
     setState(() {
       profileList = profileNames;
@@ -68,7 +68,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
               ),
               IconButton(
                 onPressed: () {
-                  showDialog(
+                  showDialog<void>(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l(context).profile_about_title),
@@ -140,7 +140,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                             );
 
                             if (!context.mounted) return;
-                            String communityName = mbinConfigsCommunityName;
+                            var communityName = mbinConfigsCommunityName;
                             if (communityName.endsWith(
                               context.read<AppController>().instanceHost,
                             )) {
@@ -194,16 +194,16 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
 @RoutePage()
 class EditProfileScreen extends StatefulWidget {
-  final String? profile;
-  final List<String> profileList;
-  final ProfileOptional? importProfile;
-
   const EditProfileScreen({
     required this.profile,
     required this.profileList,
     this.importProfile,
     super.key,
   });
+
+  final String? profile;
+  final List<String> profileList;
+  final ProfileOptional? importProfile;
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();

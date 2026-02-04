@@ -1,24 +1,24 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:provider/provider.dart';
-import 'package:interstellar/src/api/feed_source.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
+import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/text_editor.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class FeedSettingsScreen extends StatefulWidget {
@@ -85,7 +85,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                       );
 
                       if (!mounted) return;
-                      String communityName = mbinConfigsCommunityName;
+                      var communityName = mbinConfigsCommunityName;
                       if (communityName.endsWith(ac.instanceHost)) {
                         communityName = communityName.split('@').first;
                       }
@@ -158,13 +158,13 @@ void newFeed(BuildContext context) {
                       name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.feed,
                       serverId: item.id,
-                    ), // TODO: tmp until proper getByName method can be made
+                    ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
                 );
 
-                String title = item.title;
+                var title = item.title;
                 if (ac.feeds[title] != null) {
-                  await showDialog(
+                  await showDialog<void>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
@@ -180,7 +180,7 @@ void newFeed(BuildContext context) {
                           ),
                           LoadingFilledButton(
                             onPressed: () async {
-                              int num = 0;
+                              var num = 0;
                               while (ac.feeds[title] != null) {
                                 title = '${item.title} ${num++}';
                               }
@@ -223,13 +223,13 @@ void newFeed(BuildContext context) {
                       name: normalizeName(item.name, ac.instanceHost),
                       sourceType: FeedSource.topic,
                       serverId: item.id,
-                    ), // TODO: tmp until proper getByName method can be made
+                    ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
                 );
 
-                String title = item.title;
+                var title = item.title;
                 if (ac.feeds[title] != null) {
-                  await showDialog(
+                  await showDialog<void>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
@@ -245,7 +245,7 @@ void newFeed(BuildContext context) {
                           ),
                           LoadingFilledButton(
                             onPressed: () async {
-                              int num = 0;
+                              var num = 0;
                               while (ac.feeds[title] != null) {
                                 title = '${item.title} ${num++}';
                               }
@@ -280,14 +280,14 @@ void newFeed(BuildContext context) {
 
 @RoutePage()
 class EditFeedScreen extends StatefulWidget {
-  final String? feed;
-  final Feed? feedData;
-
   const EditFeedScreen({
     @PathParam('feed') required this.feed,
     this.feedData,
     super.key,
   });
+
+  final String? feed;
+  final Feed? feedData;
 
   @override
   State<EditFeedScreen> createState() => _EditFeedScreenState();
@@ -305,7 +305,9 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
       nameController.text = widget.feed!;
     }
 
-    feedData = widget.feedData == null ? Feed(inputs: {}) : widget.feedData!;
+    feedData = widget.feedData == null
+        ? const Feed(inputs: {})
+        : widget.feedData!;
   }
 
   void addInput(FeedInput input) {
@@ -315,8 +317,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   }
 
   void removeInput(FeedInput input) {
-    final inputs = {...feedData.inputs};
-    inputs.remove(input);
+    final inputs = {...feedData.inputs}..remove(input);
+
     setState(() {
       feedData = feedData.copyWith(inputs: inputs);
     });
@@ -362,10 +364,10 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     .toSet(),
                 onTap: (selected, item) {
                   var name = switch (item) {
-                    DetailedCommunityModel i => i.name,
-                    DetailedUserModel i => i.name,
-                    DomainModel i => i.name,
-                    FeedModel i => i.name,
+                    final DetailedCommunityModel i => i.name,
+                    final DetailedUserModel i => i.name,
+                    final DomainModel i => i.name,
+                    final FeedModel i => i.name,
                     _ => null,
                   };
                   final source = switch (item) {
@@ -376,7 +378,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     _ => null,
                   };
                   final id = switch (item) {
-                    FeedModel i => i.id,
+                    final FeedModel i => i.id,
                     _ => null,
                   };
 

@@ -1,28 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/loading_list_tile.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:interstellar/src/widgets/loading_list_tile.dart';
 
 class ContextMenuAction {
+  const ContextMenuAction({this.child, this.icon, this.onTap});
+
   final Widget? child;
   final IconData? icon;
   final Future<void> Function()? onTap;
-
-  const ContextMenuAction({this.child, this.icon, this.onTap});
 }
 
 class ContextMenuItem {
-  final String? title;
-  final String? subtitle;
-  final Widget? child;
-  final IconData? icon;
-  final double iconFill;
-  final Future<void> Function()? onTap;
-  final List<ContextMenuItem>? subItems;
-  final Widget? trailing;
-
   const ContextMenuItem({
     this.title,
     this.subtitle,
@@ -34,17 +25,20 @@ class ContextMenuItem {
     this.trailing,
   });
 
+  final String? title;
+  final String? subtitle;
+  final Widget? child;
+  final IconData? icon;
+  final double iconFill;
+  final Future<void> Function()? onTap;
+  final List<ContextMenuItem>? subItems;
+  final Widget? trailing;
+
   ContextMenu? get subItemsContextMenu =>
       subItems == null ? null : ContextMenu(title: title, items: subItems!);
 }
 
 class ContextMenu {
-  final String? title;
-  final List<ContextMenuAction> actions;
-  final List<Uri> links;
-  final List<ContextMenuItem> items;
-  final double actionSpacing;
-
   const ContextMenu({
     this.title,
     this.actions = const [],
@@ -53,9 +47,15 @@ class ContextMenu {
     this.actionSpacing = 12,
   });
 
+  final String? title;
+  final List<ContextMenuAction> actions;
+  final List<Uri> links;
+  final List<ContextMenuItem> items;
+  final double actionSpacing;
+
   Future<void> openMenu(
     BuildContext context,
-  ) async => await showModalBottomSheet(
+  ) async => showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
       return Column(
@@ -73,7 +73,6 @@ class ContextMenu {
           Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Wrap(
-              direction: Axis.horizontal,
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: actionSpacing,
@@ -113,18 +112,14 @@ class ContextMenu {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     if (entry.key == 0)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 4,
-                                        ),
-                                        child: const Icon(Symbols.home_rounded),
+                                      const Padding(
+                                        padding: EdgeInsets.only(right: 4),
+                                        child: Icon(Symbols.home_rounded),
                                       ),
                                     if (entry.key == links.length - 1)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 4,
-                                        ),
-                                        child: const ImageIcon(
+                                      const Padding(
+                                        padding: EdgeInsets.only(right: 4),
+                                        child: ImageIcon(
                                           AssetImage(
                                             'assets/icons/fediverse.png',
                                           ),
@@ -195,7 +190,9 @@ class ContextMenu {
                                     onPressed: () async => item
                                         .subItemsContextMenu!
                                         .openMenu(context),
-                                    icon: Icon(Symbols.arrow_right_rounded),
+                                    icon: const Icon(
+                                      Symbols.arrow_right_rounded,
+                                    ),
                                   )
                                 : null),
                       ),

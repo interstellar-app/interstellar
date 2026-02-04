@@ -133,7 +133,6 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
                   value: ac.profile.animationSpeed,
                   divisions: 4,
                   max: 4,
-                  min: 0,
                   label: ac.profile.animationSpeed == 0
                       ? l(context).settings_animationDisabled
                       : ac.profile.animationSpeed.toString(),
@@ -163,7 +162,7 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
                       ac.setDefaultDownloadDir(null);
                       setState(() {});
                     },
-                    icon: Icon(Symbols.clear_rounded),
+                    icon: const Icon(Symbols.clear_rounded),
                   )
                 : null,
             onTap: () async {

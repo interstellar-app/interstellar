@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 
 class UserAgentHttpClient extends http.BaseClient {
+  UserAgentHttpClient(this._userAgent);
+
   final String _userAgent;
   final http.Client _httpClient = http.Client();
-
-  UserAgentHttpClient(this._userAgent);
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
@@ -22,11 +22,11 @@ class UserAgentHttpClient extends http.BaseClient {
 }
 
 class JwtHttpClient extends http.BaseClient {
+  JwtHttpClient(this._jwt, this._httpClient);
+
   final String _jwt;
 
   final http.Client _httpClient;
-
-  JwtHttpClient(this._jwt, this._httpClient);
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {

@@ -1,20 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
+import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/loading_list_tile.dart';
 import 'package:interstellar/src/widgets/settings_header.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:provider/provider.dart';
-
-import 'feed_agregator.dart';
 
 class NavDrawPersistentState {
   const NavDrawPersistentState({
@@ -71,9 +70,9 @@ Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
   final initExpandedFollows = await ac.expandNavFollows;
   final initExpandedDomains = await ac.expandNavDomains;
 
-  List<DetailedCommunityModel> subbedCommunities = [];
-  List<DetailedUserModel> subbedUsers = [];
-  List<DomainModel> subbedDomains = [];
+  var subbedCommunities = <DetailedCommunityModel>[];
+  var subbedUsers = <DetailedUserModel>[];
+  var subbedDomains = <DomainModel>[];
   if (ac.isLoggedIn) {
     subbedCommunities = (await ac.api.community.list(
       filter: ExploreFilter.subscribed,
@@ -124,7 +123,7 @@ class _NavDrawerState extends State<NavDrawer> {
     if (widget.drawerState == null ||
         widget.drawerState!.fetchTime <
             DateTime.now()
-                .subtract(Duration(minutes: 15))
+                .subtract(const Duration(minutes: 15))
                 .millisecondsSinceEpoch) {
       widget.updateState!(null);
     }
@@ -149,7 +148,7 @@ class _NavDrawerState extends State<NavDrawer> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
     if (widget.drawerState == null) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     return ListView(
@@ -182,7 +181,7 @@ class _NavDrawerState extends State<NavDrawer> {
                       : star.substring(1).split('@').first,
                 ),
                 onTap: () async {
-                  String name = star.substring(1);
+                  var name = star.substring(1);
                   if (name.endsWith(ac.instanceHost)) {
                     name = name.split('@').first;
                   }
@@ -196,7 +195,6 @@ class _NavDrawerState extends State<NavDrawer> {
                       context.router.push(
                         UserRoute(userId: user.id, initData: user),
                       );
-                      break;
 
                     case '!':
                       final community = await ac.api.community.getByName(name);
@@ -209,7 +207,6 @@ class _NavDrawerState extends State<NavDrawer> {
                           initData: community,
                         ),
                       );
-                      break;
                   }
                 },
                 trailing: StarButton(star),

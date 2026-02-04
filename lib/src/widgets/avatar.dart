@@ -3,12 +3,6 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:interstellar/src/models/image.dart';
 
 class Avatar extends StatelessWidget {
-  final ImageModel? image;
-  final ImageProvider<Object>? overrideImageProvider;
-  final double? radius;
-  final double? borderRadius;
-  final Color? backgroundColor;
-
   const Avatar(
     this.image, {
     super.key,
@@ -17,6 +11,12 @@ class Avatar extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
   });
+
+  final ImageModel? image;
+  final ImageProvider<Object>? overrideImageProvider;
+  final double? radius;
+  final double? borderRadius;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {

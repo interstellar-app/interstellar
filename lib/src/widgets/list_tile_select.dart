@@ -3,6 +3,17 @@ import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ListTileSelect<T> extends StatelessWidget {
+  const ListTileSelect({
+    required this.title,
+    required this.selectionMenu,
+    required this.value,
+    required this.oldValue,
+    required this.onChange,
+    super.key,
+    this.icon,
+    this.enabled = true,
+  });
+
   final String title;
   final IconData? icon;
   final SelectionMenu<T> selectionMenu;
@@ -10,17 +21,6 @@ class ListTileSelect<T> extends StatelessWidget {
   final T? oldValue;
   final void Function(T newValue) onChange;
   final bool enabled;
-
-  const ListTileSelect({
-    super.key,
-    required this.title,
-    this.icon,
-    required this.selectionMenu,
-    required this.value,
-    required this.oldValue,
-    required this.onChange,
-    this.enabled = true,
-  });
 
   @override
   Widget build(BuildContext context) {

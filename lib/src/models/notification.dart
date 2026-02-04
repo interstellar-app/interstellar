@@ -13,10 +13,10 @@ abstract class NotificationListModel with _$NotificationListModel {
   }) = _NotificationListModel;
 
   factory NotificationListModel.fromMbin(JsonMap json) => NotificationListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((post) => NotificationModel.fromMbin(post as JsonMap))
         .toList(),
-    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
   factory NotificationListModel.fromLemmy(
@@ -25,13 +25,13 @@ abstract class NotificationListModel with _$NotificationListModel {
     JsonMap repliesJson,
   ) => NotificationListModel(
     items: [
-      ...(messagesJson['private_messages'] as List<dynamic>).map(
+      ...(messagesJson['private_messages']! as List<dynamic>).map(
         (item) => NotificationModel.fromLemmyMessage(item as JsonMap),
       ),
-      ...(mentionsJson['mentions'] as List<dynamic>).map(
+      ...(mentionsJson['mentions']! as List<dynamic>).map(
         (item) => NotificationModel.fromLemmyMention(item as JsonMap),
       ),
-      ...(repliesJson['replies'] as List<dynamic>).map(
+      ...(repliesJson['replies']! as List<dynamic>).map(
         (item) => NotificationModel.fromLemmyReply(item as JsonMap),
       ),
     ],
@@ -40,7 +40,7 @@ abstract class NotificationListModel with _$NotificationListModel {
 
   factory NotificationListModel.fromPiefed(JsonMap json) =>
       NotificationListModel(
-        items: (json['items'] as List<dynamic>)
+        items: (json['items']! as List<dynamic>)
             .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
             .toList(),
         nextPage: json['next_page'] as String?,
@@ -61,52 +61,52 @@ abstract class NotificationModel with _$NotificationModel {
     final subject = json['subject'] as JsonMap?;
 
     return NotificationModel(
-      id: json['notificationId'] as int,
+      id: json['notificationId']! as int,
       type: notificationTypeMap[json['type']],
       isRead: json['status'] == 'read',
       subject: subject,
       creator: subject == null
           ? null
           : UserModel.fromMbin(
-              (subject['user'] ?? subject['sender'] ?? subject['bannedBy'])
+              (subject['user'] ?? subject['sender'] ?? subject['bannedBy'])!
                   as JsonMap,
             ),
     );
   }
 
   factory NotificationModel.fromLemmyMessage(JsonMap json) {
-    final pm = json['private_message'] as JsonMap;
+    final pm = json['private_message']! as JsonMap;
 
     return NotificationModel(
-      id: pm['id'] as int,
+      id: pm['id']! as int,
       type: NotificationType.message,
-      isRead: pm['read'] as bool,
+      isRead: pm['read']! as bool,
       subject: json,
-      creator: UserModel.fromLemmy(json['creator'] as JsonMap),
+      creator: UserModel.fromLemmy(json['creator']! as JsonMap),
     );
   }
 
   factory NotificationModel.fromLemmyMention(JsonMap json) {
-    final pm = json['person_mention'] as JsonMap;
+    final pm = json['person_mention']! as JsonMap;
 
     return NotificationModel(
-      id: pm['id'] as int,
+      id: pm['id']! as int,
       type: NotificationType.mention,
-      isRead: pm['read'] as bool,
+      isRead: pm['read']! as bool,
       subject: json,
-      creator: UserModel.fromLemmy(json['creator'] as JsonMap),
+      creator: UserModel.fromLemmy(json['creator']! as JsonMap),
     );
   }
 
   factory NotificationModel.fromLemmyReply(JsonMap json) {
-    final cr = json['comment_reply'] as JsonMap;
+    final cr = json['comment_reply']! as JsonMap;
 
     return NotificationModel(
-      id: cr['id'] as int,
+      id: cr['id']! as int,
       type: NotificationType.reply,
-      isRead: cr['read'] as bool,
+      isRead: cr['read']! as bool,
       subject: json,
-      creator: UserModel.fromLemmy(json['creator'] as JsonMap),
+      creator: UserModel.fromLemmy(json['creator']! as JsonMap),
     );
   }
 
@@ -114,11 +114,11 @@ abstract class NotificationModel with _$NotificationModel {
     final subject = json;
 
     return NotificationModel(
-      id: json['notif_id'] as int,
+      id: json['notif_id']! as int,
       type: notificationTypeMap[json['notif_subtype']],
       isRead: json['status'] == 'Read',
       subject: subject,
-      creator: UserModel.fromPiefed(json['author'] as JsonMap),
+      creator: UserModel.fromPiefed(json['author']! as JsonMap),
     );
   }
 }
@@ -152,7 +152,7 @@ enum NotificationType {
   newSignup,
 }
 
-const notificationTypeMap = {
+const Map<String, NotificationType> notificationTypeMap = {
   'entry_created_notification': NotificationType.entryCreated,
   'entry_edited_notification': NotificationType.entryEdited,
   'entry_deleted_notification': NotificationType.entryDeleted,

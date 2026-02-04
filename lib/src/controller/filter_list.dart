@@ -1,7 +1,7 @@
+import 'package:drift/drift.dart' show Expression, Insertable, Value;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:drift/drift.dart' show Insertable, Value, Expression;
 
 part 'filter_list.freezed.dart';
 part 'filter_list.g.dart';
@@ -10,8 +10,6 @@ enum FilterListMatchMode { simple, wholeWords, regex }
 
 @freezed
 abstract class FilterList with _$FilterList implements Insertable<FilterList> {
-  const FilterList._();
-
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory FilterList({
     required String name,
@@ -20,6 +18,7 @@ abstract class FilterList with _$FilterList implements Insertable<FilterList> {
     required bool caseSensitive,
     required bool showWithWarning,
   }) = _FilterList;
+  const FilterList._();
 
   factory FilterList.fromJson(JsonMap json) => _$FilterListFromJson(json);
 
@@ -55,7 +54,7 @@ abstract class FilterList with _$FilterList implements Insertable<FilterList> {
 
         return false;
       case FilterListMatchMode.wholeWords:
-        for (var phrase in phrases) {
+        for (final phrase in phrases) {
           if (RegExp(
             '\\b${RegExp.escape(phrase)}\\b',
             caseSensitive: caseSensitive,
@@ -66,7 +65,7 @@ abstract class FilterList with _$FilterList implements Insertable<FilterList> {
 
         return false;
       case FilterListMatchMode.regex:
-        for (var phrase in phrases) {
+        for (final phrase in phrases) {
           if (RegExp(phrase, caseSensitive: caseSensitive).hasMatch(input)) {
             return true;
           }

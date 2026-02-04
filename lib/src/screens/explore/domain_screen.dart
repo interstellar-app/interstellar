@@ -13,11 +13,11 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class DomainScreen extends StatefulWidget {
+  const DomainScreen(this.domainId, {super.key, this.initData, this.onUpdate});
+
   final int domainId;
   final DomainModel? initData;
   final void Function(DomainModel)? onUpdate;
-
-  const DomainScreen(this.domainId, {super.key, this.initData, this.onUpdate});
 
   @override
   State<DomainScreen> createState() => _DomainScreenState();
@@ -48,7 +48,6 @@ class _DomainScreenState extends State<DomainScreen> {
   Widget build(BuildContext context) {
     return FeedScreen(
       feed: FeedAggregator.fromSingleSource(
-        context.read<AppController>(),
         name: _data?.name ?? '',
         source: FeedSource.domain,
         sourceId: widget.domainId,
@@ -72,7 +71,7 @@ class _DomainScreenState extends State<DomainScreen> {
                         isSubscribed: _data!.isUserSubscribed,
                         subscriptionCount: _data!.subscriptionsCount,
                         onSubscribe: (selected) async {
-                          var newValue = await context
+                          final newValue = await context
                               .read<AppController>()
                               .api
                               .domains
@@ -81,13 +80,11 @@ class _DomainScreenState extends State<DomainScreen> {
                           setState(() {
                             _data = newValue;
                           });
-                          if (widget.onUpdate != null) {
-                            widget.onUpdate!(newValue);
-                          }
+                          widget.onUpdate?.call(newValue);
                         },
                         followMode: false,
                       ),
-                      if (whenLoggedIn(context, true) == true)
+                      if (whenLoggedIn(context, true) ?? false)
                         LoadingIconButton(
                           onPressed: () async {
                             final newValue = await context
@@ -99,14 +96,12 @@ class _DomainScreenState extends State<DomainScreen> {
                             setState(() {
                               _data = newValue;
                             });
-                            if (widget.onUpdate != null) {
-                              widget.onUpdate!(newValue);
-                            }
+                            widget.onUpdate?.call(newValue);
                           },
                           icon: const Icon(Symbols.block_rounded),
                           style: ButtonStyle(
                             foregroundColor: WidgetStatePropertyAll(
-                              _data!.isBlockedByUser == true
+                              _data!.isBlockedByUser ?? false
                                   ? Theme.of(context).colorScheme.error
                                   : Theme.of(context).disabledColor,
                             ),

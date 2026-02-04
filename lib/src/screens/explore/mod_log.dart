@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/moderation.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/modlog.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -14,13 +15,12 @@ import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/api/moderation.dart';
 
 @RoutePage()
 class ModLogCommunityScreen extends StatelessWidget {
   const ModLogCommunityScreen({
-    super.key,
     @PathParam('communityId') required this.communityId,
+    super.key,
   });
 
   final int communityId;
@@ -32,8 +32,8 @@ class ModLogCommunityScreen extends StatelessWidget {
 @RoutePage()
 class ModLogUserScreen extends StatelessWidget {
   const ModLogUserScreen({
-    super.key,
     @PathParam('userId') required this.userId,
+    super.key,
   });
 
   final int userId;
@@ -85,7 +85,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
   );
   ModLogType _filter = ModLogType.all;
 
-  Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
+  void Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
     ModLogType.all => null,
     ModLogType.postDeleted =>
       item.postId == null
@@ -348,7 +348,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
                       if (item.reason != null && item.reason!.isNotEmpty)
                         Text(
                           l(context).modlog_reason(item.reason!),
-                          style: TextStyle(fontStyle: FontStyle.italic),
+                          style: const TextStyle(fontStyle: FontStyle.italic),
                         ),
                     ],
                   ),

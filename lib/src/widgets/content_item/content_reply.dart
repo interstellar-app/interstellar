@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/widgets/image_selector.dart';
-import 'package:interstellar/src/widgets/markdown/markdown.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:provider/provider.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/image_selector.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
-import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
 
 class ContentReply extends StatefulWidget {
   const ContentReply({
-    super.key,
-    this.inline = true,
     required this.content,
     required this.onReply,
     required this.onComplete,
     required this.draftResourceId,
+    super.key,
+    this.inline = true,
   });
 
   final bool inline;
@@ -33,7 +33,7 @@ class ContentReply extends StatefulWidget {
     String? alt,
   })
   onReply;
-  final Function() onComplete;
+  final void Function() onComplete;
   final String draftResourceId;
 
   @override
@@ -64,12 +64,11 @@ class _ContentReplyState extends State<ContentReply> {
     );
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
-            fit: FlexFit.loose,
             child: MarkdownEditor(
               _textController,
               originInstance: null,
@@ -104,7 +103,7 @@ class _ContentReplyState extends State<ContentReply> {
                     });
                   }
                 },
-                icon: Icon(Symbols.globe_rounded),
+                icon: const Icon(Symbols.globe_rounded),
                 tooltip: getLanguageName(context, _replyLanguage),
               ),
               const SizedBox(width: 8),
@@ -139,12 +138,12 @@ class _ContentReplyState extends State<ContentReply> {
 @RoutePage()
 class ContentReplyScreen extends StatelessWidget {
   const ContentReplyScreen({
-    super.key,
-    this.inline = true,
     required this.content,
     required this.onReply,
     required this.onComplete,
     required this.draftResourceId,
+    super.key,
+    this.inline = true,
   });
 
   final bool inline;
@@ -156,7 +155,7 @@ class ContentReplyScreen extends StatelessWidget {
     String? alt,
   })
   onReply;
-  final Function() onComplete;
+  final void Function() onComplete;
   final String draftResourceId;
 
   @override

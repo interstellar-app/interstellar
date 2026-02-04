@@ -1,15 +1,16 @@
 import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/poll.dart';
-import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:provider/provider.dart';
 
 class Poll extends StatefulWidget {
-  const Poll({super.key, required this.poll});
+  const Poll({required this.poll, super.key});
 
   final PollModel poll;
 
@@ -58,7 +59,7 @@ class _PollState extends State<Poll> {
   Widget build(BuildContext context) {
     final ac = context.read<AppController>();
 
-    final int totalVotes = _choices
+    final totalVotes = _choices
         .map((choice) => choice.numVotes)
         .fold(0, (a, b) => a + b);
 
@@ -165,7 +166,7 @@ class _PollState extends State<Poll> {
                         : [_selectedAnswer!];
 
                     if (votes.isEmpty) {
-                      await showDialog(
+                      await showDialog<void>(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: Text(l(context).pollSubmitError),

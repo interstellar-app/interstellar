@@ -27,7 +27,7 @@ class _NotificationSettingsScreenState
     _initSettings();
   }
 
-  void _initSettings() async {
+  Future<void> _initSettings() async {
     final settings = await context
         .read<AppController>()
         .api
@@ -38,7 +38,7 @@ class _NotificationSettingsScreenState
     });
   }
 
-  void _saveSettings() async {
+  Future<void> _saveSettings() async {
     final settings = await context
         .read<AppController>()
         .api
@@ -69,7 +69,7 @@ class _NotificationSettingsScreenState
               ),
               value: ac.isPushRegistered,
               onChanged: (bool? value) async {
-                if (value == true) {
+                if (value ?? false) {
                   await ac.registerPush(context);
                 } else if (value == false) {
                   await ac.unregisterPush();
@@ -84,7 +84,7 @@ class _NotificationSettingsScreenState
               value: _settings!.notifyOnNewEntry!,
               onChanged: (bool? value) {
                 setState(() {
-                  _settings!.notifyOnNewEntry = value!;
+                  _settings!.notifyOnNewEntry = value;
                   _saveSettings();
                 });
               },
@@ -94,7 +94,7 @@ class _NotificationSettingsScreenState
               value: _settings!.notifyOnNewPost!,
               onChanged: (bool? value) {
                 setState(() {
-                  _settings!.notifyOnNewPost = value!;
+                  _settings!.notifyOnNewPost = value;
                   _saveSettings();
                 });
               },
@@ -104,7 +104,7 @@ class _NotificationSettingsScreenState
               value: _settings!.notifyOnNewEntryReply!,
               onChanged: (bool? value) {
                 setState(() {
-                  _settings!.notifyOnNewEntryReply = value!;
+                  _settings!.notifyOnNewEntryReply = value;
                   _saveSettings();
                 });
               },
@@ -116,7 +116,7 @@ class _NotificationSettingsScreenState
               value: _settings!.notifyOnNewEntryCommentReply!,
               onChanged: (bool? value) {
                 setState(() {
-                  _settings!.notifyOnNewEntryCommentReply = value!;
+                  _settings!.notifyOnNewEntryCommentReply = value;
                   _saveSettings();
                 });
               },
@@ -126,7 +126,7 @@ class _NotificationSettingsScreenState
               value: _settings!.notifyOnNewPostReply!,
               onChanged: (bool? value) {
                 setState(() {
-                  _settings!.notifyOnNewPostReply = value!;
+                  _settings!.notifyOnNewPostReply = value;
                   _saveSettings();
                 });
               },
@@ -138,7 +138,7 @@ class _NotificationSettingsScreenState
               value: _settings!.notifyOnNewPostCommentReply!,
               onChanged: (bool? value) {
                 setState(() {
-                  _settings!.notifyOnNewPostCommentReply = value!;
+                  _settings!.notifyOnNewPostCommentReply = value;
                   _saveSettings();
                 });
               },

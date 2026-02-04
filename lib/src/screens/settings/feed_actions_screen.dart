@@ -4,9 +4,9 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/widgets/list_tile_switch.dart';
 
 @RoutePage()
 class FeedActionsSettingsScreen extends StatelessWidget {
@@ -175,8 +175,6 @@ class FeedActionsSettingsScreen extends StatelessWidget {
                 ),
                 Slider(
                   value: ac.profile.swipeActionThreshold,
-                  max: 1,
-                  min: 0,
                   onChanged: (newValue) => ac.updateProfile(
                     ac.selectedProfileValue.copyWith(
                       swipeActionThreshold: newValue,

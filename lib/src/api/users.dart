@@ -12,9 +12,9 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
 class APIUsers {
-  final ServerClient client;
-
   APIUsers(this.client);
+
+  final ServerClient client;
 
   Future<DetailedUserListModel> list({
     String? page,
@@ -59,7 +59,7 @@ class APIUsers {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['users'] as List<dynamic>,
+          json['users']! as List<dynamic>,
           page,
         );
 
@@ -85,7 +85,7 @@ class APIUsers {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['users'] as List<dynamic>,
+          json['users']! as List<dynamic>,
           page,
         );
 
@@ -109,7 +109,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromLemmy(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -119,7 +119,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromPiefed(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
     }
   }
@@ -141,7 +141,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromLemmy(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -151,7 +151,7 @@ class APIUsers {
         final response = await client.get(path, queryParams: query);
 
         return DetailedUserModel.fromPiefed(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
     }
   }
@@ -247,7 +247,7 @@ class APIUsers {
         );
 
         return DetailedUserModel.fromLemmy(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
         );
 
       case ServerSoftware.piefed:
@@ -259,7 +259,7 @@ class APIUsers {
         );
 
         return DetailedUserModel.fromPiefed(
-          response.bodyJson['person_view'] as JsonMap,
+          response.bodyJson['person_view']! as JsonMap,
           blocked: response.bodyJson['blocked'] as bool? ?? false,
         );
     }
@@ -302,7 +302,7 @@ class APIUsers {
         final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
                     as JsonMap)['file']
                 as String?;
 
@@ -345,7 +345,7 @@ class APIUsers {
     switch (client.software) {
       case ServerSoftware.mbin:
         const path = '/users/avatar';
-        var response = await client.delete(path);
+        final response = await client.delete(path);
 
         return DetailedUserModel.fromMbin(response.bodyJson);
 
@@ -370,18 +370,18 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/cover';
 
-        var request = http.MultipartRequest(
+        final request = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + path),
         );
-        var multipartFile = http.MultipartFile.fromBytes(
+        final multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
           filename: basename(image.path),
           contentType: MediaType.parse(lookupMimeType(image.path)!),
         );
         request.files.add(multipartFile);
-        var response = await client.sendRequest(request);
+        final response = await client.sendRequest(request);
 
         return DetailedUserModel.fromMbin(response.bodyJson);
 
@@ -402,7 +402,7 @@ class APIUsers {
         final pictrsResponse = await client.sendRequest(request);
 
         final imageName =
-            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
                     as JsonMap)['file']
                 as String?;
 
@@ -445,7 +445,7 @@ class APIUsers {
     switch (client.software) {
       case ServerSoftware.mbin:
         const path = '/users/cover';
-        var response = await client.delete(path);
+        final response = await client.delete(path);
 
         return DetailedUserModel.fromMbin(response.bodyJson);
 

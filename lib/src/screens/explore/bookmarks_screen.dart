@@ -1,19 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/bookmark_list.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/screens/feed/post_comment.dart';
+import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/models/bookmark_list.dart';
-import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/post.dart';
-import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/screens/feed/post_comment.dart';
-import 'package:interstellar/src/screens/feed/post_item.dart';
 
 @RoutePage()
 class BookmarkListScreen extends StatefulWidget {
@@ -106,10 +106,10 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: LoadingFilledButton(
-                              onPressed: () => showDialog(
+                              onPressed: () => showDialog<void>(
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
-                                  title: Text('Delete bookmark list'),
+                                  title: const Text('Delete bookmark list'),
                                   content: Text(_bookmarkLists[index].name),
                                   actions: [
                                     OutlinedButton(
@@ -153,12 +153,12 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
 
 @RoutePage()
 class BookmarksScreen extends StatefulWidget {
-  final String? bookmarkList;
-
   const BookmarksScreen({
     super.key,
     @PathParam('bookmarkList') this.bookmarkList,
   });
+
+  final String? bookmarkList;
 
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();
@@ -168,7 +168,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
     firstPageKey: '',
-    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    // TODO(jwr1): this is not safe, items of different types (comment, microblog, etc.) could have the same id
     getItemId: (item) => item.id,
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
@@ -226,7 +226,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 ),
               ),
             ),
-            _ => throw 'unreachable',
+            _ => throw UnreachableError(),
           };
         },
       ),

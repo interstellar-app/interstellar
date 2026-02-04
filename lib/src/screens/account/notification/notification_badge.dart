@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:provider/provider.dart';
 
-import 'notification_count_controller.dart';
-
 class NotificationBadge extends StatefulWidget {
-  final Widget child;
+  const NotificationBadge({required this.child, super.key});
 
-  const NotificationBadge({super.key, required this.child});
+  final Widget child;
 
   @override
   State<NotificationBadge> createState() => _NotificationBadgeState();

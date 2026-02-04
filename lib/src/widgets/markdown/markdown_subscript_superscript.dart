@@ -25,7 +25,7 @@ class SuperscriptMarkdownSyntax extends md.InlineSyntax {
 class SubscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
   @override
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    final String textContent = element.textContent;
+    final textContent = element.textContent;
 
     return SubscriptSuperscriptWidget(text: textContent, isSuperscript: false);
   }
@@ -34,21 +34,21 @@ class SubscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
 class SuperscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
   @override
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    final String textContent = element.textContent;
+    final textContent = element.textContent;
 
     return SubscriptSuperscriptWidget(text: textContent, isSuperscript: true);
   }
 }
 
 class SubscriptSuperscriptWidget extends StatelessWidget {
-  final String text;
-  final bool isSuperscript;
-
   const SubscriptSuperscriptWidget({
-    super.key,
     required this.text,
     required this.isSuperscript,
+    super.key,
   });
+
+  final String text;
+  final bool isSuperscript;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class SubscriptSuperscriptWidget extends StatelessWidget {
         children: [
           WidgetSpan(
             child: Transform.translate(
-              offset: Offset(0.0, isSuperscript ? -5.0 : 3.0),
+              offset: Offset(0, isSuperscript ? -5.0 : 3.0),
               child: Text(
                 text,
                 style: Theme.of(

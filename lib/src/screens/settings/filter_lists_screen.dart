@@ -58,7 +58,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                         );
 
                         if (!context.mounted) return;
-                        String communityName = mbinConfigsCommunityName;
+                        var communityName = mbinConfigsCommunityName;
                         if (communityName.endsWith(
                           context.read<AppController>().instanceHost,
                         )) {
@@ -89,7 +89,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Switch(
-                    value: ac.profile.filterLists[name] == true,
+                    value: ac.profile.filterLists[name] ?? false,
                     onChanged: (value) {
                       ac.updateProfile(
                         ac.selectedProfileValue.copyWith(
@@ -119,14 +119,14 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
 
 @RoutePage()
 class EditFilterListScreen extends StatefulWidget {
-  final String? filterList;
-  final FilterList? importFilterList;
-
   const EditFilterListScreen({
     @PathParam('filterList') required this.filterList,
     this.importFilterList,
     super.key,
   });
+
+  final String? filterList;
+  final FilterList? importFilterList;
 
   @override
   State<EditFilterListScreen> createState() => _EditFilterListScreenState();
@@ -173,7 +173,7 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
           if (widget.filterList != null && widget.importFilterList == null) ...[
             ListTileSwitch(
               title: Text(l(context).filterList_activateFilter),
-              value: ac.profile.filterLists[widget.filterList] == true,
+              value: ac.profile.filterLists[widget.filterList] ?? false,
               onChanged: (value) {
                 ac.updateProfile(
                   ac.selectedProfileValue.copyWith(
@@ -207,9 +207,8 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
                         child: InputChip(
                           label: Text(phrase),
                           onDeleted: () async {
-                            final newPhrases = filterListData.phrases.toSet();
-
-                            newPhrases.remove(phrase);
+                            final newPhrases = filterListData.phrases.toSet()
+                              ..remove(phrase);
 
                             setState(() {
                               filterListData = filterListData.copyWith(
@@ -253,9 +252,8 @@ class _EditFilterListScreenState extends State<EditFilterListScreen> {
 
                           if (phrase == null) return;
 
-                          final newPhrases = filterListData.phrases.toSet();
-
-                          newPhrases.add(phrase);
+                          final newPhrases = filterListData.phrases.toSet()
+                            ..add(phrase);
 
                           setState(() {
                             filterListData = filterListData.copyWith(

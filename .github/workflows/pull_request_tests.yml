@@ -1,11 +1,31 @@
 name: Pull request tests
 
-permissions:
-  contents: write
-
 on: pull_request
 
 jobs:
+  dart-analysis:
+    name: Dart analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+
+      - name: Generate source files
+        run: |
+          flutter gen-l10n
+          dart run build_runner build
+
+      # Switch back once https://github.com/dart-lang/sdk/issues/60236 is released
+      # - name: Analyze Dart
+      #   uses: zgosalvez/github-actions-analyze-dart@v3
+      - name: Analyze Dart
+        run: dart format -o none --set-exit-if-changed .
+
   test-android-build:
     name: Test android build
     runs-on: ubuntu-latest

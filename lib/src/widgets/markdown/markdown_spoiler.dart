@@ -2,10 +2,9 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:material_symbols_icons/symbols.dart';
-
-import './markdown.dart';
 
 class SpoilerMarkdownSyntax extends md.BlockSyntax {
   @override
@@ -16,11 +15,11 @@ class SpoilerMarkdownSyntax extends md.BlockSyntax {
   @override
   md.Node parse(md.BlockParser parser) {
     final Match? match = pattern.firstMatch(parser.current.content);
-    final String? title = match?.group(1)?.trim();
+    final title = match?.group(1)?.trim();
 
     parser.advance();
 
-    final List<String> body = [];
+    final body = <String>[];
 
     while (!parser.isDone) {
       if (endPattern.hasMatch(parser.current.content)) {
@@ -41,13 +40,13 @@ class SpoilerMarkdownSyntax extends md.BlockSyntax {
 }
 
 class SpoilerMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  final String originInstance;
-
   SpoilerMarkdownBuilder({required this.originInstance});
+
+  final String originInstance;
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    String text = element.textContent;
+    final text = element.textContent;
     final splitIndex = text.indexOf('\n');
     final title = text.substring(0, splitIndex).trim();
     final body = text.substring(splitIndex + 1).trim();
@@ -61,17 +60,17 @@ class SpoilerMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class SpoilerWidget extends StatefulWidget {
+  const SpoilerWidget({
+    required this.originInstance,
+    super.key,
+    this.title,
+    this.body,
+  });
+
   final String originInstance;
 
   final String? title;
   final String? body;
-
-  const SpoilerWidget({
-    super.key,
-    required this.originInstance,
-    this.title,
-    this.body,
-  });
 
   @override
   State<SpoilerWidget> createState() => _SpoilerWidgetState();

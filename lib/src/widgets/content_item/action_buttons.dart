@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/emoji_picker/emoji_picker.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:interstellar/src/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ActionButtons extends StatelessWidget {
@@ -87,7 +87,7 @@ class ActionButtons extends StatelessWidget {
             childBuilder: (onClick, focusNode) => IconButton(
               onPressed: onClick,
               focusNode: focusNode,
-              icon: Icon(Symbols.add_reaction_rounded),
+              icon: const Icon(Symbols.add_reaction_rounded),
             ),
             onSelect: (emoji) => onEmojiReact!(emoji),
           ),

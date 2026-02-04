@@ -42,16 +42,19 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   /// Keeps track of the current operation.
   /// If the operation changes during its execution, the operation is cancelled.
   ///
-  /// Instead of using this property directly, use [fetchNextPage], [refresh], or [cancel].
-  /// If you are extending this class, check and set this property before and after the fetch operation.
+  /// Instead of using this property directly, use [fetchNextPage], [refresh],
+  /// or [cancel].
+  /// If you are extending this class, check and set this property before and
+  /// after the fetch operation.
   @protected
   @visibleForTesting
   Object? operation;
 
   /// Fetches the next page.
   ///
-  /// If called while a page is fetching or no more pages are available, this method does nothing.
-  void fetchNextPage() async {
+  /// If called while a page is fetching or no more pages are available, this
+  /// method does nothing.
+  Future<void> fetchNextPage() async {
     // We are already loading a new page.
     if (this.operation != null) return;
 
@@ -61,9 +64,9 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
 
     // we use a local copy of value,
     // so that we only send one notification now and at the end of the method.
-    PagingState<PageKeyType, PageItemType> state = value;
+    var state = value;
     PageKeyType? newNextPage;
-    Set<PageItemIdType> newItemIds = {..._itemIds};
+    final newItemIds = <PageItemIdType>{..._itemIds};
 
     try {
       // There are no more pages to load.
@@ -79,9 +82,10 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
 
       final result = await _fetchPage(thisPage);
 
-      // Only include a new item if it's unique identifier does not already exist
-      List<PageItemType> newItems = [];
-      for (var item in result.$1) {
+      // Only include a new item if it's unique identifier does not already
+      // exist
+      final newItems = <PageItemType>[];
+      for (final item in result.$1) {
         final itemId = _getItemId(item);
         if (!newItemIds.contains(itemId)) {
           newItems.add(item);
@@ -90,7 +94,8 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
       }
 
       // Update our state in case it was modified during the fetch operation.
-      // This beaks atomicity, but is necessary to allow users to modify the state during a fetch.
+      // This beaks atomicity, but is necessary to allow users to modify the
+      // state during a fetch.
       state = value;
 
       state = state.copyWith(
@@ -133,7 +138,8 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
 
   /// Cancels the current fetch operation.
   ///
-  /// This can be called right before a call to [fetchNextPage] to force a new fetch.
+  /// This can be called right before a call to [fetchNextPage] to force a new
+  /// fetch.
   void cancel() {
     operation = null;
     value = value.copyWith(isLoading: false);
@@ -161,9 +167,9 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   void prependPage(PageKeyType key, List<PageItemType> items) {
     var state = value;
 
-    Set<PageItemIdType> newItemIds = {..._itemIds};
-    List<PageItemType> newItems = [];
-    for (var item in items) {
+    final newItemIds = <PageItemIdType>{..._itemIds};
+    final newItems = <PageItemType>[];
+    for (final item in items) {
       final itemId = _getItemId(item);
       if (!newItemIds.contains(itemId)) {
         newItems.add(item);
@@ -183,9 +189,9 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
 class AdvancedPagingListener<PageKeyType, PageItemType, PageItemIdType>
     extends StatelessWidget {
   const AdvancedPagingListener({
-    super.key,
     required this.controller,
     required this.builder,
+    super.key,
   });
 
   final AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
@@ -209,7 +215,8 @@ class AdvancedPagingListener<PageKeyType, PageItemType, PageItemIdType>
 
 /// Derived from [PagedSliverList]. A [SliverList] with pagination capabilities.
 ///
-/// Will automatically pass in `state` and `fetchNextPage` to a [PagedSliverList] based on the passed in [AdvancedPagingController].
+/// Will automatically pass in `state` and `fetchNextPage` to a
+/// [PagedSliverList] based on the passed in [AdvancedPagingController].
 class AdvancedPagedSliverList<PageKeyType, PageItemType, PageItemIdType>
     extends StatelessWidget {
   const AdvancedPagedSliverList({
@@ -266,7 +273,7 @@ class AdvancedPagedScrollView<PageKeyType, PageItemType, PageItemIdType>
 
   @override
   Widget build(BuildContext context) => RefreshIndicator(
-    onRefresh: () => Future.sync(() => controller.refresh()),
+    onRefresh: () => Future.sync(controller.refresh),
     child: CustomScrollView(
       controller: scrollController,
       slivers: [

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:interstellar/src/utils/utils.dart';
 
-final isWebViewSupported = PlatformIs.mobile;
+final bool isWebViewSupported = PlatformIs.mobile;
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -10,7 +10,7 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
 late final String appVersion;
 late final http.Client appHttpClient;
 
-final oauthRedirectUri = Uri.parse(
+final Uri oauthRedirectUri = Uri.parse(
   PlatformIs.web
       ? '${Uri.base.origin}/auth.html'
       : PlatformIs.linux || PlatformIs.windows

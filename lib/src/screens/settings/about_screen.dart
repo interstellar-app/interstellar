@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/globals.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +39,7 @@ class _AboutScreenState extends State<AboutScreen> {
           ListTile(
             leading: const Icon(Symbols.bug_report_rounded),
             title: Text(l(context).settings_debug),
-            onTap: () => context.router.push(DebugSettingsRoute()),
+            onTap: () => context.router.push(const DebugSettingsRoute()),
           ),
           if (context.read<AppController>().serverSoftware !=
               ServerSoftware.piefed)
@@ -81,7 +81,7 @@ class _AboutScreenState extends State<AboutScreen> {
             title: Text(l(context).settings_mbinCommunity),
             onTap: () async {
               try {
-                String name = _mbinCommunityName;
+                var name = _mbinCommunityName;
                 if (name.endsWith(context.read<AppController>().instanceHost)) {
                   name = name.split('@').first;
                 }
@@ -111,7 +111,7 @@ class _AboutScreenState extends State<AboutScreen> {
             title: Text(l(context).settings_mbinConfigsCommunity),
             onTap: () async {
               try {
-                String name = mbinConfigsCommunityName;
+                var name = mbinConfigsCommunityName;
                 if (name.endsWith(context.read<AppController>().instanceHost)) {
                   name = name.split('@').first;
                 }

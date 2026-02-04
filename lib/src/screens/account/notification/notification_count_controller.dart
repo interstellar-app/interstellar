@@ -24,7 +24,7 @@ class NotificationCountController with ChangeNotifier {
     }
   }
 
-  void reload() async {
+  Future<void> reload() async {
     _timer?.cancel();
 
     if (_account != null) {
@@ -36,9 +36,11 @@ class NotificationCountController with ChangeNotifier {
     _update();
   }
 
-  void _update() async {
+  Future<void> _update() async {
     try {
-      int newValue = _account == null ? 0 : await _api.notifications.getCount();
+      final newValue = _account == null
+          ? 0
+          : await _api.notifications.getCount();
 
       if (_value != newValue) {
         _value = newValue;

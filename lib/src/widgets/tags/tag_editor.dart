@@ -1,15 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
 class TagEditorScreen extends StatefulWidget {
-  const TagEditorScreen({super.key, required this.tag, required this.onUpdate});
+  const TagEditorScreen({required this.tag, required this.onUpdate, super.key});
 
   final Tag tag;
   final void Function(Tag?) onUpdate;
@@ -54,8 +54,8 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                 ),
                 title: Text(l(context).color),
                 onTap: () {
-                  Color c = _backgroundColor;
-                  showDialog(
+                  var c = _backgroundColor;
+                  showDialog<void>(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l(context).pickColor),
@@ -125,7 +125,7 @@ class _TagEditorScreenState extends State<TagEditorScreen> {
                         );
                       } catch (err) {
                         if (!context.mounted) return;
-                        await showDialog(
+                        await showDialog<void>(
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text(l(context).tags_exist),

@@ -7,10 +7,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class NotificationControlSegment extends StatelessWidget {
+  const NotificationControlSegment(this.value, this.onChange, {super.key});
+
   final NotificationControlStatus value;
   final Future<void> Function(NotificationControlStatus) onChange;
-
-  const NotificationControlSegment(this.value, this.onChange, {super.key});
 
   @override
   Widget build(BuildContext context) {
