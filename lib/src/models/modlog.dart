@@ -59,7 +59,7 @@ abstract class ModlogItemModel with _$ModlogItemModel {
       postTitle: switch (type) {
         ModLogType.all => null,
         ModLogType.postDeleted =>
-          (json['subject']! as JsonMap)['title']! as String,
+          (json['subject']! as JsonMap)['title'] as String?,
         ModLogType.postRestored =>
           (json['subject']! as JsonMap)['title']! as String,
         ModLogType.commentDeleted => null,
