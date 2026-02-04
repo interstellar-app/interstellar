@@ -10,7 +10,7 @@ class _LoadingButtonIndicator extends StatelessWidget {
     return Container(
       width: 24,
       height: 24,
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.all(2),
       child: const CircularProgressIndicator(
         color: Colors.white,
         strokeWidth: 3,
@@ -20,14 +20,6 @@ class _LoadingButtonIndicator extends StatelessWidget {
 }
 
 class LoadingFilledButton extends StatefulWidget {
-  final Future<void> Function()? onPressed;
-  final Widget label;
-  final Widget? icon;
-  final ButtonStyle? style;
-
-  /// When true, vibrates `success` type on success, and `warning` type on error
-  final bool uesHaptics;
-
   const LoadingFilledButton({
     required this.onPressed,
     required this.label,
@@ -36,6 +28,14 @@ class LoadingFilledButton extends StatefulWidget {
     this.uesHaptics = false,
     super.key,
   });
+
+  final Future<void> Function()? onPressed;
+  final Widget label;
+  final Widget? icon;
+  final ButtonStyle? style;
+
+  /// When true, vibrates `success` type on success, and `warning` type on error
+  final bool uesHaptics;
 
   @override
   State<LoadingFilledButton> createState() => _LoadingFilledButtonState();
@@ -71,11 +71,6 @@ class _LoadingFilledButtonState extends State<LoadingFilledButton> {
 }
 
 class LoadingTonalButton extends StatefulWidget {
-  final Future<void> Function()? onPressed;
-  final Widget label;
-  final Widget? icon;
-  final ButtonStyle? style;
-
   const LoadingTonalButton({
     required this.onPressed,
     required this.label,
@@ -83,6 +78,11 @@ class LoadingTonalButton extends StatefulWidget {
     this.style,
     super.key,
   });
+
+  final Future<void> Function()? onPressed;
+  final Widget label;
+  final Widget? icon;
+  final ButtonStyle? style;
 
   @override
   State<LoadingTonalButton> createState() => _LoadingTonalButtonState();
@@ -114,11 +114,6 @@ class _LoadingTonalButtonState extends State<LoadingTonalButton> {
 }
 
 class LoadingOutlinedButton extends StatefulWidget {
-  final Future<void> Function()? onPressed;
-  final Widget label;
-  final Widget? icon;
-  final ButtonStyle? style;
-
   const LoadingOutlinedButton({
     required this.onPressed,
     required this.label,
@@ -126,6 +121,11 @@ class LoadingOutlinedButton extends StatefulWidget {
     this.style,
     super.key,
   });
+
+  final Future<void> Function()? onPressed;
+  final Widget label;
+  final Widget? icon;
+  final ButtonStyle? style;
 
   @override
   State<LoadingOutlinedButton> createState() => _LoadingOutlinedButtonState();
@@ -157,11 +157,6 @@ class _LoadingOutlinedButtonState extends State<LoadingOutlinedButton> {
 }
 
 class LoadingTextButton extends StatefulWidget {
-  final Future<void> Function()? onPressed;
-  final Widget label;
-  final Widget? icon;
-  final ButtonStyle? style;
-
   const LoadingTextButton({
     required this.onPressed,
     required this.label,
@@ -169,6 +164,11 @@ class LoadingTextButton extends StatefulWidget {
     this.style,
     super.key,
   });
+
+  final Future<void> Function()? onPressed;
+  final Widget label;
+  final Widget? icon;
+  final ButtonStyle? style;
 
   @override
   State<LoadingTextButton> createState() => _LoadingTextButtonState();
@@ -200,20 +200,20 @@ class _LoadingTextButtonState extends State<LoadingTextButton> {
 }
 
 class LoadingIconButton extends StatefulWidget {
+  const LoadingIconButton({
+    required this.onPressed,
+    required this.icon,
+    this.onLongPress,
+    this.style,
+    this.tooltip,
+    super.key,
+  });
+
   final Future<void> Function()? onPressed;
   final Future<void> Function()? onLongPress;
   final Widget icon;
   final ButtonStyle? style;
   final String? tooltip;
-
-  const LoadingIconButton({
-    required this.onPressed,
-    this.onLongPress,
-    required this.icon,
-    this.style,
-    this.tooltip,
-    super.key,
-  });
 
   @override
   State<LoadingIconButton> createState() => _LoadingIconButtonState();
@@ -257,14 +257,6 @@ class _LoadingIconButtonState extends State<LoadingIconButton> {
 }
 
 class LoadingFilterChip extends StatefulWidget {
-  final Widget? icon;
-  final Widget label;
-  final bool selected;
-  final Future<void> Function(bool)? onSelected;
-  final bool enabled;
-
-  final String? tooltip;
-
   const LoadingFilterChip({
     required this.label,
     required this.selected,
@@ -274,6 +266,14 @@ class LoadingFilterChip extends StatefulWidget {
     this.enabled = true,
     super.key,
   });
+
+  final Widget? icon;
+  final Widget label;
+  final bool selected;
+  final Future<void> Function(bool)? onSelected;
+  final bool enabled;
+
+  final String? tooltip;
 
   @override
   State<LoadingFilterChip> createState() => _LoadingFilterChipState();
@@ -307,14 +307,6 @@ class _LoadingFilterChipState extends State<LoadingFilterChip> {
 }
 
 class LoadingInputChip extends StatefulWidget {
-  final Widget? icon;
-  final Widget label;
-  final bool selected;
-  final Future<void> Function(bool)? onSelected;
-  final bool enabled;
-
-  final String? tooltip;
-
   const LoadingInputChip({
     required this.label,
     required this.selected,
@@ -324,6 +316,14 @@ class LoadingInputChip extends StatefulWidget {
     this.enabled = true,
     super.key,
   });
+
+  final Widget? icon;
+  final Widget label;
+  final bool selected;
+  final Future<void> Function(bool)? onSelected;
+  final bool enabled;
+
+  final String? tooltip;
 
   @override
   State<LoadingInputChip> createState() => _LoadingInputChipState();

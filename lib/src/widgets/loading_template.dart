@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LoadingTemplate extends StatelessWidget {
-  final Widget? title;
-
   const LoadingTemplate({this.title, super.key});
+
+  final Widget? title;
 
   @override
   Widget build(BuildContext context) {

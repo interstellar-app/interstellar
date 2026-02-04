@@ -14,7 +14,7 @@ abstract class ImageModel with _$ImageModel {
   }) = _ImageModel;
 
   factory ImageModel.fromMbin(JsonMap json) => ImageModel(
-    src: (json['storageUrl'] ?? json['sourceUrl']) as String,
+    src: (json['storageUrl'] ?? json['sourceUrl'])! as String,
     altText: json['altText'] as String?,
     blurHash: json['blurHash'] as String?,
     blurHashWidth: json['width'] as int?,

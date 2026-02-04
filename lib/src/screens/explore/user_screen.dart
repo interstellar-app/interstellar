@@ -5,8 +5,8 @@ import 'package:interstellar/src/api/comments.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
@@ -22,6 +22,7 @@ import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
+import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/notification_control_segment.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
@@ -29,7 +30,6 @@ import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
-import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -38,16 +38,16 @@ enum UserFeedType { thread, microblog, comment, reply, follower, following }
 
 @RoutePage()
 class UserScreen extends StatefulWidget {
-  final int userId;
-  final DetailedUserModel? initData;
-  final void Function(DetailedUserModel)? onUpdate;
-
   const UserScreen(
     @PathParam('userId') this.userId, {
     super.key,
     this.initData,
     this.onUpdate,
   });
+
+  final int userId;
+  final DetailedUserModel? initData;
+  final void Function(DetailedUserModel)? onUpdate;
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -83,6 +83,9 @@ class _UserScreenState extends State<UserScreen> {
           .get(widget.userId)
           .then((value) async {
             if (!context.mounted) return value;
+
+            // Falsely detected
+            // ignore: use_build_context_synchronously
             final tags = await context.read<AppController>().getUserTags(
               value.name,
             );
@@ -111,7 +114,7 @@ class _UserScreenState extends State<UserScreen> {
     final isLoggedIn = ac.isLoggedIn;
     final isMyUser =
         isLoggedIn &&
-        whenLoggedIn(context, true, matchesUsername: user.name) == true;
+        (whenLoggedIn(context, true, matchesUsername: user.name) ?? false);
 
     final currentFeedSortOption = feedSortSelect(context).getOption(_sort);
 
@@ -127,10 +130,10 @@ class _UserScreenState extends State<UserScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: ActionChip(
-                label: Icon(Symbols.bookmarks_rounded, size: 20),
+                label: const Icon(Symbols.bookmarks_rounded, size: 20),
                 onPressed: () => context.router.push(
                   ac.serverSoftware == ServerSoftware.mbin
-                      ? BookmarkListRoute()
+                      ? const BookmarkListRoute()
                       : BookmarksRoute(bookmarkList: 'default'),
                 ),
               ),
@@ -232,14 +235,12 @@ class _UserScreenState extends State<UserScreen> {
                                       subscriptionCount:
                                           user.followersCount ?? 0,
                                       onSubscribe: (selected) async {
-                                        var newValue = await ac.api.users
+                                        final newValue = await ac.api.users
                                             .follow(user.id, selected);
                                         setState(() {
                                           _data = newValue;
                                         });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
+                                        widget.onUpdate?.call(newValue);
                                       },
                                       followMode: true,
                                     ),
@@ -256,14 +257,12 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _data = newValue;
                                         });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newValue);
-                                        }
+                                        widget.onUpdate?.call(newValue);
                                       },
                                       icon: const Icon(Symbols.block_rounded),
                                       style: ButtonStyle(
                                         foregroundColor: WidgetStatePropertyAll(
-                                          user.isBlockedByUser == true
+                                          user.isBlockedByUser ?? false
                                               ? Theme.of(
                                                   context,
                                                 ).colorScheme.error
@@ -275,7 +274,6 @@ class _UserScreenState extends State<UserScreen> {
                                     IconButton(
                                       onPressed: () => context.router.push(
                                         MessageThreadRoute(
-                                          threadId: null,
                                           userId: _data?.id,
                                           otherUser: _data,
                                         ),
@@ -291,9 +289,7 @@ class _UserScreenState extends State<UserScreen> {
                                         setState(() {
                                           _data = newUser;
                                         });
-                                        if (widget.onUpdate != null) {
-                                          widget.onUpdate!(newUser);
-                                        }
+                                        widget.onUpdate?.call(newUser);
                                       },
                                     ),
                                     icon: const Icon(Symbols.more_vert_rounded),
@@ -321,9 +317,7 @@ class _UserScreenState extends State<UserScreen> {
                                       setState(() {
                                         _data = newValue;
                                       });
-                                      if (widget.onUpdate != null) {
-                                        widget.onUpdate!(newValue);
-                                      }
+                                      widget.onUpdate?.call(newValue);
                                     },
                                   ),
                                 ),
@@ -487,7 +481,7 @@ class _UserScreenState extends State<UserScreen> {
         shouldWrap: ac.profile.hideFeedUIOnScroll,
         parentBuilder: (child) => HideOnScroll(
           controller: _scrollController,
-          hiddenOffset: Offset(0, 2),
+          hiddenOffset: const Offset(0, 2),
           duration: ac.calcAnimationDuration(),
           child: child,
         ),
@@ -508,18 +502,17 @@ class _UserScreenState extends State<UserScreen> {
 }
 
 class UserScreenBody extends StatefulWidget {
+  const UserScreenBody({
+    required this.mode,
+    required this.sort,
+    super.key,
+    this.data,
+    this.isActive = false,
+  });
   final UserFeedType mode;
   final FeedSort sort;
   final DetailedUserModel? data;
   final bool isActive;
-
-  const UserScreenBody({
-    super.key,
-    required this.mode,
-    required this.sort,
-    this.data,
-    this.isActive = false,
-  });
 
   @override
   State<UserScreenBody> createState() => _UserScreenBodyState();
@@ -530,12 +523,12 @@ class _UserScreenBodyState extends State<UserScreenBody>
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
     firstPageKey: '',
-    // TODO: this is not safe, items of different types (comment, microblog, etc.) could have the same id
+    // TODO(jwr1): this is not safe, items of different types (comment, microblog, etc.) could have the same id
     getItemId: (item) => item.id,
     fetchPage: (pageKey) async {
       final ac = context.read<AppController>();
 
-      const Map<FeedSort, CommentSort> feedToCommentSortMap = {
+      const feedToCommentSortMap = <FeedSort, CommentSort>{
         FeedSort.active: CommentSort.active,
         FeedSort.commented: CommentSort.active,
         FeedSort.hot: CommentSort.hot,
@@ -581,15 +574,15 @@ class _UserScreenBodyState extends State<UserScreenBody>
 
       return (
         switch (newPage) {
-          PostListModel newPage => newPage.items,
-          CommentListModel newPage => newPage.items,
-          DetailedUserListModel newPage => newPage.items,
-          Object _ => [],
+          final PostListModel newPage => newPage.items,
+          final CommentListModel newPage => newPage.items,
+          final DetailedUserListModel newPage => newPage.items,
+          Object _ => const <dynamic>[],
         },
         switch (newPage) {
-          PostListModel newPage => newPage.nextPage,
-          CommentListModel newPage => newPage.nextPage,
-          DetailedUserListModel newPage => newPage.nextPage,
+          final PostListModel newPage => newPage.nextPage,
+          final CommentListModel newPage => newPage.nextPage,
+          final DetailedUserListModel newPage => newPage.nextPage,
           Object _ => null,
         },
       );

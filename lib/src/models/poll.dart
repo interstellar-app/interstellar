@@ -25,14 +25,14 @@ abstract class PollModel with _$PollModel {
   }) = _PollModel;
 
   factory PollModel.fromPiefed(int postId, JsonMap json) {
-    final choices = json['choices'] as List<dynamic>;
+    final choices = json['choices']! as List<dynamic>;
     final votes = json['my_votes'] as List<dynamic>? ?? [];
 
     return PollModel(
       postId: postId,
-      endPoll: DateTime.parse(json['end_poll'] as String).toLocal(),
-      multiple: (json['mode'] as String) == 'multiple',
-      localOnly: json['local_only'] as bool,
+      endPoll: DateTime.parse(json['end_poll']! as String).toLocal(),
+      multiple: (json['mode']! as String) == 'multiple',
+      localOnly: json['local_only']! as bool,
       choices: choices
           .map(
             (choice) => PollChoiceModel(

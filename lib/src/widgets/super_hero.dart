@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class SuperHero extends Hero {
   const SuperHero({
     required super.tag,
+    required super.child,
     super.key,
     super.createRectTween,
     super.flightShuttleBuilder,
     super.placeholderBuilder,
     super.transitionOnUserGestures,
-    required super.child,
   });
 }

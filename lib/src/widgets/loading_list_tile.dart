@@ -8,7 +8,7 @@ class _LoadingTileIndicator extends StatelessWidget {
     return Container(
       width: 24,
       height: 24,
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.all(2),
       child: const CircularProgressIndicator(
         color: Colors.white,
         strokeWidth: 3,
@@ -18,13 +18,6 @@ class _LoadingTileIndicator extends StatelessWidget {
 }
 
 class LoadingListTile extends StatefulWidget {
-  final Future<void> Function()? onTap;
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
-  final Widget? trailing;
-  final bool enabled;
-
   const LoadingListTile({
     required this.onTap,
     this.leading,
@@ -34,6 +27,13 @@ class LoadingListTile extends StatefulWidget {
     this.enabled = true,
     super.key,
   });
+
+  final Future<void> Function()? onTap;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
+  final bool enabled;
 
   @override
   State<LoadingListTile> createState() => _LoadingListTileState();
@@ -60,7 +60,7 @@ class _LoadingListTileState extends State<LoadingListTile> {
                 if (mounted) setState(() => _isLoading = false);
               }
             },
-      trailing: _isLoading ? _LoadingTileIndicator() : widget.trailing,
+      trailing: _isLoading ? const _LoadingTileIndicator() : widget.trailing,
       enabled: widget.enabled,
     );
   }

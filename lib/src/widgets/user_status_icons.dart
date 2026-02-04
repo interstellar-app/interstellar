@@ -5,14 +5,14 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class UserStatusIcons extends StatelessWidget {
-  final DateTime? cakeDay;
-  final bool isBot;
-
   const UserStatusIcons({
     required this.cakeDay,
     required this.isBot,
     super.key,
   });
+
+  final DateTime? cakeDay;
+  final bool isBot;
 
   @override
   Widget build(BuildContext context) {

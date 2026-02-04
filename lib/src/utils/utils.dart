@@ -39,36 +39,36 @@ String dateDiffFormat(DateTime input) {
   final difference = DateTime.now().difference(input);
 
   if (difference.inDays > 0) {
-    var years = (difference.inDays / 365).truncate();
+    final years = (difference.inDays / 365).truncate();
     if (years >= 1) {
       return '${years}Y';
     }
 
-    var months = (difference.inDays / 30).truncate();
+    final months = (difference.inDays / 30).truncate();
     if (months >= 1) {
       return '${months}M';
     }
 
-    var weeks = (difference.inDays / 7).truncate();
+    final weeks = (difference.inDays / 7).truncate();
     if (weeks >= 1) {
       return '${weeks}w';
     }
 
-    var days = difference.inDays;
+    final days = difference.inDays;
     return '${days}d';
   }
 
-  var hours = difference.inHours;
+  final hours = difference.inHours;
   if (hours > 0) {
     return '${hours}h';
   }
 
-  var minutes = difference.inMinutes;
+  final minutes = difference.inMinutes;
   if (minutes > 0) {
     return '${minutes}m';
   }
 
-  var seconds = difference.inSeconds;
+  final seconds = difference.inSeconds;
   return '${seconds}s';
 }
 
@@ -130,9 +130,10 @@ String readableShortcut(SingleActivator shortcut) {
   if (shortcut.alt) text += 'Alt+';
   if (shortcut.shift) text += 'Shift+';
   if (shortcut.meta) text += 'Meta+';
+
   text += switch (shortcut.trigger.keyLabel) {
     ' ' => 'Space',
-    String key => key,
+    final String key => key,
   };
 
   return text;
@@ -148,12 +149,7 @@ List<T> reverseList<T>(List<T> list, bool enabled) {
   return list;
 }
 
-const chipDropdownPadding = EdgeInsets.only(
-  left: 4,
-  top: 6,
-  right: 0,
-  bottom: 6,
-);
+const chipDropdownPadding = EdgeInsets.only(left: 4, top: 6, bottom: 6);
 
 ScrollPhysics? appTabViewPhysics(BuildContext context) =>
     context.watch<AppController>().profile.disableTabSwiping
@@ -162,9 +158,9 @@ ScrollPhysics? appTabViewPhysics(BuildContext context) =>
 
 class DefaultTabControllerListener extends StatefulWidget {
   const DefaultTabControllerListener({
+    required this.child,
     super.key,
     this.onTabSelected,
-    required this.child,
   });
 
   final void Function(int index)? onTabSelected;
@@ -296,38 +292,6 @@ String? mbinGetSortTime(FeedSort? sort) {
 
 typedef JsonMap = Map<String, Object?>;
 
-class InterstellarRoute extends MaterialPageRoute {
-  InterstellarRoute({
-    required super.builder,
-    this.transitionDuration = const Duration(milliseconds: 300),
-    this.reverseTransitionDuration = const Duration(milliseconds: 300),
-  });
-
-  @override
-  Duration transitionDuration;
-  @override
-  Duration reverseTransitionDuration;
-}
-
-Future<void> pushRoute(
-  BuildContext context, {
-  required WidgetBuilder builder,
-  Duration duration = const Duration(milliseconds: 300),
-}) async {
-  final animationSpeed = context.read<AppController>().profile.animationSpeed;
-  final adjustedDuration = animationSpeed == 0
-      ? Duration.zero
-      : duration * (1.0 / animationSpeed);
-
-  await Navigator.of(context).push(
-    InterstellarRoute(
-      transitionDuration: adjustedDuration,
-      reverseTransitionDuration: adjustedDuration,
-      builder: builder,
-    ),
-  );
-}
-
 // apparently Platform is unsupported on web so have to check for web before checking specific platform
 class PlatformIs {
   static const bool web = kIsWeb;
@@ -340,4 +304,11 @@ class PlatformIs {
 
   static final bool mobile = android || iOS;
   static final bool desktop = linux || macOS || windows;
+}
+
+class UnreachableError extends Error {
+  UnreachableError();
+
+  @override
+  String toString() => 'Unreachable Error, you should not be seeing this!';
 }

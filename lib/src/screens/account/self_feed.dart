@@ -40,7 +40,7 @@ class _SelfFeedState extends State<SelfFeed>
               _authError = null;
             });
           })
-          .catchError((error) {
+          .catchError((dynamic error) {
             if (error is AuthorizationException) {
               setState(() {
                 _authError = error;

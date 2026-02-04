@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/database/database.dart';
-import 'package:interstellar/src/screens/explore/user_screen.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
@@ -53,23 +54,27 @@ class _TagsListState extends State<TagsList> {
     if (widget.activeTags != null) {
       _activeTags = widget.activeTags!;
     } else if (widget.username != null) {
-      ac
-          .getUserTags(widget.username!)
-          .then(
-            (tags) => setState(() {
-              _activeTags = tags;
-            }),
-          );
+      unawaited(
+        ac
+            .getUserTags(widget.username!)
+            .then(
+              (tags) => setState(() {
+                _activeTags = tags;
+              }),
+            ),
+      );
     }
     if (widget.availableTags != null) {
       setState(() {
         _availableTags = widget.availableTags!;
       });
     } else {
-      ac.getTags().then(
-        (tags) => setState(() {
-          _availableTags = tags;
-        }),
+      unawaited(
+        ac.getTags().then(
+          (tags) => setState(() {
+            _availableTags = tags;
+          }),
+        ),
       );
     }
   }
@@ -117,7 +122,7 @@ class _TagsListState extends State<TagsList> {
 
           final isActive = activeTagIds.contains(tag.id);
 
-          toggleTag(bool? newValue) {
+          void toggleTag(bool? newValue) {
             if (newValue == null) return;
 
             if (newValue) {
@@ -144,7 +149,7 @@ class _TagsListState extends State<TagsList> {
                 : IconButton(
                     onPressed: () =>
                         context.router.push(TagUsersRoute(tag: tag)),
-                    icon: Icon(Symbols.person_rounded),
+                    icon: const Icon(Symbols.person_rounded),
                   ),
             onTap: widget.onUpdate != null ? () => toggleTag(!isActive) : null,
             trailing: IconButton(
@@ -192,14 +197,16 @@ class TagUsersScreenState extends State<TagUsersScreen> {
   void initState() {
     super.initState();
 
-    context
-        .read<AppController>()
-        .getTagUsers(widget.tag.id)
-        .then(
-          (users) => setState(() {
-            _users = users;
-          }),
-        );
+    unawaited(
+      context
+          .read<AppController>()
+          .getTagUsers(widget.tag.id)
+          .then(
+            (users) => setState(() {
+              _users = users;
+            }),
+          ),
+    );
   }
 
   @override
@@ -209,7 +216,7 @@ class TagUsersScreenState extends State<TagUsersScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.tag.tag)),
       body: _users == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _users!.isEmpty
           ? Center(
               child: Padding(
@@ -226,7 +233,7 @@ class TagUsersScreenState extends State<TagUsersScreen> {
                     (username) => ListTile(
                       title: Text(username),
                       onTap: () async {
-                        String name = username;
+                        var name = username;
 
                         if (name.endsWith(ac.instanceHost)) {
                           name = name.split('@').first;
@@ -235,8 +242,10 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 
                         if (!context.mounted) return;
 
-                        context.router.push(
-                          UserRoute(userId: user.id, initData: user),
+                        unawaited(
+                          context.router.push(
+                            UserRoute(userId: user.id, initData: user),
+                          ),
                         );
                       },
                     ),
@@ -248,9 +257,9 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 }
 
 class TagsFloatingButton extends StatelessWidget {
-  const TagsFloatingButton({super.key, required this.onUpdate});
+  const TagsFloatingButton({required this.onUpdate, super.key});
 
-  final Function(Tag) onUpdate;
+  final void Function(Tag) onUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -258,14 +267,14 @@ class TagsFloatingButton extends StatelessWidget {
 
     return FloatingActionButton.extended(
       label: Text(l(context).tags_new),
-      icon: Icon(Symbols.add_rounded),
+      icon: const Icon(Symbols.add_rounded),
       onPressed: () async {
         Tag? tag;
         try {
           tag = await ac.addTag();
         } catch (err) {
           if (!context.mounted) return;
-          await showDialog(
+          await showDialog<void>(
             context: context,
             builder: (context) {
               return AlertDialog(
@@ -279,7 +288,7 @@ class TagsFloatingButton extends StatelessWidget {
                   ),
                   LoadingFilledButton(
                     onPressed: () async {
-                      int num = 0;
+                      var num = 0;
                       while (tag == null) {
                         try {
                           tag = await ac.addTag(tag: 'Tag ${num++}');
@@ -298,7 +307,7 @@ class TagsFloatingButton extends StatelessWidget {
           );
         }
         if (!context.mounted || tag == null) return;
-        bool cancelled = true;
+        var cancelled = true;
         await context.router.push(
           TagEditorRoute(
             tag: tag!,
@@ -335,10 +344,12 @@ class _TagsScreenState extends State<TagsScreen> {
   void initState() {
     super.initState();
 
-    context.read<AppController>().getTags().then(
-      (tags) => setState(() {
-        _availableTags = tags;
-      }),
+    unawaited(
+      context.read<AppController>().getTags().then(
+        (tags) => setState(() {
+          _availableTags = tags;
+        }),
+      ),
     );
   }
 

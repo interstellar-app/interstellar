@@ -5,16 +5,16 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class ServerClient {
-  http.Client httpClient;
-  ServerSoftware software;
-  String domain;
-  List<(String, int)>? _langCodeIdPairs;
-
   ServerClient({
     required this.httpClient,
     required this.software,
     required this.domain,
   });
+
+  http.Client httpClient;
+  ServerSoftware software;
+  String domain;
+  List<(String, int)>? _langCodeIdPairs;
 
   Future<http.Response> get(
     String path, {
@@ -65,7 +65,7 @@ class ServerClient {
     JsonMap? body,
     Map<String, String?>? queryParams,
   }) async {
-    var request = http.Request(
+    final request = http.Request(
       method,
       Uri.https(
         domain,
@@ -80,7 +80,7 @@ class ServerClient {
     }
     if (headers != null) request.headers.addAll(headers);
 
-    return await sendRequest(request);
+    return sendRequest(request);
   }
 
   Future<http.Response> sendRequest(http.BaseRequest request) async {
@@ -98,7 +98,7 @@ class ServerClient {
       Map<String, String>.from(
         Map.fromEntries(
           queryParams.entries.where(
-            (e) => (e.value != null && e.value!.isNotEmpty),
+            (e) => e.value != null && e.value!.isNotEmpty,
           ),
         ),
       );
@@ -133,7 +133,7 @@ class ServerClient {
 
           final json = response.bodyJson;
 
-          allLanguages = json['all_languages'] as List<dynamic>;
+          allLanguages = json['all_languages']! as List<dynamic>;
 
         case ServerSoftware.piefed:
           final response = await get('/site');
@@ -141,7 +141,7 @@ class ServerClient {
           final json = response.bodyJson;
 
           allLanguages =
-              (json['site'] as JsonMap)['all_languages'] as List<dynamic>;
+              (json['site']! as JsonMap)['all_languages']! as List<dynamic>;
       }
 
       _langCodeIdPairs = allLanguages

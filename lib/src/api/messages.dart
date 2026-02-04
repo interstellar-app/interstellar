@@ -4,9 +4,9 @@ import 'package:interstellar/src/models/message.dart';
 import 'package:interstellar/src/utils/models.dart';
 
 class APIMessages {
-  final ServerClient client;
-
   APIMessages(this.client);
+
+  final ServerClient client;
 
   Future<MessageListModel> list({int? myUserId, String? page}) async {
     switch (client.software) {
@@ -27,7 +27,7 @@ class APIMessages {
         final json = response.bodyJson;
 
         json['next_page'] = lemmyCalcNextIntPage(
-          json['private_messages'] as List<dynamic>,
+          json['private_messages']! as List<dynamic>,
           page,
         );
 
@@ -68,7 +68,7 @@ class APIMessages {
 
         final json = response.bodyJson;
         final nextPage = lemmyCalcNextIntPage(
-          json['private_messages'] as List<dynamic>,
+          json['private_messages']! as List<dynamic>,
           page,
         );
         json['next_page'] = nextPage;
@@ -118,7 +118,7 @@ class APIMessages {
         return MessageThreadModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        final path = '/private_message';
+        const path = '/private_message';
 
         final response = await client.post(
           path,
@@ -135,7 +135,7 @@ class APIMessages {
         ).items.first;
 
       case ServerSoftware.piefed:
-        final path = '/private_message';
+        const path = '/private_message';
 
         final response = await client.post(
           path,
@@ -166,10 +166,10 @@ class APIMessages {
         return MessageThreadModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        return await create(threadId, body);
+        return create(threadId, body);
 
       case ServerSoftware.piefed:
-        return await create(threadId, body);
+        return create(threadId, body);
     }
   }
 }

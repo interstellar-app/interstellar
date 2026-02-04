@@ -8,12 +8,6 @@ enum ActionLocation { hide, appBar, fabTap, fabHold, fabMenu }
 enum ActionLocationWithTabs { hide, appBar, fabTap, fabHold, fabMenu, tabs }
 
 class ActionItem {
-  final String name;
-  final IconData icon;
-  final void Function()? callback;
-  final ActionLocation? location;
-  final Color? color;
-
   const ActionItem({
     required this.name,
     required this.icon,
@@ -21,6 +15,12 @@ class ActionItem {
     this.location,
     this.color,
   });
+
+  final String name;
+  final IconData icon;
+  final void Function()? callback;
+  final ActionLocation? location;
+  final Color? color;
 
   ActionItem withProps(ActionLocation location, void Function()? callback) =>
       ActionItem(

@@ -10,7 +10,7 @@ abstract class BookmarkListListModel with _$BookmarkListListModel {
   }) = _BookmarkListListModel;
 
   factory BookmarkListListModel.fromMbin(JsonMap json) => BookmarkListListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((post) => BookmarkListModel.fromMbin(post as JsonMap))
         .toList(),
   );
@@ -25,8 +25,8 @@ abstract class BookmarkListModel with _$BookmarkListModel {
   }) = _BookmarkListModel;
 
   factory BookmarkListModel.fromMbin(JsonMap json) => BookmarkListModel(
-    name: json['name'] as String,
-    isDefault: json['isDefault'] as bool,
-    count: json['count'] as int,
+    name: json['name']! as String,
+    isDefault: json['isDefault']! as bool,
+    count: json['count']! as int,
   );
 }

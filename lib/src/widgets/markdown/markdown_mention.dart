@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 
 class MentionMarkdownSyntax extends md.InlineSyntax {
+  MentionMarkdownSyntax() : super(_mentionPattern);
+
   /*
     Should match the following patterns:
 
@@ -46,15 +48,9 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
   */
   static const String _mdLinkPattern =
       r'\[.*?\]\(\s*' + _mentionPattern + r'(?:\s*".*?")?\s*\)';
-  static final _mdLinkPatternRegExp = RegExp(
-    _mdLinkPattern,
-    multiLine: true,
-    caseSensitive: true,
-  );
+  static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
 
   static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
-
-  MentionMarkdownSyntax() : super(_mentionPattern);
 
   @override
   bool tryMatch(md.InlineParser parser, [int? startMatchPos]) {
@@ -107,9 +103,9 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
 }
 
 class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  final String originInstance;
-
   MentionMarkdownBuilder({required this.originInstance});
+
+  final String originInstance;
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
@@ -127,10 +123,10 @@ class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class MentionWidget extends StatefulWidget {
+  const MentionWidget(this.name, this.originInstance, {super.key});
+
   final String name;
   final String originInstance;
-
-  const MentionWidget(this.name, this.originInstance, {super.key});
 
   @override
   State<MentionWidget> createState() => MentionWidgetState();
@@ -151,7 +147,7 @@ class MentionWidgetState extends State<MentionWidget> {
     _fetchData();
   }
 
-  void _fetchData() async {
+  Future<void> _fetchData() async {
     final modifier = widget.name[0];
     final split = widget.name.substring(1).split('@');
     final name = split[0];
@@ -214,7 +210,7 @@ class MentionWidgetState extends State<MentionWidget> {
   Widget build(BuildContext context) {
     return InputChip(
       label: Text(_displayName),
-      avatar: _icon != null ? Avatar(_icon!) : null,
+      avatar: _icon != null ? Avatar(_icon) : null,
       onPressed: _onClick,
       visualDensity: const VisualDensity(
         vertical: VisualDensity.minimumDensity,

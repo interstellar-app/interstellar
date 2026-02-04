@@ -34,9 +34,9 @@ const Map<FeedSort, String> lemmyFeedSortMap = {
 };
 
 class APIThreads {
-  final ServerClient client;
-
   APIThreads(this.client);
+
+  final ServerClient client;
 
   Future<PostListModel> list(
     FeedSource source, {
@@ -87,7 +87,7 @@ class APIThreads {
           final json = response.bodyJson;
 
           json['next_page'] = lemmyCalcNextIntPage(
-            json['posts'] as List<dynamic>,
+            json['posts']! as List<dynamic>,
             page,
           );
 
@@ -106,7 +106,7 @@ class APIThreads {
             FeedSource.moderated => {'type_': 'ModeratorView'},
             FeedSource.favorited => {'liked_only': 'true'},
             FeedSource.community => {'community_id': sourceId!.toString()},
-            FeedSource.user => throw Exception('Unreachable'),
+            FeedSource.user => throw UnreachableError(),
             FeedSource.domain => throw Exception(
               'Domain source not allowed for lemmy',
             ),
@@ -215,11 +215,7 @@ class APIThreads {
       case ServerSoftware.piefed:
         final response = await client.post(
           '/post/like',
-          body: {
-            'post_id': postId,
-            'score': newScore,
-            if (emoji != null) 'emoji': emoji,
-          },
+          body: {'post_id': postId, 'score': newScore, 'emoji': ?emoji},
         );
 
         return PostModel.fromPiefed(
@@ -253,7 +249,7 @@ class APIThreads {
       case ServerSoftware.lemmy:
         throw Exception('Tried to vote on a poll on lemmy');
       case ServerSoftware.piefed:
-        final path = '/post/poll_vote';
+        const path = '/post/poll_vote';
         final response = await client.post(
           path,
           body: {'post_id': postId, 'choice_id': choiceIds},
@@ -365,7 +361,7 @@ class APIThreads {
           'Lemmy doesnt support assigning flairs to a post',
         );
       case ServerSoftware.piefed:
-        final path = '/post/assign_flair';
+        const path = '/post/assign_flair';
         final response = await client.post(
           path,
           body: {'post_id': postId, 'flair_id_list': flairIds},
@@ -538,7 +534,7 @@ class APIThreads {
         );
         request.files.add(multipartFile);
         request.fields['title'] = title;
-        for (int i = 0; i < tags.length; i++) {
+        for (var i = 0; i < tags.length; i++) {
           request.fields['tags[$i]'] = tags[i];
         }
         request.fields['isOc'] = isOc.toString();
@@ -546,7 +542,7 @@ class APIThreads {
         request.fields['lang'] = lang;
         request.fields['isAdult'] = isAdult.toString();
         request.fields['alt'] = alt;
-        var response = await client.sendRequest(request);
+        final response = await client.sendRequest(request);
 
         return PostModel.fromMbinEntry(response.bodyJson);
 
@@ -567,7 +563,7 @@ class APIThreads {
         final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
-            ((pictrsResponse.bodyJson['files'] as List<Object?>).first
+            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
                     as JsonMap)['file']
                 as String?;
 

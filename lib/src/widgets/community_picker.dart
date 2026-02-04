@@ -10,16 +10,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPicker extends StatefulWidget {
-  final DetailedCommunityModel? value;
-  final void Function(DetailedCommunityModel?) onChange;
-  final bool microblogMode;
-
   const CommunityPicker({
     required this.value,
     required this.onChange,
     this.microblogMode = false,
     super.key,
   });
+
+  final DetailedCommunityModel? value;
+  final void Function(DetailedCommunityModel?) onChange;
+  final bool microblogMode;
 
   @override
   State<CommunityPicker> createState() => _CommunityPickerState();
@@ -42,18 +42,18 @@ class _CommunityPickerState extends State<CommunityPicker> {
                   hintText: l(context).selectCommunity,
                   prefixIcon: widget.value?.icon == null
                       ? null
-                      : Avatar(widget.value!.icon!, radius: 14),
+                      : Avatar(widget.value!.icon, radius: 14),
                   suffixIcon: widget.value == null
                       ? null
                       : IconButton(
                           onPressed: () => context.router.push(
                             CommunityRoute(
                               communityId: widget.value!.id,
-                              initData: widget.value!,
+                              initData: widget.value,
                               onUpdate: (newValue) => widget.onChange(newValue),
                             ),
                           ),
-                          icon: Icon(Symbols.open_in_new_rounded),
+                          icon: const Icon(Symbols.open_in_new_rounded),
                         ),
                   helperText: widget.microblogMode
                       ? l(context).microblog_communityHelperText
@@ -98,9 +98,9 @@ class _CommunityPickerState extends State<CommunityPicker> {
       optionsViewBuilder: (context, onSelected, options) => Align(
         alignment: AlignmentDirectional.topStart,
         child: Material(
-          elevation: 4.0,
+          elevation: 4,
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 250),
+            constraints: const BoxConstraints(maxHeight: 250),
             child: ListView.builder(
               padding: EdgeInsets.zero,
               shrinkWrap: true,
@@ -113,7 +113,7 @@ class _CommunityPickerState extends State<CommunityPicker> {
                   },
                   child: Builder(
                     builder: (BuildContext context) {
-                      final bool highlight =
+                      final highlight =
                           AutocompleteHighlightedOption.of(context) == index;
                       if (highlight) {
                         SchedulerBinding.instance.addPostFrameCallback((
@@ -130,7 +130,7 @@ class _CommunityPickerState extends State<CommunityPicker> {
                             if (option.icon != null)
                               Padding(
                                 padding: const EdgeInsets.only(right: 12),
-                                child: Avatar(option.icon!, radius: 14),
+                                child: Avatar(option.icon, radius: 14),
                               ),
                             Flexible(
                               child: Padding(

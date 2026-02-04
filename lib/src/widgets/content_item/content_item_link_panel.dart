@@ -40,7 +40,7 @@ const _youtubeAltSources = [
 ];
 
 class ContentItemLinkPanel extends StatefulWidget {
-  const ContentItemLinkPanel({super.key, required this.link});
+  const ContentItemLinkPanel({required this.link, super.key});
 
   final Uri link;
 
@@ -92,7 +92,7 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
                           controller.open();
                         }
                       },
-                      style: TextButton.styleFrom(shape: const LinearBorder()),
+                      style: TextButton.styleFrom(shape: LinearBorder.none),
                     ),
                   );
                 },
@@ -123,7 +123,7 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
               height: 40,
               child: InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: Text.rich(
                     TextSpan(
                       children: <TextSpan>[
@@ -136,7 +136,7 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
                         ),
                         TextSpan(
                           text: widget.link.toString().substring(
-                            ('${widget.link.scheme}://${widget.link.host}')
+                            '${widget.link.scheme}://${widget.link.host}'
                                 .length,
                           ),
                           style: Theme.of(context).textTheme.bodyMedium!.apply(

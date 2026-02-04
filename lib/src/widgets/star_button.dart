@@ -4,9 +4,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class StarButton extends StatelessWidget {
-  final String name;
-
   const StarButton(this.name, {super.key});
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {

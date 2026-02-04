@@ -2,15 +2,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/message.dart';
+import 'package:interstellar/src/screens/account/messages/message_item.dart';
+import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/screens/explore/explore_screen.dart';
-import 'message_item.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -58,7 +58,7 @@ class _MessagesScreenState extends State<MessagesScreen>
           itemBuilder: (context, item, index) => MessageItem(
             item,
             (newValue) {
-              var newList = _pagingController.value.items;
+              final newList = _pagingController.value.items;
               newList![index] = newValue;
               _pagingController.value = _pagingController.value.copyWith();
             },
@@ -84,11 +84,7 @@ class _MessagesScreenState extends State<MessagesScreen>
                 onTap: (selected, item) async {
                   context.router.pop();
                   await context.router.push(
-                    MessageThreadRoute(
-                      threadId: null,
-                      userId: item.id,
-                      otherUser: item,
-                    ),
+                    MessageThreadRoute(userId: item.id, otherUser: item),
                   );
                   _pagingController.refresh();
                 },

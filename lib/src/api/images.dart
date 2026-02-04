@@ -1,22 +1,22 @@
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:image_picker/image_picker.dart';
 
 enum ImageStore { platform, catbox, imgLink }
 
 class APIImages {
-  final ServerClient client;
-
   APIImages(this.client);
 
+  final ServerClient client;
+
   Future<String> uploadImage({
-    ImageStore store = ImageStore.platform,
     required XFile image,
+    ImageStore store = ImageStore.platform,
   }) async {
     // Use software default image store with catbox as a fallback for mbin.
     if (store == ImageStore.platform &&
@@ -50,7 +50,7 @@ class APIImages {
               final response = await client.sendRequest(request);
 
               final imageName =
-                  ((response.bodyJson['files'] as List<dynamic>).first
+                  ((response.bodyJson['files']! as List<dynamic>).first
                           as JsonMap)['file']
                       as String?;
 
@@ -73,7 +73,7 @@ class APIImages {
 
               final response = await client.sendRequest(request);
 
-              return response.bodyJson['url'] as String;
+              return response.bodyJson['url']! as String;
           }
         case ImageStore.catbox:
           const path = 'https://catbox.moe/user/api.php';
@@ -106,10 +106,10 @@ class APIImages {
 
           final response = await client.sendRequest(request);
 
-          return ((response.bodyJson['images'] as List<dynamic>).first
-                  as JsonMap)['direct_link']
+          return ((response.bodyJson['images']! as List<dynamic>).first
+                  as JsonMap)['direct_link']!
               as String;
-      } //TODO: add more image store options
+      } // TODO(olorin99): add more image store options
     } catch (e) {
       return '';
     }

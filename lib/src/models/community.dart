@@ -1,14 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/controller/database/database.dart';
+import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
-import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/post.dart';
 
 part 'community.freezed.dart';
 
@@ -21,15 +21,15 @@ abstract class DetailedCommunityListModel with _$DetailedCommunityListModel {
 
   factory DetailedCommunityListModel.fromMbin(JsonMap json) =>
       DetailedCommunityListModel(
-        items: (json['items'] as List<dynamic>)
+        items: (json['items']! as List<dynamic>)
             .map((item) => DetailedCommunityModel.fromMbin(item as JsonMap))
             .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+        nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
       );
 
   factory DetailedCommunityListModel.fromLemmy(JsonMap json) =>
       DetailedCommunityListModel(
-        items: (json['communities'] as List<dynamic>)
+        items: (json['communities']! as List<dynamic>)
             .map((item) => DetailedCommunityModel.fromLemmy(item as JsonMap))
             .toList(),
         nextPage: json['next_page'] as String?,
@@ -37,7 +37,7 @@ abstract class DetailedCommunityListModel with _$DetailedCommunityListModel {
 
   factory DetailedCommunityListModel.fromPiefed(JsonMap json) =>
       DetailedCommunityListModel(
-        items: (json['communities'] as List<dynamic>)
+        items: (json['communities']! as List<dynamic>)
             .map((item) => DetailedCommunityModel.fromPiefed(item as JsonMap))
             .toList(),
         nextPage: json['next_page'] as String?,
@@ -70,23 +70,23 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
 
   factory DetailedCommunityModel.fromMbin(JsonMap json) {
     final community = DetailedCommunityModel(
-      id: json['magazineId'] as int,
-      name: json['name'] as String,
-      title: json['title'] as String,
+      id: json['magazineId']! as int,
+      name: json['name']! as String,
+      title: json['title']! as String,
       icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
       description: json['description'] as String?,
       owner: json['owner'] == null
           ? null
-          : UserModel.fromMbin(json['owner'] as JsonMap),
+          : UserModel.fromMbin(json['owner']! as JsonMap),
       moderators: ((json['moderators'] ?? []) as List<dynamic>)
           .map((user) => UserModel.fromMbin(user as JsonMap))
           .toList(),
-      subscriptionsCount: json['subscriptionsCount'] as int,
-      threadCount: json['entryCount'] as int,
-      threadCommentCount: json['entryCommentCount'] as int,
-      microblogCount: json['postCount'] as int,
-      microblogCommentCount: json['postCommentCount'] as int,
-      isAdult: json['isAdult'] as bool,
+      subscriptionsCount: json['subscriptionsCount']! as int,
+      threadCount: json['entryCount']! as int,
+      threadCommentCount: json['entryCommentCount']! as int,
+      microblogCount: json['postCount']! as int,
+      microblogCommentCount: json['postCommentCount']! as int,
+      isAdult: json['isAdult']! as bool,
       isUserSubscribed: json['isUserSubscribed'] as bool?,
       isBlockedByUser: json['isBlockedByUser'] as bool?,
       isPostingRestrictedToMods:
@@ -94,7 +94,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
       notificationControlStatus: json['notificationStatus'] == null
           ? null
           : NotificationControlStatus.fromJson(
-              json['notificationStatus'] as String,
+              json['notificationStatus']! as String,
             ),
       flairs: [],
       apId: json['apProfileId'] as String?,
@@ -106,30 +106,30 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
   }
 
   factory DetailedCommunityModel.fromLemmy(JsonMap json) {
-    final lemmyCommunity = json['community'] as JsonMap;
-    final lemmyCounts = json['counts'] as JsonMap;
+    final lemmyCommunity = json['community']! as JsonMap;
+    final lemmyCounts = json['counts']! as JsonMap;
 
     final community = DetailedCommunityModel(
-      id: lemmyCommunity['id'] as int,
+      id: lemmyCommunity['id']! as int,
       name: getLemmyPiefedActorName(lemmyCommunity),
-      title: lemmyCommunity['title'] as String,
+      title: lemmyCommunity['title']! as String,
       icon: lemmyGetOptionalImage(lemmyCommunity['icon'] as String?),
       description: lemmyCommunity['description'] as String?,
       owner: null,
       moderators: [],
-      subscriptionsCount: lemmyCounts['subscribers'] as int,
-      threadCount: lemmyCounts['posts'] as int,
-      threadCommentCount: lemmyCounts['comments'] as int,
+      subscriptionsCount: lemmyCounts['subscribers']! as int,
+      threadCount: lemmyCounts['posts']! as int,
+      threadCommentCount: lemmyCounts['comments']! as int,
       microblogCount: null,
       microblogCommentCount: null,
-      isAdult: lemmyCommunity['nsfw'] as bool,
-      isUserSubscribed: (json['subscribed'] as String) != 'NotSubscribed',
+      isAdult: lemmyCommunity['nsfw']! as bool,
+      isUserSubscribed: (json['subscribed']! as String) != 'NotSubscribed',
       isBlockedByUser: json['blocked'] as bool?,
       isPostingRestrictedToMods:
-          (lemmyCommunity['posting_restricted_to_mods']) as bool,
+          lemmyCommunity['posting_restricted_to_mods']! as bool,
       notificationControlStatus: null,
       flairs: [],
-      apId: lemmyCommunity['actor_id'] as String,
+      apId: lemmyCommunity['actor_id']! as String,
     );
 
     communityMentionCache[community.name] = community;
@@ -139,42 +139,43 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
 
   factory DetailedCommunityModel.fromPiefed(JsonMap json) {
     final communityView = json['community_view'] as JsonMap? ?? json;
-    final piefedCommunity = communityView['community'] as JsonMap;
-    final piefedCounts = communityView['counts'] as JsonMap;
+    final piefedCommunity = communityView['community']! as JsonMap;
+    final piefedCounts = communityView['counts']! as JsonMap;
 
     final community = DetailedCommunityModel(
-      id: piefedCommunity['id'] as int,
+      id: piefedCommunity['id']! as int,
       name: getLemmyPiefedActorName(piefedCommunity),
-      title: piefedCommunity['title'] as String,
+      title: piefedCommunity['title']! as String,
       icon: lemmyGetOptionalImage(piefedCommunity['icon'] as String?),
       description: piefedCommunity['description'] as String?,
       owner: ((json['moderators'] ?? []) as List<dynamic>)
           .map(
-            (user) =>
-                UserModel.fromPiefed((user as JsonMap)['moderator'] as JsonMap),
+            (user) => UserModel.fromPiefed(
+              (user as JsonMap)['moderator']! as JsonMap,
+            ),
           )
           .toList()
           .firstOrNull,
       moderators: ((json['moderators'] ?? []) as List<dynamic>)
           .map(
-            (user) =>
-                UserModel.fromPiefed((user as JsonMap)['moderator'] as JsonMap),
+            (user) => UserModel.fromPiefed(
+              (user as JsonMap)['moderator']! as JsonMap,
+            ),
           )
           .toList(),
-      subscriptionsCount: piefedCounts['subscriptions_count'] as int,
-      threadCount: piefedCounts['post_count'] as int,
-      threadCommentCount: piefedCounts['post_reply_count'] as int,
+      subscriptionsCount: piefedCounts['subscriptions_count']! as int,
+      threadCount: piefedCounts['post_count']! as int,
+      threadCommentCount: piefedCounts['post_reply_count']! as int,
       microblogCount: null,
       microblogCommentCount: null,
-      isAdult: piefedCommunity['nsfw'] as bool,
+      isAdult: piefedCommunity['nsfw']! as bool,
       isUserSubscribed:
-          (communityView['subscribed'] as String) != 'NotSubscribed',
+          (communityView['subscribed']! as String) != 'NotSubscribed',
       isBlockedByUser: communityView['blocked'] as bool?,
-      isPostingRestrictedToMods:
-          (piefedCommunity['restricted_to_mods']) as bool,
+      isPostingRestrictedToMods: piefedCommunity['restricted_to_mods']! as bool,
       notificationControlStatus: communityView['activity_alert'] == null
           ? null
-          : communityView['activity_alert'] as bool
+          : communityView['activity_alert']! as bool
           ? NotificationControlStatus.loud
           : NotificationControlStatus.default_,
       flairs:
@@ -191,7 +192,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
               )
               .toList() ??
           [],
-      apId: piefedCommunity['actor_id'] as String,
+      apId: piefedCommunity['actor_id']! as String,
     );
 
     communityMentionCache[community.name] = community;
@@ -210,24 +211,24 @@ abstract class CommunityModel with _$CommunityModel {
   }) = _CommunityModel;
 
   factory CommunityModel.fromMbin(JsonMap json) => CommunityModel(
-    id: json['magazineId'] as int,
-    name: json['name'] as String,
+    id: json['magazineId']! as int,
+    name: json['name']! as String,
     icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
     apId: json['apProfileId'] as String?,
   );
 
   factory CommunityModel.fromLemmy(JsonMap json) => CommunityModel(
-    id: json['id'] as int,
+    id: json['id']! as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
-    apId: json['actor_id'] as String,
+    apId: json['actor_id']! as String,
   );
 
   factory CommunityModel.fromPiefed(JsonMap json) => CommunityModel(
-    id: json['id'] as int,
+    id: json['id']! as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
-    apId: json['actor_id'] as String,
+    apId: json['actor_id']! as String,
   );
 
   factory CommunityModel.fromDetailedCommunity(
@@ -248,15 +249,15 @@ abstract class CommunityBanListModel with _$CommunityBanListModel {
   }) = _CommunityBanListModel;
 
   factory CommunityBanListModel.fromMbin(JsonMap json) => CommunityBanListModel(
-    items: (json['items'] as List<dynamic>)
+    items: (json['items']! as List<dynamic>)
         .map((item) => CommunityBanModel.fromMbin(item as JsonMap))
         .toList(),
-    nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
   factory CommunityBanListModel.fromPiefed(JsonMap json) =>
       CommunityBanListModel(
-        items: (json['items'] as List<dynamic>)
+        items: (json['items']! as List<dynamic>)
             .map((item) => CommunityBanModel.fromPiefed(item as JsonMap))
             .toList(),
         nextPage: json['next_page'] as String?,
@@ -277,24 +278,24 @@ abstract class CommunityBanModel with _$CommunityBanModel {
   factory CommunityBanModel.fromMbin(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expiresAt'] as String?),
-    community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
-    bannedUser: UserModel.fromMbin(json['bannedUser'] as JsonMap),
-    bannedBy: UserModel.fromMbin(json['bannedBy'] as JsonMap),
-    expired: json['expired'] as bool,
+    community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
+    bannedUser: UserModel.fromMbin(json['bannedUser']! as JsonMap),
+    bannedBy: UserModel.fromMbin(json['bannedBy']! as JsonMap),
+    expired: json['expired']! as bool,
   );
 
   factory CommunityBanModel.fromLemmy(JsonMap json) {
     final expiration = json['expires'] != null
-        ? DateTime.parse(json['expires'] as String)
+        ? DateTime.parse(json['expires']! as String)
         : null;
 
     return CommunityBanModel(
       reason: json['reason'] as String?,
       expiresAt: expiration,
-      community: CommunityModel.fromLemmy(json['community'] as JsonMap),
-      bannedUser: UserModel.fromLemmy(json['banned_person'] as JsonMap),
+      community: CommunityModel.fromLemmy(json['community']! as JsonMap),
+      bannedUser: UserModel.fromLemmy(json['banned_person']! as JsonMap),
       bannedBy: json['moderator'] != null
-          ? UserModel.fromLemmy(json['moderator'] as JsonMap)
+          ? UserModel.fromLemmy(json['moderator']! as JsonMap)
           : null,
       expired: expiration?.isBefore(DateTime.now()) ?? false,
     );
@@ -303,10 +304,10 @@ abstract class CommunityBanModel with _$CommunityBanModel {
   factory CommunityBanModel.fromPiefed(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expires_at'] as String?),
-    community: CommunityModel.fromPiefed(json['community'] as JsonMap),
-    bannedUser: UserModel.fromPiefed(json['banned_user'] as JsonMap),
-    bannedBy: UserModel.fromPiefed(json['banned_by'] as JsonMap),
-    expired: json['expired'] as bool,
+    community: CommunityModel.fromPiefed(json['community']! as JsonMap),
+    bannedUser: UserModel.fromPiefed(json['banned_user']! as JsonMap),
+    bannedBy: UserModel.fromPiefed(json['banned_by']! as JsonMap),
+    expired: json['expired']! as bool,
   );
 }
 
@@ -319,10 +320,10 @@ abstract class CommunityReportListModel with _$CommunityReportListModel {
 
   factory CommunityReportListModel.fromMbin(JsonMap json) =>
       CommunityReportListModel(
-        items: (json['items'] as List<dynamic>)
+        items: (json['items']! as List<dynamic>)
             .map((item) => CommunityReportModel.fromMbin(item as JsonMap))
             .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination'] as JsonMap),
+        nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
       );
 }
 
@@ -344,30 +345,30 @@ abstract class CommunityReportModel with _$CommunityReportModel {
   }) = _CommunityReportModel;
 
   factory CommunityReportModel.fromMbin(JsonMap json) {
-    String? type = json['type'] as String?;
-    PostModel? subjectPost = (switch (type) {
-      'entry_report' => PostModel.fromMbinEntry(json['subject'] as JsonMap),
-      'post_report' => PostModel.fromMbinPost(json['subject'] as JsonMap),
+    final type = json['type'] as String?;
+    final subjectPost = switch (type) {
+      'entry_report' => PostModel.fromMbinEntry(json['subject']! as JsonMap),
+      'post_report' => PostModel.fromMbinPost(json['subject']! as JsonMap),
       null => null,
       String() => null,
-    });
+    };
 
-    CommentModel? subjectComment = (switch (type) {
+    final subjectComment = switch (type) {
       'entry_comment_report' => CommentModel.fromMbin(
-        json['subject'] as JsonMap,
+        json['subject']! as JsonMap,
       ),
       'post_comment_report' => CommentModel.fromMbin(
-        json['subject'] as JsonMap,
+        json['subject']! as JsonMap,
       ),
       null => null,
       String() => null,
-    });
+    };
 
     return CommunityReportModel(
-      id: json['reportId'] as int,
-      community: CommunityModel.fromMbin(json['magazine'] as JsonMap),
-      reportedBy: UserModel.fromMbin(json['reporting'] as JsonMap),
-      reportedUser: UserModel.fromMbin(json['reported'] as JsonMap),
+      id: json['reportId']! as int,
+      community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
+      reportedBy: UserModel.fromMbin(json['reporting']! as JsonMap),
+      reportedUser: UserModel.fromMbin(json['reported']! as JsonMap),
       subjectPost: subjectPost,
       subjectComment: subjectComment,
       reason: json['reason'] as String?,
@@ -377,7 +378,7 @@ abstract class CommunityReportModel with _$CommunityReportModel {
       createdAt: optionalDateTime(json['createdAt'] as String?),
       consideredAt: optionalDateTime(json['consideredAt'] as String?),
       consideredBy: json['consideredBy'] != null
-          ? UserModel.fromMbin(json['consideredBy'] as JsonMap)
+          ? UserModel.fromMbin(json['consideredBy']! as JsonMap)
           : null,
       weight: json['weight'] as int?,
     );

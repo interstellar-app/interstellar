@@ -3,11 +3,11 @@ import 'package:flutter/rendering.dart';
 
 class HideOnScroll extends StatefulWidget {
   const HideOnScroll({
-    super.key,
     required this.controller,
     required this.hiddenOffset,
-    this.duration = Duration.zero,
     required this.child,
+    super.key,
+    this.duration = Duration.zero,
   });
 
   final ScrollController? controller;

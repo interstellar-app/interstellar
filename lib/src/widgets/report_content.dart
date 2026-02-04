@@ -11,9 +11,9 @@ Future<String?> reportContent(BuildContext context, String contentTypeName) =>
     );
 
 class ReportContentBody extends StatefulWidget {
-  final String contentTypeName;
-
   const ReportContentBody({required this.contentTypeName, super.key});
+
+  final String contentTypeName;
 
   @override
   State<ReportContentBody> createState() => _ReportContentBodyState();

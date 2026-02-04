@@ -1,33 +1,33 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:interstellar/src/api/bookmark.dart';
 import 'package:interstellar/src/api/comments.dart';
+import 'package:interstellar/src/api/notifications.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/widgets/menus/content_menu.dart';
+import 'package:interstellar/src/widgets/ban_dialog.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/loading_template.dart';
+import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/paging.dart';
-import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/api/bookmark.dart';
-import 'package:interstellar/src/api/notifications.dart';
-import 'package:interstellar/src/widgets/ban_dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
 class ThreadPage extends StatelessWidget {
   const ThreadPage({
-    super.key,
     @PathParam('id') required this.postId,
+    super.key,
     this.initData,
     this.onUpdate,
     this.userCanModerate = false,
@@ -51,8 +51,8 @@ class ThreadPage extends StatelessWidget {
 @RoutePage()
 class MicroblogPage extends StatelessWidget {
   const MicroblogPage({
-    super.key,
     @PathParam('id') required this.postId,
+    super.key,
     this.initData,
     this.onUpdate,
     this.userCanModerate = false,
@@ -73,7 +73,7 @@ class MicroblogPage extends StatelessWidget {
   );
 }
 
-void pushPostPage(
+Future<void> pushPostPage(
   BuildContext context, {
   int? postId,
   PostType? postType,
@@ -136,9 +136,9 @@ class _PostPageState extends State<PostPage> {
     _initData();
   }
 
-  void _initData() async {
+  Future<void> _initData() async {
     if (widget.initData != null) {
-      _data = widget.initData!;
+      _data = widget.initData;
     }
     // Cross posts are only returned on fetching single post not on list
     // so need to fetch full post info.
@@ -176,8 +176,8 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _updateCrossPost(PostModel crossPost) {
-    var newCrossPosts = _data!.crossPosts.toList();
-    int indexOfPost = newCrossPosts.indexWhere(
+    final newCrossPosts = _data!.crossPosts.toList();
+    final indexOfPost = newCrossPosts.indexWhere(
       (post) => post.id == crossPost.id,
     );
     newCrossPosts[indexOfPost] = crossPost;
@@ -199,7 +199,7 @@ class _PostPageState extends State<PostPage> {
       },
       community: crossPost.community,
       boosts: crossPost.boosts,
-      isBoosted: crossPost.myBoost == true,
+      isBoosted: crossPost.myBoost ?? false,
       onBoost: whenLoggedIn(context, () async {
         _updateCrossPost(
           (await ac.markAsRead([
@@ -393,7 +393,7 @@ class _PostPageState extends State<PostPage> {
                       1,
                       emoji: emoji,
                     ),
-                    PostType.microblog => throw 'Unreachable',
+                    PostType.microblog => throw UnreachableError(),
                   },
                 ], true)).first,
               );
@@ -415,7 +415,7 @@ class _PostPageState extends State<PostPage> {
       return const LoadingTemplate();
     }
 
-    PostModel post = _data!;
+    final post = _data!;
 
     final ac = context.read<AppController>();
 
@@ -479,7 +479,7 @@ class _PostPageState extends State<PostPage> {
                     XFile? image,
                     String? alt,
                   }) async {
-                    var newComment = await context
+                    final newComment = await context
                         .read<AppController>()
                         .api
                         .comments
@@ -524,6 +524,9 @@ class _PostPageState extends State<PostPage> {
                               post.id,
                             ),
                           };
+
+                          if (!context.mounted) return;
+
                           _onUpdate(
                             post.copyWith(
                               body: '_${l(context).postDeleted}_',
@@ -580,7 +583,7 @@ class _PostPageState extends State<PostPage> {
                     .map(
                       (crossPost) => SliverMainAxisGroup(
                         slivers: [
-                          SliverToBoxAdapter(child: const Divider()),
+                          const SliverToBoxAdapter(child: Divider()),
                           SliverToBoxAdapter(
                             child: ListTile(
                               title: Text(
@@ -620,11 +623,11 @@ class _PostPageState extends State<PostPage> {
 
 class CommentSection extends StatefulWidget {
   const CommentSection({
-    super.key,
     required this.id,
     required this.postType,
     required this.sort,
     required this.opUserId,
+    super.key,
     this.canModerate = false,
   });
 

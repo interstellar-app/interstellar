@@ -1,31 +1,32 @@
 import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
-import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
 class ProfileEditScreen extends StatefulWidget {
+  const ProfileEditScreen(this.user, this.onUpdate, {super.key});
+
   final DetailedUserModel user;
   final void Function(DetailedUserModel) onUpdate;
-
-  const ProfileEditScreen(this.user, this.onUpdate, {super.key});
 
   @override
   State<ProfileEditScreen> createState() => _ProfileEditScreen();
 }
 
 class _ProfileEditScreen extends State<ProfileEditScreen> {
-  TextEditingController? _aboutTextController;
+  late TextEditingController? _aboutTextController;
   XFile? _avatarFile;
   bool _deleteAvatar = false;
   XFile? _coverFile;
@@ -41,7 +42,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
     _initSettings();
   }
 
-  void _initSettings() async {
+  Future<void> _initSettings() async {
     final settings = await context
         .read<AppController>()
         .api
@@ -58,7 +59,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
       'profile:about:${context.watch<AppController>().selectedAccount}',
     );
 
-    onSave() async {
+    Future<void> onSave() async {
       if (_settingsChanged) {
         _settings = await context
             .read<AppController>()
@@ -193,7 +194,6 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                       ),
                       Positioned.fill(
                         child: Align(
-                          alignment: Alignment.center,
                           child: LoadingIconButton(
                             style: ButtonStyle(
                               fixedSize: const WidgetStatePropertyAll(
@@ -282,7 +282,6 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 30),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
                             l(context).account_settings_settings,
@@ -304,7 +303,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.blurNSFW!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.blurNSFW = value!;
+                                  _settings!.blurNSFW = value;
                                   _settingsChanged = true;
                                 });
                               },
@@ -317,7 +316,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.showReadPosts!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showReadPosts = value!;
+                                  _settings!.showReadPosts = value;
                                   _settingsChanged = true;
                                 });
                               },
@@ -330,7 +329,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.showSubscribedUsers!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showSubscribedUsers = value!;
+                                  _settings!.showSubscribedUsers = value;
                                   _settingsChanged = true;
                                 });
                               },
@@ -345,7 +344,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.showSubscribedCommunities!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showSubscribedCommunities = value!;
+                                  _settings!.showSubscribedCommunities = value;
                                   _settingsChanged = true;
                                 });
                               },
@@ -360,7 +359,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.showSubscribedDomains!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showSubscribedDomains = value!;
+                                  _settings!.showSubscribedDomains = value;
                                   _settingsChanged = true;
                                 });
                               },
@@ -375,7 +374,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.showProfileSubscriptions!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showProfileSubscriptions = value!;
+                                  _settings!.showProfileSubscriptions = value;
                                   _settingsChanged = true;
                                 });
                               },
@@ -390,7 +389,7 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                               value: _settings!.showProfileFollowings!,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  _settings!.showProfileFollowings = value!;
+                                  _settings!.showProfileFollowings = value;
                                   _settingsChanged = true;
                                 });
                               },

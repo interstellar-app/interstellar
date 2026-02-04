@@ -13,9 +13,9 @@ abstract class EmojiReactionModel with _$EmojiReactionModel {
   }) = _EmojiReactionModel;
 
   factory EmojiReactionModel.fromPieFed(JsonMap json) => EmojiReactionModel(
-    authors: (json['authors'] as List<dynamic>).cast<String>(),
-    count: json['count'] as int,
-    token: json['token'] as String,
-    url: json['url'] as String,
+    authors: (json['authors']! as List<dynamic>).cast<String>(),
+    count: json['count']! as int,
+    token: json['token']! as String,
+    url: json['url']! as String,
   );
 }

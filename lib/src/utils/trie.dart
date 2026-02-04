@@ -1,10 +1,10 @@
 class Trie<T> {
-  Set<T> ends;
-  Map<int, Trie<T>> children;
-
   Trie([Set<T>? ends, Map<int, Trie<T>>? children])
     : ends = ends ?? <T>{},
       children = children ?? <int, Trie<T>>{};
+
+  Set<T> ends;
+  Map<int, Trie<T>> children;
 
   void addChild(String term, Set<T> newEnds) {
     if (term.isEmpty) {
@@ -37,13 +37,14 @@ class Trie<T> {
     return results;
   }
 
+  @override
   String toString() => 'Trie($ends,$children)';
 
   static String normalizeTerm(String term) {
     term = term.toLowerCase();
 
     // Replace anything that's alphanumeric with a single space
-    final replacedTerm = term.replaceAll(r'[^0-9a-z]+', ' ');
+    final replacedTerm = term.replaceAll('[^0-9a-z]+', ' ');
     // If term only contains symbols, than don't use replaced term.
     if (replacedTerm.isNotEmpty) term = replacedTerm;
 

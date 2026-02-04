@@ -7,37 +7,106 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/emoji_reaction.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
 import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/models/user.dart';
+import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/content_item/action_buttons.dart';
-import 'package:interstellar/src/models/user.dart';
-import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
-import 'package:interstellar/src/widgets/content_item/poll.dart';
-import 'package:interstellar/src/widgets/menus/content_menu.dart';
+import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
 import 'package:interstellar/src/widgets/content_item/content_reply.dart';
+import 'package:interstellar/src/widgets/content_item/poll.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
 import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
+import 'package:interstellar/src/widgets/menus/content_menu.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 import 'package:interstellar/src/widgets/video.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
-import 'package:interstellar/src/utils/language.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
 enum PostComponent { title, image, info, body, link, flairs }
 
 class ContentItem extends StatefulWidget {
+  const ContentItem({
+    required this.originInstance,
+    required this.id,
+    required this.contentTypeName,
+    required this.editDraftResourceId,
+    required this.replyDraftResourceId,
+    this.title,
+    this.image,
+    this.link,
+    this.body,
+    this.translation,
+    this.lang,
+    this.onTranslate,
+    this.createdAt,
+    this.editedAt,
+    this.poll,
+    this.isPreview = false,
+    this.fullImageSize = false,
+    this.showCommunityFirst = false,
+    this.read = false,
+    this.feedView = true,
+    this.isPinned = false,
+    this.isNSFW = false,
+    this.isOC = false,
+    this.user,
+    this.opUserId,
+    this.community,
+    this.domain,
+    this.domainIdOnClick,
+    this.boosts,
+    this.isBoosted = false,
+    this.onBoost,
+    this.upVotes,
+    this.isUpVoted = false,
+    this.onUpVote,
+    this.downVotes,
+    this.isDownVoted = false,
+    this.onDownVote,
+    this.numComments,
+    this.onReply,
+    this.onReport,
+    this.onEdit,
+    this.onDelete,
+    this.onMarkAsRead,
+    this.updateUser,
+    this.onModeratePin,
+    this.onModerateMarkNSFW,
+    this.onModerateDelete,
+    this.onModerateBan,
+    this.filterListWarnings,
+    this.activeBookmarkLists,
+    this.loadPossibleBookmarkLists,
+    this.onAddBookmark,
+    this.onAddBookmarkToList,
+    this.onRemoveBookmark,
+    this.onRemoveBookmarkFromList,
+    this.notificationControlStatus,
+    this.onNotificationControlStatusChange,
+    this.isCompact = false,
+    this.onClick,
+    this.onUpdateFlairs,
+    this.flairs = const [],
+    this.crossPost,
+    this.shareLinks = const [],
+    this.emojiReactions,
+    this.onEmojiReact,
+    super.key,
+  });
+
   final String originInstance;
 
   final int id;
@@ -129,75 +198,6 @@ class ContentItem extends StatefulWidget {
 
   final List<EmojiReactionModel>? emojiReactions;
   final Future<void> Function(String emoji)? onEmojiReact;
-
-  const ContentItem({
-    required this.originInstance,
-    required this.id,
-    this.title,
-    this.image,
-    this.link,
-    this.body,
-    this.translation,
-    this.lang,
-    this.onTranslate,
-    this.createdAt,
-    this.editedAt,
-    this.poll,
-    this.isPreview = false,
-    this.fullImageSize = false,
-    this.showCommunityFirst = false,
-    this.read = false,
-    this.feedView = true,
-    this.isPinned = false,
-    this.isNSFW = false,
-    this.isOC = false,
-    this.user,
-    this.opUserId,
-    this.community,
-    this.domain,
-    this.domainIdOnClick,
-    this.boosts,
-    this.isBoosted = false,
-    this.onBoost,
-    this.upVotes,
-    this.isUpVoted = false,
-    this.onUpVote,
-    this.downVotes,
-    this.isDownVoted = false,
-    this.onDownVote,
-    this.numComments,
-    required this.contentTypeName,
-    this.onReply,
-    this.onReport,
-    this.onEdit,
-    this.onDelete,
-    this.onMarkAsRead,
-    this.updateUser,
-    this.onModeratePin,
-    this.onModerateMarkNSFW,
-    this.onModerateDelete,
-    this.onModerateBan,
-    required this.editDraftResourceId,
-    required this.replyDraftResourceId,
-    this.filterListWarnings,
-    this.activeBookmarkLists,
-    this.loadPossibleBookmarkLists,
-    this.onAddBookmark,
-    this.onAddBookmarkToList,
-    this.onRemoveBookmark,
-    this.onRemoveBookmarkFromList,
-    this.notificationControlStatus,
-    this.onNotificationControlStatusChange,
-    this.isCompact = false,
-    this.onClick,
-    this.onUpdateFlairs,
-    this.flairs = const [],
-    this.crossPost,
-    this.shareLinks = const [],
-    this.emojiReactions,
-    this.onEmojiReact,
-    super.key,
-  });
 
   @override
   State<ContentItem> createState() => _ContentItemState();
@@ -296,7 +296,7 @@ class _ContentItemState extends State<ContentItem> {
 
     final menuWidget = IconButton(
       padding: EdgeInsets.zero,
-      constraints: BoxConstraints(),
+      constraints: const BoxConstraints(),
       icon: const Icon(Symbols.more_vert_rounded),
       onPressed: () {
         showContentMenu(
@@ -374,7 +374,7 @@ class _ContentItemState extends State<ContentItem> {
                   )
                 : null;
 
-            List<Widget?> components = [];
+            var components = <Widget?>[];
             final order = widget.contentTypeName == l(context).comment
                 ? ProfileRequired.defaultProfile.postComponentOrder
                 : ac.profile.postComponentOrder;
@@ -459,7 +459,7 @@ class _ContentItemState extends State<ContentItem> {
             if (widget.onEdit != null && _editTextController != null) {
               components.add(
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     children: [
                       MarkdownEditor(
@@ -631,16 +631,16 @@ class _ContentItemState extends State<ContentItem> {
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Divider(),
+                    const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(getLanguageName(context, widget.lang!)),
-                        Icon(Symbols.arrow_right),
+                        const Icon(Symbols.arrow_right),
                         Text(widget.translation!.targetLanguage.name),
                       ],
                     ),
-                    Divider(),
+                    const Divider(),
                     Text(
                       widget.translation!.translations.text,
                       maxLines: 4,
@@ -653,16 +653,16 @@ class _ContentItemState extends State<ContentItem> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Markdown(widget.body!, widget.originInstance, nsfw: isNSFW),
-                    Divider(),
+                    const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(getLanguageName(context, widget.lang!)),
-                        Icon(Symbols.arrow_right),
+                        const Icon(Symbols.arrow_right),
                         Text(widget.translation!.targetLanguage.name),
                       ],
                     ),
-                    Divider(),
+                    const Divider(),
                     Markdown(
                       widget.translation!.translations.text,
                       widget.originInstance,
@@ -684,11 +684,13 @@ class _ContentItemState extends State<ContentItem> {
   }) {
     if (widget.image == null) return null;
     final fullImage = !isThumbnail && widget.fullImageSize;
-    final double imageSize = compact
-        ? 96
-        : width > 800
-        ? 128
-        : 64;
+    final imageSize =
+        (compact
+                ? 96
+                : width > 800
+                ? 128
+                : 64)
+            .toDouble();
     final imageOpenTitle = widget.title ?? widget.body ?? '';
 
     final enableBlur =
@@ -713,7 +715,7 @@ class _ContentItemState extends State<ContentItem> {
   }
 
   Widget compact() {
-    // TODO: Figure out how to use full existing height of row, instead of fixed value.
+    // TODO(jwr1): Figure out how to use full existing height of row, instead of fixed value.
     final imageWidget = getImage(context, isThumbnail: true, compact: true);
     final ac = context.read<AppController>();
 

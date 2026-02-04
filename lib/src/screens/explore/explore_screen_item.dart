@@ -1,16 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/comment.dart';
-import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/domain.dart';
+import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
+import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
@@ -18,16 +21,8 @@ import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
-import 'package:interstellar/src/utils/utils.dart';
-import 'package:interstellar/src/api/feed_source.dart';
-import 'package:interstellar/src/models/feed.dart';
 
 class ExploreScreenItem extends StatelessWidget {
-  final dynamic item;
-  final void Function(dynamic newValue) onUpdate;
-  final void Function()? onTap;
-  final Widget? button;
-
   const ExploreScreenItem(
     this.item,
     this.onUpdate, {
@@ -35,6 +30,11 @@ class ExploreScreenItem extends StatelessWidget {
     this.onTap,
     this.button,
   });
+
+  final dynamic item;
+  final void Function(dynamic newValue) onUpdate;
+  final void Function()? onTap;
+  final Widget? button;
 
   @override
   Widget build(BuildContext context) {
@@ -44,44 +44,44 @@ class ExploreScreenItem extends StatelessWidget {
         item is DomainModel ||
         item is FeedModel) {
       final icon = switch (item) {
-        DetailedCommunityModel i => i.icon,
-        DetailedUserModel i => i.avatar,
-        FeedModel i => i.icon,
+        final DetailedCommunityModel i => i.icon,
+        final DetailedUserModel i => i.avatar,
+        final FeedModel i => i.icon,
         _ => null,
       };
       final title = switch (item) {
-        DetailedCommunityModel i => i.title,
-        DetailedUserModel i => i.displayName ?? i.name.split('@').first,
-        DomainModel i => i.name,
-        FeedModel i => i.title,
-        _ => throw 'Unreachable',
+        final DetailedCommunityModel i => i.title,
+        final DetailedUserModel i => i.displayName ?? i.name.split('@').first,
+        final DomainModel i => i.name,
+        final FeedModel i => i.title,
+        _ => throw UnreachableError(),
       };
       final subtitle = switch (item) {
-        DetailedCommunityModel i => i.name,
-        DetailedUserModel i => i.name,
-        FeedModel i => normalizeName(
+        final DetailedCommunityModel i => i.name,
+        final DetailedUserModel i => i.name,
+        final FeedModel i => normalizeName(
           i.name,
           context.read<AppController>().instanceHost,
         ),
         _ => null,
       };
       final isSubscribed = switch (item) {
-        DetailedCommunityModel i => i.isUserSubscribed,
-        DetailedUserModel i => i.isFollowedByUser,
-        DomainModel i => i.isUserSubscribed,
-        FeedModel i => i.subscribed,
-        _ => throw 'Unreachable',
+        final DetailedCommunityModel i => i.isUserSubscribed,
+        final DetailedUserModel i => i.isFollowedByUser,
+        final DomainModel i => i.isUserSubscribed,
+        final FeedModel i => i.subscribed,
+        _ => throw UnreachableError(),
       };
       final subscriptions = switch (item) {
-        DetailedCommunityModel i => i.subscriptionsCount,
-        DetailedUserModel i => i.followersCount,
-        DomainModel i => i.subscriptionsCount,
-        FeedModel i => i.subscriptionCount,
-        _ => throw 'Unreachable',
+        final DetailedCommunityModel i => i.subscriptionsCount,
+        final DetailedUserModel i => i.followersCount,
+        final DomainModel i => i.subscriptionsCount,
+        final FeedModel i => i.subscriptionCount,
+        _ => throw UnreachableError(),
       };
       final onSubscribe = switch (item) {
-        DetailedCommunityModel i => (selected) async {
-          var newValue = await context
+        final DetailedCommunityModel i => (bool selected) async {
+          final newValue = await context
               .read<AppController>()
               .api
               .community
@@ -89,16 +89,16 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
-        DetailedUserModel i => (selected) async {
-          var newValue = await context.read<AppController>().api.users.follow(
+        final DetailedUserModel i => (bool selected) async {
+          final newValue = await context.read<AppController>().api.users.follow(
             i.id,
             selected,
           );
 
           onUpdate(newValue);
         },
-        DomainModel i => (selected) async {
-          var newValue = await context
+        final DomainModel i => (bool selected) async {
+          final newValue = await context
               .read<AppController>()
               .api
               .domains
@@ -107,19 +107,19 @@ class ExploreScreenItem extends StatelessWidget {
           onUpdate(newValue);
         },
         FeedModel _ => null,
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final navigate = switch (item) {
-        DetailedCommunityModel i => () => context.router.push(
+        final DetailedCommunityModel i => () => context.router.push(
           CommunityRoute(communityId: i.id, initData: i, onUpdate: onUpdate),
         ),
-        DetailedUserModel i => () => context.router.push(
+        final DetailedUserModel i => () => context.router.push(
           UserRoute(userId: i.id, initData: i, onUpdate: onUpdate),
         ),
-        DomainModel i => () => context.router.push(
+        final DomainModel i => () => context.router.push(
           DomainRoute(domainId: i.id, initData: i, onUpdate: onUpdate),
         ),
-        FeedModel i => () => context.router.push(
+        final FeedModel i => () => context.router.push(
           FeedRoute(
             feed: FeedAggregator(
               name: title,
@@ -133,7 +133,7 @@ class ExploreScreenItem extends StatelessWidget {
             ),
           ),
         ),
-        _ => throw 'Unreachable',
+        _ => throw UnreachableError(),
       };
       final onClick = onTap ?? navigate;
 
@@ -149,19 +149,19 @@ class ExploreScreenItem extends StatelessWidget {
           ],
         ),
         onLongPress: () => switch (item) {
-          DetailedCommunityModel i => showCommunityMenu(
+          final DetailedCommunityModel i => showCommunityMenu(
             context,
             detailedCommunity: i,
             navigateOption: true,
           ),
-          DetailedUserModel i => showUserMenu(
+          final DetailedUserModel i => showUserMenu(
             context,
             user: i,
             navigateOption: true,
           ),
           DomainModel _ => {},
           FeedModel _ => {},
-          _ => throw 'Unreachable',
+          _ => throw UnreachableError(),
         },
         subtitle: subtitle == null ? null : Text(subtitle),
         trailing: button == null
@@ -179,7 +179,7 @@ class ExploreScreenItem extends StatelessWidget {
                   button!,
                   IconButton(
                     onPressed: navigate,
-                    icon: Icon(Symbols.open_in_new_rounded),
+                    icon: const Icon(Symbols.open_in_new_rounded),
                   ),
                 ],
               ),
@@ -189,7 +189,7 @@ class ExploreScreenItem extends StatelessWidget {
 
     // Card based items
     return switch (item) {
-      PostModel item => Card(
+      final PostModel item => Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -207,7 +207,7 @@ class ExploreScreenItem extends StatelessWidget {
           ),
         ),
       ),
-      CommentModel item => Padding(
+      final CommentModel item => Padding(
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
         child: PostComment(
           item,

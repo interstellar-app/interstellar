@@ -1,5 +1,7 @@
 import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -9,19 +11,12 @@ import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/blur.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
-import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:interstellar/src/widgets/super_hero.dart';
+import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:provider/provider.dart';
 
 class AdvancedImage extends StatelessWidget {
-  final ImageModel image;
-  final BoxFit fit;
-  final String? openTitle;
-  final bool enableBlur;
-  final String? hero;
-
   const AdvancedImage(
     this.image, {
     super.key,
@@ -31,9 +26,15 @@ class AdvancedImage extends StatelessWidget {
     this.hero,
   });
 
+  final ImageModel image;
+  final BoxFit fit;
+  final String? openTitle;
+  final bool enableBlur;
+  final String? hero;
+
   static String getHeroTag() {
     final rng = Random();
-    final tagLength = 64;
+    const tagLength = 64;
     return String.fromCharCodes(
       List.generate(tagLength, (index) => rng.nextInt(33) + 89),
     );
@@ -53,19 +54,14 @@ class AdvancedImage extends StatelessWidget {
         tag: tag,
         child: GestureDetector(
           onTap: () => context.router.push(
-            AdvancedImageRoute(
-              image: image,
-              title: openTitle!,
-              fit: BoxFit.contain,
-              hero: tag,
-            ),
+            AdvancedImageRoute(image: image, title: openTitle!, hero: tag),
           ),
           child: child,
         ),
       ),
       child: Wrapper(
         shouldWrap: enableBlur,
-        parentBuilder: (child) => Blur(child),
+        parentBuilder: Blur.new,
         child: Stack(
           alignment: Alignment.center,
           fit: StackFit.passthrough,
@@ -79,7 +75,6 @@ class AdvancedImage extends StatelessWidget {
               heroBuilderForSlidingPage: (child) {
                 return SuperHero(tag: tag, child: child);
               },
-              cache: true,
               mode: openTitle != null
                   ? ExtendedImageMode.none
                   : ExtendedImageMode.gesture,
@@ -105,7 +100,7 @@ class AdvancedImage extends StatelessWidget {
                     return SizedBox(
                       height: image.blurHashHeight?.toDouble(),
                       width: image.blurHashWidth?.toDouble(),
-                      child: Center(child: CircularProgressIndicator()),
+                      child: const Center(child: CircularProgressIndicator()),
                     );
                   }
                 } else if (state.extendedImageLoadState == LoadState.failed) {
@@ -126,18 +121,18 @@ class AdvancedImage extends StatelessWidget {
 
 @RoutePage()
 class AdvancedImagePage extends StatefulWidget {
+  const AdvancedImagePage(
+    this.image, {
+    required this.title,
+    super.key,
+    this.hero,
+    this.fit = BoxFit.contain,
+  });
+
   final ImageModel image;
   final String title;
   final String? hero;
   final BoxFit fit;
-
-  const AdvancedImagePage(
-    this.image, {
-    super.key,
-    required this.title,
-    this.hero,
-    this.fit = BoxFit.contain,
-  });
 
   @override
   State<AdvancedImagePage> createState() => _AdvancedImagePageState();
@@ -151,9 +146,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
 
   @override
   Widget build(BuildContext context) {
-    const shadows = <Shadow>[
-      Shadow(color: Colors.black, blurRadius: 1.0, offset: Offset(0, 1)),
-    ];
+    const shadows = <Shadow>[Shadow(blurRadius: 1, offset: Offset(0, 1))];
 
     final titleStyle = Theme.of(
       context,
@@ -184,7 +177,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
           ),
           if (!PlatformIs.linux)
             LoadingIconButton(
-              onPressed: () async => await shareFile(
+              onPressed: () async => shareFile(
                 Uri.parse(widget.image.src),
                 widget.image.src.split('/').last,
               ),
@@ -196,7 +189,6 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
         children: [
           Positioned.fill(
             child: ExtendedImageSlidePage(
-              slideAxis: SlideAxis.both,
               child: SafeArea(
                 child: AdvancedImage(
                   widget.image,
@@ -213,7 +205,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: TextButton(
-                    onPressed: () => showDialog(
+                    onPressed: () => showDialog<void>(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text(l(context).altText),
@@ -226,7 +218,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
                         ],
                       ),
                     ),
-                    child: Text('ALT', style: TextStyle(fontSize: 20)),
+                    child: const Text('ALT', style: TextStyle(fontSize: 20)),
                   ),
                 ),
               ),

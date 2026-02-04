@@ -11,8 +11,6 @@ enum ConfigShareType { profile, filterList, feed }
 
 @freezed
 abstract class ConfigShare with _$ConfigShare {
-  const ConfigShare._();
-
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
   const factory ConfigShare({
     // Interstellar version
@@ -23,6 +21,7 @@ abstract class ConfigShare with _$ConfigShare {
     required JsonMap payload,
     required String hash,
   }) = _ConfigShare;
+  const ConfigShare._();
 
   factory ConfigShare.fromJson(JsonMap json) => _$ConfigShareFromJson(json);
 
@@ -47,7 +46,8 @@ abstract class ConfigShare with _$ConfigShare {
     return config.copyWith(hash: hash);
   }
 
-  // Once the config is parsed, use this to pass in the original json string and verify the hash.
+  // Once the config is parsed, use this to pass in the original json string
+  // and verify the hash.
   bool verifyHash(String jsonStr) {
     // Remove instance of hash from original string
     final hashToCheck = strToMd5Base64(jsonStr.replaceFirst(hash, ''));
