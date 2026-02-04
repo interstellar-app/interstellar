@@ -460,6 +460,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
             schema.profiles,
             schema.profiles.hideEmojiReactions,
           );
+          await invalidateOauth();
         },
       ),
     );
@@ -486,6 +487,12 @@ class InterstellarDatabase extends _$InterstellarDatabase {
         },
       ),
     );
+  }
+
+  Future<void> invalidateOauth() async {
+    await (update(servers)
+      ..where((f) => f.oauthIdentifier.isNotNull()))
+        .write(ServersCompanion(oauthIdentifier: Value(null)));
   }
 }
 

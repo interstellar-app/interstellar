@@ -656,7 +656,7 @@ class AppController with ChangeNotifier {
       case ServerSoftware.mbin:
         final credentials = _accounts[account]?.oauth;
         if (credentials != null) {
-          final identifier = _servers[instance]!.oauthIdentifier!;
+          final identifier = _servers[instance]!.oauthIdentifier;
           httpClient = oauth2.Client(
             credentials,
             identifier: identifier,
