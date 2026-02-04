@@ -209,7 +209,9 @@ abstract class PostModel with _$PostModel {
         (lemmyPost['url_content_type'] != null &&
             (lemmyPost['url_content_type']! as String).startsWith('image/')) ||
         (lemmyPost['url'] != null &&
-            (lookupMimeType(lemmyPost['url']! as String)?.startsWith('image/') ??
+            (lookupMimeType(
+                  lemmyPost['url']! as String,
+                )?.startsWith('image/') ??
                 false));
 
     final imageDetails = json['image_details'] as JsonMap?;
@@ -256,7 +258,8 @@ abstract class PostModel with _$PostModel {
       notificationControlStatus: null,
       bookmarks: [
         // Empty string indicates post is saved. No string indicates post is not saved.
-        if (((postView['saved'] as bool?) != null) && postView['saved']! as bool)
+        if (((postView['saved'] as bool?) != null) &&
+            postView['saved']! as bool)
           '',
       ],
       read: postView['read'] as bool? ?? false,
@@ -329,7 +332,9 @@ abstract class PostModel with _$PostModel {
       isPinned: piefedPost['sticky']! as bool,
       createdAt: DateTime.parse(piefedPost['published']! as String),
       editedAt: optionalDateTime(piefedPost['updated'] as String?),
-      lastActive: DateTime.parse(piefedCounts['newest_comment_time']! as String),
+      lastActive: DateTime.parse(
+        piefedCounts['newest_comment_time']! as String,
+      ),
       visibility: 'visible',
       canAuthUserModerate: postView['can_auth_user_moderate'] as bool?,
       notificationControlStatus: postView['activity_alert'] == null

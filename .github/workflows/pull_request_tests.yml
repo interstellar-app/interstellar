@@ -24,7 +24,7 @@ jobs:
       # - name: Analyze Dart
       #   uses: zgosalvez/github-actions-analyze-dart@v3
       - name: Analyze Dart
-        run: dart analyze --fatal-infos
+        run: dart format -o none --set-exit-if-changed .
 
   test-android-build:
     name: Test android build

@@ -209,7 +209,8 @@ abstract class CommentModel with _$CommentModel {
           : null,
       image: null,
       body:
-          (lemmyComment['deleted']! as bool) || (lemmyComment['removed']! as bool)
+          (lemmyComment['deleted']! as bool) ||
+              (lemmyComment['removed']! as bool)
           ? null
           : lemmyComment['content']! as String,
       lang: langCodeIdPairs

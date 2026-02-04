@@ -150,15 +150,17 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
       description: piefedCommunity['description'] as String?,
       owner: ((json['moderators'] ?? []) as List<dynamic>)
           .map(
-            (user) =>
-                UserModel.fromPiefed((user as JsonMap)['moderator']! as JsonMap),
+            (user) => UserModel.fromPiefed(
+              (user as JsonMap)['moderator']! as JsonMap,
+            ),
           )
           .toList()
           .firstOrNull,
       moderators: ((json['moderators'] ?? []) as List<dynamic>)
           .map(
-            (user) =>
-                UserModel.fromPiefed((user as JsonMap)['moderator']! as JsonMap),
+            (user) => UserModel.fromPiefed(
+              (user as JsonMap)['moderator']! as JsonMap,
+            ),
           )
           .toList(),
       subscriptionsCount: piefedCounts['subscriptions_count']! as int,
@@ -170,8 +172,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
       isUserSubscribed:
           (communityView['subscribed']! as String) != 'NotSubscribed',
       isBlockedByUser: communityView['blocked'] as bool?,
-      isPostingRestrictedToMods:
-          piefedCommunity['restricted_to_mods']! as bool,
+      isPostingRestrictedToMods: piefedCommunity['restricted_to_mods']! as bool,
       notificationControlStatus: communityView['activity_alert'] == null
           ? null
           : communityView['activity_alert']! as bool

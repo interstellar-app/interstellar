@@ -12,7 +12,8 @@ abstract class FeedListModel with _$FeedListModel {
 
   factory FeedListModel.fromPiefed(JsonMap json) {
     final items =
-        ((json['feeds'] as List<dynamic>?) ?? (json['topics']! as List<dynamic>))
+        ((json['feeds'] as List<dynamic>?) ??
+                (json['topics']! as List<dynamic>))
             .map((feed) => FeedModel.fromPiefed(feed))
             .toList();
 

@@ -41,6 +41,7 @@ class EmojiBuilder implements Builder {
 
     final s = StringBuffer()
       ..write('''
+// dart format off
 // ignore_for_file: type=lint
 // ignore_for_file: prefer_single_quotes
 
