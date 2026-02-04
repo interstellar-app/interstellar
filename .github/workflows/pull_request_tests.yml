@@ -20,8 +20,11 @@ jobs:
           flutter gen-l10n
           dart run build_runner build
 
+      # Switch back once https://github.com/dart-lang/sdk/issues/60236 is released
+      # - name: Analyze Dart
+      #   uses: zgosalvez/github-actions-analyze-dart@v3
       - name: Analyze Dart
-        uses: zgosalvez/github-actions-analyze-dart@v3
+        run: dart analyze --fatal-infos
 
   test-android-build:
     name: Test android build
