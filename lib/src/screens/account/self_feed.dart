@@ -60,7 +60,7 @@ class _SelfFeedState extends State<SelfFeed>
       return Center(child: Text(l(context).notLoggedIn));
     }
 
-    if (_authError != null) return AuthErrorPage(error: _authError!);
+    if (_authError != null) return OAuthErrorPage(error: _authError!);
 
     if (_meUser == null) return const LoadingTemplate();
 
