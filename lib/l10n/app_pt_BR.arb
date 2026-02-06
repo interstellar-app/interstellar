@@ -157,7 +157,7 @@
     "comment_openOriginalPost": "OP aberto",
     "comment_openRoot": "Root aberto",
     "comment_openParent": "Superior aberto",
-    "openReplies": "Aberto {count} {conta, plural, =1{reply} outros{replies}}",
+    "openReplies": "Aberto {count} {count, plural, =1{reply} other{replies}}",
     "@openReplies": {
         "placeholders": {
             "count": {
@@ -532,7 +532,7 @@
     "poll": "Enquete",
     "addChoice": "Adicionar escolha",
     "pollDuration": "Duração da enquete",
-    "pollDuration_minutes": "{count} {count, plural, =1{minute} outro{minutes}}",
+    "pollDuration_minutes": "{count} {count, plural, =1{minute} other{minutes}}",
     "@pollDuration_minutes": {
         "placeholders": {
             "count": {
@@ -540,7 +540,7 @@
             }
         }
     },
-    "pollDuration_hours": "{count} {count, plural, =1{hour} outro{hours}}",
+    "pollDuration_hours": "{count} {count, plural, =1{hour} other{hours}}",
     "@pollDuration_hours": {
         "placeholders": {
             "count": {
@@ -548,7 +548,7 @@
             }
         }
     },
-    "pollDuration_days": "{count} {count, plural, =1{day} outro{days}}",
+    "pollDuration_days": "{count} {count, plural, =1{day} other{days}}",
     "@pollDuration_days": {
         "placeholders": {
             "count": {
@@ -560,7 +560,7 @@
     "pollShowResults": "Mostrar resultados",
     "pollHideResults": "Ocultar resultados",
     "pollSubmitError": "É preciso selecionar pelo menos uma escolha antes de enviar.",
-    "pollVotes": "{count} {count, plural, =1{vote} outro{votes}}",
+    "pollVotes": "{count} {count, plural, =1{vote} other{votes}}",
     "@pollVotes": {
         "placeholders": {
             "count": {
