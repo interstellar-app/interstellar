@@ -490,9 +490,9 @@ class InterstellarDatabase extends _$InterstellarDatabase {
   }
 
   Future<void> invalidateOauth() async {
-    await (update(servers)
-      ..where((f) => f.oauthIdentifier.isNotNull()))
-        .write(ServersCompanion(oauthIdentifier: Value(null)));
+    await (update(servers)..where((f) => f.oauthIdentifier.isNotNull())).write(
+      const ServersCompanion(oauthIdentifier: Value(null)),
+    );
   }
 }
 

@@ -823,6 +823,7 @@
   "errorPage_newPage": "Something went wrong. Tap to try again.",
   "errorPage_caughtUp": "You're all caught up.\nLoad older items?",
   "errorPage_authError": "Looks like there was an issue with account authorization.\nPress the button below to refresh auth.",
+  "errorPage_restrictedAuthError": "Looks like this instance is restricted to logged in accounts only. Please login to continue",
   "exitMessage": "Press BACK again to exit.",
   "pushNotificationsDialog_title": "Push Notifications",
   "pushNotificationsDialog_noDistributor": "You need to install a UnifiedPush distributor for push notifications to work.\nYou can find more information at: {url}",

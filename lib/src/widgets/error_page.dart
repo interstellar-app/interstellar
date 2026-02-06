@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:provider/provider.dart';
 
-class AuthErrorPage extends StatelessWidget {
-  const AuthErrorPage({required this.error, super.key});
+class OAuthErrorPage extends StatelessWidget {
+  const OAuthErrorPage({required this.error, super.key});
 
   final AuthorizationException error;
 
@@ -44,6 +45,33 @@ class AuthErrorPage extends StatelessWidget {
   }
 }
 
+class RestrictedAuthErrorPage extends StatelessWidget {
+  const RestrictedAuthErrorPage({required this.error, super.key});
+
+  final RestrictedAuthException error;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l(context).errorPage_restrictedAuthError,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            Text(error.toString(), textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class FirstPageErrorIndicator extends StatelessWidget {
   const FirstPageErrorIndicator({
     required this.error,
@@ -57,7 +85,10 @@ class FirstPageErrorIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (error is AuthorizationException) {
-      return AuthErrorPage(error: error);
+      return OAuthErrorPage(error: error);
+    }
+    if (error is RestrictedAuthException) {
+      return RestrictedAuthErrorPage(error: error);
     }
 
     return Center(

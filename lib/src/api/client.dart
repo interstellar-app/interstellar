@@ -4,6 +4,23 @@ import 'package:http/http.dart' as http;
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
+class RestrictedAuthException implements Exception {
+  RestrictedAuthException(this.message, this.uri);
+
+  final String message;
+
+  final Uri? uri;
+
+  @override
+  String toString() {
+    var msg = message;
+    if (uri != null) {
+      msg = '$msg, uri: $uri';
+    }
+    return msg;
+  }
+}
+
 class ServerClient {
   ServerClient({
     required this.httpClient,
@@ -106,6 +123,9 @@ class ServerClient {
   /// Throws an error if [response] is not successful.
   static void checkResponseSuccess(Uri url, http.Response response) {
     if (response.statusCode < 400) return;
+    if (response.statusCode == 401) {
+      throw RestrictedAuthException(response.body, url);
+    }
 
     var message = 'Request failed with status ${response.statusCode}';
 
