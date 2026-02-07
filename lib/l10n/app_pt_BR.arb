@@ -857,5 +857,7 @@
     "modlog_communityAdded": "Comunidade adicionada",
     "modlog_communityRemoved": "Comunidade removida",
     "modlog_postLocked": "Postagem fechada",
-    "modlog_postUnlocked": "Postagem reaberta"
+    "modlog_postUnlocked": "Postagem reaberta",
+    "settings_hideEmojiReactions": "Ocultar reações com emoji",
+    "errorPage_restrictedAuthError": "Parece que esta instância é restrita apenas a contas registradas. Faça login para continuar"
 }
