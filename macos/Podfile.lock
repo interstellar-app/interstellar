@@ -1,6 +1,4 @@
 PODS:
-  - blurhash_ffi (0.0.1):
-    - FlutterMacOS
   - dynamic_color (0.0.2):
     - FlutterMacOS
   - file_picker (0.0.1):
@@ -8,6 +6,8 @@ PODS:
   - file_selector_macos (0.0.1):
     - FlutterMacOS
   - flutter_local_notifications (0.0.1):
+    - FlutterMacOS
+  - flutter_web_auth_2 (5.0.0):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - media_kit_libs_macos_video (1.0.4):
@@ -53,8 +53,6 @@ PODS:
     - sqlite3/session
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
-  - volume_controller (0.0.1):
-    - FlutterMacOS
   - wakelock_plus (0.0.1):
     - FlutterMacOS
   - webcrypto (0.1.1):
@@ -65,13 +63,15 @@ PODS:
     - FlutterMacOS
   - window_manager (0.5.0):
     - FlutterMacOS
+  - window_to_front (0.0.1):
+    - FlutterMacOS
 
 DEPENDENCIES:
-  - blurhash_ffi (from `Flutter/ephemeral/.symlinks/plugins/blurhash_ffi/macos`)
   - dynamic_color (from `Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos`)
   - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - flutter_local_notifications (from `Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos`)
+  - flutter_web_auth_2 (from `Flutter/ephemeral/.symlinks/plugins/flutter_web_auth_2/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
@@ -82,19 +82,17 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
-  - volume_controller (from `Flutter/ephemeral/.symlinks/plugins/volume_controller/macos`)
   - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
   - webcrypto (from `Flutter/ephemeral/.symlinks/plugins/webcrypto/darwin`)
   - webview_flutter_wkwebview (from `Flutter/ephemeral/.symlinks/plugins/webview_flutter_wkwebview/darwin`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
+  - window_to_front (from `Flutter/ephemeral/.symlinks/plugins/window_to_front/macos`)
 
 SPEC REPOS:
   trunk:
     - sqlite3
 
 EXTERNAL SOURCES:
-  blurhash_ffi:
-    :path: Flutter/ephemeral/.symlinks/plugins/blurhash_ffi/macos
   dynamic_color:
     :path: Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos
   file_picker:
@@ -103,6 +101,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
   flutter_local_notifications:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos
+  flutter_web_auth_2:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_web_auth_2/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   media_kit_libs_macos_video:
@@ -123,8 +123,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
-  volume_controller:
-    :path: Flutter/ephemeral/.symlinks/plugins/volume_controller/macos
   wakelock_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
   webcrypto:
@@ -133,13 +131,15 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/webview_flutter_wkwebview/darwin
   window_manager:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
+  window_to_front:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_to_front/macos
 
 SPEC CHECKSUMS:
-  blurhash_ffi: 9eaec3fd96c2935bd92fbcd70d7f33f7f98b0428
   dynamic_color: cb7c2a300ee67ed3bd96c3e852df3af0300bf610
   file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
   file_selector_macos: 6280b52b459ae6c590af5d78fc35c7267a3c4b31
   flutter_local_notifications: 4bf37a31afde695b56091b4ae3e4d9c7a7e6cda0
+  flutter_web_auth_2: 7fe624ff12ddcb4c19e5dbcd56c9e9ea4899d967
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
@@ -151,11 +151,11 @@ SPEC CHECKSUMS:
   sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b
   sqlite3_flutter_libs: 83f8e9f5b6554077f1d93119fe20ebaa5f3a9ef1
   url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
-  volume_controller: 5c068e6d085c80dadd33fc2c918d2114b775b3dd
   wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b
   webcrypto: a5f5eb3e375cf0a99993e207e97cdcab5c94ce2e
   webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
   window_manager: b729e31d38fb04905235df9ea896128991cad99e
+  window_to_front: 9e76fd432e36700a197dac86a0011e49c89abe0a
 
 PODFILE CHECKSUM: 1b29b575031b812e1e7a7cf698aec84e8b2cab1e
 
