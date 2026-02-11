@@ -91,6 +91,7 @@ abstract class PostModel with _$PostModel {
     required bool? isOC,
     required bool isNSFW,
     required bool isPinned,
+    required bool isLocked,
     required DateTime createdAt,
     required DateTime? editedAt,
     required DateTime lastActive,
@@ -133,6 +134,7 @@ abstract class PostModel with _$PostModel {
     isOC: json['isOc']! as bool,
     isNSFW: json['isAdult']! as bool,
     isPinned: json['isPinned']! as bool,
+    isLocked: json['isLocked']! as bool,
     createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
     lastActive: DateTime.parse(json['lastActive']! as String),
@@ -178,6 +180,7 @@ abstract class PostModel with _$PostModel {
     isOC: null,
     isNSFW: json['isAdult']! as bool,
     isPinned: json['isPinned']! as bool,
+    isLocked: json['isLocked']! as bool,
     createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
     lastActive: DateTime.parse(json['lastActive']! as String),
@@ -248,6 +251,7 @@ abstract class PostModel with _$PostModel {
       isPinned:
           lemmyPost['featured_community']! as bool ||
           lemmyPost['featured_local']! as bool,
+      isLocked: false,
       createdAt: DateTime.parse(lemmyPost['published']! as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
       lastActive: lemmyCounts == null
@@ -330,6 +334,7 @@ abstract class PostModel with _$PostModel {
       isOC: null,
       isNSFW: piefedPost['nsfw']! as bool,
       isPinned: piefedPost['sticky']! as bool,
+      isLocked: piefedPost['locked']! as bool,
       createdAt: DateTime.parse(piefedPost['published']! as String),
       editedAt: optionalDateTime(piefedPost['updated'] as String?),
       lastActive: DateTime.parse(

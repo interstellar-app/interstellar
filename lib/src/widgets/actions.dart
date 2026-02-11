@@ -136,6 +136,7 @@ enum SwipeAction {
   moderateMarkNSFW,
   moderateDelete,
   moderateBan,
+  moderateLock,
 }
 
 ActionItem swipeActionUpvote(BuildContext context) => ActionItem(
@@ -187,6 +188,11 @@ ActionItem swipeActionModerateBan(BuildContext context) => ActionItem(
   name: l(context).action_moderateBan,
   icon: Symbols.block_rounded,
   color: Colors.orange,
+);
+ActionItem swipeActionModerateLock(BuildContext context) => ActionItem(
+  name: l(context).action_moderateLock,
+  icon: Symbols.lock_rounded,
+  color: Colors.teal,
 );
 
 SelectionMenu<SwipeAction> swipeActionSelect(BuildContext context) =>
@@ -240,5 +246,10 @@ SelectionMenu<SwipeAction> swipeActionSelect(BuildContext context) =>
         value: SwipeAction.moderateBan,
         title: l(context).action_moderateBan,
         icon: Symbols.block_rounded,
+      ),
+      SelectionMenuItem(
+        value: SwipeAction.moderateLock,
+        title: l(context).action_moderateLock,
+        icon: Symbols.lock_rounded,
       ),
     ]);

@@ -627,6 +627,7 @@
   "action_moderateMarkNSFW": "Mark NSFW",
   "action_moderateDelete": "Mod Delete",
   "action_moderateBan": "Ban",
+  "action_moderateLock": "Lock Post",
   "save": "Save",
   "saveChanges": "Save changes",
   "searchTheFediverse": "Search the fediverse",

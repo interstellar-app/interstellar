@@ -24,6 +24,7 @@ class ContentInfo extends StatelessWidget {
     this.isPinned = false,
     this.isNSFW = false,
     this.isOC = false,
+    this.isLocked = false,
     this.lang,
     this.createdAt,
     this.editedAt,
@@ -40,6 +41,7 @@ class ContentInfo extends StatelessWidget {
   final bool isPinned;
   final bool isNSFW;
   final bool isOC;
+  final bool isLocked;
   final String? lang;
   final DateTime? createdAt;
   final DateTime? editedAt;
@@ -58,6 +60,14 @@ class ContentInfo extends StatelessWidget {
             ).filterListWarningX(filterListWarnings!.join(', ')),
             triggerMode: TooltipTriggerMode.tap,
             child: const Icon(Symbols.warning_amber_rounded, color: Colors.red),
+          );
+
+    final locked = !isLocked
+        ? null
+        : Tooltip(
+            message: l(context).modlog_postLocked,
+            triggerMode: TooltipTriggerMode.tap,
+            child: const Icon(Symbols.lock_rounded, size: 20),
           );
 
     final pinned = !isPinned
@@ -182,6 +192,7 @@ class ContentInfo extends StatelessWidget {
             spacing: 10,
             children: [
               ?warning,
+              ?locked,
               ?pinned,
               ?nsfw,
               ?oc,

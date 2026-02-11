@@ -342,7 +342,8 @@ Future<void> showContentMenu(
       if (widget.onModeratePin != null ||
           widget.onModerateMarkNSFW != null ||
           widget.onModerateDelete != null ||
-          widget.onModerateBan != null)
+          widget.onModerateBan != null ||
+          widget.onModerateLock != null)
         ContextMenuItem(
           title: l(context).moderate,
           // onTap: () async => showModerateMenu(context, widget),
@@ -381,6 +382,15 @@ Future<void> showContentMenu(
                   context.router.pop();
                   context.router.pop();
                   widget.onModerateBan!();
+                },
+              ),
+            if (widget.onModerateLock != null)
+              ContextMenuItem(
+                title: l(context).action_moderateLock,
+                onTap: () async {
+                  context.router.pop();
+                  context.router.pop();
+                  widget.onModerateLock!();
                 },
               ),
           ],

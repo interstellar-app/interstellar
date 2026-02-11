@@ -296,6 +296,17 @@ class _PostPageState extends State<PostPage> {
                 community: crossPost.community,
               );
             },
+      onModerateLock: !canModerate
+          ? null
+          : () async {
+              _updateCrossPost(
+                await ac.api.moderation.postLock(
+                  crossPost.type,
+                  crossPost.id,
+                  !crossPost.isLocked,
+                ),
+              );
+            },
       numComments: crossPost.numComments,
       editDraftResourceId:
           'edit:${crossPost.type.name}:${ac.instanceHost}:${crossPost.id}',
