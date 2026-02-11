@@ -510,6 +510,8 @@
   "uploadFromGallery": "Upload from gallery",
   "uploadFromCamera": "Upload from camera",
   "openLink": "Open link",
+  "openLinkMenu": "Link menu",
+  "setLinkAction": "Set Link Action",
   "webView": "WebView",
   "browser": "Browser",
   "create_text": "Text",

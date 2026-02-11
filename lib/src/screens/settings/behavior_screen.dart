@@ -10,6 +10,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -201,6 +202,15 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
               ac.selectedProfileValue.copyWith(defaultImageStore: newValue),
             ),
           ),
+          ListTileSelect(
+            title: 'Default link action',
+            selectionMenu: linkActionSelect(context),
+            value: ac.profile.defaultLinkAction,
+            oldValue: ac.selectedProfileValue.defaultLinkAction,
+            onChange: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(defaultLinkAction: newValue),
+            ),
+          )
         ],
       ),
     );
