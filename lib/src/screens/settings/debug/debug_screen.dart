@@ -276,6 +276,31 @@ class DebugSettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Symbols.security_rounded),
+            title: Text(l(context).settings_debug_clearOauth),
+            onTap: () => showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l(context).settings_debug_clearOauth),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => context.router.pop(),
+                    child: Text(l(context).cancel),
+                  ),
+                  FilledButton(
+                    onPressed: () async {
+                      await database.invalidateOauth();
+                      ac.logger.i('Invalidated Oauth credentials');
+                      if (!context.mounted) return;
+                      context.router.pop();
+                    },
+                    child: Text(l(context).remove),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
             leading: const Icon(Symbols.list_rounded),
             title: Text(l(context).settings_debug_log),
             onTap: () => context.router.push(const LogConsole()),
