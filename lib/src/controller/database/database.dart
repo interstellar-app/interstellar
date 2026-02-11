@@ -466,7 +466,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
         },
         from2To3: (m, schema) async {
           await m.addColumn(schema.profiles, schema.profiles.defaultLinkAction);
-        }
+        },
       ),
     );
   }

@@ -124,7 +124,8 @@ abstract class ProfileRequired with _$ProfileRequired {
         profile?.markCrossPostsAsRead ?? defaultProfile.markCrossPostsAsRead,
     defaultImageStore:
         profile?.defaultImageStore ?? defaultProfile.defaultImageStore,
-    defaultLinkAction: profile?.defaultLinkAction ?? defaultProfile.defaultLinkAction,
+    defaultLinkAction:
+        profile?.defaultLinkAction ?? defaultProfile.defaultLinkAction,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
     themeMode: profile?.themeMode ?? defaultProfile.themeMode,
     colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,

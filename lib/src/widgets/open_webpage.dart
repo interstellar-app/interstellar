@@ -32,21 +32,18 @@ enum LinkAction {
         launchUrl(uri);
       case LinkAction.openInWebview:
         final controller = WebViewController();
-        unawaited(
-          controller.setJavaScriptMode(JavaScriptMode.unrestricted),
-        );
+        unawaited(controller.setJavaScriptMode(JavaScriptMode.unrestricted));
         unawaited(controller.loadRequest(uri));
 
-        unawaited(
-          context.router.push(WebViewRoute(controller: controller)),
-        );
+        unawaited(context.router.push(WebViewRoute(controller: controller)));
       case LinkAction.menu:
         openWebpageSecondary(context, uri);
     }
   }
 }
 
-void openWebpagePrimary(BuildContext context, Uri uri) => context.read<AppController>().profile.defaultLinkAction.call(context, uri);
+void openWebpagePrimary(BuildContext context, Uri uri) =>
+    context.read<AppController>().profile.defaultLinkAction.call(context, uri);
 
 void openWebpageSecondary(BuildContext context, Uri uri) => showDialog<String>(
   context: context,

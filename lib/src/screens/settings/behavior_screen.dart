@@ -210,7 +210,7 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
             onChange: (newValue) => ac.updateProfile(
               ac.selectedProfileValue.copyWith(defaultLinkAction: newValue),
             ),
-          )
+          ),
         ],
       ),
     );
