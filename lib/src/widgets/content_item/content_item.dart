@@ -792,6 +792,7 @@ class _ContentItemState extends State<ContentItem> {
                             isPinned: widget.isPinned,
                             isNSFW: widget.isNSFW,
                             isOC: widget.isOC,
+                            isLocked: widget.isLocked,
                             lang: widget.lang,
                             createdAt: widget.createdAt,
                             editedAt: widget.editedAt,

@@ -121,6 +121,7 @@ abstract class CommentModel with _$CommentModel {
     required ImageModel? image,
     required String? body,
     required String? lang,
+    required bool isLocked,
     required int? upvotes,
     required int? downvotes,
     required int? boosts,
@@ -149,6 +150,7 @@ abstract class CommentModel with _$CommentModel {
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
     body: json['body'] as String?,
     lang: json['lang']! as String,
+    isLocked: false,
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
     boosts: json['uv'] as int?,
@@ -217,6 +219,7 @@ abstract class CommentModel with _$CommentModel {
           .where((pair) => pair.$2 == lemmyComment['language_id']! as int)
           .firstOrNull
           ?.$1,
+      isLocked: false,
       upvotes: lemmyCounts?['upvotes'] as int? ?? 0,
       downvotes: lemmyCounts?['downvotes'] as int? ?? 0,
       boosts: null,
@@ -306,6 +309,7 @@ abstract class CommentModel with _$CommentModel {
           .where((pair) => pair.$2 == piefedComment['language_id']! as int)
           .firstOrNull
           ?.$1,
+      isLocked: piefedComment['locked']! as bool,
       upvotes: piefedCounts['upvotes']! as int,
       downvotes: piefedCounts['downvotes']! as int,
       boosts: null,

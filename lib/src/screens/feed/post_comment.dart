@@ -11,6 +11,7 @@ import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
+import 'package:interstellar/src/widgets/content_item/content_info.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/menus/content_menu.dart';
@@ -139,6 +140,7 @@ class _PostCommentState extends State<PostComment> {
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
       fullImageSize: true,
+      isLocked: widget.comment.isLocked,
       user: widget.comment.user,
       updateUser: (user) async =>
           widget.onUpdate(widget.comment.copyWith(user: user)),
@@ -281,6 +283,17 @@ class _PostCommentState extends State<PostComment> {
                 community: widget.comment.community,
               );
             },
+      onModerateLock: !canModerate && ac.serverSoftware != ServerSoftware.piefed
+          ? null
+          : () async {
+              widget.onUpdate(
+                await ac.api.moderation.commentLock(
+                  widget.comment.postType,
+                  widget.comment.id,
+                  !widget.comment.isLocked,
+                ),
+              );
+            },
       editDraftResourceId:
           'edit:${widget.comment.postType.name}:comment:${context.watch<AppController>().instanceHost}:${widget.comment.id}',
       replyDraftResourceId:
@@ -410,35 +423,12 @@ class _PostCommentState extends State<PostComment> {
           ),
           child: Container(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      userWidget,
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Tooltip(
-                          message:
-                              l(context).createdAt(
-                                dateTimeFormat(widget.comment.createdAt),
-                              ) +
-                              (widget.comment.editedAt == null
-                                  ? ''
-                                  : '\n${l(context).editedAt(dateTimeFormat(widget.comment.editedAt!))}'),
-                          triggerMode: TooltipTriggerMode.tap,
-                          child: Text(
-                            dateDiffFormat(widget.comment.createdAt),
-                            style: const TextStyle(fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                menuWidget,
-              ],
+            child: ContentInfo(
+              user: widget.comment.user,
+              isOp: widget.comment.user.id == widget.opUserId,
+              isLocked: widget.comment.isLocked,
+              createdAt: widget.comment.createdAt,
+              editedAt: widget.comment.editedAt,
             ),
           ),
         ),

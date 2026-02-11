@@ -235,6 +235,33 @@ class APIModeration {
     }
   }
 
+  Future<CommentModel> commentLock(
+    PostType postType,
+    int postId,
+    bool locked,
+  ) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Comment locking not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Moderation not implemented on Lemmy yet');
+
+      case ServerSoftware.piefed:
+        const path = '/comment/lock';
+
+        final response = await client.post(
+          path,
+          body: {'comment_id': postId, 'locked': locked},
+        );
+
+        return CommentModel.fromPiefed(
+          response.bodyJson['comment_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+    }
+  }
+
   Future<CommentModel> commentDelete(
     PostType postType,
     int commentId,

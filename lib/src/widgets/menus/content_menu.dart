@@ -386,7 +386,7 @@ Future<void> showContentMenu(
               ),
             if (widget.onModerateLock != null)
               ContextMenuItem(
-                title: l(context).action_moderateLock,
+                title: l(context).lock,
                 onTap: () async {
                   context.router.pop();
                   context.router.pop();
