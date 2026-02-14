@@ -296,6 +296,17 @@ class _PostPageState extends State<PostPage> {
                 community: crossPost.community,
               );
             },
+      onModerateLock: !canModerate
+          ? null
+          : () async {
+              _updateCrossPost(
+                await ac.api.moderation.postLock(
+                  crossPost.type,
+                  crossPost.id,
+                  !crossPost.isLocked,
+                ),
+              );
+            },
       numComments: crossPost.numComments,
       editDraftResourceId:
           'edit:${crossPost.type.name}:${ac.instanceHost}:${crossPost.id}',
@@ -575,6 +586,7 @@ class _PostPageState extends State<PostPage> {
                 postType: post.type,
                 sort: commentSort,
                 opUserId: post.user.id,
+                isLocked: post.isLocked,
                 key: _mainCommentSectionKey,
               ),
               if (context.read<AppController>().profile.showCrossPostComments)
@@ -608,6 +620,7 @@ class _PostPageState extends State<PostPage> {
                             postType: crossPost.type,
                             sort: commentSort,
                             opUserId: crossPost.user.id,
+                            isLocked: crossPost.isLocked,
                             key: Key('${crossPost.id}$commentSort'),
                           ),
                         ],
@@ -629,6 +642,7 @@ class CommentSection extends StatefulWidget {
     required this.opUserId,
     super.key,
     this.canModerate = false,
+    this.isLocked = false,
   });
 
   final int id;
@@ -636,6 +650,7 @@ class CommentSection extends StatefulWidget {
   final CommentSort sort;
   final int opUserId;
   final bool canModerate;
+  final bool isLocked;
 
   @override
   State<CommentSection> createState() => _CommentSectionState();
@@ -672,6 +687,7 @@ class _CommentSectionState extends State<CommentSection> {
           (newValue) => _pagingController.updateItem(item, newValue),
           opUserId: widget.opUserId,
           userCanModerate: widget.canModerate,
+          postLocked: widget.isLocked,
         ),
       ),
     );

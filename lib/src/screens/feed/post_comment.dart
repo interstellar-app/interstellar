@@ -11,10 +11,9 @@ import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
+import 'package:interstellar/src/widgets/content_item/content_info.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
-import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/menus/content_menu.dart';
-import 'package:interstellar/src/widgets/user_status_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
@@ -28,6 +27,7 @@ class PostComment extends StatefulWidget {
     this.userCanModerate = false,
     this.level = 0,
     this.showChildren = true,
+    this.postLocked = false,
     super.key,
   });
 
@@ -38,6 +38,7 @@ class PostComment extends StatefulWidget {
   final bool userCanModerate;
   final int level;
   final bool showChildren;
+  final bool postLocked;
 
   @override
   State<PostComment> createState() => _PostCommentState();
@@ -90,45 +91,6 @@ class _PostCommentState extends State<PostComment> {
     final canModerate =
         widget.userCanModerate || (widget.comment.canAuthUserModerate ?? false);
 
-    final Widget userWidget = Flexible(
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: DisplayName(
-                widget.comment.user.name,
-                icon: widget.comment.user.avatar,
-                onTap: () => context.router.push(
-                  UserRoute(userId: widget.comment.user.id),
-                ),
-              ),
-            ),
-            UserStatusIcons(
-              cakeDay: widget.comment.user.createdAt,
-              isBot: widget.comment.user.isBot,
-            ),
-            if (widget.opUserId == widget.comment.user.id)
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Tooltip(
-                  message: l(context).originalPoster_long,
-                  triggerMode: TooltipTriggerMode.tap,
-                  child: Text(
-                    l(context).originalPoster_short,
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-
     final contentItem = ContentItem(
       originInstance: getNameHost(context, widget.comment.user.name),
       id: widget.comment.id,
@@ -139,6 +101,7 @@ class _PostCommentState extends State<PostComment> {
       createdAt: widget.comment.createdAt,
       editedAt: widget.comment.editedAt,
       fullImageSize: true,
+      isLocked: widget.comment.isLocked,
       user: widget.comment.user,
       updateUser: (user) async =>
           widget.onUpdate(widget.comment.copyWith(user: user)),
@@ -190,29 +153,31 @@ class _PostCommentState extends State<PostComment> {
         );
       }),
       contentTypeName: l(context).comment,
-      onReply: whenLoggedIn(context, (
-        body,
-        lang, {
-        XFile? image,
-        String? alt,
-      }) async {
-        final newSubComment = await ac.api.comments.create(
-          widget.comment.postType,
-          widget.comment.postId,
-          body,
-          parentCommentId: widget.comment.id,
-          lang: lang,
-          image: image,
-          alt: alt,
-        );
+      onReply: widget.postLocked || widget.comment.isLocked
+          ? null
+          : whenLoggedIn(context, (
+              body,
+              lang, {
+              XFile? image,
+              String? alt,
+            }) async {
+              final newSubComment = await ac.api.comments.create(
+                widget.comment.postType,
+                widget.comment.postId,
+                body,
+                parentCommentId: widget.comment.id,
+                lang: lang,
+                image: image,
+                alt: alt,
+              );
 
-        widget.onUpdate(
-          widget.comment.copyWith(
-            childCount: widget.comment.childCount + 1,
-            children: [newSubComment, ...widget.comment.children!],
-          ),
-        );
-      }),
+              widget.onUpdate(
+                widget.comment.copyWith(
+                  childCount: widget.comment.childCount + 1,
+                  children: [newSubComment, ...widget.comment.children!],
+                ),
+              );
+            }),
       onReport: whenLoggedIn(context, (reason) async {
         await ac.api.comments.report(
           widget.comment.postType,
@@ -279,6 +244,17 @@ class _PostCommentState extends State<PostComment> {
                 context,
                 user: widget.comment.user,
                 community: widget.comment.community,
+              );
+            },
+      onModerateLock: !canModerate || ac.serverSoftware != ServerSoftware.piefed
+          ? null
+          : () async {
+              widget.onUpdate(
+                await ac.api.moderation.commentLock(
+                  widget.comment.postType,
+                  widget.comment.id,
+                  !widget.comment.isLocked,
+                ),
               );
             },
       editDraftResourceId:
@@ -410,35 +386,12 @@ class _PostCommentState extends State<PostComment> {
           ),
           child: Container(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      userWidget,
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Tooltip(
-                          message:
-                              l(context).createdAt(
-                                dateTimeFormat(widget.comment.createdAt),
-                              ) +
-                              (widget.comment.editedAt == null
-                                  ? ''
-                                  : '\n${l(context).editedAt(dateTimeFormat(widget.comment.editedAt!))}'),
-                          triggerMode: TooltipTriggerMode.tap,
-                          child: Text(
-                            dateDiffFormat(widget.comment.createdAt),
-                            style: const TextStyle(fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                menuWidget,
-              ],
+            child: ContentInfo(
+              user: widget.comment.user,
+              isOp: widget.comment.user.id == widget.opUserId,
+              isLocked: widget.comment.isLocked,
+              createdAt: widget.comment.createdAt,
+              editedAt: widget.comment.editedAt,
             ),
           ),
         ),

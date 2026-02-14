@@ -62,6 +62,7 @@ class ContentItem extends StatefulWidget {
     this.isPinned = false,
     this.isNSFW = false,
     this.isOC = false,
+    this.isLocked = false,
     this.user,
     this.opUserId,
     this.community,
@@ -87,6 +88,7 @@ class ContentItem extends StatefulWidget {
     this.onModerateMarkNSFW,
     this.onModerateDelete,
     this.onModerateBan,
+    this.onModerateLock,
     this.filterListWarnings,
     this.activeBookmarkLists,
     this.loadPossibleBookmarkLists,
@@ -130,6 +132,7 @@ class ContentItem extends StatefulWidget {
   final bool isPinned;
   final bool isNSFW;
   final bool isOC;
+  final bool isLocked;
 
   final DetailedUserModel? user;
   final Future<void> Function(DetailedUserModel)? updateUser;
@@ -170,6 +173,7 @@ class ContentItem extends StatefulWidget {
   final Future<void> Function()? onModerateMarkNSFW;
   final Future<void> Function()? onModerateDelete;
   final Future<void> Function()? onModerateBan;
+  final Future<void> Function()? onModerateLock;
 
   final String editDraftResourceId;
   final String replyDraftResourceId;
@@ -352,6 +356,7 @@ class _ContentItemState extends State<ContentItem> {
           onModerateMarkNSFW: widget.onModerateMarkNSFW,
           onModerateDelete: widget.onModerateDelete,
           onModerateBan: widget.onModerateBan,
+          onModerateLock: widget.onModerateLock,
           child: child,
         ),
         child: LayoutBuilder(
@@ -392,6 +397,7 @@ class _ContentItemState extends State<ContentItem> {
                   isPinned: widget.isPinned,
                   isNSFW: widget.isNSFW,
                   isOC: widget.isOC,
+                  isLocked: widget.isLocked,
                   lang: widget.lang,
                   createdAt: widget.createdAt,
                   editedAt: widget.editedAt,
@@ -786,6 +792,7 @@ class _ContentItemState extends State<ContentItem> {
                             isPinned: widget.isPinned,
                             isNSFW: widget.isNSFW,
                             isOC: widget.isOC,
+                            isLocked: widget.isLocked,
                             lang: widget.lang,
                             createdAt: widget.createdAt,
                             editedAt: widget.editedAt,

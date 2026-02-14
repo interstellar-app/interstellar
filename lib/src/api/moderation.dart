@@ -205,6 +205,73 @@ class APIModeration {
     }
   }
 
+  Future<PostModel> postLock(PostType postType, int postId, bool locked) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path = '/moderate/${_postTypeMbin[postType]}/$postId/lock';
+
+        final response = await client.put(path);
+
+        return switch (postType) {
+          PostType.thread => PostModel.fromMbinEntry(response.bodyJson),
+          PostType.microblog => PostModel.fromMbinPost(response.bodyJson),
+        };
+
+      case ServerSoftware.lemmy:
+        const path = '/post/lock';
+
+        final response = await client.post(
+          path,
+          body: {'post_id': postId, 'locked': locked},
+        );
+
+        return PostModel.fromLemmy(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+
+      case ServerSoftware.piefed:
+        const path = '/post/lock';
+
+        final response = await client.post(
+          path,
+          body: {'post_id': postId, 'locked': locked},
+        );
+
+        return PostModel.fromPiefed(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+    }
+  }
+
+  Future<CommentModel> commentLock(
+    PostType postType,
+    int postId,
+    bool locked,
+  ) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Comment locking not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Moderation not implemented on Lemmy yet');
+
+      case ServerSoftware.piefed:
+        const path = '/comment/lock';
+
+        final response = await client.post(
+          path,
+          body: {'comment_id': postId, 'locked': locked},
+        );
+
+        return CommentModel.fromPiefed(
+          response.bodyJson['comment_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+    }
+  }
+
   Future<CommentModel> commentDelete(
     PostType postType,
     int commentId,

@@ -18,6 +18,7 @@ class SwipeItem extends StatefulWidget {
     this.onModerateMarkNSFW,
     this.onModerateDelete,
     this.onModerateBan,
+    this.onModerateLock,
   });
 
   final Widget child;
@@ -31,6 +32,7 @@ class SwipeItem extends StatefulWidget {
   final Future<void> Function()? onModerateMarkNSFW;
   final Future<void> Function()? onModerateDelete;
   final Future<void> Function()? onModerateBan;
+  final Future<void> Function()? onModerateLock;
 
   @override
   State<SwipeItem> createState() => _SwipeItemState();
@@ -75,6 +77,9 @@ class _SwipeItemState extends State<SwipeItem> {
       SwipeAction.moderateBan => swipeActionModerateBan(
         context,
       ).withProps(ActionLocation.hide, widget.onModerateBan),
+      SwipeAction.moderateLock => swipeActionModerateLock(
+        context,
+      ).withProps(ActionLocation.hide, widget.onModerateLock),
     };
   }
 

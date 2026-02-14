@@ -123,6 +123,7 @@ class _PostItemState extends State<PostItem> {
           isPinned: widget.item.isPinned,
           isNSFW: widget.item.isNSFW,
           isOC: widget.item.isOC ?? false,
+          isLocked: widget.item.isLocked,
           user: widget.item.user,
           updateUser: (user) async =>
               widget.onUpdate(widget.item.copyWith(user: user)),
@@ -182,7 +183,7 @@ class _PostItemState extends State<PostItem> {
             );
           }),
           contentTypeName: l(context).post,
-          onReply: widget.onReply,
+          onReply: widget.item.isLocked ? null : widget.onReply,
           onReport: whenLoggedIn(context, (reason) async {
             await switch (widget.item.type) {
               PostType.thread => ac.api.threads.report(widget.item.id, reason),
@@ -239,6 +240,17 @@ class _PostItemState extends State<PostItem> {
                     context,
                     user: widget.item.user,
                     community: widget.item.community,
+                  );
+                },
+          onModerateLock: !canModerate
+              ? null
+              : () async {
+                  widget.onUpdate(
+                    await ac.api.moderation.postLock(
+                      widget.item.type,
+                      widget.item.id,
+                      !widget.item.isLocked,
+                    ),
                   );
                 },
           numComments: widget.item.numComments,
