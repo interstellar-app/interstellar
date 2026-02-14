@@ -1,12 +1,29 @@
 targets:
   $default:
     builders:
+      auto_route_generator:auto_route_generator: # this for @RoutePage
+        generate_for:
+          - lib/src/screens/**.dart
+          - lib/src/widgets/**.dart
+      auto_route_generator:auto_router_generator: # this for @AutoRouterConfig
+        generate_for:
+          - lib/src/controller/router.dart
       drift_dev:
+        generate_for:
+          - lib/src/controller/database/database.dart
         options:
           store_date_time_values_as_text: true
           schema_dir: lib/src/controller/database
           databases:
             schemas: lib/src/controller/database/database.dart
+      freezed:
+        generate_for:
+          - lib/src/controller/**.dart
+          - lib/src/models/**.dart
+      json_serializable:
+        generate_for:
+          - lib/src/controller/**.dart
+          - lib/src/models/**.dart
 
 builders:
   emoji_builder:
