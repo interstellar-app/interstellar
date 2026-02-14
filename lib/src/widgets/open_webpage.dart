@@ -28,6 +28,10 @@ enum LinkAction {
         shareUri(uri);
       case LinkAction.copy:
         await Clipboard.setData(ClipboardData(text: uri.toString()));
+        if (!context.mounted) return;
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(l(context).copied), showCloseIcon: true),
+        );
       case LinkAction.openInBrowser:
         launchUrl(uri);
       case LinkAction.openInWebview:
