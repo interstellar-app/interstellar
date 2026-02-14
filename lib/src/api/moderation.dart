@@ -218,7 +218,17 @@ class APIModeration {
         };
 
       case ServerSoftware.lemmy:
-        throw Exception('Moderation not implemented on Lemmy yet');
+        const path = '/post/lock';
+
+        final response = await client.post(
+          path,
+          body: {'post_id': postId, 'locked': locked},
+        );
+
+        return PostModel.fromLemmy(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post/lock';

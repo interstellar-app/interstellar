@@ -251,7 +251,7 @@ abstract class PostModel with _$PostModel {
       isPinned:
           lemmyPost['featured_community']! as bool ||
           lemmyPost['featured_local']! as bool,
-      isLocked: false,
+      isLocked: lemmyPost['locked']! as bool,
       createdAt: DateTime.parse(lemmyPost['published']! as String),
       editedAt: optionalDateTime(lemmyPost['updated'] as String?),
       lastActive: lemmyCounts == null
