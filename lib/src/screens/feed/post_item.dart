@@ -183,7 +183,7 @@ class _PostItemState extends State<PostItem> {
             );
           }),
           contentTypeName: l(context).post,
-          onReply: widget.onReply,
+          onReply: widget.item.isLocked ? null : widget.onReply,
           onReport: whenLoggedIn(context, (reason) async {
             await switch (widget.item.type) {
               PostType.thread => ac.api.threads.report(widget.item.id, reason),
