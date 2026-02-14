@@ -3,15 +3,51 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/selection_menu.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void openWebpagePrimary(BuildContext context, Uri uri) => launchUrl(uri);
+enum LinkAction {
+  share,
+  copy,
+  openInBrowser,
+  openInWebview,
+  menu;
+
+  Future<void> call(BuildContext context, Uri uri) async {
+    switch (this) {
+      case LinkAction.share:
+        shareUri(uri);
+      case LinkAction.copy:
+        await Clipboard.setData(ClipboardData(text: uri.toString()));
+        if (!context.mounted) return;
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(l(context).copied), showCloseIcon: true),
+        );
+      case LinkAction.openInBrowser:
+        launchUrl(uri);
+      case LinkAction.openInWebview:
+        final controller = WebViewController();
+        unawaited(controller.setJavaScriptMode(JavaScriptMode.unrestricted));
+        unawaited(controller.loadRequest(uri));
+
+        unawaited(context.router.push(WebViewRoute(controller: controller)));
+      case LinkAction.menu:
+        openWebpageSecondary(context, uri);
+    }
+  }
+}
+
+void openWebpagePrimary(BuildContext context, Uri uri) =>
+    context.read<AppController>().profile.defaultLinkAction.call(context, uri);
 
 void openWebpageSecondary(BuildContext context, Uri uri) => showDialog<String>(
   context: context,
@@ -26,14 +62,13 @@ void openWebpageSecondary(BuildContext context, Uri uri) => showDialog<String>(
       FilledButton.tonal(
         onPressed: () {
           context.router.pop();
-          unawaited(shareUri(uri));
+          LinkAction.share.call(context, uri);
         },
         child: Text(l(context).share),
       ),
       LoadingTonalButton(
         onPressed: () async {
-          await Clipboard.setData(ClipboardData(text: uri.toString()));
-
+          await LinkAction.copy.call(context, uri);
           if (!context.mounted) return;
           context.router.pop();
         },
@@ -43,24 +78,14 @@ void openWebpageSecondary(BuildContext context, Uri uri) => showDialog<String>(
         FilledButton.tonal(
           onPressed: () {
             context.router.pop();
-
-            final controller = WebViewController();
-            unawaited(
-              controller.setJavaScriptMode(JavaScriptMode.unrestricted),
-            );
-            unawaited(controller.loadRequest(uri));
-
-            unawaited(
-              context.router.push(WebViewRoute(controller: controller)),
-            );
+            LinkAction.openInWebview.call(context, uri);
           },
           child: Text(l(context).webView),
         ),
       FilledButton(
         onPressed: () {
           context.router.pop();
-
-          unawaited(launchUrl(uri));
+          LinkAction.openInBrowser.call(context, uri);
         },
         child: Text(l(context).browser),
       ),
@@ -85,3 +110,27 @@ class WebViewScreen extends StatelessWidget {
     );
   }
 }
+
+SelectionMenu<LinkAction> linkActionSelect(BuildContext context) =>
+    SelectionMenu(l(context).setLinkAction, [
+      SelectionMenuItem(
+        value: LinkAction.share,
+        title: l(context).share,
+        icon: Symbols.share_rounded,
+      ),
+      SelectionMenuItem(
+        value: LinkAction.copy,
+        title: l(context).copy,
+        icon: Symbols.copy_all_rounded,
+      ),
+      SelectionMenuItem(
+        value: LinkAction.openInBrowser,
+        title: l(context).browser,
+        icon: Symbols.open_in_browser_rounded,
+      ),
+      SelectionMenuItem(
+        value: LinkAction.menu,
+        title: l(context).openLinkMenu,
+        icon: Symbols.menu_rounded,
+      ),
+    ]);

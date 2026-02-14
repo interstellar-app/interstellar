@@ -1318,8 +1318,378 @@ i1.GeneratedColumn<int> _column_96(String aliasedName) =>
       type: i1.DriftSqlType.int,
       $customConstraints: 'NOT NULL REFERENCES tags(id)ON DELETE CASCADE',
     );
+
+final class Schema3 extends i0.VersionedSchema {
+  Schema3({required super.database}) : super(version: 3);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    accounts,
+    feeds,
+    feedInputs,
+    servers,
+    feedSourceCache,
+    readPostCache,
+    filterLists,
+    profiles,
+    stars,
+    miscCache,
+    drafts,
+    tags,
+    userTags,
+  ];
+  late final Shape0 accounts = Shape0(
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(handle)'],
+      columns: [_column_0, _column_1, _column_2, _column_3],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape1 feeds = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'feeds',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [_column_4],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape2 feedInputs = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'feed_inputs',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [_column_5, _column_4, _column_6],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape3 servers = Shape3(
+    source: i0.VersionedTable(
+      entityName: 'servers',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [_column_4, _column_7, _column_8],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape4 feedSourceCache = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'feed_source_cache',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name, server)'],
+      columns: [_column_9, _column_10, _column_11, _column_6],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape5 readPostCache = Shape5(
+    source: i0.VersionedTable(
+      entityName: 'read_post_cache',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(account, post_type, post_id)'],
+      columns: [_column_12, _column_13, _column_14],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 filterLists = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'filter_lists',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [_column_4, _column_15, _column_16, _column_17, _column_18],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape13 profiles = Shape13(
+    source: i0.VersionedTable(
+      entityName: 'profiles',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [
+        _column_4,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_22,
+        _column_23,
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_29,
+        _column_30,
+        _column_31,
+        _column_32,
+        _column_33,
+        _column_97,
+        _column_34,
+        _column_35,
+        _column_36,
+        _column_37,
+        _column_38,
+        _column_39,
+        _column_40,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_50,
+        _column_51,
+        _column_52,
+        _column_53,
+        _column_54,
+        _column_55,
+        _column_56,
+        _column_57,
+        _column_58,
+        _column_59,
+        _column_60,
+        _column_61,
+        _column_62,
+        _column_63,
+        _column_64,
+        _column_65,
+        _column_66,
+        _column_67,
+        _column_68,
+        _column_69,
+        _column_70,
+        _column_71,
+        _column_72,
+        _column_73,
+        _column_74,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape8 stars = Shape8(
+    source: i0.VersionedTable(
+      entityName: 'stars',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_75, _column_4],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape9 miscCache = Shape9(
+    source: i0.VersionedTable(
+      entityName: 'misc_cache',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_76,
+        _column_77,
+        _column_78,
+        _column_79,
+        _column_80,
+        _column_81,
+        _column_82,
+        _column_83,
+        _column_84,
+        _column_85,
+        _column_86,
+        _column_87,
+        _column_88,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape10 drafts = Shape10(
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_75, _column_89, _column_90, _column_91],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 tags = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'tags',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_75, _column_92, _column_93, _column_94],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape12 userTags = Shape12(
+    source: i0.VersionedTable(
+      entityName: 'user_tags',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(user, tag_id)'],
+      columns: [_column_95, _column_96],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+}
+
+class Shape13 extends i0.VersionedTable {
+  Shape13({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get autoSwitchAccount =>
+      columnsByName['auto_switch_account']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get defaultCreateLanguage =>
+      columnsByName['default_create_language']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get disableTabSwiping =>
+      columnsByName['disable_tab_swiping']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get askBeforeUnsubscribing =>
+      columnsByName['ask_before_unsubscribing']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get askBeforeDeleting =>
+      columnsByName['ask_before_deleting']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get autoPlayVideos =>
+      columnsByName['auto_play_videos']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get hapticFeedback =>
+      columnsByName['haptic_feedback']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get autoTranslate =>
+      columnsByName['auto_translate']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get markThreadsReadOnScroll =>
+      columnsByName['mark_threads_read_on_scroll']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get markMicroblogsReadOnScroll =>
+      columnsByName['mark_microblogs_read_on_scroll']!
+          as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<double> get animationSpeed =>
+      columnsByName['animation_speed']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get inlineReplies =>
+      columnsByName['inline_replies']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get showCrossPostComments =>
+      columnsByName['show_cross_post_comments']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get markCrossPostsAsRead =>
+      columnsByName['mark_cross_posts_as_read']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get defaultImageStore =>
+      columnsByName['default_image_store']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get defaultLinkAction =>
+      columnsByName['default_link_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get appLanguage =>
+      columnsByName['app_language']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get themeMode =>
+      columnsByName['theme_mode']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get colorScheme =>
+      columnsByName['color_scheme']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get enableTrueBlack =>
+      columnsByName['enable_true_black']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get compactMode =>
+      columnsByName['compact_mode']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get hideActionButtons =>
+      columnsByName['hide_action_buttons']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get hideFeedUIOnScroll =>
+      columnsByName['hide_feed_u_i_on_scroll']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<double> get globalTextScale =>
+      columnsByName['global_text_scale']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get alwaysShowInstance =>
+      columnsByName['always_show_instance']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get coverMediaMarkedSensitive =>
+      columnsByName['cover_media_marked_sensitive']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get fullImageSizeThreads =>
+      columnsByName['full_image_size_threads']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get fullImageSizeMicroblogs =>
+      columnsByName['full_image_size_microblogs']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get showPostsCards =>
+      columnsByName['show_posts_cards']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get postComponentOrder =>
+      columnsByName['post_component_order']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<double> get dividerThickness =>
+      columnsByName['divider_thickness']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get hideEmojiReactions =>
+      columnsByName['hide_emoji_reactions']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get feedViewOrder =>
+      columnsByName['feed_view_order']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedSourceOrder =>
+      columnsByName['feed_source_order']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedSortOrder =>
+      columnsByName['feed_sort_order']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedDefaultThreadsSort =>
+      columnsByName['feed_default_threads_sort']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedDefaultMicroblogSort =>
+      columnsByName['feed_default_microblog_sort']!
+          as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedDefaultCombinedSort =>
+      columnsByName['feed_default_combined_sort']!
+          as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedDefaultExploreSort =>
+      columnsByName['feed_default_explore_sort']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedDefaultCommentSort =>
+      columnsByName['feed_default_comment_sort']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get feedDefaultHideReadPosts =>
+      columnsByName['feed_default_hide_read_posts']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get feedActionBackToTop =>
+      columnsByName['feed_action_back_to_top']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionCreateNew =>
+      columnsByName['feed_action_create_new']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionExpandFab =>
+      columnsByName['feed_action_expand_fab']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionRefresh =>
+      columnsByName['feed_action_refresh']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionSetFilter =>
+      columnsByName['feed_action_set_filter']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionSetSort =>
+      columnsByName['feed_action_set_sort']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionSetView =>
+      columnsByName['feed_action_set_view']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get feedActionHideReadPosts =>
+      columnsByName['feed_action_hide_read_posts']!
+          as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get enableSwipeActions =>
+      columnsByName['enable_swipe_actions']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get swipeActionLeftShort =>
+      columnsByName['swipe_action_left_short']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get swipeActionLeftLong =>
+      columnsByName['swipe_action_left_long']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get swipeActionRightShort =>
+      columnsByName['swipe_action_right_short']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get swipeActionRightLong =>
+      columnsByName['swipe_action_right_long']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<double> get swipeActionThreshold =>
+      columnsByName['swipe_action_threshold']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<String> get filterLists =>
+      columnsByName['filter_lists']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get showErrors =>
+      columnsByName['show_errors']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_97(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'default_link_action',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
+  required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1328,6 +1698,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from1To2(migrator, schema);
         return 2;
+      case 2:
+        final schema = Schema3(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from2To3(migrator, schema);
+        return 3;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1336,6 +1711,7 @@ i0.MigrationStepWithVersion migrationSteps({
 
 i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
+  required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
 }) => i0.VersionedSchema.stepByStepHelper(
-  step: migrationSteps(from1To2: from1To2),
+  step: migrationSteps(from1To2: from1To2, from2To3: from2To3),
 );

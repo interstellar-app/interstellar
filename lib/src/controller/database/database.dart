@@ -22,6 +22,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -274,6 +275,7 @@ class Profiles extends Table {
   BoolColumn get showCrossPostComments => boolean().nullable()();
   BoolColumn get markCrossPostsAsRead => boolean().nullable()();
   TextColumn get defaultImageStore => textEnum<ImageStore>().nullable()();
+  TextColumn get defaultLinkAction => textEnum<LinkAction>().nullable()();
   // Display
   TextColumn get appLanguage => text().nullable()();
   TextColumn get themeMode => textEnum<ThemeMode>().nullable()();
@@ -445,7 +447,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -461,6 +463,9 @@ class InterstellarDatabase extends _$InterstellarDatabase {
             schema.profiles.hideEmojiReactions,
           );
           await invalidateOauth();
+        },
+        from2To3: (m, schema) async {
+          await m.addColumn(schema.profiles, schema.profiles.defaultLinkAction);
         },
       ),
     );

@@ -11,6 +11,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart'
     show ActionLocation, ActionLocationWithTabs, SwipeAction;
 import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/open_webpage.dart';
 
 part 'profile.freezed.dart';
 part 'profile.g.dart';
@@ -39,6 +40,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     required bool showCrossPostComments,
     required bool markCrossPostsAsRead,
     required ImageStore defaultImageStore,
+    required LinkAction defaultLinkAction,
     // Display settings
     required String appLanguage,
     required ThemeMode themeMode,
@@ -122,6 +124,8 @@ abstract class ProfileRequired with _$ProfileRequired {
         profile?.markCrossPostsAsRead ?? defaultProfile.markCrossPostsAsRead,
     defaultImageStore:
         profile?.defaultImageStore ?? defaultProfile.defaultImageStore,
+    defaultLinkAction:
+        profile?.defaultLinkAction ?? defaultProfile.defaultLinkAction,
     appLanguage: profile?.appLanguage ?? defaultProfile.appLanguage,
     themeMode: profile?.themeMode ?? defaultProfile.themeMode,
     colorScheme: profile?.colorScheme ?? defaultProfile.colorScheme,
@@ -219,6 +223,7 @@ abstract class ProfileRequired with _$ProfileRequired {
     showCrossPostComments: true,
     markCrossPostsAsRead: false,
     defaultImageStore: ImageStore.platform,
+    defaultLinkAction: LinkAction.openInBrowser,
     appLanguage: '',
     themeMode: ThemeMode.system,
     colorScheme: FlexScheme.custom,
@@ -300,6 +305,7 @@ abstract class ProfileOptional
     required bool? showCrossPostComments,
     required bool? markCrossPostsAsRead,
     required ImageStore? defaultImageStore,
+    required LinkAction? defaultLinkAction,
     // Display settings
     required String? appLanguage,
     required ThemeMode? themeMode,
@@ -372,6 +378,7 @@ abstract class ProfileOptional
       showCrossPostComments: Value(showCrossPostComments),
       markCrossPostsAsRead: Value(markCrossPostsAsRead),
       defaultImageStore: Value(defaultImageStore),
+      defaultLinkAction: Value(defaultLinkAction),
       // Display
       appLanguage: Value(appLanguage),
       themeMode: Value(themeMode),
@@ -438,6 +445,7 @@ abstract class ProfileOptional
     showCrossPostComments: null,
     markCrossPostsAsRead: null,
     defaultImageStore: null,
+    defaultLinkAction: null,
     appLanguage: null,
     themeMode: null,
     colorScheme: null,
@@ -506,6 +514,7 @@ abstract class ProfileOptional
           other.showCrossPostComments ?? showCrossPostComments,
       markCrossPostsAsRead: other.markCrossPostsAsRead ?? markCrossPostsAsRead,
       defaultImageStore: other.defaultImageStore ?? defaultImageStore,
+      defaultLinkAction: other.defaultLinkAction ?? defaultLinkAction,
       appLanguage: other.appLanguage ?? appLanguage,
       themeMode: other.themeMode ?? themeMode,
       colorScheme: other.colorScheme ?? colorScheme,

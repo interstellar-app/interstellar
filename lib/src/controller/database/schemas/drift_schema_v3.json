@@ -1,0 +1,1945 @@
+{
+  "_meta": {
+    "description": "This file contains a serialized version of schema entities for drift.",
+    "version": "1.3.0"
+  },
+  "options": {
+    "store_date_time_values_as_text": true
+  },
+  "entities": [
+    {
+      "id": 0,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "accounts",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "handle",
+            "getter_name": "handle",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": "() => '@kbin.earth'",
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "oauth",
+            "getter_name": "oauth",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const CredentialsConverter()",
+              "dart_type_name": "Credentials"
+            }
+          },
+          {
+            "name": "jwt",
+            "getter_name": "jwt",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "is_push_registered",
+            "getter_name": "isPushRegistered",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"is_push_registered\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"is_push_registered\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "handle"
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "feeds",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "references": [
+        1
+      ],
+      "type": "table",
+      "data": {
+        "name": "feed_inputs",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "feed",
+            "getter_name": "feed",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES feeds (name) ON UPDATE CASCADE ON DELETE CASCADE",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES feeds (name) ON UPDATE CASCADE ON DELETE CASCADE"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "feeds",
+                    "column": "name"
+                  },
+                  "initially_deferred": false,
+                  "on_update": "cascade",
+                  "on_delete": "cascade"
+                }
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "source",
+            "getter_name": "source",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FeedSource>(FeedSource.values)",
+              "dart_type_name": "FeedSource"
+            }
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "servers",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "software",
+            "getter_name": "software",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ServerSoftware>(ServerSoftware.values)",
+              "dart_type_name": "ServerSoftware"
+            }
+          },
+          {
+            "name": "oauth_identifier",
+            "getter_name": "oauthIdentifier",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "references": [
+        2,
+        3
+      ],
+      "type": "table",
+      "data": {
+        "name": "feed_source_cache",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES feed_inputs (name) ON UPDATE CASCADE ON DELETE CASCADE",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES feed_inputs (name) ON UPDATE CASCADE ON DELETE CASCADE"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "feed_inputs",
+                    "column": "name"
+                  },
+                  "initially_deferred": false,
+                  "on_update": "cascade",
+                  "on_delete": "cascade"
+                }
+              }
+            ]
+          },
+          {
+            "name": "server",
+            "getter_name": "server",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES servers (name)",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES servers (name)"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "servers",
+                    "column": "name"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "source_id",
+            "getter_name": "sourceId",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "source",
+            "getter_name": "source",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FeedSource>(FeedSource.values)",
+              "dart_type_name": "FeedSource"
+            }
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "name",
+          "server"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "references": [
+        0
+      ],
+      "type": "table",
+      "data": {
+        "name": "read_post_cache",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "account",
+            "getter_name": "account",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES accounts (handle) ON DELETE CASCADE",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES accounts (handle) ON DELETE CASCADE"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "accounts",
+                    "column": "handle"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "cascade"
+                }
+              }
+            ]
+          },
+          {
+            "name": "post_type",
+            "getter_name": "postType",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<PostType>(PostType.values)",
+              "dart_type_name": "PostType"
+            }
+          },
+          {
+            "name": "post_id",
+            "getter_name": "postId",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "account",
+          "post_type",
+          "post_id"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "filter_lists",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "phrases",
+            "getter_name": "phrases",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const FilterListConverter()",
+              "dart_type_name": "Set<String>"
+            }
+          },
+          {
+            "name": "match_mode",
+            "getter_name": "matchMode",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FilterListMatchMode>(FilterListMatchMode.values)",
+              "dart_type_name": "FilterListMatchMode"
+            }
+          },
+          {
+            "name": "case_sensitive",
+            "getter_name": "caseSensitive",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"case_sensitive\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"case_sensitive\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "show_with_warning",
+            "getter_name": "showWithWarning",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"show_with_warning\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"show_with_warning\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "references": [
+        0
+      ],
+      "type": "table",
+      "data": {
+        "name": "profiles",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": "() => 'Default'",
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "auto_switch_account",
+            "getter_name": "autoSwitchAccount",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES accounts (handle) ON DELETE SET NULL",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES accounts (handle) ON DELETE SET NULL"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "accounts",
+                    "column": "handle"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "setNull"
+                }
+              }
+            ]
+          },
+          {
+            "name": "default_create_language",
+            "getter_name": "defaultCreateLanguage",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "disable_tab_swiping",
+            "getter_name": "disableTabSwiping",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"disable_tab_swiping\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"disable_tab_swiping\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "ask_before_unsubscribing",
+            "getter_name": "askBeforeUnsubscribing",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"ask_before_unsubscribing\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"ask_before_unsubscribing\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "ask_before_deleting",
+            "getter_name": "askBeforeDeleting",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"ask_before_deleting\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"ask_before_deleting\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "auto_play_videos",
+            "getter_name": "autoPlayVideos",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"auto_play_videos\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"auto_play_videos\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "haptic_feedback",
+            "getter_name": "hapticFeedback",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"haptic_feedback\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"haptic_feedback\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "auto_translate",
+            "getter_name": "autoTranslate",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"auto_translate\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"auto_translate\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "mark_threads_read_on_scroll",
+            "getter_name": "markThreadsReadOnScroll",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"mark_threads_read_on_scroll\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"mark_threads_read_on_scroll\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "mark_microblogs_read_on_scroll",
+            "getter_name": "markMicroblogsReadOnScroll",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"mark_microblogs_read_on_scroll\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"mark_microblogs_read_on_scroll\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "animation_speed",
+            "getter_name": "animationSpeed",
+            "moor_type": "double",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "inline_replies",
+            "getter_name": "inlineReplies",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"inline_replies\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"inline_replies\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "show_cross_post_comments",
+            "getter_name": "showCrossPostComments",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"show_cross_post_comments\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"show_cross_post_comments\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "mark_cross_posts_as_read",
+            "getter_name": "markCrossPostsAsRead",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"mark_cross_posts_as_read\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"mark_cross_posts_as_read\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "default_image_store",
+            "getter_name": "defaultImageStore",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ImageStore>(ImageStore.values)",
+              "dart_type_name": "ImageStore"
+            }
+          },
+          {
+            "name": "default_link_action",
+            "getter_name": "defaultLinkAction",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<LinkAction>(LinkAction.values)",
+              "dart_type_name": "LinkAction"
+            }
+          },
+          {
+            "name": "app_language",
+            "getter_name": "appLanguage",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "theme_mode",
+            "getter_name": "themeMode",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ThemeMode>(ThemeMode.values)",
+              "dart_type_name": "ThemeMode"
+            }
+          },
+          {
+            "name": "color_scheme",
+            "getter_name": "colorScheme",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FlexScheme>(FlexScheme.values)",
+              "dart_type_name": "FlexScheme"
+            }
+          },
+          {
+            "name": "enable_true_black",
+            "getter_name": "enableTrueBlack",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"enable_true_black\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"enable_true_black\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "compact_mode",
+            "getter_name": "compactMode",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"compact_mode\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"compact_mode\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "hide_action_buttons",
+            "getter_name": "hideActionButtons",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"hide_action_buttons\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"hide_action_buttons\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "hide_feed_u_i_on_scroll",
+            "getter_name": "hideFeedUIOnScroll",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"hide_feed_u_i_on_scroll\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"hide_feed_u_i_on_scroll\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "global_text_scale",
+            "getter_name": "globalTextScale",
+            "moor_type": "double",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "always_show_instance",
+            "getter_name": "alwaysShowInstance",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"always_show_instance\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"always_show_instance\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "cover_media_marked_sensitive",
+            "getter_name": "coverMediaMarkedSensitive",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"cover_media_marked_sensitive\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"cover_media_marked_sensitive\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "full_image_size_threads",
+            "getter_name": "fullImageSizeThreads",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"full_image_size_threads\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"full_image_size_threads\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "full_image_size_microblogs",
+            "getter_name": "fullImageSizeMicroblogs",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"full_image_size_microblogs\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"full_image_size_microblogs\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "show_posts_cards",
+            "getter_name": "showPostsCards",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"show_posts_cards\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"show_posts_cards\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "post_component_order",
+            "getter_name": "postComponentOrder",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const PostComponentConverter()",
+              "dart_type_name": "List<PostComponent>"
+            }
+          },
+          {
+            "name": "divider_thickness",
+            "getter_name": "dividerThickness",
+            "moor_type": "double",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "hide_emoji_reactions",
+            "getter_name": "hideEmojiReactions",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"hide_emoji_reactions\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"hide_emoji_reactions\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "feed_view_order",
+            "getter_name": "feedViewOrder",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const FeedViewListConverter()",
+              "dart_type_name": "List<FeedView>"
+            }
+          },
+          {
+            "name": "feed_source_order",
+            "getter_name": "feedSourceOrder",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const FeedSourceListConverter()",
+              "dart_type_name": "List<FeedSource>"
+            }
+          },
+          {
+            "name": "feed_sort_order",
+            "getter_name": "feedSortOrder",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const FeedSortListConverter()",
+              "dart_type_name": "List<FeedSort>"
+            }
+          },
+          {
+            "name": "feed_default_threads_sort",
+            "getter_name": "feedDefaultThreadsSort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FeedSort>(FeedSort.values)",
+              "dart_type_name": "FeedSort"
+            }
+          },
+          {
+            "name": "feed_default_microblog_sort",
+            "getter_name": "feedDefaultMicroblogSort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FeedSort>(FeedSort.values)",
+              "dart_type_name": "FeedSort"
+            }
+          },
+          {
+            "name": "feed_default_combined_sort",
+            "getter_name": "feedDefaultCombinedSort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FeedSort>(FeedSort.values)",
+              "dart_type_name": "FeedSort"
+            }
+          },
+          {
+            "name": "feed_default_explore_sort",
+            "getter_name": "feedDefaultExploreSort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<FeedSort>(FeedSort.values)",
+              "dart_type_name": "FeedSort"
+            }
+          },
+          {
+            "name": "feed_default_comment_sort",
+            "getter_name": "feedDefaultCommentSort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<CommentSort>(CommentSort.values)",
+              "dart_type_name": "CommentSort"
+            }
+          },
+          {
+            "name": "feed_default_hide_read_posts",
+            "getter_name": "feedDefaultHideReadPosts",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"feed_default_hide_read_posts\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"feed_default_hide_read_posts\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "feed_action_back_to_top",
+            "getter_name": "feedActionBackToTop",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocation>(ActionLocation.values)",
+              "dart_type_name": "ActionLocation"
+            }
+          },
+          {
+            "name": "feed_action_create_new",
+            "getter_name": "feedActionCreateNew",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocation>(ActionLocation.values)",
+              "dart_type_name": "ActionLocation"
+            }
+          },
+          {
+            "name": "feed_action_expand_fab",
+            "getter_name": "feedActionExpandFab",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocation>(ActionLocation.values)",
+              "dart_type_name": "ActionLocation"
+            }
+          },
+          {
+            "name": "feed_action_refresh",
+            "getter_name": "feedActionRefresh",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocation>(ActionLocation.values)",
+              "dart_type_name": "ActionLocation"
+            }
+          },
+          {
+            "name": "feed_action_set_filter",
+            "getter_name": "feedActionSetFilter",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocationWithTabs>(ActionLocationWithTabs.values)",
+              "dart_type_name": "ActionLocationWithTabs"
+            }
+          },
+          {
+            "name": "feed_action_set_sort",
+            "getter_name": "feedActionSetSort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocationWithTabs>(ActionLocationWithTabs.values)",
+              "dart_type_name": "ActionLocationWithTabs"
+            }
+          },
+          {
+            "name": "feed_action_set_view",
+            "getter_name": "feedActionSetView",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocationWithTabs>(ActionLocationWithTabs.values)",
+              "dart_type_name": "ActionLocationWithTabs"
+            }
+          },
+          {
+            "name": "feed_action_hide_read_posts",
+            "getter_name": "feedActionHideReadPosts",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<ActionLocation>(ActionLocation.values)",
+              "dart_type_name": "ActionLocation"
+            }
+          },
+          {
+            "name": "enable_swipe_actions",
+            "getter_name": "enableSwipeActions",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"enable_swipe_actions\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"enable_swipe_actions\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "swipe_action_left_short",
+            "getter_name": "swipeActionLeftShort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<SwipeAction>(SwipeAction.values)",
+              "dart_type_name": "SwipeAction"
+            }
+          },
+          {
+            "name": "swipe_action_left_long",
+            "getter_name": "swipeActionLeftLong",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<SwipeAction>(SwipeAction.values)",
+              "dart_type_name": "SwipeAction"
+            }
+          },
+          {
+            "name": "swipe_action_right_short",
+            "getter_name": "swipeActionRightShort",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<SwipeAction>(SwipeAction.values)",
+              "dart_type_name": "SwipeAction"
+            }
+          },
+          {
+            "name": "swipe_action_right_long",
+            "getter_name": "swipeActionRightLong",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<SwipeAction>(SwipeAction.values)",
+              "dart_type_name": "SwipeAction"
+            }
+          },
+          {
+            "name": "swipe_action_threshold",
+            "getter_name": "swipeActionThreshold",
+            "moor_type": "double",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "filter_lists",
+            "getter_name": "filterLists",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const FilterListActivationConverter()",
+              "dart_type_name": "Map<String, bool>"
+            }
+          },
+          {
+            "name": "show_errors",
+            "getter_name": "showErrors",
+            "moor_type": "bool",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"show_errors\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"show_errors\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "stars",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "PRIMARY KEY AUTOINCREMENT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "PRIMARY KEY AUTOINCREMENT"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "auto-increment"
+            ]
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              }
+            ]
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 9,
+      "references": [
+        7,
+        0
+      ],
+      "type": "table",
+      "data": {
+        "name": "misc_cache",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "check": {
+                  "dart_expression": {
+                    "elements": [
+                      {
+                        "lexeme": "id",
+                        "tag": "id"
+                      },
+                      ".equals(1)"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "main_profile",
+            "getter_name": "mainProfile",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES profiles (name) ON DELETE SET DEFAULT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES profiles (name) ON DELETE SET DEFAULT"
+            },
+            "default_dart": null,
+            "default_client_dart": "() => 'Default'",
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "profiles",
+                    "column": "name"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "setDefault"
+                }
+              }
+            ]
+          },
+          {
+            "name": "selected_profile",
+            "getter_name": "selectedProfile",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES profiles (name) ON DELETE SET DEFAULT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES profiles (name) ON DELETE SET DEFAULT"
+            },
+            "default_dart": null,
+            "default_client_dart": "() => 'Default'",
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "profiles",
+                    "column": "name"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "setDefault"
+                }
+              }
+            ]
+          },
+          {
+            "name": "auto_select_profile",
+            "getter_name": "autoSelectProfile",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES profiles (name) ON DELETE SET NULL",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES profiles (name) ON DELETE SET NULL"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "profiles",
+                    "column": "name"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "setNull"
+                }
+              }
+            ]
+          },
+          {
+            "name": "selected_account",
+            "getter_name": "selectedAccount",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES accounts (handle) ON DELETE SET DEFAULT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES accounts (handle) ON DELETE SET DEFAULT"
+            },
+            "default_dart": null,
+            "default_client_dart": "() => '@kbin.earth'",
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "accounts",
+                    "column": "handle"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "setDefault"
+                }
+              }
+            ]
+          },
+          {
+            "name": "web_push_keys",
+            "getter_name": "webPushKeys",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "downloads_dir",
+            "getter_name": "downloadsDir",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expand_nav_drawer",
+            "getter_name": "expandNavDrawer",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"expand_nav_drawer\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"expand_nav_drawer\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expand_nav_stars",
+            "getter_name": "expandNavStars",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"expand_nav_stars\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"expand_nav_stars\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expand_nav_feeds",
+            "getter_name": "expandNavFeeds",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"expand_nav_feeds\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"expand_nav_feeds\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expand_nav_subscriptions",
+            "getter_name": "expandNavSubscriptions",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"expand_nav_subscriptions\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"expand_nav_subscriptions\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expand_nav_follows",
+            "getter_name": "expandNavFollows",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"expand_nav_follows\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"expand_nav_follows\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expand_nav_domains",
+            "getter_name": "expandNavDomains",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"expand_nav_domains\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"expand_nav_domains\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "drafts",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "PRIMARY KEY AUTOINCREMENT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "PRIMARY KEY AUTOINCREMENT"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "auto-increment"
+            ]
+          },
+          {
+            "name": "body",
+            "getter_name": "body",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "resource_id",
+            "getter_name": "resourceId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "at",
+            "getter_name": "at",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('CURRENT_TIMESTAMP')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 11,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "tags",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "PRIMARY KEY AUTOINCREMENT",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "PRIMARY KEY AUTOINCREMENT"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "auto-increment"
+            ]
+          },
+          {
+            "name": "tag",
+            "getter_name": "tag",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "UNIQUE",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "UNIQUE"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "allowed-lengths": {
+                  "min": 1,
+                  "max": null
+                }
+              },
+              "unique"
+            ]
+          },
+          {
+            "name": "background_color",
+            "getter_name": "backgroundColor",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": "() => const Color.from(alpha: 1,red: 1,green: 1,blue: 1).value32bit",
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const ColorConverter()",
+              "dart_type_name": "Color"
+            }
+          },
+          {
+            "name": "text_color",
+            "getter_name": "textColor",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": "() => const Color.from(alpha: 1,red: 0,green: 0,blue: 0).value32bit",
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const ColorConverter()",
+              "dart_type_name": "Color"
+            }
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": []
+      }
+    },
+    {
+      "id": 12,
+      "references": [
+        11
+      ],
+      "type": "table",
+      "data": {
+        "name": "user_tags",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "user",
+            "getter_name": "user",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "tag_id",
+            "getter_name": "tagId",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "REFERENCES tags (id) ON DELETE CASCADE",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "REFERENCES tags (id) ON DELETE CASCADE"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              {
+                "foreign_key": {
+                  "to": {
+                    "table": "tags",
+                    "column": "id"
+                  },
+                  "initially_deferred": false,
+                  "on_update": null,
+                  "on_delete": "cascade"
+                }
+              }
+            ]
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "user",
+          "tag_id"
+        ]
+      }
+    }
+  ],
+  "fixed_sql": [
+    {
+      "name": "accounts",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"accounts\" (\"handle\" TEXT NOT NULL, \"oauth\" TEXT NULL, \"jwt\" TEXT NULL, \"is_push_registered\" INTEGER NOT NULL DEFAULT 0 CHECK (\"is_push_registered\" IN (0, 1)), PRIMARY KEY (\"handle\"));"
+        }
+      ]
+    },
+    {
+      "name": "feeds",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"feeds\" (\"name\" TEXT NOT NULL, PRIMARY KEY (\"name\"));"
+        }
+      ]
+    },
+    {
+      "name": "feed_inputs",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"feed_inputs\" (\"feed\" TEXT NOT NULL REFERENCES feeds (name) ON UPDATE CASCADE ON DELETE CASCADE, \"name\" TEXT NOT NULL, \"source\" TEXT NOT NULL, PRIMARY KEY (\"name\"));"
+        }
+      ]
+    },
+    {
+      "name": "servers",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"servers\" (\"name\" TEXT NOT NULL, \"software\" TEXT NOT NULL, \"oauth_identifier\" TEXT NULL, PRIMARY KEY (\"name\"));"
+        }
+      ]
+    },
+    {
+      "name": "feed_source_cache",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"feed_source_cache\" (\"name\" TEXT NOT NULL REFERENCES feed_inputs (name) ON UPDATE CASCADE ON DELETE CASCADE, \"server\" TEXT NOT NULL REFERENCES servers (name), \"source_id\" INTEGER NULL, \"source\" TEXT NOT NULL, PRIMARY KEY (\"name\", \"server\"));"
+        }
+      ]
+    },
+    {
+      "name": "read_post_cache",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"read_post_cache\" (\"account\" TEXT NOT NULL REFERENCES accounts (handle) ON DELETE CASCADE, \"post_type\" TEXT NOT NULL, \"post_id\" INTEGER NOT NULL, PRIMARY KEY (\"account\", \"post_type\", \"post_id\"));"
+        }
+      ]
+    },
+    {
+      "name": "filter_lists",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"filter_lists\" (\"name\" TEXT NOT NULL, \"phrases\" TEXT NOT NULL, \"match_mode\" TEXT NOT NULL, \"case_sensitive\" INTEGER NOT NULL CHECK (\"case_sensitive\" IN (0, 1)), \"show_with_warning\" INTEGER NOT NULL CHECK (\"show_with_warning\" IN (0, 1)), PRIMARY KEY (\"name\"));"
+        }
+      ]
+    },
+    {
+      "name": "profiles",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"profiles\" (\"name\" TEXT NOT NULL, \"auto_switch_account\" TEXT NULL REFERENCES accounts (handle) ON DELETE SET NULL, \"default_create_language\" TEXT NULL, \"disable_tab_swiping\" INTEGER NULL CHECK (\"disable_tab_swiping\" IN (0, 1)), \"ask_before_unsubscribing\" INTEGER NULL CHECK (\"ask_before_unsubscribing\" IN (0, 1)), \"ask_before_deleting\" INTEGER NULL CHECK (\"ask_before_deleting\" IN (0, 1)), \"auto_play_videos\" INTEGER NULL CHECK (\"auto_play_videos\" IN (0, 1)), \"haptic_feedback\" INTEGER NULL CHECK (\"haptic_feedback\" IN (0, 1)), \"auto_translate\" INTEGER NULL CHECK (\"auto_translate\" IN (0, 1)), \"mark_threads_read_on_scroll\" INTEGER NULL CHECK (\"mark_threads_read_on_scroll\" IN (0, 1)), \"mark_microblogs_read_on_scroll\" INTEGER NULL CHECK (\"mark_microblogs_read_on_scroll\" IN (0, 1)), \"animation_speed\" REAL NULL, \"inline_replies\" INTEGER NULL CHECK (\"inline_replies\" IN (0, 1)), \"show_cross_post_comments\" INTEGER NULL CHECK (\"show_cross_post_comments\" IN (0, 1)), \"mark_cross_posts_as_read\" INTEGER NULL CHECK (\"mark_cross_posts_as_read\" IN (0, 1)), \"default_image_store\" TEXT NULL, \"default_link_action\" TEXT NULL, \"app_language\" TEXT NULL, \"theme_mode\" TEXT NULL, \"color_scheme\" TEXT NULL, \"enable_true_black\" INTEGER NULL CHECK (\"enable_true_black\" IN (0, 1)), \"compact_mode\" INTEGER NULL CHECK (\"compact_mode\" IN (0, 1)), \"hide_action_buttons\" INTEGER NULL CHECK (\"hide_action_buttons\" IN (0, 1)), \"hide_feed_u_i_on_scroll\" INTEGER NULL CHECK (\"hide_feed_u_i_on_scroll\" IN (0, 1)), \"global_text_scale\" REAL NULL, \"always_show_instance\" INTEGER NULL CHECK (\"always_show_instance\" IN (0, 1)), \"cover_media_marked_sensitive\" INTEGER NULL CHECK (\"cover_media_marked_sensitive\" IN (0, 1)), \"full_image_size_threads\" INTEGER NULL CHECK (\"full_image_size_threads\" IN (0, 1)), \"full_image_size_microblogs\" INTEGER NULL CHECK (\"full_image_size_microblogs\" IN (0, 1)), \"show_posts_cards\" INTEGER NULL CHECK (\"show_posts_cards\" IN (0, 1)), \"post_component_order\" TEXT NULL, \"divider_thickness\" REAL NULL, \"hide_emoji_reactions\" INTEGER NULL CHECK (\"hide_emoji_reactions\" IN (0, 1)), \"feed_view_order\" TEXT NULL, \"feed_source_order\" TEXT NULL, \"feed_sort_order\" TEXT NULL, \"feed_default_threads_sort\" TEXT NULL, \"feed_default_microblog_sort\" TEXT NULL, \"feed_default_combined_sort\" TEXT NULL, \"feed_default_explore_sort\" TEXT NULL, \"feed_default_comment_sort\" TEXT NULL, \"feed_default_hide_read_posts\" INTEGER NULL CHECK (\"feed_default_hide_read_posts\" IN (0, 1)), \"feed_action_back_to_top\" TEXT NULL, \"feed_action_create_new\" TEXT NULL, \"feed_action_expand_fab\" TEXT NULL, \"feed_action_refresh\" TEXT NULL, \"feed_action_set_filter\" TEXT NULL, \"feed_action_set_sort\" TEXT NULL, \"feed_action_set_view\" TEXT NULL, \"feed_action_hide_read_posts\" TEXT NULL, \"enable_swipe_actions\" INTEGER NULL CHECK (\"enable_swipe_actions\" IN (0, 1)), \"swipe_action_left_short\" TEXT NULL, \"swipe_action_left_long\" TEXT NULL, \"swipe_action_right_short\" TEXT NULL, \"swipe_action_right_long\" TEXT NULL, \"swipe_action_threshold\" REAL NULL, \"filter_lists\" TEXT NULL, \"show_errors\" INTEGER NULL CHECK (\"show_errors\" IN (0, 1)), PRIMARY KEY (\"name\"));"
+        }
+      ]
+    },
+    {
+      "name": "stars",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"stars\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT NOT NULL);"
+        }
+      ]
+    },
+    {
+      "name": "misc_cache",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"misc_cache\" (\"id\" INTEGER NOT NULL CHECK(\"id\" = 1), \"main_profile\" TEXT NOT NULL REFERENCES profiles (name) ON DELETE SET DEFAULT, \"selected_profile\" TEXT NOT NULL REFERENCES profiles (name) ON DELETE SET DEFAULT, \"auto_select_profile\" TEXT NULL REFERENCES profiles (name) ON DELETE SET NULL, \"selected_account\" TEXT NOT NULL REFERENCES accounts (handle) ON DELETE SET DEFAULT, \"web_push_keys\" TEXT NULL, \"downloads_dir\" TEXT NULL, \"expand_nav_drawer\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_drawer\" IN (0, 1)), \"expand_nav_stars\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_stars\" IN (0, 1)), \"expand_nav_feeds\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_feeds\" IN (0, 1)), \"expand_nav_subscriptions\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_subscriptions\" IN (0, 1)), \"expand_nav_follows\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_follows\" IN (0, 1)), \"expand_nav_domains\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_domains\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "drafts",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"drafts\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"body\" TEXT NOT NULL, \"resource_id\" TEXT NULL, \"at\" TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP));"
+        }
+      ]
+    },
+    {
+      "name": "tags",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"tags\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"tag\" TEXT NOT NULL UNIQUE, \"background_color\" INTEGER NOT NULL, \"text_color\" INTEGER NOT NULL);"
+        }
+      ]
+    },
+    {
+      "name": "user_tags",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"user_tags\" (\"user\" TEXT NOT NULL, \"tag_id\" INTEGER NOT NULL REFERENCES tags (id) ON DELETE CASCADE, PRIMARY KEY (\"user\", \"tag_id\"));"
+        }
+      ]
+    }
+  ]
+}
