@@ -192,7 +192,7 @@ class _PostCommentState extends State<PostComment> {
         );
       }),
       contentTypeName: l(context).comment,
-      onReply: whenLoggedIn(context, (
+      onReply: widget.comment.isLocked ? null : whenLoggedIn(context, (
         body,
         lang, {
         XFile? image,
@@ -283,7 +283,7 @@ class _PostCommentState extends State<PostComment> {
                 community: widget.comment.community,
               );
             },
-      onModerateLock: !canModerate && ac.serverSoftware != ServerSoftware.piefed
+      onModerateLock: !canModerate || ac.serverSoftware != ServerSoftware.piefed
           ? null
           : () async {
               widget.onUpdate(

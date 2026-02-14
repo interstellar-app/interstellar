@@ -404,6 +404,7 @@
   "pin": "Pin",
   "pinnedInCommunity": "Pinned in Community",
   "lock": "Lock",
+  "locked": "Locked",
   "notSafeForWork_short": "NSFW",
   "notSafeForWork_long": "Not Safe For Work",
   "notSafeForWork_mark": "Mark NSFW",

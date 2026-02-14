@@ -65,7 +65,7 @@ class ContentInfo extends StatelessWidget {
     final locked = !isLocked
         ? null
         : Tooltip(
-            message: l(context).modlog_postLocked,
+            message: l(context).locked,
             triggerMode: TooltipTriggerMode.tap,
             child: const Icon(Symbols.lock_rounded, size: 20),
           );
