@@ -26,7 +26,7 @@ Future<void> initPushNotifications(AppController ac) async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   await flutterLocalNotificationsPlugin.initialize(
-    const InitializationSettings(
+    settings: const InitializationSettings(
       android: AndroidInitializationSettings(
         '@drawable/ic_launcher_monochrome',
       ),
@@ -62,10 +62,10 @@ Future<void> initPushNotifications(AppController ac) async {
       final avatarUrl = data['avatarUrl'] as String?;
 
       await flutterLocalNotificationsPlugin.show(
-        random.nextInt(2 ^ 31 - 1),
-        data['title'],
-        data['message'],
-        NotificationDetails(
+        id: random.nextInt(2 ^ 31 - 1),
+        title: data['title'],
+        body: data['message'],
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             data['category'] as String,
             data['category'] as String,
