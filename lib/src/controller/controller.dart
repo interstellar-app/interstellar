@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/profile.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/init_push_notifications.dart';
 import 'package:interstellar/src/models/post.dart';
@@ -28,6 +30,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 enum HapticsType { light, medium, heavy, selection, vibrate }
 
@@ -510,14 +513,40 @@ class AppController with ChangeNotifier {
           scopes: oauthScopes,
         );
 
-        final result = Uri.parse(
-          await FlutterWebAuth2.authenticate(
-            url: authorizationUrl.toString(),
-            callbackUrlScheme: PlatformIs.linux || PlatformIs.windows
-                ? oauthRedirectUri.toString()
-                : oauthRedirectUri.scheme,
-          ),
-        ).queryParameters;
+        WebViewController? webViewController;
+        if (PlatformIs.android) {
+          webViewController = WebViewController()
+            ..setJavaScriptMode(JavaScriptMode.unrestricted)
+            ..setNavigationDelegate(
+              NavigationDelegate(
+                onNavigationRequest: (request) {
+                  if (request.url.startsWith(oauthRedirectUri.toString())) {
+                    WebViewCookieManager().clearCookies();
+                    context?.router.pop(request.url);
+                    return NavigationDecision.prevent;
+                  }
+                  return NavigationDecision.navigate;
+                },
+              ),
+            )
+            ..loadRequest(authorizationUrl);
+        }
+
+        final res = PlatformIs.android
+            ? await context?.router.push<String>(
+                WebViewRoute(controller: webViewController!),
+              )
+            : await FlutterWebAuth2.authenticate(
+                url: authorizationUrl.toString(),
+                callbackUrlScheme: PlatformIs.linux || PlatformIs.windows
+                    ? oauthRedirectUri.toString()
+                    : oauthRedirectUri.scheme,
+              );
+        if (res == null) {
+          return;
+        }
+
+        final result = Uri.parse(res).queryParameters;
 
         if (!result.containsKey('code')) {
           throw Exception(result['message'] ?? 'unsuccessful login');
