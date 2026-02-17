@@ -93,10 +93,15 @@ class _ImageSelectorState extends State<ImageSelector> {
                   width: double.infinity,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      File(widget.selected!.path),
-                      fit: BoxFit.cover,
-                    ),
+                    child: PlatformIs.web
+                        ? Image.network(
+                            widget.selected!.path,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(widget.selected!.path),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 Padding(
