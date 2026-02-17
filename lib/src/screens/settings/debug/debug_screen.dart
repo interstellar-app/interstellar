@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/utils/sqlite/sqlite.dart'
-    if (dart.library.io) 'package:interstellar/src/utils/sqlite/sqlite_native.dart'
-    if (dart.library.js_interop) 'package:interstellar/src/utils/sqlite/sqlite_web.dart';
+import 'package:interstellar/src/utils/platform/platform.dart'
+    if (dart.library.io) 'package:interstellar/src/utils/platform/platform_native.dart'
+    if (dart.library.js_interop) 'package:interstellar/src/utils/platform/platform_web.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:material_symbols_icons/symbols.dart';

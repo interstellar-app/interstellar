@@ -74,6 +74,7 @@ dependencies:
       url: https://github.com/interstellar-app/flutter_web_auth_2.git
       path: flutter_web_auth_2
       ref: b1af971b79160979320a4865e238dcaacf69b624
+  web: ^1.1.1
 
 # Needed for 16kb page, remove once this pr (https://github.com/google/webcrypto.dart/pull/238) is merged and the next version is released.
 dependency_overrides:
