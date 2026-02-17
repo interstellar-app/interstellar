@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:interstellar/src/utils/platform/platform.dart'
-    if (dart.library.io) 'package:interstellar/src/utils/platform/platform_native.dart'
-    if (dart.library.js_interop) 'package:interstellar/src/utils/platform/platform_web.dart';
+import 'package:interstellar/src/utils/platform/platform.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
