@@ -5,8 +5,6 @@ import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
 
 class MbinAPIMicroblogs {
   MbinAPIMicroblogs(this.client);
@@ -126,8 +124,8 @@ class MbinAPIMicroblogs {
     final multipartFile = http.MultipartFile.fromBytes(
       'uploadImage',
       await image.readAsBytes(),
-      filename: basename(image.path),
-      contentType: MediaType.parse(lookupMimeType(image.path)!),
+      filename: image.name,
+      contentType: MediaType.parse(image.mimeType!),
     );
     request.files.add(multipartFile);
     request.fields['body'] = body;

@@ -8,8 +8,6 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
 
 const Map<FeedSort, String> lemmyFeedSortMap = {
   FeedSort.active: 'Active',
@@ -529,8 +527,8 @@ class APIThreads {
         final multipartFile = http.MultipartFile.fromBytes(
           'uploadImage',
           await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
+          filename: image.name,
+          contentType: MediaType.parse(image.mimeType!),
         );
         request.files.add(multipartFile);
         request.fields['title'] = title;
@@ -556,8 +554,8 @@ class APIThreads {
         final multipartFile = http.MultipartFile.fromBytes(
           'images[]',
           await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
+          filename: image.name,
+          contentType: MediaType.parse(image.mimeType!),
         );
         uploadRequest.files.add(multipartFile);
         final pictrsResponse = await client.sendRequest(uploadRequest);
@@ -596,8 +594,8 @@ class APIThreads {
         final multipartFile = http.MultipartFile.fromBytes(
           'file',
           await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
+          filename: image.name,
+          contentType: MediaType.parse(image.mimeType!),
         );
         uploadRequest.files.add(multipartFile);
 
