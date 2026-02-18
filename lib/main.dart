@@ -56,10 +56,11 @@ void main(List<String> args) async {
   };
 
   if (PlatformIs.android || PlatformIs.linux) {
-    await initPushNotifications(
-      ac,
-      PlatformIs.linux ? args.contains("--unifiedpush-bg") : null,
-    );
+    final isBackground = PlatformIs.linux && args.contains("--unifiedpush-bg");
+
+    await initPushNotifications(ac, isBackground);
+
+    if (isBackground) return;
   }
 
   if (PlatformIs.desktop) {

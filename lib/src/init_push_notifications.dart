@@ -25,10 +25,7 @@ Future<ByteArrayAndroidBitmap> _downloadImageToAndroidBitmap(String url) async {
   return androidBitmap;
 }
 
-Future<void> initPushNotifications(
-  AppController ac, [
-  bool? linuxIsBackground,
-]) async {
+Future<void> initPushNotifications(AppController ac, bool isBackground) async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   await flutterLocalNotificationsPlugin.initialize(
@@ -91,7 +88,7 @@ Future<void> initPushNotifications(
         ? LinuxOptions(
             dbusName: 'one.jwr.interstellar',
             storage: UnifiedPushStorageInterstellar(),
-            background: linuxIsBackground ?? false,
+            background: isBackground,
           )
         : null,
   );
