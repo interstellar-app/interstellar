@@ -77,7 +77,6 @@ dependencies:
   web: ^1.1.1
   unifiedpush_platform_interface: ^4.0.0
   unifiedpush_storage_interface: ^1.0.0
-  unifiedpush_storage_shared_preferences: ^1.0.0
 
 # Needed for 16kb page, remove once this pr (https://github.com/google/webcrypto.dart/pull/238) is merged and the next version is released.
 dependency_overrides:

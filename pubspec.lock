@@ -1475,14 +1475,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  unifiedpush_storage_shared_preferences:
-    dependency: "direct main"
-    description:
-      name: unifiedpush_storage_shared_preferences
-      sha256: eda9c52bac0058f81e0d9c65e33eedc12c5901d2e68ad47fdf68175ddf00a3b4
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   universal_platform:
     dependency: transitive
     description:

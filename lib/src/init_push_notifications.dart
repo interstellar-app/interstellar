@@ -7,16 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/unifiedpush_storage.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
-import 'package:unifiedpush_storage_interface/distributor_storage.dart';
-import 'package:unifiedpush_storage_interface/keys_storage.dart';
-import 'package:unifiedpush_storage_interface/registrations_storage.dart';
-import 'package:unifiedpush_storage_interface/storage.dart';
-import 'package:unifiedpush_storage_shared_preferences/storage.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
 
 Future<ByteArrayAndroidBitmap> _downloadImageToAndroidBitmap(String url) async {
@@ -94,8 +90,7 @@ Future<void> initPushNotifications(
     linuxOptions: PlatformIs.linux
         ? LinuxOptions(
             dbusName: 'one.jwr.interstellar',
-            // storage: UnifiedPushStorageInterstellar(ac),
-            storage: UnifiedPushStorageSharedPreferences(),
+            storage: UnifiedPushStorageInterstellar(),
             background: linuxIsBackground ?? false,
           )
         : null,
@@ -141,116 +136,5 @@ Future<String?> getUnifiedPushDistributor(BuildContext context) async {
     );
 
     return null;
-  }
-}
-
-class UnifiedPushStorageInterstellar extends UnifiedPushStorage {
-  UnifiedPushStorageInterstellar(this._ac);
-
-  final AppController _ac;
-
-  @override
-  FutureOr<void> init() {
-    // Nothing to do
-  }
-
-  @override
-  DistributorStorage get distrib => DistributorStorageInterstellar(_ac);
-
-  @override
-  KeysStorage get keys => KeysStorageInterstellar(_ac);
-
-  @override
-  RegistrationsStorage get registrations =>
-      RegistrationsStorageInterstellar(_ac);
-}
-
-class DistributorStorageInterstellar extends DistributorStorage {
-  DistributorStorageInterstellar(this._ac);
-
-  final AppController _ac;
-
-  @override
-  FutureOr<void> ack() {
-    // TODO: implement ack
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<String?> get() {
-    // TODO: implement get
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<void> remove() {
-    // TODO: implement remove
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<void> set(String distributor) {
-    // TODO: implement set
-    throw UnimplementedError();
-  }
-}
-
-class KeysStorageInterstellar extends KeysStorage {
-  KeysStorageInterstellar(this._ac);
-
-  final AppController _ac;
-
-  @override
-  FutureOr<String?> get(String instance) {
-    // TODO: implement get
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<void> remove(String instance) {
-    // TODO: implement remove
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<void> set(String instance, String serializedKey) {
-    // TODO: implement set
-    throw UnimplementedError();
-  }
-}
-
-class RegistrationsStorageInterstellar extends RegistrationsStorage {
-  RegistrationsStorageInterstellar(this._ac);
-
-  final AppController _ac;
-
-  @override
-  FutureOr<TokenInstance?> getFromInstance(String instance) {
-    // TODO: implement getFromInstance
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<TokenInstance?> getFromToken(String token) {
-    // TODO: implement getFromToken
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<bool> remove(String instance) {
-    // TODO: implement remove
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<void> removeAll() {
-    // TODO: implement removeAll
-    throw UnimplementedError();
-  }
-
-  @override
-  FutureOr<void> save(TokenInstance token) {
-    // TODO: implement save
-    throw UnimplementedError();
   }
 }
