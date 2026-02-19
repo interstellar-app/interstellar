@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:interstellar/src/controller/controller.dart';
@@ -83,6 +84,10 @@ Future<void> initPushNotifications(AppController ac, bool isBackground) async {
           ),
         ),
       );
+      // When running in background close the app after notification is handled.
+      if (isBackground) {
+        SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      }
     },
     linuxOptions: PlatformIs.linux
         ? LinuxOptions(
