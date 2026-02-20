@@ -17,30 +17,11 @@ import 'package:window_manager/window_manager.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  MediaKit.ensureInitialized();
 
   appVersion = (await PackageInfo.fromPlatform()).version;
   appHttpClient = UserAgentHttpClient('Interstellar/$appVersion');
 
   await initDatabase();
-
-  if (PlatformIs.desktop) {
-    await windowManager.ensureInitialized();
-
-    // Get smallest dimensions of available displays and set minimum window
-    // size to be a 16th of those dimensions.
-    final screenSize = PlatformDispatcher.instance.displays
-        .map((display) => display.size)
-        .reduce((a, b) => Size(min(a.width, b.width), min(a.height, b.height)));
-    final minWindowSize = screenSize / 8;
-
-    final windowOptions = WindowOptions(minimumSize: minWindowSize);
-
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
-  }
 
   final ac = AppController();
   await ac.init();
@@ -74,9 +55,33 @@ void main(List<String> args) async {
     return false;
   };
 
-  if (PlatformIs.android) {
-    await initPushNotifications(ac);
+  if (PlatformIs.android || PlatformIs.linux) {
+    final isBackground = args.contains("--unifiedpush-bg");
+
+    await initPushNotifications(ac, isBackground);
+
+    if (isBackground) return;
   }
+
+  if (PlatformIs.desktop) {
+    await windowManager.ensureInitialized();
+
+    // Get smallest dimensions of available displays and set minimum window
+    // size to be a 16th of those dimensions.
+    final screenSize = PlatformDispatcher.instance.displays
+        .map((display) => display.size)
+        .reduce((a, b) => Size(min(a.width, b.width), min(a.height, b.height)));
+    final minWindowSize = screenSize / 8;
+
+    final windowOptions = WindowOptions(minimumSize: minWindowSize);
+
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
+  MediaKit.ensureInitialized();
 
   runApp(
     MultiProvider(

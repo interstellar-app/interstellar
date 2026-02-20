@@ -1336,14 +1336,22 @@ final class Schema3 extends i0.VersionedSchema {
     drafts,
     tags,
     userTags,
+    accountUnifiedpushToken,
   ];
-  late final Shape0 accounts = Shape0(
+  late final Shape13 accounts = Shape13(
     source: i0.VersionedTable(
       entityName: 'accounts',
       withoutRowId: false,
       isStrict: false,
       tableConstraints: ['PRIMARY KEY(handle)'],
-      columns: [_column_0, _column_1, _column_2, _column_3],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_97,
+        _column_98,
+      ],
       attachedDatabase: database,
     ),
     alias: null,
@@ -1414,7 +1422,7 @@ final class Schema3 extends i0.VersionedSchema {
     ),
     alias: null,
   );
-  late final Shape13 profiles = Shape13(
+  late final Shape14 profiles = Shape14(
     source: i0.VersionedTable(
       entityName: 'profiles',
       withoutRowId: false,
@@ -1437,7 +1445,7 @@ final class Schema3 extends i0.VersionedSchema {
         _column_31,
         _column_32,
         _column_33,
-        _column_97,
+        _column_99,
         _column_34,
         _column_35,
         _column_36,
@@ -1495,7 +1503,7 @@ final class Schema3 extends i0.VersionedSchema {
     ),
     alias: null,
   );
-  late final Shape9 miscCache = Shape9(
+  late final Shape15 miscCache = Shape15(
     source: i0.VersionedTable(
       entityName: 'misc_cache',
       withoutRowId: false,
@@ -1515,6 +1523,8 @@ final class Schema3 extends i0.VersionedSchema {
         _column_86,
         _column_87,
         _column_88,
+        _column_100,
+        _column_101,
       ],
       attachedDatabase: database,
     ),
@@ -1553,10 +1563,47 @@ final class Schema3 extends i0.VersionedSchema {
     ),
     alias: null,
   );
+  final i1.Index accountUnifiedpushToken = i1.Index(
+    'account_unifiedpushToken',
+    'CREATE INDEX account_unifiedpushToken ON accounts (unifiedpush_token)',
+  );
 }
 
 class Shape13 extends i0.VersionedTable {
   Shape13({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get handle =>
+      columnsByName['handle']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get oauth =>
+      columnsByName['oauth']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get isPushRegistered =>
+      columnsByName['is_push_registered']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get unifiedpushKey =>
+      columnsByName['unifiedpush_key']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get unifiedpushToken =>
+      columnsByName['unifiedpush_token']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_97(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'unifiedpush_key',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_98(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'unifiedpush_token',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+
+class Shape14 extends i0.VersionedTable {
+  Shape14({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<String> get name =>
       columnsByName['name']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get autoSwitchAccount =>
@@ -1679,13 +1726,67 @@ class Shape13 extends i0.VersionedTable {
       columnsByName['show_errors']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<String> _column_97(String aliasedName) =>
+i1.GeneratedColumn<String> _column_99(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'default_link_action',
       aliasedName,
       true,
       type: i1.DriftSqlType.string,
       $customConstraints: 'NULL',
+    );
+
+class Shape15 extends i0.VersionedTable {
+  Shape15({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get mainProfile =>
+      columnsByName['main_profile']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get selectedProfile =>
+      columnsByName['selected_profile']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get autoSelectProfile =>
+      columnsByName['auto_select_profile']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get selectedAccount =>
+      columnsByName['selected_account']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get webPushKeys =>
+      columnsByName['web_push_keys']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get downloadsDir =>
+      columnsByName['downloads_dir']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get expandNavDrawer =>
+      columnsByName['expand_nav_drawer']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get expandNavStars =>
+      columnsByName['expand_nav_stars']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get expandNavFeeds =>
+      columnsByName['expand_nav_feeds']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get expandNavSubscriptions =>
+      columnsByName['expand_nav_subscriptions']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get expandNavFollows =>
+      columnsByName['expand_nav_follows']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get expandNavDomains =>
+      columnsByName['expand_nav_domains']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get unifiedpushDistributorName =>
+      columnsByName['unifiedpush_distributor_name']!
+          as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get unifiedpushDistributorAck =>
+      columnsByName['unifiedpush_distributor_ack']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_100(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'unifiedpush_distributor_name',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<int> _column_101(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'unifiedpush_distributor_ack',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints:
+          'NOT NULL DEFAULT 0 CHECK (unifiedpush_distributor_ack IN (0, 1))',
+      defaultValue: const i1.CustomExpression('0'),
     );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,

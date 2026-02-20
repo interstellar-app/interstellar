@@ -1,34 +1,30 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as http;
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/unifiedpush_storage.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:unifiedpush/unifiedpush.dart';
+import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 import 'package:webpush_encryption/webpush_encryption.dart';
 
-Future<ByteArrayAndroidBitmap> _downloadImageToAndroidBitmap(String url) async {
-  final res = await http.get(Uri.parse(url));
-
-  final enc = base64.encode(res.bodyBytes);
-
-  final androidBitmap = ByteArrayAndroidBitmap.fromBase64String(enc);
-
-  return androidBitmap;
-}
-
-Future<void> initPushNotifications(AppController ac) async {
+Future<void> initPushNotifications(AppController ac, bool isBackground) async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   await flutterLocalNotificationsPlugin.initialize(
-    settings: const InitializationSettings(
-      android: AndroidInitializationSettings(
+    settings: InitializationSettings(
+      android: const AndroidInitializationSettings(
         '@drawable/ic_launcher_monochrome',
+      ),
+      linux: LinuxInitializationSettings(
+        defaultActionName: 'Open notification',
+        defaultIcon: AssetsLinuxIcon('assets/icons/logo.png'),
       ),
     ),
   );
@@ -58,26 +54,46 @@ Future<void> initPushNotifications(AppController ac) async {
         ),
       );
 
+      ac.logger.d('UnifiedPush message for $instance: ${data['title']}');
+
       final hostDomain = instance.split('@').last;
+
       final avatarUrl = data['avatarUrl'] as String?;
+      final avatarFile = avatarUrl == null
+          ? null
+          : await cacheRemoteFile('https://$hostDomain$avatarUrl');
 
       await flutterLocalNotificationsPlugin.show(
         id: random.nextInt(2 ^ 31 - 1),
         title: data['title'],
         body: data['message'],
         notificationDetails: NotificationDetails(
-          android: AndroidNotificationDetails(
-            data['category'] as String,
-            data['category'] as String,
-            largeIcon: avatarUrl != null
-                ? await _downloadImageToAndroidBitmap(
-                    'https://$hostDomain$avatarUrl',
-                  )
-                : null,
-          ),
+          android: PlatformIs.android
+              ? AndroidNotificationDetails(
+                  data['category'] as String,
+                  data['category'] as String,
+                  largeIcon: avatarFile == null
+                      ? null
+                      : FilePathAndroidBitmap(avatarFile.path),
+                )
+              : null,
+          linux: PlatformIs.linux
+              ? LinuxNotificationDetails(
+                  icon: avatarFile == null
+                      ? null
+                      : FilePathLinuxIcon(avatarFile.path),
+                )
+              : null,
         ),
       );
     },
+    linuxOptions: PlatformIs.linux
+        ? LinuxOptions(
+            dbusName: 'one.jwr.interstellar',
+            storage: UnifiedPushStorageInterstellar(),
+            background: isBackground,
+          )
+        : null,
   );
 }
 

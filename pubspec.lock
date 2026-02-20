@@ -1460,7 +1460,7 @@ packages:
     source: hosted
     version: "1.0.0"
   unifiedpush_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: unifiedpush_platform_interface
       sha256: "83372bc8d794b8b12ef6993b518d7be907dcfc2191bdf6de0ece5c4445d89880"
@@ -1468,7 +1468,7 @@ packages:
     source: hosted
     version: "4.0.0"
   unifiedpush_storage_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: unifiedpush_storage_interface
       sha256: b8d423a4695efc616aa21d8ab48fb5ef99d6288c68b56282b8faac1579ceabd9

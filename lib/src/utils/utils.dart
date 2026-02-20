@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 Color getColorFromHex(String hexColor) {
@@ -311,4 +313,19 @@ class UnreachableError extends Error {
 
   @override
   String toString() => 'Unreachable Error, you should not be seeing this!';
+}
+
+Future<File> cacheRemoteFile(String url) async {
+  final cacheDir = await getApplicationCacheDirectory();
+  final file = File(
+    cacheDir.path + Platform.pathSeparator + url.hashCode.toRadixString(36),
+  );
+
+  if (!file.existsSync()) {
+    final res = await http.get(Uri.parse(url));
+
+    await file.writeAsBytes(res.bodyBytes);
+  }
+
+  return file;
 }
