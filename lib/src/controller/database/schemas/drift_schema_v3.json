@@ -69,6 +69,26 @@
             "default_dart": "const CustomExpression('0')",
             "default_client_dart": null,
             "dsl_features": []
+          },
+          {
+            "name": "unifiedpush_key",
+            "getter_name": "unifiedpushKey",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "unifiedpush_token",
+            "getter_name": "unifiedpushToken",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
           }
         ],
         "is_virtual": false,
@@ -1616,6 +1636,30 @@
             "default_dart": "const CustomExpression('1')",
             "default_client_dart": null,
             "dsl_features": []
+          },
+          {
+            "name": "unifiedpush_distributor_name",
+            "getter_name": "unifiedpushDistributorName",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "unifiedpush_distributor_ack",
+            "getter_name": "unifiedpushDistributorAck",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"unifiedpush_distributor_ack\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"unifiedpush_distributor_ack\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
           }
         ],
         "is_virtual": false,
@@ -1821,6 +1865,25 @@
           "tag_id"
         ]
       }
+    },
+    {
+      "id": 13,
+      "references": [
+        0
+      ],
+      "type": "index",
+      "data": {
+        "on": 0,
+        "name": "account_unifiedpushToken",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "unifiedpush_token",
+            "order_by": null
+          }
+        ]
+      }
     }
   ],
   "fixed_sql": [
@@ -1829,7 +1892,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"accounts\" (\"handle\" TEXT NOT NULL, \"oauth\" TEXT NULL, \"jwt\" TEXT NULL, \"is_push_registered\" INTEGER NOT NULL DEFAULT 0 CHECK (\"is_push_registered\" IN (0, 1)), PRIMARY KEY (\"handle\"));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"accounts\" (\"handle\" TEXT NOT NULL, \"oauth\" TEXT NULL, \"jwt\" TEXT NULL, \"is_push_registered\" INTEGER NOT NULL DEFAULT 0 CHECK (\"is_push_registered\" IN (0, 1)), \"unifiedpush_key\" TEXT NULL, \"unifiedpush_token\" TEXT NULL, PRIMARY KEY (\"handle\"));"
         }
       ]
     },
@@ -1910,7 +1973,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"misc_cache\" (\"id\" INTEGER NOT NULL CHECK(\"id\" = 1), \"main_profile\" TEXT NOT NULL REFERENCES profiles (name) ON DELETE SET DEFAULT, \"selected_profile\" TEXT NOT NULL REFERENCES profiles (name) ON DELETE SET DEFAULT, \"auto_select_profile\" TEXT NULL REFERENCES profiles (name) ON DELETE SET NULL, \"selected_account\" TEXT NOT NULL REFERENCES accounts (handle) ON DELETE SET DEFAULT, \"web_push_keys\" TEXT NULL, \"downloads_dir\" TEXT NULL, \"expand_nav_drawer\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_drawer\" IN (0, 1)), \"expand_nav_stars\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_stars\" IN (0, 1)), \"expand_nav_feeds\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_feeds\" IN (0, 1)), \"expand_nav_subscriptions\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_subscriptions\" IN (0, 1)), \"expand_nav_follows\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_follows\" IN (0, 1)), \"expand_nav_domains\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_domains\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"misc_cache\" (\"id\" INTEGER NOT NULL CHECK(\"id\" = 1), \"main_profile\" TEXT NOT NULL REFERENCES profiles (name) ON DELETE SET DEFAULT, \"selected_profile\" TEXT NOT NULL REFERENCES profiles (name) ON DELETE SET DEFAULT, \"auto_select_profile\" TEXT NULL REFERENCES profiles (name) ON DELETE SET NULL, \"selected_account\" TEXT NOT NULL REFERENCES accounts (handle) ON DELETE SET DEFAULT, \"web_push_keys\" TEXT NULL, \"downloads_dir\" TEXT NULL, \"expand_nav_drawer\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_drawer\" IN (0, 1)), \"expand_nav_stars\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_stars\" IN (0, 1)), \"expand_nav_feeds\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_feeds\" IN (0, 1)), \"expand_nav_subscriptions\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_subscriptions\" IN (0, 1)), \"expand_nav_follows\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_follows\" IN (0, 1)), \"expand_nav_domains\" INTEGER NOT NULL DEFAULT 1 CHECK (\"expand_nav_domains\" IN (0, 1)), \"unifiedpush_distributor_name\" TEXT NULL, \"unifiedpush_distributor_ack\" INTEGER NOT NULL DEFAULT 0 CHECK (\"unifiedpush_distributor_ack\" IN (0, 1)), PRIMARY KEY (\"id\"));"
         }
       ]
     },
@@ -1938,6 +2001,15 @@
         {
           "dialect": "sqlite",
           "sql": "CREATE TABLE IF NOT EXISTS \"user_tags\" (\"user\" TEXT NOT NULL, \"tag_id\" INTEGER NOT NULL REFERENCES tags (id) ON DELETE CASCADE, PRIMARY KEY (\"user\", \"tag_id\"));"
+        }
+      ]
+    },
+    {
+      "name": "account_unifiedpushToken",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX account_unifiedpushToken ON accounts (unifiedpush_token)"
         }
       ]
     }

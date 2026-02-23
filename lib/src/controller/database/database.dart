@@ -55,6 +55,7 @@ class CredentialsConverter extends TypeConverter<Credentials, String>
   }
 }
 
+@TableIndex(name: 'account_unifiedpushToken', columns: {#unifiedpushToken})
 class Accounts extends Table {
   TextColumn get handle =>
       text().withLength(min: 1).clientDefault(() => '@kbin.earth')();
@@ -62,6 +63,8 @@ class Accounts extends Table {
   TextColumn get jwt => text().nullable()();
   BoolColumn get isPushRegistered =>
       boolean().withDefault(const Constant(false))();
+  TextColumn get unifiedpushKey => text().nullable()();
+  TextColumn get unifiedpushToken => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {handle};
@@ -375,6 +378,9 @@ class MiscCache extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get expandNavDomains =>
       boolean().withDefault(const Constant(true))();
+  TextColumn get unifiedpushDistributorName => text().nullable()();
+  BoolColumn get unifiedpushDistributorAck =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -466,6 +472,17 @@ class InterstellarDatabase extends _$InterstellarDatabase {
         },
         from2To3: (m, schema) async {
           await m.addColumn(schema.profiles, schema.profiles.defaultLinkAction);
+          await m.addColumn(schema.accounts, schema.accounts.unifiedpushKey);
+          await m.addColumn(schema.accounts, schema.accounts.unifiedpushToken);
+          await m.create(schema.accountUnifiedpushToken);
+          await m.addColumn(
+            schema.miscCache,
+            schema.miscCache.unifiedpushDistributorName,
+          );
+          await m.addColumn(
+            schema.miscCache,
+            schema.miscCache.unifiedpushDistributorAck,
+          );
         },
       ),
     );
