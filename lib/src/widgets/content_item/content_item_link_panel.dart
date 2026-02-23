@@ -15,7 +15,6 @@ class _LinkAltSource {
 
 const _linkAltSources = [
   _LinkAltSource(name: '12ft.io', urlPrefix: 'https://12ft.io/proxy?q='),
-  _LinkAltSource(name: 'Archive Today', urlPrefix: 'https://archive.ph/'),
   _LinkAltSource(
     name: 'Ghost Archive',
     urlPrefix: 'https://ghostarchive.org/search?term=',
