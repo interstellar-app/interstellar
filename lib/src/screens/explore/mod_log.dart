@@ -174,19 +174,27 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.ban =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.unban =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.moderatorAdded =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.moderatorRemoved =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.communityAdded => () => context.router.push(
       CommunityRoute(communityId: item.community.id),
     ),

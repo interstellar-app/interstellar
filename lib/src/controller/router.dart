@@ -23,9 +23,12 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: PostCommentRoute.page, path: 'comment/:id'),
         AutoRoute(page: ContentReplyRoute.page, path: 'reply'),
 
-        AutoRoute(page: UserRoute.page, path: 'user/:userId'),
-        AutoRoute(page: ModLogUserRoute.page, path: 'user/:userId/modlog'),
-        AutoRoute(page: MessageThreadRoute.page, path: 'user/:userId/message'),
+        AutoRoute(page: UserRoute.page, path: 'user/:username'),
+        AutoRoute(page: ModLogUserRoute.page, path: 'user/:username/modlog'),
+        AutoRoute(
+          page: MessageThreadRoute.page,
+          path: 'user/:username/message',
+        ),
 
         AutoRoute(page: CommunityRoute.page, path: 'community/:communityId'),
         AutoRoute(

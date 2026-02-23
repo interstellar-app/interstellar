@@ -193,7 +193,11 @@ class _NavDrawerState extends State<NavDrawer> {
                       if (!context.mounted) return;
 
                       context.router.push(
-                        UserRoute(userId: user.id, initData: user),
+                        UserRoute(
+                          username: user.name,
+                          userId: user.id,
+                          initData: user,
+                        ),
                       );
 
                     case '!':
@@ -371,6 +375,7 @@ class _NavDrawerState extends State<NavDrawer> {
                           ),
                           onTap: () => context.router.push(
                             UserRoute(
+                              username: user.name,
                               userId: user.id,
                               initData: user,
                               onUpdate: (newValue) => setState(() {

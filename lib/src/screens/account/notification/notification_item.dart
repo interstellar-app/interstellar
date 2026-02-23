@@ -193,7 +193,10 @@ class _NotificationItemState extends State<NotificationItem> {
                               widget.item.creator!.name,
                               icon: widget.item.creator!.avatar,
                               onTap: () => context.router.push(
-                                UserRoute(userId: widget.item.creator!.id),
+                                UserRoute(
+                                  username: widget.item.creator!.name,
+                                  userId: widget.item.creator!.id,
+                                ),
                               ),
                             ),
                           ),

@@ -114,7 +114,12 @@ class ExploreScreenItem extends StatelessWidget {
           CommunityRoute(communityId: i.id, initData: i, onUpdate: onUpdate),
         ),
         final DetailedUserModel i => () => context.router.push(
-          UserRoute(userId: i.id, initData: i, onUpdate: onUpdate),
+          UserRoute(
+            username: i.name,
+            userId: i.id,
+            initData: i,
+            onUpdate: onUpdate,
+          ),
         ),
         final DomainModel i => () => context.router.push(
           DomainRoute(domainId: i.id, initData: i, onUpdate: onUpdate),

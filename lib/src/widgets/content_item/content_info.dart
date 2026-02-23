@@ -148,8 +148,9 @@ class ContentInfo extends StatelessWidget {
                     user!.name,
                     displayName: user!.displayName,
                     icon: user!.avatar,
-                    onTap: () =>
-                        context.router.push(UserRoute(userId: user!.id)),
+                    onTap: () => context.router.push(
+                      UserRoute(username: user!.name, userId: user!.id),
+                    ),
                   ),
                 ),
                 UserStatusIcons(cakeDay: user!.createdAt, isBot: user!.isBot),

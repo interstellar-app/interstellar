@@ -66,6 +66,6 @@ class _SelfFeedState extends State<SelfFeed>
 
     final user = _meUser!;
 
-    return UserScreen(user.id, initData: _meUser);
+    return UserScreen(username: user.name, userId: user.id, initData: _meUser);
   }
 }

@@ -89,8 +89,9 @@ Future<void> showUserMenu(
       if (navigateOption)
         ContextMenuItem(
           title: l(context).openItem(user.name),
-          onTap: () =>
-              context.router.push(UserRoute(userId: user.id, initData: user)),
+          onTap: () => context.router.push(
+            UserRoute(username: user.name, userId: user.id, initData: user),
+          ),
         ),
       ContextMenuItem(
         title: l(context).feeds_addTo,

@@ -177,8 +177,9 @@ class MentionWidgetState extends State<MentionWidget> {
 
         setState(() {
           _icon = user.avatar;
-          _onClick = () =>
-              context.router.push(UserRoute(userId: user.id, initData: user));
+          _onClick = () => context.router.push(
+            UserRoute(username: user.name, userId: user.id, initData: user),
+          );
         });
       } else if (modifier == '!') {
         if (!communityMentionCache.containsKey(cacheKey)) {
