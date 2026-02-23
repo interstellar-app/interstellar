@@ -22,14 +22,16 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityScreen extends StatefulWidget {
-  const CommunityScreen(
-    @PathParam('communityId') this.communityId, {
+  const CommunityScreen({
+    @PathParam('communityName') required this.communityName,
+    this.communityId,
     super.key,
     this.initData,
     this.onUpdate,
   });
 
-  final int communityId;
+  final String communityName;
+  final int? communityId;
   final DetailedCommunityModel? initData;
   final void Function(DetailedCommunityModel)? onUpdate;
 
@@ -47,14 +49,19 @@ class _CommunityScreenState extends State<CommunityScreen> {
     _data = widget.initData;
 
     if (_data == null) {
-      context.read<AppController>().api.community.get(widget.communityId).then((
-        value,
-      ) {
-        if (!mounted) return;
-        setState(() {
-          _data = value;
-        });
-      });
+      (widget.communityId == null
+              ? context.read<AppController>().api.community.getByName(
+                  widget.communityName,
+                )
+              : context.read<AppController>().api.community.get(
+                  widget.communityId!,
+                ))
+          .then((value) {
+            if (!mounted) return;
+            setState(() {
+              _data = value;
+            });
+          });
     }
   }
 

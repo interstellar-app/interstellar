@@ -211,6 +211,7 @@ class _NotificationItemState extends State<NotificationItem> {
                                 icon: bannedCommunity.icon,
                                 onTap: () => context.router.push(
                                   CommunityRoute(
+                                    communityName: bannedCommunity.name,
                                     communityId: bannedCommunity.id,
                                   ),
                                 ),

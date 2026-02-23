@@ -198,7 +198,11 @@ class MentionWidgetState extends State<MentionWidget> {
         setState(() {
           _icon = community.icon;
           _onClick = () => context.router.push(
-            CommunityRoute(communityId: community.id, initData: community),
+            CommunityRoute(
+              communityName: community.name,
+              communityId: community.id,
+              initData: community,
+            ),
           );
         });
       }

@@ -207,6 +207,7 @@ class _NavDrawerState extends State<NavDrawer> {
 
                       context.router.push(
                         CommunityRoute(
+                          communityName: community.name,
                           communityId: community.id,
                           initData: community,
                         ),
@@ -303,6 +304,7 @@ class _NavDrawerState extends State<NavDrawer> {
                           ),
                           onTap: () => context.router.push(
                             CommunityRoute(
+                              communityName: community.name,
                               communityId: community.id,
                               initData: community,
                               onUpdate: (newValue) => setState(() {

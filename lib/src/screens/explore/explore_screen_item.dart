@@ -111,7 +111,12 @@ class ExploreScreenItem extends StatelessWidget {
       };
       final navigate = switch (item) {
         final DetailedCommunityModel i => () => context.router.push(
-          CommunityRoute(communityId: i.id, initData: i, onUpdate: onUpdate),
+          CommunityRoute(
+            communityName: i.name,
+            communityId: i.id,
+            initData: i,
+            onUpdate: onUpdate,
+          ),
         ),
         final DetailedUserModel i => () => context.router.push(
           UserRoute(

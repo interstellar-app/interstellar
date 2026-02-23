@@ -180,7 +180,10 @@ class ContentInfo extends StatelessWidget {
               community!.name,
               icon: community!.icon,
               onTap: () => context.router.push(
-                CommunityRoute(communityId: community!.id),
+                CommunityRoute(
+                  communityName: community!.name,
+                  communityId: community!.id,
+                ),
               ),
             ),
           );

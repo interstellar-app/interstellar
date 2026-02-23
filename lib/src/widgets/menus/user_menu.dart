@@ -127,7 +127,9 @@ Future<void> showUserMenu(
       if (ac.serverSoftware == ServerSoftware.lemmy)
         ContextMenuItem(
           title: l(context).modlog,
-          onTap: () => context.router.push(ModLogUserRoute(userId: user.id)),
+          onTap: () => context.router.push(
+            ModLogUserRoute(username: user.name, userId: user.id),
+          ),
         ),
     ],
   ).openMenu(context);

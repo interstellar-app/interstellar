@@ -601,6 +601,7 @@ class _CreateScreenState extends State<CreateScreen> {
                 context.router.pop();
                 context.router.push(
                   CommunityRoute(
+                    communityName: newCommunity.name,
                     communityId: newCommunity.id,
                     initData: newCommunity,
                   ),

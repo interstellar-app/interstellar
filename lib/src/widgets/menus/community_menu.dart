@@ -91,6 +91,7 @@ Future<void> showCommunityMenu(
           title: l(context).openItem(name),
           onTap: () => context.router.push(
             CommunityRoute(
+              communityName: detailedCommunity?.name ?? community!.name,
               communityId: detailedCommunity?.id ?? community!.id,
               initData: detailedCommunity,
             ),
@@ -166,6 +167,7 @@ Future<void> showCommunityMenu(
           title: l(context).modlog,
           onTap: () => context.router.push(
             ModLogCommunityRoute(
+              communityName: detailedCommunity?.name ?? community!.name,
               communityId: detailedCommunity?.id ?? community!.id,
             ),
           ),

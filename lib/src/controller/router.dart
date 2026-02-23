@@ -30,18 +30,18 @@ class AppRouter extends RootStackRouter {
           path: 'user/:username/message',
         ),
 
-        AutoRoute(page: CommunityRoute.page, path: 'community/:communityId'),
+        AutoRoute(page: CommunityRoute.page, path: 'community/:communityName'),
         AutoRoute(
           page: ModLogCommunityRoute.page,
-          path: 'community/:communityId/modlog',
+          path: 'community/:communityName/modlog',
         ),
         AutoRoute(
           page: CommunityModPanelRoute.page,
-          path: 'community/:communityId/mod',
+          path: 'community/:communityName/mod',
         ),
         AutoRoute(
           page: CommunityOwnerPanelRoute.page,
-          path: 'community/:communityId/owner',
+          path: 'community/:communityName/owner',
         ),
 
         AutoRoute(page: ModLogRoute.page, path: 'modlog'),
