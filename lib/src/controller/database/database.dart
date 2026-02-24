@@ -30,6 +30,15 @@ import 'package:sembast/sembast_io.dart';
 
 part 'database.g.dart';
 
+final ServerSoftware defaultSoftware = ServerSoftware.values.byName(
+  const String.fromEnvironment('defaultSoftware', defaultValue: 'mbin'),
+);
+const defaultInstance = String.fromEnvironment(
+  'defaultInstance',
+  defaultValue: 'kbin.earth',
+);
+const defaultAccount = '@$defaultInstance';
+
 class CredentialsConverter extends TypeConverter<Credentials, String>
     with JsonTypeConverter2<Credentials, String, String> {
   const CredentialsConverter();
@@ -58,7 +67,7 @@ class CredentialsConverter extends TypeConverter<Credentials, String>
 @TableIndex(name: 'account_unifiedpushToken', columns: {#unifiedpushToken})
 class Accounts extends Table {
   TextColumn get handle =>
-      text().withLength(min: 1).clientDefault(() => '@kbin.earth')();
+      text().withLength(min: 1).clientDefault(() => defaultAccount)();
   TextColumn get oauth => text().map(const CredentialsConverter()).nullable()();
   TextColumn get jwt => text().nullable()();
   BoolColumn get isPushRegistered =>
@@ -363,7 +372,7 @@ class MiscCache extends Table {
   )();
   TextColumn get selectedAccount => text()
       .references(Accounts, #handle, onDelete: KeyAction.setDefault)
-      .clientDefault(() => '@kbin.earth')();
+      .clientDefault(() => defaultAccount)();
   TextColumn get webPushKeys => text().nullable()();
   TextColumn get downloadsDir => text().nullable()();
   BoolColumn get expandNavDrawer =>

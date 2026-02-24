@@ -236,10 +236,10 @@ class AppController with ChangeNotifier {
     );
 
     if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
-      await saveServer(ServerSoftware.mbin, 'kbin.earth');
+      await saveServer(defaultSoftware, defaultInstance);
       await setAccount(
-        '@kbin.earth',
-        const Account(handle: '@kbin.earth', isPushRegistered: false),
+        defaultAccount,
+        const Account(handle: defaultAccount, isPushRegistered: false),
         switchNow: true,
       );
     }
@@ -607,7 +607,7 @@ class AppController with ChangeNotifier {
     _rebuildProfile();
 
     _accounts.remove(key);
-    _selectedAccount = _accounts.keys.firstOrNull ?? '@kbin.earth';
+    _selectedAccount = _accounts.keys.firstOrNull ?? defaultAccount;
 
     // If there are no accounts left from a server, then remove the server's data
     final keyAccountServer = key.split('@').last;
@@ -634,10 +634,10 @@ class AppController with ChangeNotifier {
 
     // Ensure default guest account remains
     if (_servers.isEmpty || _accounts.isEmpty || _selectedAccount.isEmpty) {
-      await saveServer(ServerSoftware.mbin, 'kbin.earth');
+      await saveServer(defaultSoftware, defaultInstance);
       await setAccount(
-        '@kbin.earth',
-        const Account(handle: '@kbin.earth', isPushRegistered: false),
+        defaultAccount,
+        const Account(handle: defaultAccount, isPushRegistered: false),
         switchNow: true,
       );
     }
