@@ -299,23 +299,22 @@ class APIComments {
           final path =
               '/${_postTypeMbin[postType]}/$postId/comments${parentCommentId != null ? '/$parentCommentId/reply' : ''}/image';
 
-          final request = http.MultipartRequest(
-            'POST',
-            Uri.https(client.domain, client.software.apiPathPrefix + path),
+          final response = await client.postMultipart(
+            path,
+            builder: (request) async {
+              final file = http.MultipartFile.fromBytes(
+                'uploadImage',
+                await image.readAsBytes(),
+                filename: basename(image.path),
+                contentType: MediaType.parse(lookupMimeType(image.path)!),
+              );
+              request.files.add(file);
+              request.fields['body'] = body;
+              request.fields['lang'] = lang;
+              request.fields['isAdult'] = isAdult.toString();
+              request.fields['alt'] = alt ?? '';
+            },
           );
-          final file = http.MultipartFile.fromBytes(
-            'uploadImage',
-            await image.readAsBytes(),
-            filename: basename(image.path),
-            contentType: MediaType.parse(lookupMimeType(image.path)!),
-          );
-          request.files.add(file);
-          request.fields['body'] = body;
-          request.fields['lang'] = lang;
-          request.fields['isAdult'] = isAdult.toString();
-          request.fields['alt'] = alt ?? '';
-
-          final response = await client.sendRequest(request);
 
           return CommentModel.fromMbin(response.bodyJson);
         }

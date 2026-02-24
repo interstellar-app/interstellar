@@ -270,36 +270,36 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/avatar';
 
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, client.software.apiPathPrefix + path),
+        final response = await client.postMultipart(
+          path,
+          builder: (request) async {
+            final multipartFile = http.MultipartFile.fromBytes(
+              'uploadImage',
+              await image.readAsBytes(),
+              filename: basename(image.path),
+              contentType: MediaType.parse(lookupMimeType(image.path)!),
+            );
+            request.files.add(multipartFile);
+          },
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'uploadImage',
-          await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
-        );
-        request.files.add(multipartFile);
-        final response = await client.sendRequest(request);
 
         return DetailedUserModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        final uploadRequest = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, pictrsPath),
+        final pictrsResponse = await client.postMultipart(
+          pictrsPath,
+          builder: (request) async {
+            final multipartFile = http.MultipartFile.fromBytes(
+              'images[]',
+              await image.readAsBytes(),
+              filename: basename(image.path),
+              contentType: MediaType.parse(lookupMimeType(image.path)!),
+            );
+            request.files.add(multipartFile);
+          },
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'images[]',
-          await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
-        );
-        uploadRequest.files.add(multipartFile);
-        final pictrsResponse = await client.sendRequest(uploadRequest);
 
         final imageName =
             ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
@@ -318,18 +318,18 @@ class APIUsers {
       case ServerSoftware.piefed:
         const uploadPath = '/upload/user_image';
 
-        final uploadRequest = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
+        final uploadResponse = await client.postMultipart(
+          uploadPath,
+          builder: (request) async {
+            final multipartFile = http.MultipartFile.fromBytes(
+              'file',
+              await image.readAsBytes(),
+              filename: basename(image.path),
+              contentType: MediaType.parse(lookupMimeType(image.path)!),
+            );
+            request.files.add(multipartFile);
+          },
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'file',
-          await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
-        );
-        uploadRequest.files.add(multipartFile);
-        final uploadResponse = await client.sendRequest(uploadRequest);
 
         final imageUrl = uploadResponse.bodyJson['url'] as String?;
 
@@ -370,36 +370,36 @@ class APIUsers {
       case ServerSoftware.mbin:
         const path = '/users/cover';
 
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, client.software.apiPathPrefix + path),
+        final response = await client.postMultipart(
+          path,
+          builder: (request) async {
+            final multipartFile = http.MultipartFile.fromBytes(
+              'uploadImage',
+              await image.readAsBytes(),
+              filename: basename(image.path),
+              contentType: MediaType.parse(lookupMimeType(image.path)!),
+            );
+            request.files.add(multipartFile);
+          },
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'uploadImage',
-          await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
-        );
-        request.files.add(multipartFile);
-        final response = await client.sendRequest(request);
 
         return DetailedUserModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
         const pictrsPath = '/pictrs/image';
 
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, pictrsPath),
+        final pictrsResponse = await client.postMultipart(
+          pictrsPath,
+          builder: (request) async {
+            final multipartFile = http.MultipartFile.fromBytes(
+              'images[]',
+              await image.readAsBytes(),
+              filename: basename(image.path),
+              contentType: MediaType.parse(lookupMimeType(image.path)!),
+            );
+            request.files.add(multipartFile);
+          },
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'images[]',
-          await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
-        );
-        request.files.add(multipartFile);
-        final pictrsResponse = await client.sendRequest(request);
 
         final imageName =
             ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
@@ -418,18 +418,18 @@ class APIUsers {
       case ServerSoftware.piefed:
         const uploadPath = '/upload/user_image';
 
-        final uploadRequest = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
+        final uploadResponse = await client.postMultipart(
+          uploadPath,
+          builder: (request) async {
+            final multipartFile = http.MultipartFile.fromBytes(
+              'file',
+              await image.readAsBytes(),
+              filename: basename(image.path),
+              contentType: MediaType.parse(lookupMimeType(image.path)!),
+            );
+            request.files.add(multipartFile);
+          },
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'file',
-          await image.readAsBytes(),
-          filename: basename(image.path),
-          contentType: MediaType.parse(lookupMimeType(image.path)!),
-        );
-        uploadRequest.files.add(multipartFile);
-        final uploadResponse = await client.sendRequest(uploadRequest);
 
         final imageUrl = uploadResponse.bodyJson['url'] as String?;
 
