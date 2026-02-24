@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.dart';
-import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/screens/account/notification/notification_count_controller.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -47,13 +45,7 @@ class App extends StatelessWidget {
               textScaler: TextScaler.linear(ac.profile.globalTextScale),
             ),
             child: MaterialApp.router(
-              routerConfig: router.config(
-                deepLinkBuilder: (deepLink) {
-                  return DeepLink([
-                    AppInstanceRoute(instance: ac.instanceHost),
-                  ]);
-                },
-              ),
+              routerConfig: router.config(),
               restorationScopeId: 'app',
               localizationsDelegates: const [
                 ...AppLocalizations.localizationsDelegates,

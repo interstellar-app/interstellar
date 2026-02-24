@@ -18,10 +18,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: FeedRoute.page, path: 'feed'),
         AutoRoute(page: ExploreRoute.page, path: 'explore'),
 
-        AutoRoute(
-          page: ThreadRoute.page,
-          path: 'c/:communityName/thread/:id',
-        ),
+        AutoRoute(page: ThreadRoute.page, path: 'c/:communityName/thread/:id'),
         AutoRoute(
           page: MicroblogRoute.page,
           path: 'c/:communityName/microblog/:id',
@@ -31,10 +28,7 @@ class AppRouter extends RootStackRouter {
 
         AutoRoute(page: UserRoute.page, path: 'u/:username'),
         AutoRoute(page: ModLogUserRoute.page, path: 'u/:username/modlog'),
-        AutoRoute(
-          page: MessageThreadRoute.page,
-          path: 'u/:username/message',
-        ),
+        AutoRoute(page: MessageThreadRoute.page, path: 'u/:username/message'),
 
         AutoRoute(page: CommunityRoute.page, path: 'c/:communityName'),
         AutoRoute(
@@ -64,6 +58,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: EditFeedRoute.page, path: 'feed/:feed/edit'),
       ],
     ),
+    RedirectRoute(path: '/', redirectTo: '/$defaultInstance'),
 
     //settings
     AutoRoute(page: BehaviorSettingsRoute.page, path: '/settings/behavior'),

@@ -69,6 +69,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
 
+    if (_data == null) return Container();
+
     final globalName = _data == null
         ? null
         : _data!.name.contains('@')
@@ -79,7 +81,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       feed: FeedAggregator.fromSingleSource(
         name: _data?.name ?? '',
         source: FeedSource.community,
-        sourceId: widget.communityId,
+        sourceId: _data?.id,
       ),
       createPostCommunity: _data,
       details: _data == null
