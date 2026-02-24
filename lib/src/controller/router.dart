@@ -20,34 +20,34 @@ class AppRouter extends RootStackRouter {
 
         AutoRoute(
           page: ThreadRoute.page,
-          path: 'community/:communityName/thread/:id',
+          path: 'c/:communityName/thread/:id',
         ),
         AutoRoute(
           page: MicroblogRoute.page,
-          path: 'community/:communityName/microblog/:id',
+          path: 'c/:communityName/microblog/:id',
         ),
         AutoRoute(page: PostCommentRoute.page, path: 'comment/:id'),
         AutoRoute(page: ContentReplyRoute.page, path: 'reply'),
 
-        AutoRoute(page: UserRoute.page, path: 'user/:username'),
-        AutoRoute(page: ModLogUserRoute.page, path: 'user/:username/modlog'),
+        AutoRoute(page: UserRoute.page, path: 'u/:username'),
+        AutoRoute(page: ModLogUserRoute.page, path: 'u/:username/modlog'),
         AutoRoute(
           page: MessageThreadRoute.page,
-          path: 'user/:username/message',
+          path: 'u/:username/message',
         ),
 
-        AutoRoute(page: CommunityRoute.page, path: 'community/:communityName'),
+        AutoRoute(page: CommunityRoute.page, path: 'c/:communityName'),
         AutoRoute(
           page: ModLogCommunityRoute.page,
-          path: 'community/:communityName/modlog',
+          path: 'c/:communityName/modlog',
         ),
         AutoRoute(
           page: CommunityModPanelRoute.page,
-          path: 'community/:communityName/mod',
+          path: 'c/:communityName/mod',
         ),
         AutoRoute(
           page: CommunityOwnerPanelRoute.page,
-          path: 'community/:communityName/owner',
+          path: 'c/:communityName/owner',
         ),
 
         AutoRoute(page: ModLogRoute.page, path: 'modlog'),
