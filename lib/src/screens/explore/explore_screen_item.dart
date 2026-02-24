@@ -205,6 +205,7 @@ class ExploreScreenItem extends StatelessWidget {
         child: InkWell(
           onTap: () => pushPostPage(
             context,
+            communityName: item.community.name,
             postId: item.id,
             postType: item.type,
             initData: item,

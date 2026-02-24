@@ -628,6 +628,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
             (newValue) => _pagingController.updateItem(item, newValue),
             onTap: () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.id,
               postType: item.type,
               initData: item,

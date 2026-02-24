@@ -226,6 +226,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
             if (item.subjectPost != null) {
               pushPostPage(
                 context,
+                communityName: item.subjectPost!.community.name,
                 postId: item.subjectPost!.id,
                 postType: item.subjectPost!.type,
                 initData: item.subjectPost,

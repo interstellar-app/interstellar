@@ -850,6 +850,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                   void onPostTap() {
                     pushPostPage(
                       context,
+                      communityName: item.community.name,
                       initData: item,
                       userCanModerate: widget.userCanModerate,
                       onUpdate: (newValue) =>
