@@ -10,45 +10,55 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: AppHome.page, path: '/'),
-    AutoRoute(page: FeedRoute.page, path: '/feed'),
-    AutoRoute(page: ExploreRoute.page, path: '/explore'),
-
-    AutoRoute(page: ThreadRoute.page, path: '/thread/:id'),
-    AutoRoute(page: MicroblogRoute.page, path: '/microblog/:id'),
-    AutoRoute(page: PostCommentRoute.page, path: '/comment/:id'),
-    AutoRoute(page: ContentReplyRoute.page, path: '/reply'),
-
-    AutoRoute(page: UserRoute.page, path: '/user/:userId'),
-    AutoRoute(page: ModLogUserRoute.page, path: '/user/:userId/modlog'),
-    AutoRoute(page: MessageThreadRoute.page, path: '/user/:userId/message'),
-
-    AutoRoute(page: CommunityRoute.page, path: '/community/:communityId'),
     AutoRoute(
-      page: ModLogCommunityRoute.page,
-      path: '/community/:communityId/modlog',
-    ),
-    AutoRoute(
-      page: CommunityModPanelRoute.page,
-      path: '/community/:communityId/mod',
-    ),
-    AutoRoute(
-      page: CommunityOwnerPanelRoute.page,
-      path: '/community/:communityId/owner',
-    ),
+      page: AppInstanceRoute.page,
+      path: '/:instance',
+      children: [
+        AutoRoute(page: AppHome.page, path: ''),
+        AutoRoute(page: FeedRoute.page, path: 'feed'),
+        AutoRoute(page: ExploreRoute.page, path: 'explore'),
 
-    AutoRoute(page: ModLogRoute.page, path: '/modlog'),
-    AutoRoute(page: DomainRoute.page, path: '/domain'),
-    AutoRoute(page: CreateRoute.page, path: '/create'),
-    AutoRoute(page: AdvancedImageRoute.page, path: '/image'),
-    AutoRoute(page: TagUsersRoute.page, path: '/tags/:tag'),
-    AutoRoute(page: TagEditorRoute.page, path: '/tags-editor/:tag'),
-    AutoRoute(page: BookmarkListRoute.page, path: '/bookmarks'),
-    AutoRoute(page: BookmarksRoute.page, path: '/bookmarks/:bookmarkList'),
-    AutoRoute(page: ProfileEditRoute.page, path: '/account/edit'),
-    AutoRoute(page: EditProfileRoute.page, path: '/profile/edit'),
-    AutoRoute(page: EditFilterListRoute.page, path: '/filter/:filterList'),
-    AutoRoute(page: EditFeedRoute.page, path: '/feed/:feed/edit'),
+        AutoRoute(page: ThreadRoute.page, path: 'c/:communityName/thread/:id'),
+        AutoRoute(
+          page: MicroblogRoute.page,
+          path: 'c/:communityName/microblog/:id',
+        ),
+        AutoRoute(page: PostCommentRoute.page, path: 'comment/:id'),
+        AutoRoute(page: ContentReplyRoute.page, path: 'reply'),
+
+        AutoRoute(page: UserRoute.page, path: 'u/:username'),
+        AutoRoute(page: ModLogUserRoute.page, path: 'u/:username/modlog'),
+        AutoRoute(page: MessageThreadRoute.page, path: 'u/:username/message'),
+
+        AutoRoute(page: CommunityRoute.page, path: 'c/:communityName'),
+        AutoRoute(
+          page: ModLogCommunityRoute.page,
+          path: 'c/:communityName/modlog',
+        ),
+        AutoRoute(
+          page: CommunityModPanelRoute.page,
+          path: 'c/:communityName/mod',
+        ),
+        AutoRoute(
+          page: CommunityOwnerPanelRoute.page,
+          path: 'c/:communityName/owner',
+        ),
+
+        AutoRoute(page: ModLogRoute.page, path: 'modlog'),
+        AutoRoute(page: DomainRoute.page, path: 'domain'),
+        AutoRoute(page: CreateRoute.page, path: 'create'),
+        AutoRoute(page: AdvancedImageRoute.page, path: 'image'),
+        AutoRoute(page: TagUsersRoute.page, path: 'tags/:tag'),
+        AutoRoute(page: TagEditorRoute.page, path: 'tags-editor/:tag'),
+        AutoRoute(page: BookmarkListRoute.page, path: 'bookmarks'),
+        AutoRoute(page: BookmarksRoute.page, path: 'bookmarks/:bookmarkList'),
+        AutoRoute(page: ProfileEditRoute.page, path: 'account/edit'),
+        AutoRoute(page: EditProfileRoute.page, path: 'profile/edit'),
+        AutoRoute(page: EditFilterListRoute.page, path: 'filter/:filterList'),
+        AutoRoute(page: EditFeedRoute.page, path: 'feed/:feed/edit'),
+      ],
+    ),
+    RedirectRoute(path: '/', redirectTo: '/$defaultInstance'),
 
     //settings
     AutoRoute(page: BehaviorSettingsRoute.page, path: '/settings/behavior'),

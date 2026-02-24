@@ -22,14 +22,16 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityScreen extends StatefulWidget {
-  const CommunityScreen(
-    @PathParam('communityId') this.communityId, {
+  const CommunityScreen({
+    @PathParam('communityName') required this.communityName,
+    this.communityId,
     super.key,
     this.initData,
     this.onUpdate,
   });
 
-  final int communityId;
+  final String communityName;
+  final int? communityId;
   final DetailedCommunityModel? initData;
   final void Function(DetailedCommunityModel)? onUpdate;
 
@@ -47,20 +49,27 @@ class _CommunityScreenState extends State<CommunityScreen> {
     _data = widget.initData;
 
     if (_data == null) {
-      context.read<AppController>().api.community.get(widget.communityId).then((
-        value,
-      ) {
-        if (!mounted) return;
-        setState(() {
-          _data = value;
-        });
-      });
+      (widget.communityId == null
+              ? context.read<AppController>().api.community.getByName(
+                  widget.communityName,
+                )
+              : context.read<AppController>().api.community.get(
+                  widget.communityId!,
+                ))
+          .then((value) {
+            if (!mounted) return;
+            setState(() {
+              _data = value;
+            });
+          });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
+
+    if (_data == null) return Container();
 
     final globalName = _data == null
         ? null
@@ -72,7 +81,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       feed: FeedAggregator.fromSingleSource(
         name: _data?.name ?? '',
         source: FeedSource.community,
-        sourceId: widget.communityId,
+        sourceId: _data?.id,
       ),
       createPostCommunity: _data,
       details: _data == null

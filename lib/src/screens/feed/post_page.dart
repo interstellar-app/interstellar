@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 @RoutePage()
 class ThreadPage extends StatelessWidget {
   const ThreadPage({
+    @PathParam('communityName') this.communityName,
     @PathParam('id') required this.postId,
     super.key,
     this.initData,
@@ -33,6 +34,7 @@ class ThreadPage extends StatelessWidget {
     this.userCanModerate = false,
   });
 
+  final String? communityName;
   final int postId;
   final PostModel? initData;
   final void Function(PostModel)? onUpdate;
@@ -51,6 +53,7 @@ class ThreadPage extends StatelessWidget {
 @RoutePage()
 class MicroblogPage extends StatelessWidget {
   const MicroblogPage({
+    @PathParam('communityName') this.communityName,
     @PathParam('id') required this.postId,
     super.key,
     this.initData,
@@ -58,6 +61,7 @@ class MicroblogPage extends StatelessWidget {
     this.userCanModerate = false,
   });
 
+  final String? communityName;
   final int postId;
   final PostModel? initData;
   final void Function(PostModel)? onUpdate;
@@ -75,6 +79,7 @@ class MicroblogPage extends StatelessWidget {
 
 Future<void> pushPostPage(
   BuildContext context, {
+  String? communityName,
   int? postId,
   PostType? postType,
   PostModel? initData,
@@ -87,12 +92,14 @@ Future<void> pushPostPage(
   context.router.push(
     type == PostType.thread
         ? ThreadRoute(
+            communityName: communityName,
             postId: id,
             initData: initData,
             userCanModerate: userCanModerate,
             onUpdate: onUpdate,
           )
         : MicroblogRoute(
+            communityName: communityName,
             postId: id,
             initData: initData,
             userCanModerate: userCanModerate,
@@ -566,8 +573,11 @@ class _PostPageState extends State<PostPage> {
                                 subtitle: l(
                                   context,
                                 ).commentsX(crossPost.numComments),
-                                onTap: () async =>
-                                    pushPostPage(context, initData: crossPost),
+                                onTap: () async => pushPostPage(
+                                  context,
+                                  communityName: crossPost.community.name,
+                                  initData: crossPost,
+                                ),
                               ),
                             )
                             .toList(),
@@ -609,8 +619,11 @@ class _PostPageState extends State<PostPage> {
                                     showCrossPostMenu(context, crossPost),
                                 icon: const Icon(Symbols.more_vert_rounded),
                               ),
-                              onTap: () =>
-                                  pushPostPage(context, initData: crossPost),
+                              onTap: () => pushPostPage(
+                                context,
+                                communityName: crossPost.community.name,
+                                initData: crossPost,
+                              ),
                               onLongPress: () =>
                                   showCrossPostMenu(context, crossPost),
                             ),

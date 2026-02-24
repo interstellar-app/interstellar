@@ -70,6 +70,7 @@ class _PostCommentScreenState extends State<PostCommentScreen> {
                   child: OutlinedButton(
                     onPressed: () => pushPostPage(
                       context,
+                      communityName: comment.community.name,
                       postId: comment.postId,
                       postType: comment.postType,
                     ),

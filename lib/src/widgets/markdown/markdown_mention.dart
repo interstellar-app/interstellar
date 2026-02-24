@@ -177,8 +177,9 @@ class MentionWidgetState extends State<MentionWidget> {
 
         setState(() {
           _icon = user.avatar;
-          _onClick = () =>
-              context.router.push(UserRoute(userId: user.id, initData: user));
+          _onClick = () => context.router.push(
+            UserRoute(username: user.name, userId: user.id, initData: user),
+          );
         });
       } else if (modifier == '!') {
         if (!communityMentionCache.containsKey(cacheKey)) {
@@ -197,7 +198,11 @@ class MentionWidgetState extends State<MentionWidget> {
         setState(() {
           _icon = community.icon;
           _onClick = () => context.router.push(
-            CommunityRoute(communityId: community.id, initData: community),
+            CommunityRoute(
+              communityName: community.name,
+              communityId: community.id,
+              initData: community,
+            ),
           );
         });
       }

@@ -48,6 +48,7 @@ class _CommunityPickerState extends State<CommunityPicker> {
                       : IconButton(
                           onPressed: () => context.router.push(
                             CommunityRoute(
+                              communityName: widget.value!.name,
                               communityId: widget.value!.id,
                               initData: widget.value,
                               onUpdate: (newValue) => widget.onChange(newValue),

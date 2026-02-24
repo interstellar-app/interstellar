@@ -244,7 +244,11 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 
                         unawaited(
                           context.router.push(
-                            UserRoute(userId: user.id, initData: user),
+                            UserRoute(
+                              username: user.name,
+                              userId: user.id,
+                              initData: user,
+                            ),
                           ),
                         );
                       },

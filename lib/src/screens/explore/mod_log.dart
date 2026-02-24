@@ -19,10 +19,12 @@ import 'package:provider/provider.dart';
 @RoutePage()
 class ModLogCommunityScreen extends StatelessWidget {
   const ModLogCommunityScreen({
-    @PathParam('communityId') required this.communityId,
+    @PathParam('communityName') required this.communityName,
+    required this.communityId,
     super.key,
   });
 
+  final String communityName;
   final int communityId;
 
   @override
@@ -32,10 +34,12 @@ class ModLogCommunityScreen extends StatelessWidget {
 @RoutePage()
 class ModLogUserScreen extends StatelessWidget {
   const ModLogUserScreen({
-    @PathParam('userId') required this.userId,
+    @PathParam('username') required this.username,
+    required this.userId,
     super.key,
   });
 
+  final String username;
   final int userId;
 
   @override
@@ -92,6 +96,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -100,6 +105,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -126,6 +132,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -134,6 +141,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -142,6 +150,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -150,6 +159,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -174,30 +184,45 @@ class _ModLogScreenState extends State<ModLogScreen> {
     ModLogType.ban =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.unban =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.moderatorAdded =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.moderatorRemoved =>
       item.user == null
           ? null
-          : () => context.router.push(UserRoute(userId: item.user!.id)),
+          : () => context.router.push(
+              UserRoute(username: item.user!.name, userId: item.user!.id),
+            ),
     ModLogType.communityAdded => () => context.router.push(
-      CommunityRoute(communityId: item.community.id),
+      CommunityRoute(
+        communityName: item.community.name,
+        communityId: item.community.id,
+      ),
     ),
     ModLogType.communityRemoved => () => context.router.push(
-      CommunityRoute(communityId: item.community.id),
+      CommunityRoute(
+        communityName: item.community.name,
+        communityId: item.community.id,
+      ),
     ),
     ModLogType.postLocked =>
       item.postId == null
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -206,6 +231,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),

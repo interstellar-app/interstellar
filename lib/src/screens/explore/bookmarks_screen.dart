@@ -205,6 +205,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                     _pagingController.updateItem(newValue.id, newValue),
                 onTap: () => pushPostPage(
                   context,
+                  communityName: item.community.name,
                   postId: item.id,
                   postType: item.type,
                   initData: item,

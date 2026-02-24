@@ -96,6 +96,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 context.router.push(
                   CommunityRoute(
+                    communityName: community.name,
                     communityId: community.id,
                     initData: community,
                   ),
@@ -126,6 +127,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
                 context.router.push(
                   CommunityRoute(
+                    communityName: community.name,
                     communityId: community.id,
                     initData: community,
                   ),

@@ -38,14 +38,16 @@ enum UserFeedType { thread, microblog, comment, reply, follower, following }
 
 @RoutePage()
 class UserScreen extends StatefulWidget {
-  const UserScreen(
-    @PathParam('userId') this.userId, {
+  const UserScreen({
+    @PathParam('username') required this.username,
+    this.userId,
     super.key,
     this.initData,
     this.onUpdate,
   });
 
-  final int userId;
+  final String username;
+  final int? userId;
   final DetailedUserModel? initData;
   final void Function(DetailedUserModel)? onUpdate;
 
@@ -76,11 +78,11 @@ class _UserScreenState extends State<UserScreen> {
     _sort = context.read<AppController>().profile.feedDefaultExploreSort;
 
     if (_data == null) {
-      context
-          .read<AppController>()
-          .api
-          .users
-          .get(widget.userId)
+      (widget.userId == null
+              ? context.read<AppController>().api.users.getByName(
+                  widget.username,
+                )
+              : context.read<AppController>().api.users.get(widget.userId!))
           .then((value) async {
             if (!context.mounted) return value;
 
@@ -626,6 +628,7 @@ class _UserScreenBodyState extends State<UserScreenBody>
             (newValue) => _pagingController.updateItem(item, newValue),
             onTap: () => pushPostPage(
               context,
+              communityName: item.community.name,
               postId: item.id,
               postType: item.type,
               initData: item,

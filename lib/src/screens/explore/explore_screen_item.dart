@@ -111,10 +111,20 @@ class ExploreScreenItem extends StatelessWidget {
       };
       final navigate = switch (item) {
         final DetailedCommunityModel i => () => context.router.push(
-          CommunityRoute(communityId: i.id, initData: i, onUpdate: onUpdate),
+          CommunityRoute(
+            communityName: i.name,
+            communityId: i.id,
+            initData: i,
+            onUpdate: onUpdate,
+          ),
         ),
         final DetailedUserModel i => () => context.router.push(
-          UserRoute(userId: i.id, initData: i, onUpdate: onUpdate),
+          UserRoute(
+            username: i.name,
+            userId: i.id,
+            initData: i,
+            onUpdate: onUpdate,
+          ),
         ),
         final DomainModel i => () => context.router.push(
           DomainRoute(domainId: i.id, initData: i, onUpdate: onUpdate),
@@ -195,6 +205,7 @@ class ExploreScreenItem extends StatelessWidget {
         child: InkWell(
           onTap: () => pushPostPage(
             context,
+            communityName: item.community.name,
             postId: item.id,
             postType: item.type,
             initData: item,

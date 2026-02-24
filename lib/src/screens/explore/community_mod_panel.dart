@@ -226,6 +226,7 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
             if (item.subjectPost != null) {
               pushPostPage(
                 context,
+                communityName: item.subjectPost!.community.name,
                 postId: item.subjectPost!.id,
                 postType: item.subjectPost!.type,
                 initData: item.subjectPost,
@@ -255,7 +256,10 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
                             item.reportedBy!.name,
                             icon: item.reportedBy!.avatar,
                             onTap: () => context.router.push(
-                              UserRoute(userId: item.reportedBy!.id),
+                              UserRoute(
+                                username: item.reportedBy!.name,
+                                userId: item.reportedBy!.id,
+                              ),
                             ),
                           ),
                         ],
