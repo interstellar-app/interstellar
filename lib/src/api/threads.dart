@@ -8,6 +8,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:mime/mime.dart';
 
 const Map<FeedSort, String> lemmyFeedSortMap = {
   FeedSort.active: 'Active',
@@ -371,199 +372,91 @@ class APIThreads {
     }
   }
 
-  Future<PostModel> createArticle(
-    int communityId, {
+  Future<PostModel> create({
+    required int communityId,
     required String title,
-    required bool isOc,
-    required String body,
     required String lang,
-    required bool isAdult,
-    required List<String> tags,
+    String? body,
+    String? url,
+    XFile? image,
+    String? alt,
+    bool isAdult = false,
+    bool isOc = false,
+    List<String> tags = const [],
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/magazine/$communityId/article';
-
-        final response = await client.post(
-          path,
-          body: {
-            'title': title,
-            'tags': tags,
-            'isOc': isOc,
-            'body': body,
-            'lang': lang,
-            'isAdult': isAdult,
-          },
+        assert(
+          body?.isNotEmpty != null || url?.isNotEmpty != null || image != null,
+          'Post needs either a body an url or an image.',
         );
+        tags = tags.where((tag) => tag.isNotEmpty).toList();
 
-        return PostModel.fromMbinEntry(response.bodyJson);
-
-      case ServerSoftware.lemmy:
-        const path = '/post';
-        final response = await client.post(
-          path,
-          body: {
-            'name': title,
-            'community_id': communityId,
-            'body': body,
-            'nsfw': isAdult,
-            'language_id': await client.languageIdFromCode(lang),
-          },
-        );
-
-        return PostModel.fromLemmy(
-          response.bodyJson,
-          langCodeIdPairs: await client.languageCodeIdPairs(),
-        );
-
-      case ServerSoftware.piefed:
-        const path = '/post';
-        final response = await client.post(
-          path,
-          body: {
-            'title': title,
-            'community_id': communityId,
-            'body': body,
-            'nsfw': isAdult,
-            'language_id': await client.languageIdFromCode(lang),
-          },
-        );
-
-        return PostModel.fromPiefed(
-          response.bodyJson,
-          langCodeIdPairs: await client.languageCodeIdPairs(),
-        );
-    }
-  }
-
-  Future<PostModel> createLink(
-    int communityId, {
-    required String title,
-    required String url,
-    required bool isOc,
-    required String body,
-    required String lang,
-    required bool isAdult,
-    required List<String> tags,
-  }) async {
-    switch (client.software) {
-      case ServerSoftware.mbin:
-        final path = '/magazine/$communityId/link';
-
-        final response = await client.post(
-          path,
-          body: {
-            'title': title,
-            'url': url,
-            'tags': tags,
-            'isOc': isOc,
-            'body': body,
-            'lang': lang,
-            'isAdult': isAdult,
-          },
-        );
-
-        return PostModel.fromMbinEntry(response.bodyJson);
-
-      case ServerSoftware.lemmy:
-        const path = '/post';
-        final response = await client.post(
-          path,
-          body: {
-            'name': title,
-            'community_id': communityId,
-            'url': url,
-            'body': body,
-            'nsfw': isAdult,
-            'language_id': await client.languageIdFromCode(lang),
-          },
-        );
-
-        return PostModel.fromLemmy(
-          response.bodyJson,
-          langCodeIdPairs: await client.languageCodeIdPairs(),
-        );
-
-      case ServerSoftware.piefed:
-        const path = '/post';
-        final response = await client.post(
-          path,
-          body: {
-            'title': title,
-            'community_id': communityId,
-            'url': url,
-            'body': body,
-            'nsfw': isAdult,
-            'language_id': await client.languageIdFromCode(lang),
-          },
-        );
-
-        return PostModel.fromPiefed(
-          response.bodyJson,
-          langCodeIdPairs: await client.languageCodeIdPairs(),
-        );
-    }
-  }
-
-  Future<PostModel> createImage(
-    int communityId, {
-    required String title,
-    required XFile image,
-    required String alt,
-    required bool isOc,
-    required String body,
-    required String lang,
-    required bool isAdult,
-    required List<String> tags,
-  }) async {
-    switch (client.software) {
-      case ServerSoftware.mbin:
-        final path = '/magazine/$communityId/image';
+        final path = '/magazine/$communityId/entries';
 
         final request = http.MultipartRequest(
           'POST',
           Uri.https(client.domain, client.software.apiPathPrefix + path),
         );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'uploadImage',
-          await image.readAsBytes(),
-          filename: image.name,
-          contentType: MediaType.parse(image.mimeType!),
-        );
-        request.files.add(multipartFile);
+
         request.fields['title'] = title;
-        for (var i = 0; i < tags.length; i++) {
+        if (url != null) {
+          request.fields['url'] = url;
+        }
+        for (var i = 0; i < tags.length; ++i) {
           request.fields['tags[$i]'] = tags[i];
         }
         request.fields['isOc'] = isOc.toString();
-        request.fields['body'] = body;
+        if (body != null && body.isNotEmpty) {
+          request.fields['body'] = body;
+        }
         request.fields['lang'] = lang;
         request.fields['isAdult'] = isAdult.toString();
-        request.fields['alt'] = alt;
+        if (alt != null) {
+          request.fields['alt'] = alt;
+        }
+        if (image != null) {
+          final file = http.MultipartFile.fromBytes(
+            'uploadImage',
+            await image.readAsBytes(),
+            filename: image.name,
+            contentType: MediaType.parse(
+              image.mimeType ?? lookupMimeType(image.path)!,
+            ),
+          );
+          request.files.add(file);
+        }
+
         final response = await client.sendRequest(request);
 
         return PostModel.fromMbinEntry(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        const pictrsPath = '/pictrs/image';
+        if (image != null) {
+          const uploadPath = '/pictrs/image';
 
-        final uploadRequest = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, pictrsPath),
-        );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'images[]',
-          await image.readAsBytes(),
-          filename: image.name,
-          contentType: MediaType.parse(image.mimeType!),
-        );
-        uploadRequest.files.add(multipartFile);
-        final pictrsResponse = await client.sendRequest(uploadRequest);
+          final uploadRequest = http.MultipartRequest(
+            'POST',
+            Uri.https(client.domain, uploadPath),
+          );
+          final multipartFile = http.MultipartFile.fromBytes(
+            'images[]',
+            await image.readAsBytes(),
+            filename: image.name,
+            contentType: MediaType.parse(
+              image.mimeType ?? lookupMimeType(image.path)!,
+            ),
+          );
+          uploadRequest.files.add(multipartFile);
+          final pictrsResponse = await client.sendRequest(uploadRequest);
 
-        final imageName =
-            ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
-                    as JsonMap)['file']
-                as String?;
+          final imageName =
+              ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
+                      as JsonMap)['file']
+                  as String?;
+
+          url = 'https://${client.domain}/pictrs/image/$imageName';
+        }
 
         const path = '/post';
         final response = await client.post(
@@ -571,10 +464,10 @@ class APIThreads {
           body: {
             'name': title,
             'community_id': communityId,
-            'url': 'https://${client.domain}/pictrs/image/$imageName',
+            'url': url,
             'body': body,
             'nsfw': isAdult,
-            'alt_text': nullIfEmpty(alt),
+            'alt_text': alt,
             'language_id': await client.languageIdFromCode(lang),
           },
         );
@@ -585,23 +478,32 @@ class APIThreads {
         );
 
       case ServerSoftware.piefed:
-        const uploadPath = '/upload/image';
+        if (image != null) {
+          const uploadPath = '/upload/image';
 
-        final uploadRequest = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, client.software.apiPathPrefix + uploadPath),
-        );
-        final multipartFile = http.MultipartFile.fromBytes(
-          'file',
-          await image.readAsBytes(),
-          filename: image.name,
-          contentType: MediaType.parse(image.mimeType!),
-        );
-        uploadRequest.files.add(multipartFile);
+          final uploadRequest = http.MultipartRequest(
+            'POST',
+            Uri.https(
+              client.domain,
+              client.software.apiPathPrefix + uploadPath,
+            ),
+          );
+          final multipartFile = http.MultipartFile.fromBytes(
+            'file',
+            await image.readAsBytes(),
+            filename: image.name,
+            contentType: MediaType.parse(
+              image.mimeType ?? lookupMimeType(image.path)!,
+            ),
+          );
+          uploadRequest.files.add(multipartFile);
 
-        final uploadResponse = await client.sendRequest(uploadRequest);
+          final uploadResponse = await client.sendRequest(uploadRequest);
 
-        final imageUrl = uploadResponse.bodyJson['url'] as String?;
+          final imageUrl = uploadResponse.bodyJson['url'] as String?;
+
+          url = imageUrl;
+        }
 
         const path = '/post';
         final response = await client.post(
@@ -609,9 +511,10 @@ class APIThreads {
           body: {
             'title': title,
             'community_id': communityId,
-            'url': imageUrl,
+            'url': url,
             'body': body,
             'nsfw': isAdult,
+            'alt_text': alt,
             'language_id': await client.languageIdFromCode(lang),
           },
         );

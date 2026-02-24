@@ -404,8 +404,8 @@ class _CreateScreenState extends State<CreateScreen> {
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
-                        final post = await ac.api.threads.createArticle(
-                          _community!.id,
+                        final post = await ac.api.threads.create(
+                          communityId: _community!.id,
                           title: _titleTextController.text,
                           isOc: _isOc,
                           body: _bodyTextController.text,
@@ -444,11 +444,11 @@ class _CreateScreenState extends State<CreateScreen> {
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
-                        final post = await ac.api.threads.createImage(
-                          _community!.id,
+                        final post = await ac.api.threads.create(
+                          communityId: _community!.id,
                           title: _titleTextController.text,
-                          image: _imageFile!,
-                          alt: _altText ?? '',
+                          image: _imageFile,
+                          alt: _altText,
                           isOc: _isOc,
                           body: _bodyTextController.text,
                           lang: _lang,
@@ -486,8 +486,8 @@ class _CreateScreenState extends State<CreateScreen> {
                     : () async {
                         final tags = _tagsTextController.text.split(' ');
 
-                        final post = await ac.api.threads.createLink(
-                          _community!.id,
+                        final post = await ac.api.threads.create(
+                          communityId: _community!.id,
                           title: _titleTextController.text,
                           url: _urlTextController.text,
                           isOc: _isOc,
