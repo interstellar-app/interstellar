@@ -272,15 +272,7 @@ class APIUsers {
 
         final response = await client.postMultipart(
           path,
-          builder: (request) async {
-            final multipartFile = http.MultipartFile.fromBytes(
-              'uploadImage',
-              await image.readAsBytes(),
-              filename: basename(image.path),
-              contentType: MediaType.parse(lookupMimeType(image.path)!),
-            );
-            request.files.add(multipartFile);
-          },
+          files: {'uploadImage': image},
         );
 
         return DetailedUserModel.fromMbin(response.bodyJson);
@@ -290,15 +282,7 @@ class APIUsers {
 
         final pictrsResponse = await client.postMultipart(
           pictrsPath,
-          builder: (request) async {
-            final multipartFile = http.MultipartFile.fromBytes(
-              'images[]',
-              await image.readAsBytes(),
-              filename: basename(image.path),
-              contentType: MediaType.parse(lookupMimeType(image.path)!),
-            );
-            request.files.add(multipartFile);
-          },
+          files: {'images[]': image},
         );
 
         final imageName =
@@ -320,15 +304,7 @@ class APIUsers {
 
         final uploadResponse = await client.postMultipart(
           uploadPath,
-          builder: (request) async {
-            final multipartFile = http.MultipartFile.fromBytes(
-              'file',
-              await image.readAsBytes(),
-              filename: basename(image.path),
-              contentType: MediaType.parse(lookupMimeType(image.path)!),
-            );
-            request.files.add(multipartFile);
-          },
+          files: {'file': image},
         );
 
         final imageUrl = uploadResponse.bodyJson['url'] as String?;
@@ -372,15 +348,7 @@ class APIUsers {
 
         final response = await client.postMultipart(
           path,
-          builder: (request) async {
-            final multipartFile = http.MultipartFile.fromBytes(
-              'uploadImage',
-              await image.readAsBytes(),
-              filename: basename(image.path),
-              contentType: MediaType.parse(lookupMimeType(image.path)!),
-            );
-            request.files.add(multipartFile);
-          },
+          files: {'uploadImage': image},
         );
 
         return DetailedUserModel.fromMbin(response.bodyJson);
@@ -390,15 +358,7 @@ class APIUsers {
 
         final pictrsResponse = await client.postMultipart(
           pictrsPath,
-          builder: (request) async {
-            final multipartFile = http.MultipartFile.fromBytes(
-              'images[]',
-              await image.readAsBytes(),
-              filename: basename(image.path),
-              contentType: MediaType.parse(lookupMimeType(image.path)!),
-            );
-            request.files.add(multipartFile);
-          },
+          files: {'images[]': image},
         );
 
         final imageName =
@@ -420,15 +380,7 @@ class APIUsers {
 
         final uploadResponse = await client.postMultipart(
           uploadPath,
-          builder: (request) async {
-            final multipartFile = http.MultipartFile.fromBytes(
-              'file',
-              await image.readAsBytes(),
-              filename: basename(image.path),
-              contentType: MediaType.parse(lookupMimeType(image.path)!),
-            );
-            request.files.add(multipartFile);
-          },
+          files: {'file': image},
         );
 
         final imageUrl = uploadResponse.bodyJson['url'] as String?;

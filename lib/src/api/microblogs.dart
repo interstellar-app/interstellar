@@ -118,19 +118,13 @@ class MbinAPIMicroblogs {
 
     final response = await client.postMultipart(
       path,
-      builder: (request) async {
-        final multipartFile = http.MultipartFile.fromBytes(
-          'uploadImage',
-          await image.readAsBytes(),
-          filename: image.name,
-          contentType: MediaType.parse(image.mimeType!),
-        );
-        request.files.add(multipartFile);
-        request.fields['body'] = body;
-        request.fields['lang'] = lang;
-        request.fields['isAdult'] = isAdult.toString();
-        request.fields['alt'] = alt;
+      fields: {
+        'body': body,
+        'lang': lang,
+        'isAdult': isAdult.toString(),
+        'alt': alt,
       },
+      files: {'uploadImage': image},
     );
 
     return PostModel.fromMbinPost(response.bodyJson);

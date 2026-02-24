@@ -38,15 +38,7 @@ class APIImages {
 
               final response = await client.postMultipart(
                 path,
-                builder: (request) async {
-                  final file = http.MultipartFile.fromBytes(
-                    'images[]',
-                    await image.readAsBytes(),
-                    filename: basename(image.path),
-                    contentType: MediaType.parse(lookupMimeType(image.path)!),
-                  );
-                  request.files.add(file);
-                },
+                files: {'images[]': image},
               );
 
               final imageName =
@@ -61,15 +53,7 @@ class APIImages {
 
               final response = await client.postMultipart(
                 path,
-                builder: (request) async {
-                  final file = http.MultipartFile.fromBytes(
-                    'file',
-                    await image.readAsBytes(),
-                    filename: basename(image.path),
-                    contentType: MediaType.parse(lookupMimeType(image.path)!),
-                  );
-                  request.files.add(file);
-                },
+                files: {'file': image},
               );
 
               return response.bodyJson['url']! as String;

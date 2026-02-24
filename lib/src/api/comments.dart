@@ -301,19 +301,13 @@ class APIComments {
 
           final response = await client.postMultipart(
             path,
-            builder: (request) async {
-              final file = http.MultipartFile.fromBytes(
-                'uploadImage',
-                await image.readAsBytes(),
-                filename: basename(image.path),
-                contentType: MediaType.parse(lookupMimeType(image.path)!),
-              );
-              request.files.add(file);
-              request.fields['body'] = body;
-              request.fields['lang'] = lang;
-              request.fields['isAdult'] = isAdult.toString();
-              request.fields['alt'] = alt ?? '';
+            fields: {
+              'body': body,
+              'lang': lang,
+              'isAdult': isAdult.toString(),
+              'alt': alt ?? '',
             },
+            files: {'uploadImage': image},
           );
 
           return CommentModel.fromMbin(response.bodyJson);

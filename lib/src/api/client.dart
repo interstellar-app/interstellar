@@ -2,8 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 
 class RestrictedAuthException implements Exception {
   RestrictedAuthException(this.message, this.uri);
@@ -77,22 +81,45 @@ class ServerClient {
   Future<http.Response> postMultipart(
     String path, {
     Map<String, String?>? queryParams,
-    FutureOr<void> Function(http.MultipartRequest request)? builder,
-  }) =>
-      _sendMultipart('POST', path, queryParams: queryParams, builder: builder);
+    Map<String, String>? fields,
+    Map<String, XFile>? files,
+  }) => _sendMultipart(
+    'POST',
+    path,
+    queryParams: queryParams,
+    fields: fields,
+    files: files,
+  );
 
   Future<http.Response> _sendMultipart(
     String method,
     String path, {
     Map<String, String?>? queryParams,
-    FutureOr<void> Function(http.MultipartRequest request)? builder,
+    Map<String, String>? fields,
+    Map<String, XFile>? files,
   }) async {
     final request = http.MultipartRequest(
       method,
       _uri(path, queryParams: queryParams),
     );
 
-    await builder?.call(request);
+    if (fields != null) request.fields.addAll(fields);
+    for (final entry in (files ?? {}).entries) {
+      final name = entry.key;
+      final file = entry.value;
+
+      final filename = basename(file.path);
+      final mime = lookupMimeType(filename);
+
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          name,
+          await file.readAsBytes(),
+          filename: filename,
+          contentType: mime == null ? null : MediaType.parse(mime),
+        ),
+      );
+    }
 
     return _sendRequest(request);
   }
