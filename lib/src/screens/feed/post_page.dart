@@ -573,8 +573,11 @@ class _PostPageState extends State<PostPage> {
                                 subtitle: l(
                                   context,
                                 ).commentsX(crossPost.numComments),
-                                onTap: () async =>
-                                    pushPostPage(context, communityName: crossPost.community.name, initData: crossPost),
+                                onTap: () async => pushPostPage(
+                                  context,
+                                  communityName: crossPost.community.name,
+                                  initData: crossPost,
+                                ),
                               ),
                             )
                             .toList(),
@@ -616,8 +619,11 @@ class _PostPageState extends State<PostPage> {
                                     showCrossPostMenu(context, crossPost),
                                 icon: const Icon(Symbols.more_vert_rounded),
                               ),
-                              onTap: () =>
-                                  pushPostPage(context, communityName: crossPost.community.name, initData: crossPost),
+                              onTap: () => pushPostPage(
+                                context,
+                                communityName: crossPost.community.name,
+                                initData: crossPost,
+                              ),
                               onLongPress: () =>
                                   showCrossPostMenu(context, crossPost),
                             ),

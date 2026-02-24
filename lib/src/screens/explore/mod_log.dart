@@ -105,7 +105,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -132,7 +132,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -141,7 +141,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -150,7 +150,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -159,7 +159,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -222,7 +222,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -231,7 +231,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-        communityName: item.community.name,
+              communityName: item.community.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
