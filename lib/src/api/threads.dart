@@ -394,40 +394,20 @@ class APIThreads {
 
         final path = '/magazine/$communityId/entries';
 
-        final request = http.MultipartRequest(
-          'POST',
-          Uri.https(client.domain, client.software.apiPathPrefix + path),
+        final response = await client.postMultipart(
+          path,
+          fields: {
+            'title': title,
+            'url': ?url,
+            for (var i = 0; i < tags.length; ++i) 'tags[$i]': tags[i],
+            'isOc': isOc.toString(),
+            if (body != null && body.isNotEmpty) 'body': body,
+            'lang': lang,
+            'isAdult': isAdult.toString(),
+            'alt': ?alt,
+          },
+          files: {'uploadImage': ?image},
         );
-
-        request.fields['title'] = title;
-        if (url != null) {
-          request.fields['url'] = url;
-        }
-        for (var i = 0; i < tags.length; ++i) {
-          request.fields['tags[$i]'] = tags[i];
-        }
-        request.fields['isOc'] = isOc.toString();
-        if (body != null && body.isNotEmpty) {
-          request.fields['body'] = body;
-        }
-        request.fields['lang'] = lang;
-        request.fields['isAdult'] = isAdult.toString();
-        if (alt != null) {
-          request.fields['alt'] = alt;
-        }
-        if (image != null) {
-          final file = http.MultipartFile.fromBytes(
-            'uploadImage',
-            await image.readAsBytes(),
-            filename: image.name,
-            contentType: MediaType.parse(
-              image.mimeType ?? lookupMimeType(image.path)!,
-            ),
-          );
-          request.files.add(file);
-        }
-
-        final response = await client.sendRequest(request);
 
         return PostModel.fromMbinEntry(response.bodyJson);
 
@@ -435,20 +415,10 @@ class APIThreads {
         if (image != null) {
           const uploadPath = '/pictrs/image';
 
-          final uploadRequest = http.MultipartRequest(
-            'POST',
-            Uri.https(client.domain, uploadPath),
+          final pictrsResponse = await client.postMultipart(
+            uploadPath,
+            files: {'images[]': image},
           );
-          final multipartFile = http.MultipartFile.fromBytes(
-            'images[]',
-            await image.readAsBytes(),
-            filename: image.name,
-            contentType: MediaType.parse(
-              image.mimeType ?? lookupMimeType(image.path)!,
-            ),
-          );
-          uploadRequest.files.add(multipartFile);
-          final pictrsResponse = await client.sendRequest(uploadRequest);
 
           final imageName =
               ((pictrsResponse.bodyJson['files']! as List<Object?>).first!
@@ -481,24 +451,10 @@ class APIThreads {
         if (image != null) {
           const uploadPath = '/upload/image';
 
-          final uploadRequest = http.MultipartRequest(
-            'POST',
-            Uri.https(
-              client.domain,
-              client.software.apiPathPrefix + uploadPath,
-            ),
+          final uploadResponse = await client.postMultipart(
+            uploadPath,
+            files: {'file': image},
           );
-          final multipartFile = http.MultipartFile.fromBytes(
-            'file',
-            await image.readAsBytes(),
-            filename: image.name,
-            contentType: MediaType.parse(
-              image.mimeType ?? lookupMimeType(image.path)!,
-            ),
-          );
-          uploadRequest.files.add(multipartFile);
-
-          final uploadResponse = await client.sendRequest(uploadRequest);
 
           final imageUrl = uploadResponse.bodyJson['url'] as String?;
 

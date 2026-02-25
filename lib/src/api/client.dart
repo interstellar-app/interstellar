@@ -1,8 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 
 class RestrictedAuthException implements Exception {
   RestrictedAuthException(this.message, this.uri);
@@ -35,72 +40,91 @@ class ServerClient {
 
   Future<http.Response> get(
     String path, {
-    Map<String, String>? headers,
-    JsonMap? body,
     Map<String, String?>? queryParams,
-  }) =>
-      send('GET', path, headers: headers, body: body, queryParams: queryParams);
+    JsonMap? body,
+  }) => _send('GET', path, queryParams: queryParams, body: body);
 
   Future<http.Response> post(
     String path, {
-    Map<String, String>? headers,
-    JsonMap? body,
     Map<String, String?>? queryParams,
-  }) => send(
-    'POST',
-    path,
-    headers: headers,
-    body: body,
-    queryParams: queryParams,
-  );
+    JsonMap? body,
+  }) => _send('POST', path, queryParams: queryParams, body: body);
 
   Future<http.Response> put(
     String path, {
-    Map<String, String>? headers,
-    JsonMap? body,
     Map<String, String?>? queryParams,
-  }) =>
-      send('PUT', path, headers: headers, body: body, queryParams: queryParams);
+    JsonMap? body,
+  }) => _send('PUT', path, queryParams: queryParams, body: body);
 
   Future<http.Response> delete(
     String path, {
-    Map<String, String>? headers,
-    JsonMap? body,
     Map<String, String?>? queryParams,
-  }) => send(
-    'DELETE',
-    path,
-    headers: headers,
-    body: body,
-    queryParams: queryParams,
-  );
+    JsonMap? body,
+  }) => _send('DELETE', path, queryParams: queryParams, body: body);
 
-  Future<http.Response> send(
+  Future<http.Response> _send(
     String method,
     String path, {
-    Map<String, String>? headers,
-    JsonMap? body,
     Map<String, String?>? queryParams,
+    JsonMap? body,
   }) async {
-    final request = http.Request(
-      method,
-      Uri.https(
-        domain,
-        software.apiPathPrefix + path,
-        queryParams == null ? null : _normalizeQueryParams(queryParams),
-      ),
-    );
+    final request = http.Request(method, _uri(path, queryParams: queryParams));
 
     if (body != null) {
       request.body = jsonEncode(body);
       request.headers['Content-Type'] = 'application/json';
     }
-    if (headers != null) request.headers.addAll(headers);
 
-    return sendRequest(request);
+    return _sendRequest(request);
   }
 
-  Future<http.Response> sendRequest(http.BaseRequest request) async {
+  Future<http.Response> postMultipart(
+    String path, {
+    Map<String, String?>? queryParams,
+    Map<String, String>? fields,
+    Map<String, XFile>? files,
+  }) => _sendMultipart(
+    'POST',
+    path,
+    queryParams: queryParams,
+    fields: fields,
+    files: files,
+  );
+
+  Future<http.Response> _sendMultipart(
+    String method,
+    String path, {
+    Map<String, String?>? queryParams,
+    Map<String, String>? fields,
+    Map<String, XFile>? files,
+  }) async {
+    final request = http.MultipartRequest(
+      method,
+      _uri(path, queryParams: queryParams),
+    );
+
+    if (fields != null) request.fields.addAll(fields);
+    for (final entry in (files ?? {}).entries) {
+      final name = entry.key;
+      final file = entry.value;
+
+      final filename = basename(file.path);
+      final mime = lookupMimeType(filename);
+
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          name,
+          await file.readAsBytes(),
+          filename: filename,
+          contentType: mime == null ? null : MediaType.parse(mime),
+        ),
+      );
+    }
+
+    return _sendRequest(request);
+  }
+
+  Future<http.Response> _sendRequest(http.BaseRequest request) async {
     final response = await http.Response.fromStream(
       await httpClient.send(request),
     );
@@ -109,6 +133,12 @@ class ServerClient {
 
     return response;
   }
+
+  Uri _uri(String path, {Map<String, String?>? queryParams}) => Uri.https(
+    domain,
+    software.apiPathPrefix + path,
+    queryParams == null ? null : _normalizeQueryParams(queryParams),
+  );
 
   /// Remove null and empty values.
   Map<String, String> _normalizeQueryParams(Map<String, String?> queryParams) =>
@@ -119,26 +149,6 @@ class ServerClient {
           ),
         ),
       );
-
-  /// Throws an error if [response] is not successful.
-  static void checkResponseSuccess(Uri url, http.Response response) {
-    if (response.statusCode < 400) return;
-    if (response.statusCode == 401) {
-      throw RestrictedAuthException(response.body, url);
-    }
-
-    var message = 'Request failed with status ${response.statusCode}';
-
-    if (response.reasonPhrase != null) {
-      message = '$message: ${response.reasonPhrase}';
-    }
-
-    if (response.body.isNotEmpty) {
-      message = '$message: ${response.body}';
-    }
-
-    throw http.ClientException(message, url);
-  }
 
   Future<List<(String, int)>> languageCodeIdPairs() async {
     if (_langCodeIdPairs == null) {
@@ -179,6 +189,26 @@ class ServerClient {
       if (pair.$1 == lang) return pair.$2;
     }
     return null;
+  }
+
+  /// Throws an error if [response] is not successful.
+  static void checkResponseSuccess(Uri url, http.Response response) {
+    if (response.statusCode < 400) return;
+    if (response.statusCode == 401) {
+      throw RestrictedAuthException(response.body, url);
+    }
+
+    var message = 'Request failed with status ${response.statusCode}';
+
+    if (response.reasonPhrase != null) {
+      message = '$message: ${response.reasonPhrase}';
+    }
+
+    if (response.body.isNotEmpty) {
+      message = '$message: ${response.body}';
+    }
+
+    throw http.ClientException(message, url);
   }
 }
 
