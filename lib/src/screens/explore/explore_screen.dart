@@ -18,6 +18,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
+class ExploreTab extends StatelessWidget {
+  const ExploreTab({super.key, this.focusNode});
+
+  final FocusNode? focusNode;
+
+  @override
+  Widget build(BuildContext context) => const ExploreScreen();
+}
+
+@RoutePage()
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({
     this.mode,
@@ -42,8 +52,7 @@ class ExploreScreen extends StatefulWidget {
   State<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen>
-    with AutomaticKeepAliveClientMixin<ExploreScreen> {
+class _ExploreScreenState extends State<ExploreScreen> {
   late FocusNode _focusNode;
   final TextEditingController _searchController = TextEditingController();
   final searchDebounce = Debouncer(duration: const Duration(milliseconds: 500));
@@ -127,9 +136,6 @@ class _ExploreScreenState extends State<ExploreScreen>
   late final ScrollController _scrollController;
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   void initState() {
     super.initState();
 
@@ -148,7 +154,6 @@ class _ExploreScreenState extends State<ExploreScreen>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     const chipPadding = EdgeInsets.symmetric(vertical: 6, horizontal: 4);
 
     final currentExploreSort = exploreSortSelection(context).getOption(sort);

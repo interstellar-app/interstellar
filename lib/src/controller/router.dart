@@ -10,13 +10,22 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
+    RedirectRoute(path: '/', redirectTo: '/$defaultInstance'),
     AutoRoute(
       page: AppInstanceRoute.page,
       path: '/:instance',
       children: [
-        AutoRoute(page: AppHome.page, path: ''),
-        AutoRoute(page: FeedRoute.page, path: 'feed'),
-        AutoRoute(page: ExploreRoute.page, path: 'explore'),
+        AutoRoute(
+          page: AppHome.page,
+          path: '',
+          children: [
+            AutoRoute(page: FeedRoute.page, path: 'home'),
+            AutoRoute(page: ExploreTab.page, path: 'explore'),
+            AutoRoute(page: SelfFeed.page, path: 'account'),
+            AutoRoute(page: InboxRoute.page, path: 'inbox'),
+            AutoRoute(page: SettingsRoute.page, path: 'settings'),
+          ],
+        ),
 
         AutoRoute(page: ThreadRoute.page, path: 'c/:communityName/thread/:id'),
         AutoRoute(
@@ -56,51 +65,60 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: EditProfileRoute.page, path: 'profile/edit'),
         AutoRoute(page: EditFilterListRoute.page, path: 'filter/:filterList'),
         AutoRoute(page: EditFeedRoute.page, path: 'feed/:feed/edit'),
+        AutoRoute(page: ExploreRoute.page, path: 'search'),
+
+        //settings
+        AutoRoute(page: BehaviorSettingsRoute.page, path: 'settings/behavior'),
+        AutoRoute(page: DisplaySettingsRoute.page, path: 'settings/display'),
+        AutoRoute(page: FeedSettingsRoute.page, path: 'settings/feeds'),
+        AutoRoute(
+          page: FeedActionsSettingsRoute.page,
+          path: 'settings/actions',
+        ),
+        AutoRoute(
+          page: FeedDefaultSettingsRoute.page,
+          path: 'settings/defaults',
+        ),
+        AutoRoute(
+          page: FeedSourceOrderSettingsRoute.page,
+          path: 'settings/defaults/source',
+        ),
+        AutoRoute(
+          page: FeedViewOrderSettingsRoute.page,
+          path: 'settings/defaults/view',
+        ),
+        AutoRoute(
+          page: FeedSortOrderSettingsRoute.page,
+          path: 'settings/defaults/sort',
+        ),
+        AutoRoute(page: TagsRoute.page, path: 'settings/tags'),
+        AutoRoute(page: FilterListsRoute.page, path: 'settings/filters'),
+        AutoRoute(
+          page: NotificationSettingsRoute.page,
+          path: 'settings/notifications',
+        ),
+        AutoRoute(page: DataUtilitiesRoute.page, path: 'settings/utilities'),
+        AutoRoute(
+          page: AccountMigrationRoute.page,
+          path: 'settings/utilities/migration',
+        ),
+        AutoRoute(
+          page: AccountResetRoute.page,
+          path: 'settings/utilities/reset',
+        ),
+        AutoRoute(page: AboutRoute.page, path: 'settings/about'),
+        AutoRoute(page: DebugSettingsRoute.page, path: 'settings/about/debug'),
+        AutoRoute(page: LogConsole.page, path: 'settings/about/debug/log'),
+        // DriftDbViewer is part of a library so can't use code gen.
+        NamedRouteDef(
+          name: 'DriftDbViewer',
+          builder: (context, data) => DriftDbViewer(database),
+          path: 'settings/about/debug/database',
+        ),
+        AutoRoute(page: LoginSelectRoute.page, path: 'settings/login'),
+        AutoRoute(page: LoginConfirmRoute.page, path: 'settings/login/confirm'),
+        AutoRoute(page: WebViewRoute.page, path: 'webview'),
       ],
     ),
-    RedirectRoute(path: '/', redirectTo: '/$defaultInstance'),
-
-    //settings
-    AutoRoute(page: BehaviorSettingsRoute.page, path: '/settings/behavior'),
-    AutoRoute(page: DisplaySettingsRoute.page, path: '/settings/display'),
-    AutoRoute(page: FeedSettingsRoute.page, path: '/settings/feeds'),
-    AutoRoute(page: FeedActionsSettingsRoute.page, path: '/settings/actions'),
-    AutoRoute(page: FeedDefaultSettingsRoute.page, path: '/settings/defaults'),
-    AutoRoute(
-      page: FeedSourceOrderSettingsRoute.page,
-      path: '/settings/defaults/source',
-    ),
-    AutoRoute(
-      page: FeedViewOrderSettingsRoute.page,
-      path: '/settings/defaults/view',
-    ),
-    AutoRoute(
-      page: FeedSortOrderSettingsRoute.page,
-      path: '/settings/defaults/sort',
-    ),
-    AutoRoute(page: TagsRoute.page, path: '/settings/tags'),
-    AutoRoute(page: FilterListsRoute.page, path: '/settings/filters'),
-    AutoRoute(
-      page: NotificationSettingsRoute.page,
-      path: '/settings/notifications',
-    ),
-    AutoRoute(page: DataUtilitiesRoute.page, path: '/settings/utilities'),
-    AutoRoute(
-      page: AccountMigrationRoute.page,
-      path: '/settings/utilities/migration',
-    ),
-    AutoRoute(page: AccountResetRoute.page, path: '/settings/utilities/reset'),
-    AutoRoute(page: AboutRoute.page, path: '/settings/about'),
-    AutoRoute(page: DebugSettingsRoute.page, path: '/settings/about/debug'),
-    AutoRoute(page: LogConsole.page, path: '/settings/about/debug/log'),
-    // DriftDbViewer is part of a library so can't use code gen.
-    NamedRouteDef(
-      name: 'DriftDbViewer',
-      builder: (context, data) => DriftDbViewer(database),
-      path: '/settings/about/debug/database',
-    ),
-    AutoRoute(page: LoginSelectRoute.page, path: '/settings/login'),
-    AutoRoute(page: LoginConfirmRoute.page, path: '/settings/login/confirm'),
-    AutoRoute(page: WebViewRoute.page, path: '/webview'),
   ];
 }
