@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/screens/account/messages/messages_screen.dart';
@@ -7,21 +8,15 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
-class InboxScreen extends StatefulWidget {
-  const InboxScreen({super.key});
+@RoutePage()
+class InboxScreen extends StatelessWidget {
+  const InboxScreen({super.key, this.placeholder = false});
 
-  @override
-  State<InboxScreen> createState() => _InboxScreenState();
-}
-
-class _InboxScreenState extends State<InboxScreen>
-    with AutomaticKeepAliveClientMixin<InboxScreen> {
-  @override
-  bool get wantKeepAlive => true;
+  // This is so the generated route includes parameters so that a key can be passed.
+  final bool placeholder;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return whenLoggedIn(
           context,
           DefaultTabController(

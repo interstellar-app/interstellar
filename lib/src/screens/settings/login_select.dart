@@ -100,11 +100,11 @@ class _LoginSelectScreenState extends State<LoginSelectScreen> {
     // Check BuildContext
     if (!mounted) return;
 
-    final shouldPop = await context.router.push(
+    final shouldPop = await context.router.push<bool>(
       LoginConfirmRoute(software: software, server: host),
     );
 
-    if (shouldPop == true) {
+    if (shouldPop ?? false) {
       // Check BuildContext
       if (!mounted) return;
 

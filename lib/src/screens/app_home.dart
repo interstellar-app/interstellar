@@ -4,16 +4,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interstellar/src/controller/controller.dart';
-import 'package:interstellar/src/controller/router.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/screens/account/inbox_screen.dart';
 import 'package:interstellar/src/screens/account/notification/notification_badge.dart';
-import 'package:interstellar/src/screens/account/self_feed.dart';
-import 'package:interstellar/src/screens/explore/explore_screen.dart';
-import 'package:interstellar/src/screens/feed/feed_screen.dart';
+import 'package:interstellar/src/screens/explore/explore_screen.dart'
+    show ExploreType;
 import 'package:interstellar/src/screens/settings/account_selection.dart';
 import 'package:interstellar/src/screens/settings/profile_selection.dart';
-import 'package:interstellar/src/screens/settings/settings_screen.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -32,7 +28,7 @@ class AppInstanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: AutoRouter());
+    return const AutoRouter();
   }
 }
 
@@ -46,7 +42,6 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> {
   int _navIndex = 0;
-  final PageController _pageController = PageController();
   Key _feedKey = UniqueKey();
   Key _exploreKey = UniqueKey();
   Key _accountKey = UniqueKey();
@@ -103,7 +98,6 @@ class _AppHomeState extends State<AppHome> {
     setState(() {
       _navIndex = newIndex;
     });
-    _pageController.jumpToPage(_navIndex);
   }
 
   Future<void> _handleExit(bool didPop, result) async {
@@ -128,10 +122,7 @@ class _AppHomeState extends State<AppHome> {
 
   @override
   Widget build(BuildContext context) {
-    final ac = context.watch<AppController>();
-
-    // AppController should be available for later if needed.
-    // ignore: cascade_invocations
+    final ac = context.read<AppController>();
     ac.refreshState = () {
       setState(() {
         _feedKey = UniqueKey();
@@ -142,117 +133,150 @@ class _AppHomeState extends State<AppHome> {
       context.router.root.replace(AppInstanceRoute(instance: ac.instanceHost));
     };
 
-    final notCompact = !Breakpoints.isCompact(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: _handleExit,
-      child: Scaffold(
-        bottomNavigationBar: notCompact
-            ? null
-            : NavigationBar(
-                height: 56,
-                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-                destinations: [
-                  NavigationDestination(
-                    label: l(context).feed,
-                    icon: const Icon(Symbols.home_rounded),
-                    selectedIcon: const Icon(Symbols.home_rounded, fill: 1),
+      child: AutoTabsRouter(
+        routes: [
+          FeedRoute(key: _feedKey, scrollController: _feedScrollController),
+          ExploreTab(key: _exploreKey, focusNode: _exploreFocusNode),
+          SelfFeed(key: _accountKey),
+          InboxRoute(key: _inboxKey),
+          const SettingsRoute(),
+        ],
+        builder: (context, child) {
+          final tabsRouter = AutoTabsRouter.of(context);
+          final notCompact = !Breakpoints.isCompact(context);
+
+          return Scaffold(
+            body: notCompact
+                ? Row(
+                    children: [
+                      NavigationRail(
+                        destinations: [
+                          NavigationRailDestination(
+                            icon: const Icon(Symbols.home_rounded),
+                            selectedIcon: const Icon(
+                              Symbols.home_rounded,
+                              fill: 1,
+                            ),
+                            label: Text(l(context).feed),
+                          ),
+                          NavigationRailDestination(
+                            icon: const Icon(Symbols.explore_rounded),
+                            selectedIcon: const Icon(
+                              Symbols.explore_rounded,
+                              fill: 1,
+                            ),
+                            label: Text(l(context).explore),
+                          ),
+                          NavigationRailDestination(
+                            icon: const Icon(Symbols.person_rounded),
+                            selectedIcon: const Icon(
+                              Symbols.person_rounded,
+                              fill: 1,
+                            ),
+                            label: Text(l(context).account),
+                          ),
+                          NavigationRailDestination(
+                            icon: Wrapper(
+                              shouldWrap: context
+                                  .watch<AppController>()
+                                  .isLoggedIn,
+                              parentBuilder: (child) =>
+                                  NotificationBadge(child: child),
+                              child: const Icon(Symbols.inbox_rounded),
+                            ),
+                            selectedIcon: Wrapper(
+                              shouldWrap: context
+                                  .watch<AppController>()
+                                  .isLoggedIn,
+                              parentBuilder: (child) =>
+                                  NotificationBadge(child: child),
+                              child: const Icon(Symbols.inbox_rounded, fill: 1),
+                            ),
+                            label: Text(l(context).inbox),
+                          ),
+                          NavigationRailDestination(
+                            icon: const Icon(Symbols.settings_rounded),
+                            selectedIcon: const Icon(
+                              Symbols.settings_rounded,
+                              fill: 1,
+                            ),
+                            label: Text(l(context).settings),
+                          ),
+                        ],
+                        selectedIndex: tabsRouter.activeIndex,
+                        onDestinationSelected: (index) {
+                          _changeNav(index);
+                          tabsRouter.setActiveIndex(index);
+                        },
+                        labelType: NavigationRailLabelType.all,
+                      ),
+                      Expanded(child: child),
+                    ],
+                  )
+                : child,
+            bottomNavigationBar: notCompact
+                ? null
+                : NavigationBar(
+                    height: 56,
+                    labelBehavior:
+                        NavigationDestinationLabelBehavior.alwaysHide,
+                    selectedIndex: tabsRouter.activeIndex,
+                    onDestinationSelected: (index) {
+                      _changeNav(index);
+                      tabsRouter.setActiveIndex(index);
+                    },
+                    destinations: [
+                      NavigationDestination(
+                        icon: const Icon(Symbols.home_rounded),
+                        selectedIcon: const Icon(Symbols.home_rounded, fill: 1),
+                        label: l(context).feed,
+                      ),
+                      NavigationDestination(
+                        icon: const Icon(Symbols.explore_rounded),
+                        selectedIcon: const Icon(
+                          Symbols.explore_rounded,
+                          fill: 1,
+                        ),
+                        label: l(context).explore,
+                      ),
+                      NavigationDestination(
+                        icon: const Icon(Symbols.person_rounded),
+                        selectedIcon: const Icon(
+                          Symbols.person_rounded,
+                          fill: 1,
+                        ),
+                        label: l(context).account,
+                      ),
+                      NavigationDestination(
+                        icon: Wrapper(
+                          shouldWrap: context.watch<AppController>().isLoggedIn,
+                          parentBuilder: (child) =>
+                              NotificationBadge(child: child),
+                          child: const Icon(Symbols.inbox_rounded),
+                        ),
+                        selectedIcon: Wrapper(
+                          shouldWrap: context.watch<AppController>().isLoggedIn,
+                          parentBuilder: (child) =>
+                              NotificationBadge(child: child),
+                          child: const Icon(Symbols.inbox_rounded, fill: 1),
+                        ),
+                        label: l(context).inbox,
+                      ),
+                      NavigationDestination(
+                        icon: const Icon(Symbols.settings_rounded),
+                        selectedIcon: const Icon(
+                          Symbols.settings_rounded,
+                          fill: 1,
+                        ),
+                        label: l(context).settings,
+                      ),
+                    ],
                   ),
-                  NavigationDestination(
-                    label: l(context).explore,
-                    icon: const Icon(Symbols.explore_rounded),
-                    selectedIcon: const Icon(Symbols.explore_rounded, fill: 1),
-                  ),
-                  NavigationDestination(
-                    label: l(context).account,
-                    icon: const Icon(Symbols.person_rounded),
-                    selectedIcon: const Icon(Symbols.person_rounded, fill: 1),
-                  ),
-                  NavigationDestination(
-                    label: l(context).inbox,
-                    icon: Wrapper(
-                      shouldWrap: context.watch<AppController>().isLoggedIn,
-                      parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.inbox_rounded),
-                    ),
-                    selectedIcon: Wrapper(
-                      shouldWrap: context.watch<AppController>().isLoggedIn,
-                      parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.inbox_rounded, fill: 1),
-                    ),
-                  ),
-                  NavigationDestination(
-                    label: l(context).settings,
-                    icon: const Icon(Symbols.settings_rounded),
-                    selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
-                  ),
-                ],
-                selectedIndex: _navIndex,
-                onDestinationSelected: _changeNav,
-              ),
-        body: Row(
-          children: [
-            if (notCompact)
-              NavigationRail(
-                selectedIndex: _navIndex,
-                onDestinationSelected: _changeNav,
-                labelType: NavigationRailLabelType.all,
-                destinations: [
-                  NavigationRailDestination(
-                    label: Text(l(context).feed),
-                    icon: const Icon(Symbols.feed_rounded),
-                    selectedIcon: const Icon(Symbols.feed_rounded, fill: 1),
-                  ),
-                  NavigationRailDestination(
-                    label: Text(l(context).explore),
-                    icon: const Icon(Symbols.explore_rounded),
-                    selectedIcon: const Icon(Symbols.explore_rounded, fill: 1),
-                  ),
-                  NavigationRailDestination(
-                    label: Text(l(context).account),
-                    icon: const Icon(Symbols.person_rounded),
-                    selectedIcon: const Icon(Symbols.person_rounded, fill: 1),
-                  ),
-                  NavigationRailDestination(
-                    label: Text(l(context).inbox),
-                    icon: Wrapper(
-                      shouldWrap: context.watch<AppController>().isLoggedIn,
-                      parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.inbox_rounded),
-                    ),
-                    selectedIcon: Wrapper(
-                      shouldWrap: context.watch<AppController>().isLoggedIn,
-                      parentBuilder: (child) => NotificationBadge(child: child),
-                      child: const Icon(Symbols.inbox_rounded, fill: 1),
-                    ),
-                  ),
-                  NavigationRailDestination(
-                    label: Text(l(context).settings),
-                    icon: const Icon(Symbols.settings_rounded),
-                    selectedIcon: const Icon(Symbols.settings_rounded, fill: 1),
-                  ),
-                ],
-              ),
-            if (notCompact) const VerticalDivider(thickness: 1, width: 1),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  FeedScreen(
-                    key: _feedKey,
-                    scrollController: _feedScrollController,
-                  ),
-                  ExploreScreen(key: _exploreKey, focusNode: _exploreFocusNode),
-                  SelfFeed(key: _accountKey),
-                  InboxScreen(key: _inboxKey),
-                  const SettingsScreen(),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

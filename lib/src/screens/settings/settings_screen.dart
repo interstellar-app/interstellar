@@ -10,6 +10,7 @@ import 'package:interstellar/src/widgets/server_software_indicator.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
