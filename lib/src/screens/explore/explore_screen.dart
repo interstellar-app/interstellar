@@ -18,13 +18,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
-class ExploreTab extends StatelessWidget {
-  const ExploreTab({super.key, this.focusNode});
-
-  final FocusNode? focusNode;
-
-  @override
-  Widget build(BuildContext context) => const ExploreScreen();
+class ExploreTab extends ExploreScreen {
+  const ExploreTab({super.key, super.focusNode});
 }
 
 @RoutePage()

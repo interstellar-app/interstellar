@@ -53,7 +53,6 @@ class _SelfFeedState extends State<SelfFeed> {
 
   @override
   Widget build(BuildContext context) {
-    // super.build(context);
 
     final ac = context.read<AppController>();
 
