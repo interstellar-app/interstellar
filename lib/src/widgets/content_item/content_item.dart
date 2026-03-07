@@ -22,6 +22,7 @@ import 'package:interstellar/src/widgets/content_item/content_item_link_panel.da
 import 'package:interstellar/src/widgets/content_item/content_reply.dart';
 import 'package:interstellar/src/widgets/content_item/poll.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
+import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
@@ -906,27 +907,23 @@ class _ContentItemState extends State<ContentItem> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Column(
+                  spacing: 4,
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ?contentTitle(context, null),
-                    const SizedBox(height: 4),
-                    ContentInfo(
-                      user: widget.user,
-                      isOp: widget.opUserId == widget.user?.id,
-                      community: widget.community,
-                      showCommunityFirst: widget.showCommunityFirst,
-                      isPinned: widget.isPinned,
-                      isNSFW: widget.isNSFW,
-                      isOC: widget.isOC,
-                      isLocked: widget.isLocked,
-                      lang: widget.lang,
-                      createdAt: widget.createdAt,
-                      editedAt: widget.editedAt,
-                    ),
-                    const SizedBox(height: 4),
                     Row(
                       children: [
+                        DisplayName(
+                          widget.community!.name,
+                          onTap: () => context.router.push(
+                            CommunityRoute(
+                              communityName: widget.community!.name,
+                              communityId: widget.community!.id,
+                            ),
+                          ),
+                        ),
+                        const Text(' · '),
                         Text(
                           l(context).pointsX(
                             (widget.upVotes ?? 0) - (widget.downVotes ?? 0),
