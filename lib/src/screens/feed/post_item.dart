@@ -26,7 +26,6 @@ class PostItem extends StatefulWidget {
     this.filterListWarnings,
     this.userCanModerate = false,
     this.isTopLevel = false,
-    this.isCompact = false,
   });
 
   final PostModel item;
@@ -45,7 +44,6 @@ class PostItem extends StatefulWidget {
   final Set<String>? filterListWarnings;
   final bool userCanModerate;
   final bool isTopLevel;
-  final bool isCompact;
 
   @override
   State<PostItem> createState() => _PostItemState();
@@ -331,7 +329,6 @@ class _PostItemState extends State<PostItem> {
                     widget.item.copyWith(notificationControlStatus: newStatus),
                   );
                 },
-          isCompact: widget.isCompact,
           onClick: widget.isTopLevel ? widget.onTap : null,
           onUpdateFlairs:
               !canModerate ||

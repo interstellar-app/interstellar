@@ -293,7 +293,7 @@ class Profiles extends Table {
   TextColumn get themeMode => textEnum<ThemeMode>().nullable()();
   TextColumn get colorScheme => textEnum<FlexScheme>().nullable()();
   BoolColumn get enableTrueBlack => boolean().nullable()();
-  BoolColumn get compactMode => boolean().nullable()();
+  TextColumn get postMode => textEnum<PostMode>().nullable()();
   BoolColumn get hideActionButtons => boolean().nullable()();
   BoolColumn get hideFeedUIOnScroll => boolean().nullable()();
   RealColumn get globalTextScale => real().nullable()();
@@ -301,7 +301,6 @@ class Profiles extends Table {
   BoolColumn get coverMediaMarkedSensitive => boolean().nullable()();
   BoolColumn get fullImageSizeThreads => boolean().nullable()();
   BoolColumn get fullImageSizeMicroblogs => boolean().nullable()();
-  BoolColumn get showPostsCards => boolean().nullable()();
   TextColumn get postComponentOrder =>
       text().map(const PostComponentConverter()).nullable()();
   RealColumn get dividerThickness => real().nullable()();
@@ -481,6 +480,18 @@ class InterstellarDatabase extends _$InterstellarDatabase {
         },
         from2To3: (m, schema) async {
           await m.addColumn(schema.profiles, schema.profiles.defaultLinkAction);
+          await m.addColumn(schema.profiles, schema.profiles.postMode);
+
+          await customUpdate(
+            "UPDATE profiles SET post_mode = 'compact' WHERE compact_mode = true",
+          );
+          await customUpdate(
+            "UPDATE profiles SET post_mode = 'list' WHERE show_posts_cards = false",
+          );
+
+          await m.dropColumn(schema.profiles, 'compact_mode');
+          await m.dropColumn(schema.profiles, 'show_posts_cards');
+
           await m.addColumn(schema.accounts, schema.accounts.unifiedpushKey);
           await m.addColumn(schema.accounts, schema.accounts.unifiedpushToken);
           await m.create(schema.accountUnifiedpushToken);
