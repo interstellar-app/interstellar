@@ -1450,7 +1450,7 @@ final class Schema3 extends i0.VersionedSchema {
         _column_35,
         _column_36,
         _column_37,
-        _column_38,
+        _column_100,
         _column_39,
         _column_40,
         _column_41,
@@ -1458,7 +1458,6 @@ final class Schema3 extends i0.VersionedSchema {
         _column_43,
         _column_44,
         _column_45,
-        _column_46,
         _column_47,
         _column_48,
         _column_49,
@@ -1523,8 +1522,8 @@ final class Schema3 extends i0.VersionedSchema {
         _column_86,
         _column_87,
         _column_88,
-        _column_100,
         _column_101,
+        _column_102,
       ],
       attachedDatabase: database,
     ),
@@ -1647,8 +1646,8 @@ class Shape14 extends i0.VersionedTable {
       columnsByName['color_scheme']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get enableTrueBlack =>
       columnsByName['enable_true_black']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get compactMode =>
-      columnsByName['compact_mode']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get postMode =>
+      columnsByName['post_mode']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get hideActionButtons =>
       columnsByName['hide_action_buttons']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get hideFeedUIOnScroll =>
@@ -1663,8 +1662,6 @@ class Shape14 extends i0.VersionedTable {
       columnsByName['full_image_size_threads']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get fullImageSizeMicroblogs =>
       columnsByName['full_image_size_microblogs']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get showPostsCards =>
-      columnsByName['show_posts_cards']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get postComponentOrder =>
       columnsByName['post_component_order']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<double> get dividerThickness =>
@@ -1734,6 +1731,14 @@ i1.GeneratedColumn<String> _column_99(String aliasedName) =>
       type: i1.DriftSqlType.string,
       $customConstraints: 'NULL',
     );
+i1.GeneratedColumn<String> _column_100(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'post_mode',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
 
 class Shape15 extends i0.VersionedTable {
   Shape15({required super.source, required super.alias}) : super.aliased();
@@ -1770,7 +1775,7 @@ class Shape15 extends i0.VersionedTable {
       columnsByName['unifiedpush_distributor_ack']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<String> _column_100(String aliasedName) =>
+i1.GeneratedColumn<String> _column_101(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'unifiedpush_distributor_name',
       aliasedName,
@@ -1778,7 +1783,7 @@ i1.GeneratedColumn<String> _column_100(String aliasedName) =>
       type: i1.DriftSqlType.string,
       $customConstraints: 'NULL',
     );
-i1.GeneratedColumn<int> _column_101(String aliasedName) =>
+i1.GeneratedColumn<int> _column_102(String aliasedName) =>
     i1.GeneratedColumn<int>(
       'unifiedpush_distributor_ack',
       aliasedName,

@@ -637,7 +637,6 @@ class _UserScreenBodyState extends State<UserScreenBody>
             ),
             isPreview: true,
             isTopLevel: true,
-            isCompact: context.watch<AppController>().profile.compactMode,
           ),
           UserFeedType.comment || UserFeedType.reply => Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),

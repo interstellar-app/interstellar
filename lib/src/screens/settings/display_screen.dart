@@ -8,6 +8,8 @@ import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/language.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/content_item/content_item.dart';
+import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -91,21 +93,13 @@ class DisplaySettingsScreen extends StatelessWidget {
                   ),
           ),
           const Divider(),
-          ListTileSwitch(
-            leading: const Icon(Symbols.table_rows_rounded),
-            title: Text(l(context).settings_compactMode),
-            value: ac.profile.compactMode,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(compactMode: newValue),
-            ),
-          ),
-          ListTileSwitch(
-            enabled: !ac.profile.compactMode,
-            leading: const Icon(Symbols.view_agenda_rounded),
-            title: Text(l(context).settings_postsAsCards),
-            value: ac.profile.showPostsCards,
-            onChanged: (newValue) => ac.updateProfile(
-              ac.selectedProfileValue.copyWith(showPostsCards: newValue),
+          ListTileSelect(
+            title: l(context).settings_postMode,
+            selectionMenu: postModeSelect(context),
+            value: ac.profile.postMode,
+            oldValue: ac.selectedProfileValue.postMode,
+            onChange: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(postMode: newValue),
             ),
           ),
           ListTile(
@@ -133,8 +127,7 @@ class DisplaySettingsScreen extends StatelessWidget {
                 Slider(
                   value: ac.profile.dividerThickness,
                   max: 10,
-                  onChanged:
-                      ac.profile.showPostsCards && !ac.profile.compactMode
+                  onChanged: !ac.profile.postMode.hasDivider()
                       ? null
                       : (newValue) => ac.updateProfile(
                           ac.selectedProfileValue.copyWith(
@@ -202,7 +195,7 @@ class DisplaySettingsScreen extends StatelessWidget {
             leading: const Icon(Symbols.image_rounded),
             title: Text(l(context).settings_fullImageSizeThreads),
             value: ac.profile.fullImageSizeThreads,
-            onChanged: ac.profile.compactMode
+            onChanged: ac.profile.postMode.isCompact()
                 ? null
                 : (newValue) => ac.updateProfile(
                     ac.selectedProfileValue.copyWith(
@@ -214,7 +207,7 @@ class DisplaySettingsScreen extends StatelessWidget {
             leading: const Icon(Symbols.image_rounded),
             title: Text(l(context).settings_fullImageSizeMicroblogs),
             value: ac.profile.fullImageSizeMicroblogs,
-            onChanged: ac.profile.compactMode
+            onChanged: ac.profile.postMode.isCompact()
                 ? null
                 : (newValue) => ac.updateProfile(
                     ac.selectedProfileValue.copyWith(
@@ -314,3 +307,27 @@ SelectionMenu<FlexScheme> colorSchemeSelect(BuildContext context) =>
           )
           .toList(),
     );
+
+SelectionMenu<PostMode> postModeSelect(BuildContext context) =>
+    SelectionMenu(l(context).settings_themeMode, [
+      SelectionMenuItem(
+        value: PostMode.card,
+        title: l(context).settings_postMode_card,
+        icon: Symbols.view_agenda_rounded,
+      ),
+      SelectionMenuItem(
+        value: PostMode.list,
+        title: l(context).settings_postMode_list,
+        icon: Symbols.view_stream_rounded,
+      ),
+      SelectionMenuItem(
+        value: PostMode.compact,
+        title: l(context).settings_postMode_compact,
+        icon: Symbols.view_day_rounded,
+      ),
+      SelectionMenuItem(
+        value: PostMode.extraCompact,
+        title: l(context).settings_postMode_extraCompact,
+        icon: Symbols.view_headline_rounded,
+      ),
+    ]);
