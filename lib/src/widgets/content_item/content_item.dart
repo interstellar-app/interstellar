@@ -261,14 +261,18 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: switch (context.read<AppController>().profile.postMode) {
-        PostMode.card => card(),
-        PostMode.list => list(),
-        PostMode.compact => compact(),
-        PostMode.extraCompact => extraCompact(),
-      },
-    );
+    final view = !widget.feedView
+        ? list()
+        : widget.contentTypeName == l(context).comment
+        ? card()
+        : switch (context.read<AppController>().profile.postMode) {
+            PostMode.card => card(),
+            PostMode.list => list(),
+            PostMode.compact => compact(),
+            PostMode.extraCompact => extraCompact(),
+          };
+
+    return RepaintBoundary(child: view);
   }
 
   Widget card() {
