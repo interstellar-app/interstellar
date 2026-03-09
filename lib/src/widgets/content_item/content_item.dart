@@ -928,6 +928,21 @@ class _ContentItemState extends State<ContentItem> {
                           ),
                         ),
                         const Text(' · '),
+                        Tooltip(
+                          message:
+                              l(
+                                context,
+                              ).createdAt(dateTimeFormat(widget.createdAt!)) +
+                              (widget.editedAt == null
+                                  ? ''
+                                  : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
+                          triggerMode: TooltipTriggerMode.tap,
+                          child: Text(
+                            dateDiffFormat(widget.createdAt!),
+                            style: const TextStyle(fontWeight: FontWeight.w300),
+                          ),
+                        ),
+                        const Text(' · '),
                         Text(
                           l(context).pointsX(
                             (widget.upVotes ?? 0) - (widget.downVotes ?? 0),

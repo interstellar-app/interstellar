@@ -483,10 +483,10 @@ class InterstellarDatabase extends _$InterstellarDatabase {
           await m.addColumn(schema.profiles, schema.profiles.postMode);
 
           await customUpdate(
-            "UPDATE profiles SET post_mode = 'compact' WHERE compact_mode = true",
+            "UPDATE profiles SET post_mode = 'list' WHERE show_posts_cards = false",
           );
           await customUpdate(
-            "UPDATE profiles SET post_mode = 'list' WHERE show_posts_cards = false",
+            "UPDATE profiles SET post_mode = 'compact' WHERE compact_mode = true",
           );
 
           await m.dropColumn(schema.profiles, 'compact_mode');
