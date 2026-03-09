@@ -35,14 +35,58 @@ class APIFeed {
   }
 
   Future<FeedModel> get(int feedId) async {
-    throw UnimplementedError('Not yet implemented');
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Feeds not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Feeds not available on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/feed';
+        final query = {'id': feedId.toString()};
+
+        final response = await client.get(path, queryParams: query);
+
+        return FeedModel.fromPiefed(response.bodyJson);
+    }
   }
 
   Future<FeedModel> getByName(String feedName) async {
-    throw UnimplementedError('Not yet implemented');
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Feeds not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Feeds not available on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/feed';
+        final query = {'name': feedName};
+
+        final response = await client.get(path, queryParams: query);
+
+        return FeedModel.fromPiefed(response.bodyJson);
+    }
   }
 
   Future<FeedModel> subscribe(int feedId, bool state) async {
-    throw UnimplementedError('Not yet implemented');
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Feeds not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Feeds not available on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/feed/follow';
+
+        final response = await client.post(
+          path,
+          body: {'feed_id': feedId, 'follow': state},
+        );
+
+        return FeedModel.fromPiefed(response.bodyJson);
+    }
   }
 }

@@ -112,6 +112,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         case ExploreType.topics:
           final newPage = await ac.api.feed.list(
             topics: type == ExploreType.topics,
+            includeCommunities: true,
           );
 
           return (newPage.items, null);

@@ -10,6 +10,7 @@ import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
+import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
@@ -106,7 +107,15 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
-        FeedModel _ => null,
+        final FeedModel i => (bool selected) async {
+          final newValue = await context
+              .read<AppController>()
+              .api
+              .feed
+              .subscribe(i.id, selected);
+
+          onUpdate(newValue);
+        },
         _ => throw UnreachableError(),
       };
       final navigate = switch (item) {
@@ -141,6 +150,7 @@ class ExploreScreenItem extends StatelessWidget {
                 ),
               ],
             ),
+            details: FeedDetails(feed: i),
           ),
         ),
         _ => throw UnreachableError(),

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -45,6 +46,7 @@ abstract class FeedModel with _$FeedModel {
     required bool? isNSFL,
     required int? subscriptionCount,
     required int communityCount,
+    required List<CommunityModel> communities,
     required bool? public,
     required int? parentId,
     required bool? isInstanceFeed,
@@ -55,6 +57,7 @@ abstract class FeedModel with _$FeedModel {
     required DateTime? published,
     required DateTime? updated,
     required List<FeedModel> children,
+    required String? apId,
   }) = _FeedModel;
 
   factory FeedModel.fromPiefed(JsonMap json) {
@@ -68,6 +71,9 @@ abstract class FeedModel with _$FeedModel {
       isNSFL: json['nsfl'] as bool?,
       subscriptionCount: json['subscriptions_count'] as int?,
       communityCount: json['communities_count']! as int,
+      communities: (json['communities']! as List<dynamic>)
+          .map((community) => CommunityModel.fromPiefed(community))
+          .toList(),
       public: json['public'] as bool?,
       parentId:
           (json['parent_feed_id'] as int?) ?? (json['parent_topic_id'] as int?),
@@ -87,6 +93,7 @@ abstract class FeedModel with _$FeedModel {
           : (json['children']! as List<dynamic>)
                 .map((child) => FeedModel.fromPiefed(child))
                 .toList(),
+      apId: json['actor_id']! as String?,
     );
   }
 }

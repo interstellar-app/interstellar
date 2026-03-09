@@ -12,6 +12,7 @@ import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
+import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
@@ -54,13 +55,24 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                       entry.value.inputs.first.name.split('@').last ==
                           ac.instanceHost),
               onTap: () async {
+                final serverFeed = entry.value.serverFeed
+                    ? await ac.api.feed.getByName(entry.value.inputs.first.name)
+                    : null;
+
                 final feed = await FeedAggregator.create(
                   ac,
                   entry.key,
                   ac.feeds[entry.key]!,
                 );
                 if (!context.mounted) return;
-                context.router.push(FeedRoute(feed: feed));
+                context.router.push(
+                  FeedRoute(
+                    feed: feed,
+                    details: serverFeed == null
+                        ? null
+                        : FeedDetails(feed: serverFeed),
+                  ),
+                );
               },
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
