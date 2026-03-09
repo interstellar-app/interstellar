@@ -67,6 +67,7 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                 if (!context.mounted) return;
                 context.router.push(
                   FeedRoute(
+                    feedName: feed.name,
                     feed: feed,
                     details: serverFeed == null
                         ? null

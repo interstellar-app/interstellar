@@ -26,12 +26,10 @@ import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/floating_menu.dart';
 import 'package:interstellar/src/widgets/hide_on_scroll.dart';
-import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/menus/feed_menu.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
-import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subordinate_scroll.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
@@ -200,8 +198,15 @@ class _FeedDetails extends State<FeedDetails> {
 }
 
 @RoutePage()
+class HomeScreen extends FeedScreen {
+  const HomeScreen({super.key, super.scrollController})
+    : super(feedName: 'home');
+}
+
+@RoutePage()
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
+    @PathParam('feedName') required this.feedName,
     super.key,
     this.feed,
     this.details,
@@ -209,6 +214,7 @@ class FeedScreen extends StatefulWidget {
     this.scrollController,
   });
 
+  final String feedName;
   final FeedAggregator? feed;
   final Widget? details;
   final DetailedCommunityModel? createPostCommunity;

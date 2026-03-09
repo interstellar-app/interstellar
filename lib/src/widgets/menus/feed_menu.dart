@@ -4,21 +4,15 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/feed.dart';
-import 'package:interstellar/src/screens/explore/explore_screen.dart';
-import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/feed_settings_screen.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
-import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 Future<void> showFeedMenu(
@@ -62,6 +56,7 @@ Future<void> showFeedMenu(
           title: l(context).openItem(feed.name),
           onTap: () => context.router.push(
             FeedRoute(
+              feedName: feed.title,
               feed: FeedAggregator(
                 name: feed.title,
                 inputs: [

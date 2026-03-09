@@ -138,7 +138,7 @@ class _AppHomeState extends State<AppHome> {
       onPopInvokedWithResult: _handleExit,
       child: AutoTabsRouter(
         routes: [
-          FeedRoute(key: _feedKey, scrollController: _feedScrollController),
+          HomeRoute(key: _feedKey, scrollController: _feedScrollController),
           ExploreTab(key: _exploreKey, focusNode: _exploreFocusNode),
           SelfFeed(key: _accountKey),
           InboxRoute(key: _inboxKey),

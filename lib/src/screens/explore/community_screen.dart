@@ -78,6 +78,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         : '!${_data!.name}@${ac.instanceHost}';
 
     return FeedScreen(
+      feedName: _data?.name ?? '',
       feed: FeedAggregator.fromSingleSource(
         name: _data?.name ?? '',
         source: FeedSource.community,

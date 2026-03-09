@@ -141,6 +141,7 @@ class ExploreScreenItem extends StatelessWidget {
         ),
         final FeedModel i => () => context.router.push(
           FeedRoute(
+            feedName: title,
             feed: FeedAggregator(
               name: title,
               inputs: [
@@ -190,7 +191,7 @@ class ExploreScreenItem extends StatelessWidget {
         },
         subtitle: subtitle == null ? null : Text(subtitle),
         trailing: button == null
-            ? subscriptions != null && onSubscribe != null
+            ? subscriptions != null
                   ? SubscriptionButton(
                       isSubscribed: isSubscribed,
                       subscriptionCount: subscriptions,
