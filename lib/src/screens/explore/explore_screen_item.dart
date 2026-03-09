@@ -17,6 +17,7 @@ import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
+import 'package:interstellar/src/widgets/menus/feed_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
@@ -180,7 +181,11 @@ class ExploreScreenItem extends StatelessWidget {
             navigateOption: true,
           ),
           DomainModel _ => {},
-          FeedModel _ => {},
+          final FeedModel i => showFeedMenu(
+            context,
+            feed: i,
+            navigateOption: true,
+          ),
           _ => throw UnreachableError(),
         },
         subtitle: subtitle == null ? null : Text(subtitle),

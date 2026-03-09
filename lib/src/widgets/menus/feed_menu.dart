@@ -89,10 +89,20 @@ Future<void> showFeedMenu(
       ContextMenuItem(
         title: l(context).save,
         onTap: () async {
-          await ac.setFeed(feed.name, Feed(
-            inputs: {FeedInput(name: feed.name, sourceType: FeedSource.feed)}
-          ));
-        }
+          await ac.setFeed(
+            feed.name,
+            Feed(
+              inputs: {
+                FeedInput(
+                  name: normalizeName(feed.name, ac.instanceHost),
+                  sourceType: FeedSource.feed,
+                ),
+              },
+            ),
+          );
+          if (!context.mounted) return;
+          context.router.pop();
+        },
       ),
       ContextMenuItem(
         title: l(context).communities,

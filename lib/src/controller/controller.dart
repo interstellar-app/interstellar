@@ -1009,11 +1009,7 @@ class AppController with ChangeNotifier {
       final newValue = switch (source) {
         FeedSource.community => (await api.community.getByName(name)).id,
         FeedSource.user => (await api.users.getByName(name)).id,
-        FeedSource.feed =>
-          name.split(':').last !=
-                  instanceHost // tmp until proper getByName method can be made
-              ? throw Exception('Wrong instance')
-              : int.parse(name.split(':').first),
+        FeedSource.feed => (await api.feed.getByName(name)).id,
         FeedSource.topic =>
           name.split(':').last !=
                   instanceHost // tmp until proper getByName method can be made
