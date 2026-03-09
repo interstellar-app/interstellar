@@ -1003,7 +1003,9 @@ class AppController with ChangeNotifier {
                 .get())
             .firstOrNull;
 
-    if (cachedValue != null && cachedValue.sourceId != null) return cachedValue.sourceId;
+    if (cachedValue != null && cachedValue.sourceId != null) {
+      return cachedValue.sourceId;
+    }
 
     try {
       final newValue = switch (source) {

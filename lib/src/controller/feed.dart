@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:interstellar/src/api/feed_source.dart';
+import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 part 'feed.freezed.dart';
@@ -25,6 +26,20 @@ abstract class Feed with _$Feed {
   const Feed._();
 
   factory Feed.fromJson(JsonMap json) => _$FeedFromJson(json);
+
+  factory Feed.fromModel(FeedModel feed, String instanceHost) {
+    return Feed(
+      inputs: feed.communities
+          .map(
+            (community) => FeedInput(
+              name: normalizeName(community.name, instanceHost),
+              sourceType: FeedSource.community,
+              serverId: community.id,
+            ),
+          )
+          .toSet(),
+    );
+  }
 
   bool get clientFeed {
     return !serverFeed;

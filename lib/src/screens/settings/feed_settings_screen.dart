@@ -16,7 +16,10 @@ import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -309,6 +312,8 @@ class EditFeedScreen extends StatefulWidget {
 class _EditFeedScreenState extends State<EditFeedScreen> {
   late Feed feedData;
   final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  FeedModel? _feedModel;
 
   @override
   void initState() {
@@ -321,6 +326,33 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     feedData = widget.feedData == null
         ? const Feed(inputs: {})
         : widget.feedData!;
+
+    if (widget.feedData != null && widget.feedData!.serverFeed) {
+      context
+          .read<AppController>()
+          .api
+          .feed
+          .getByName(widget.feedData!.inputs.first.name)
+          .then(
+            (feed) => setState(() {
+              _feedModel = feed;
+              feedData = Feed(
+                inputs: feed.communities
+                    .map(
+                      (community) => FeedInput(
+                        name: normalizeName(
+                          community.name,
+                          context.read<AppController>().instanceHost,
+                        ),
+                        sourceType: FeedSource.community,
+                      ),
+                    )
+                    .toSet(),
+              );
+              descriptionController.text = feed.description ?? '';
+            }),
+          );
+    }
   }
 
   void addInput(FeedInput input) {
@@ -335,6 +367,36 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     setState(() {
       feedData = feedData.copyWith(inputs: inputs);
     });
+  }
+
+  Future<void> save() async {
+    final ac = context.read<AppController>();
+    final name = nameController.text;
+    final description = descriptionController.text;
+
+    if (_feedModel != null && (_feedModel!.owner ?? false)) {
+      ac.api.feed.edit(
+        feedId: _feedModel!.id,
+        title: name,
+        description: description,
+        nsfw: _feedModel!.isNSFW,
+        nsfl: _feedModel!.isNSFL,
+        public: _feedModel!.public,
+        communities: feedData.inputs.map((input) => input.name).toList(),
+      );
+
+      if (!mounted) return;
+      context.router.pop();
+      return;
+    }
+
+    if (widget.feed != null && name != widget.feed) {
+      await ac.renameFeed(widget.feed!, name);
+    }
+
+    await ac.setFeed(name, feedData);
+    if (!mounted) return;
+    context.router.pop();
   }
 
   @override
@@ -352,6 +414,48 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               nameController,
               label: l(context).filterList_name,
               onChanged: (_) => setState(() {}),
+            ),
+          ),
+          if (_feedModel != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+              child: MarkdownEditor(
+                descriptionController,
+                label: l(context).description,
+                onChanged: (_) => setState(() {}),
+                originInstance: ac.instanceHost,
+                draftController: context.watch<DraftsController>().auto(
+                  'feed_description:${_feedModel!.name}:${ac.instanceHost}:${_feedModel!.id}',
+                ),
+              ),
+            ),
+            ListTileSwitch(
+              title: Text(l(context).isNSFW),
+              value: _feedModel!.isNSFW ?? false,
+              onChanged: (newValue) => setState(() {
+                _feedModel = _feedModel!.copyWith(isNSFW: newValue);
+              }),
+            ),
+            ListTileSwitch(
+              title: Text(l(context).isNSFL),
+              value: _feedModel!.isNSFL ?? false,
+              onChanged: (newValue) => setState(() {
+                _feedModel = _feedModel!.copyWith(isNSFL: newValue);
+              }),
+            ),
+            ListTileSwitch(
+              title: Text(l(context).public),
+              value: _feedModel!.public ?? false,
+              onChanged: (newValue) => setState(() {
+                _feedModel = _feedModel!.copyWith(public: newValue);
+              }),
+            ),
+            const SizedBox(height: 16),
+          ],
+          ListTile(
+            title: Text(
+              l(context).feeds_inputs,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           ...feedData.inputs.map((input) {
@@ -417,20 +521,12 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             child: LoadingFilledButton(
               icon: const Icon(Symbols.save_rounded),
               onPressed:
-                  nameController.text.isEmpty ||
+                  (_feedModel != null && !(_feedModel!.owner ?? false)) ||
+                      nameController.text.isEmpty ||
                       (nameController.text != widget.feed &&
                           ac.filterLists.containsKey(nameController.text))
                   ? null
-                  : () async {
-                      final name = nameController.text;
-                      if (widget.feed != null && name != widget.feed) {
-                        await ac.renameFeed(widget.feed!, name);
-                      }
-
-                      await ac.setFeed(name, feedData);
-                      if (!context.mounted) return;
-                      context.router.pop();
-                    },
+                  : save,
               label: Text(l(context).saveChanges),
             ),
           ),

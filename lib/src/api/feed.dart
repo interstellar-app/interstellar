@@ -89,4 +89,50 @@ class APIFeed {
         return FeedModel.fromPiefed(response.bodyJson);
     }
   }
+
+  Future<FeedModel> edit({
+    required int feedId,
+    String? title,
+    String? description,
+    String? iconUrl,
+    String? bannerUrl,
+    bool? nsfw,
+    bool? nsfl,
+    bool? public,
+    bool? instanceFeed,
+    bool? showChildPosts,
+    int? parentId,
+    List<String>? communities,
+  }) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Feeds not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Feeds not available on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/feed';
+
+        final response = await client.put(
+          path,
+          body: {
+            'feed_id': feedId,
+            'title': ?title,
+            'description': ?description,
+            'icon_url': ?iconUrl,
+            'banner_url': ?bannerUrl,
+            'nsfw': ?nsfw,
+            'nsfl': ?nsfl,
+            'public': ?public,
+            'is_instance_feed': ?instanceFeed,
+            'show_child_posts': ?showChildPosts,
+            'parent_feed_id': ?parentId,
+            'communities': ?communities?.join('\n'),
+          },
+        );
+
+        return FeedModel.fromPiefed(response.bodyJson);
+    }
+  }
 }

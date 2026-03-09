@@ -81,8 +81,18 @@ Future<void> showFeedMenu(
           FeedSource.feed,
         ),
       ),
+      if (feed.owner ?? false)
+        ContextMenuItem(
+          title: l(context).edit,
+          onTap: () => context.router.push(
+            EditFeedRoute(
+              feed: feed.name,
+              feedData: Feed.fromModel(feed, ac.instanceHost),
+            ),
+          ),
+        ),
       ContextMenuItem(
-        title: l(context).save,
+        title: l(context).saveLocal,
         onTap: () async {
           await ac.setFeed(
             feed.name,
