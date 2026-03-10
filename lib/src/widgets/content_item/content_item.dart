@@ -918,38 +918,79 @@ class _ContentItemState extends State<ContentItem> {
                     ?contentTitle(context, null),
                     Row(
                       children: [
-                        DisplayName(
-                          widget.community!.name,
-                          onTap: () => context.router.push(
-                            CommunityRoute(
-                              communityName: widget.community!.name,
-                              communityId: widget.community!.id,
+                        Flexible(
+                          child: DisplayName(
+                            widget.community!.name,
+                            onTap: () => context.router.push(
+                              CommunityRoute(
+                                communityName: widget.community!.name,
+                                communityId: widget.community!.id,
+                              ),
                             ),
                           ),
                         ),
-                        const Text(' · '),
-                        Tooltip(
-                          message:
-                              l(
-                                context,
-                              ).createdAt(dateTimeFormat(widget.createdAt!)) +
-                              (widget.editedAt == null
-                                  ? ''
-                                  : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
-                          triggerMode: TooltipTriggerMode.tap,
-                          child: Text(
-                            dateDiffFormat(widget.createdAt!),
-                            style: const TextStyle(fontWeight: FontWeight.w300),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Tooltip(
+                            message:
+                                l(
+                                  context,
+                                ).createdAt(dateTimeFormat(widget.createdAt!)) +
+                                (widget.editedAt == null
+                                    ? ''
+                                    : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Symbols.access_time_rounded,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(dateDiffFormat(widget.createdAt!)),
+                              ],
+                            ),
                           ),
                         ),
-                        const Text(' · '),
-                        Text(
-                          l(context).pointsX(
-                            (widget.upVotes ?? 0) - (widget.downVotes ?? 0),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: Tooltip(
+                            message: l(context).pointsX(
+                              (widget.upVotes ?? 0) - (widget.downVotes ?? 0),
+                            ),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Symbols.arrow_upward_rounded,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(
+                                  ((widget.upVotes ?? 0) -
+                                          (widget.downVotes ?? 0))
+                                      .toString(),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        const Text(' · '),
-                        Text(l(context).commentsX(widget.numComments ?? 0)),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Tooltip(
+                            message: l(
+                              context,
+                            ).commentsX(widget.numComments ?? 0),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Row(
+                              children: [
+                                const Icon(Symbols.comment_rounded, size: 16),
+                                const SizedBox(width: 2),
+                                Text((widget.numComments ?? 0).toString()),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     if (widget.onReply != null && _isReplying)
