@@ -189,8 +189,6 @@ void newFeed(BuildContext context) {
                           OutlinedButton(
                             onPressed: () {
                               context.router.pop();
-                              context.router.pop();
-                              context.router.pop();
                             },
                             child: Text(l(context).cancel),
                           ),
@@ -218,7 +216,6 @@ void newFeed(BuildContext context) {
 
                 if (!context.mounted) return;
                 ac.setFeed(title, feed);
-                context.router.pop();
                 context.router.pop();
               },
             ),
@@ -283,7 +280,6 @@ void newFeed(BuildContext context) {
 
                 if (!context.mounted) return;
                 ac.setFeed(title, feed);
-                context.router.pop();
                 context.router.pop();
               },
             ),
@@ -551,7 +547,6 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                             await ac.removeFeed(widget.feed!);
 
                             if (!context.mounted) return;
-                            context.router.pop();
                             context.router.pop();
                           },
                           child: Text(l(context).delete),
