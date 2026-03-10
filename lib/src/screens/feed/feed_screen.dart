@@ -97,7 +97,9 @@ class _FeedScreenState extends State<FeedScreen> {
             .map(
               (option) => Tab(
                 text: option.title(context),
-                icon: ac.profile.compactMode ? null : Icon(option.icon),
+                icon: ac.profile.postMode.isCompact()
+                    ? null
+                    : Icon(option.icon),
               ),
             )
             .toList(),
@@ -109,7 +111,9 @@ class _FeedScreenState extends State<FeedScreen> {
             .map(
               (option) => Tab(
                 text: option.title(context),
-                icon: ac.profile.compactMode ? null : Icon(option.icon),
+                icon: ac.profile.postMode.isCompact()
+                    ? null
+                    : Icon(option.icon),
               ),
             )
             .toList(),
@@ -121,7 +125,7 @@ class _FeedScreenState extends State<FeedScreen> {
             .map(
               (sort) => Tab(
                 text: sort.title(context),
-                icon: ac.profile.compactMode ? null : Icon(sort.icon),
+                icon: ac.profile.postMode.isCompact() ? null : Icon(sort.icon),
               ),
             )
             .toList(),
@@ -930,7 +934,6 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                           _filterListWarnings[(item.type, item.id)],
                       userCanModerate: widget.userCanModerate,
                       isTopLevel: true,
-                      isCompact: ac.profile.compactMode,
                     ),
                   );
                 },

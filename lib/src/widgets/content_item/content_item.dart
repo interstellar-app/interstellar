@@ -22,6 +22,7 @@ import 'package:interstellar/src/widgets/content_item/content_item_link_panel.da
 import 'package:interstellar/src/widgets/content_item/content_reply.dart';
 import 'package:interstellar/src/widgets/content_item/poll.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
+import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
@@ -34,6 +35,21 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
+
+enum PostMode {
+  card,
+  list,
+  compact,
+  extraCompact;
+
+  bool isCompact() {
+    return index > 1;
+  }
+
+  bool hasDivider() {
+    return index > 0;
+  }
+}
 
 enum PostComponent { title, image, info, body, link, flairs }
 
@@ -98,7 +114,6 @@ class ContentItem extends StatefulWidget {
     this.onRemoveBookmarkFromList,
     this.notificationControlStatus,
     this.onNotificationControlStatusChange,
-    this.isCompact = false,
     this.onClick,
     this.onUpdateFlairs,
     this.flairs = const [],
@@ -190,7 +205,6 @@ class ContentItem extends StatefulWidget {
   final NotificationControlStatus? notificationControlStatus;
   final Future<void> Function(NotificationControlStatus)?
   onNotificationControlStatusChange;
-  final bool isCompact;
 
   final void Function()? onClick;
 
@@ -247,45 +261,47 @@ class _ContentItemState extends State<ContentItem> {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(child: widget.isCompact ? compact() : card());
+    final view = !widget.feedView
+        ? list()
+        : widget.contentTypeName == l(context).comment
+        ? card()
+        : switch (context.read<AppController>().profile.postMode) {
+            PostMode.card => card(),
+            PostMode.list => list(),
+            PostMode.compact => compact(),
+            PostMode.extraCompact => extraCompact(),
+          };
+
+    return RepaintBoundary(child: view);
   }
 
   Widget card() {
-    final isCard =
-        context.read<AppController>().profile.showPostsCards &&
-            widget.feedView ||
-        widget.contentTypeName == l(context).comment;
+    return Card(
+      color: widget.read ? Theme.of(context).cardColor.darken(3) : null,
+      margin: widget.contentTypeName == l(context).comment
+          ? const EdgeInsets.symmetric(vertical: 4)
+          : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      clipBehavior: Clip.antiAlias,
+      child: post(),
+    );
+  }
 
-    return isCard
-        ? Card(
-            color: widget.read ? Theme.of(context).cardColor.darken(3) : null,
-            margin: widget.contentTypeName == l(context).comment
-                ? const EdgeInsets.symmetric(vertical: 4)
-                : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            clipBehavior: Clip.antiAlias,
-            child: post(),
-          )
-        : Material(
-            color: widget.read
-                ? Theme.of(context).cardColor.darken(3)
-                : Colors.transparent,
-            child: Column(
-              children: [
-                post(),
-                if (widget.feedView)
-                  Divider(
-                    height: context
-                        .read<AppController>()
-                        .profile
-                        .dividerThickness,
-                    thickness: context
-                        .read<AppController>()
-                        .profile
-                        .dividerThickness,
-                  ),
-              ],
+  Widget list() {
+    return Material(
+      color: widget.read
+          ? Theme.of(context).cardColor.darken(3)
+          : Colors.transparent,
+      child: Column(
+        children: [
+          post(),
+          if (widget.feedView)
+            Divider(
+              height: context.read<AppController>().profile.dividerThickness,
+              thickness: context.read<AppController>().profile.dividerThickness,
             ),
-          );
+        ],
+      ),
+    );
   }
 
   Widget post() {
@@ -407,7 +423,8 @@ class _ContentItemState extends State<ContentItem> {
                 PostComponent.body =>
                   (widget.body != null &&
                           widget.body!.isNotEmpty &&
-                          !(widget.isPreview && ac.profile.compactMode))
+                          !(widget.isPreview &&
+                              ac.profile.postMode == PostMode.compact))
                       ? widget.poll != null
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,7 +627,8 @@ class _ContentItemState extends State<ContentItem> {
             ),
             overflow:
                 widget.isPreview &&
-                    context.watch<AppController>().profile.compactMode
+                    context.watch<AppController>().profile.postMode ==
+                        PostMode.compact
                 ? TextOverflow.ellipsis
                 : null,
           ),
@@ -827,6 +845,165 @@ class _ContentItemState extends State<ContentItem> {
                   ),
                   ?imageWidget,
                 ],
+              ),
+            ),
+          ),
+        ),
+        Divider(
+          height: ac.profile.dividerThickness,
+          thickness: ac.profile.dividerThickness,
+        ),
+      ],
+    );
+  }
+
+  Widget extraCompact() {
+    final ac = context.read<AppController>();
+
+    return Column(
+      children: [
+        Material(
+          color: widget.read
+              ? Theme.of(context).cardColor.darken(3)
+              : Colors.transparent,
+          child: Wrapper(
+            shouldWrap: widget.onClick != null,
+            parentBuilder: (child) {
+              return InkWell(
+                onTap: widget.onClick,
+                onLongPress: () => showContentMenu(
+                  context,
+                  widget,
+                  onTranslate: widget.onTranslate,
+                  onReply: _reply,
+                ),
+                onSecondaryTap: () => showContentMenu(
+                  context,
+                  widget,
+                  onTranslate: widget.onTranslate,
+                  onReply: _reply,
+                ),
+                child: child,
+              );
+            },
+            child: Wrapper(
+              shouldWrap: ac.profile.enableSwipeActions,
+              parentBuilder: (child) => SwipeItem(
+                onUpVote: widget.onUpVote,
+                onDownVote: widget.onDownVote,
+                onBoost: widget.onBoost,
+                onBookmark: () async {
+                  if (widget.activeBookmarkLists != null &&
+                      widget.onAddBookmark != null &&
+                      widget.onRemoveBookmark != null) {
+                    widget.activeBookmarkLists!.isEmpty
+                        ? widget.onAddBookmark!()
+                        : widget.onRemoveBookmark!();
+                  }
+                },
+                onReply: _reply,
+                onModeratePin: widget.onModeratePin,
+                onModerateMarkNSFW: widget.onModerateMarkNSFW,
+                onModerateDelete: widget.onModerateDelete,
+                onModerateBan: widget.onModerateBan,
+                child: child,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  spacing: 4,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ?contentTitle(context, null),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: DisplayName(
+                            widget.community!.name,
+                            onTap: () => context.router.push(
+                              CommunityRoute(
+                                communityName: widget.community!.name,
+                                communityId: widget.community!.id,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Tooltip(
+                            message:
+                                l(
+                                  context,
+                                ).createdAt(dateTimeFormat(widget.createdAt!)) +
+                                (widget.editedAt == null
+                                    ? ''
+                                    : '\n${l(context).editedAt(dateTimeFormat(widget.editedAt!))}'),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Symbols.access_time_rounded,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(dateDiffFormat(widget.createdAt!)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: Tooltip(
+                            message: l(context).pointsX(
+                              (widget.upVotes ?? 0) - (widget.downVotes ?? 0),
+                            ),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Symbols.arrow_upward_rounded,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(
+                                  ((widget.upVotes ?? 0) -
+                                          (widget.downVotes ?? 0))
+                                      .toString(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Tooltip(
+                            message: l(
+                              context,
+                            ).commentsX(widget.numComments ?? 0),
+                            triggerMode: TooltipTriggerMode.tap,
+                            child: Row(
+                              children: [
+                                const Icon(Symbols.comment_rounded, size: 16),
+                                const SizedBox(width: 2),
+                                Text((widget.numComments ?? 0).toString()),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (widget.onReply != null && _isReplying)
+                      ContentReply(
+                        content: widget,
+                        onReply: widget.onReply!,
+                        onComplete: () => setState(() {
+                          _isReplying = false;
+                        }),
+                        draftResourceId: widget.replyDraftResourceId,
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
