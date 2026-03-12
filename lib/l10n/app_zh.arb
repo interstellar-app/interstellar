@@ -60,7 +60,7 @@
     "accounts": "账号",
     "addAccount": "添加账号",
     "removeAccount": "移除账号",
-    "instanceHost": "实例主机",
+    "instanceHost": "实例",
     "recommendedInstances": "推荐实例",
     "usernameOrEmail": "用户名或邮箱",
     "password": "密码",
