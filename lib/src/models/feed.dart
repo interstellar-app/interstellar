@@ -93,7 +93,7 @@ abstract class FeedModel with _$FeedModel {
           : (json['children']! as List<dynamic>)
                 .map((child) => FeedModel.fromPiefed(child))
                 .toList(),
-      apId: json['actor_id']! as String?,
+      apId: json['actor_id'] as String?,
     );
   }
 }
