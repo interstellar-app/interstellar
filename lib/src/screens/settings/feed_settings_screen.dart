@@ -568,15 +568,15 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: OutlinedButton.icon(
                 icon: const Icon(Symbols.delete_rounded),
-                onPressed: () {
-                  showDialog<String>(
+                onPressed: () async {
+                  final shouldPop = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l(context).feeds_delete),
                       content: Text(widget.feed!),
                       actions: <Widget>[
                         OutlinedButton(
-                          onPressed: () => context.router.pop(),
+                          onPressed: () => context.router.pop(false),
                           child: Text(l(context).cancel),
                         ),
                         FilledButton(
@@ -584,13 +584,17 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                             await ac.removeFeed(widget.feed!);
 
                             if (!context.mounted) return;
-                            context.router.pop();
+                            context.router.pop(true);
                           },
                           child: Text(l(context).delete),
                         ),
                       ],
                     ),
                   );
+                  if (!context.mounted) return;
+                  if (shouldPop ?? false) {
+                    context.router.pop();
+                  }
                 },
                 label: Text(l(context).feeds_delete),
               ),
