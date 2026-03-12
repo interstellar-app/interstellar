@@ -103,6 +103,8 @@ Future<void> showFeedMenu(
                   sourceType: FeedSource.feed,
                 ),
               },
+              server: true,
+              owner: feed.owner ?? false ? ac.selectedAccount : null,
             ),
           );
           if (!context.mounted) return;

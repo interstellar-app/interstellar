@@ -22,7 +22,11 @@ abstract class FeedInput with _$FeedInput {
 @freezed
 abstract class Feed with _$Feed {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory Feed({required Set<FeedInput> inputs}) = _Feed;
+  const factory Feed({
+    required Set<FeedInput> inputs,
+    required bool server,
+    required String? owner,
+  }) = _Feed;
   const Feed._();
 
   factory Feed.fromJson(JsonMap json) => _$FeedFromJson(json);
@@ -38,6 +42,8 @@ abstract class Feed with _$Feed {
             ),
           )
           .toSet(),
+      server: true,
+      owner: null,
     );
   }
 
@@ -46,10 +52,11 @@ abstract class Feed with _$Feed {
   }
 
   bool get serverFeed {
-    return inputs.every(
-      (input) =>
-          input.sourceType == FeedSource.feed ||
-          input.sourceType == FeedSource.topic,
-    );
+    return server;
+    // return inputs.every(
+    //   (input) =>
+    //       input.sourceType == FeedSource.feed ||
+    //       input.sourceType == FeedSource.topic,
+    // );
   }
 }

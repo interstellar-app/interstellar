@@ -82,13 +82,42 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () => context.router.push(
-                      EditFeedRoute(
-                        feed: entry.key,
-                        feedData: ac.feeds[entry.key],
+                    onPressed:
+                        entry.value.serverFeed &&
+                            entry.value.owner != ac.selectedAccount
+                        ? null
+                        : () => context.router.push(
+                            EditFeedRoute(
+                              feed: entry.key,
+                              feedData: ac.feeds[entry.key],
+                            ),
+                          ),
+                    icon: const Icon(Symbols.edit_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(l(context).feeds_delete),
+                        content: Text(entry.key),
+                        actions: <Widget>[
+                          OutlinedButton(
+                            onPressed: () => context.router.pop(),
+                            child: Text(l(context).cancel),
+                          ),
+                          FilledButton(
+                            onPressed: () async {
+                              await ac.removeFeed(entry.key);
+
+                              if (!context.mounted) return;
+                              context.router.pop();
+                            },
+                            child: Text(l(context).delete),
+                          ),
+                        ],
                       ),
                     ),
-                    icon: const Icon(Symbols.edit_rounded),
+                    icon: const Icon(Symbols.delete_rounded),
                   ),
                   IconButton(
                     onPressed: () async {
@@ -176,6 +205,8 @@ void newFeed(BuildContext context) {
                       serverId: item.id,
                     ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
+                  server: true,
+                  owner: item.owner ?? false ? ac.selectedAccount : null,
                 );
 
                 var title = item.title;
@@ -238,6 +269,8 @@ void newFeed(BuildContext context) {
                       serverId: item.id,
                     ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
+                  server: true,
+                  owner: null,
                 );
 
                 var title = item.title;
@@ -320,7 +353,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     }
 
     feedData = widget.feedData == null
-        ? const Feed(inputs: {})
+        ? const Feed(inputs: {}, server: false, owner: null)
         : widget.feedData!;
 
     if (widget.feedData != null && widget.feedData!.serverFeed) {
@@ -344,6 +377,10 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                       ),
                     )
                     .toSet(),
+                server: true,
+                owner: feed.owner ?? false
+                    ? context.read<AppController>().selectedAccount
+                    : null,
               );
               descriptionController.text = feed.description ?? '';
             }),
@@ -534,7 +571,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                 onPressed: () {
                   showDialog<String>(
                     context: context,
-                    builder: (BuildContext context) => AlertDialog(
+                    builder: (context) => AlertDialog(
                       title: Text(l(context).feeds_delete),
                       content: Text(widget.feed!),
                       actions: <Widget>[

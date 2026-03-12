@@ -1356,13 +1356,13 @@ final class Schema3 extends i0.VersionedSchema {
     ),
     alias: null,
   );
-  late final Shape1 feeds = Shape1(
+  late final Shape14 feeds = Shape14(
     source: i0.VersionedTable(
       entityName: 'feeds',
       withoutRowId: false,
       isStrict: false,
       tableConstraints: ['PRIMARY KEY(name)'],
-      columns: [_column_4],
+      columns: [_column_4, _column_99, _column_100],
       attachedDatabase: database,
     ),
     alias: null,
@@ -1422,7 +1422,7 @@ final class Schema3 extends i0.VersionedSchema {
     ),
     alias: null,
   );
-  late final Shape14 profiles = Shape14(
+  late final Shape15 profiles = Shape15(
     source: i0.VersionedTable(
       entityName: 'profiles',
       withoutRowId: false,
@@ -1445,12 +1445,12 @@ final class Schema3 extends i0.VersionedSchema {
         _column_31,
         _column_32,
         _column_33,
-        _column_99,
+        _column_101,
         _column_34,
         _column_35,
         _column_36,
         _column_37,
-        _column_100,
+        _column_102,
         _column_39,
         _column_40,
         _column_41,
@@ -1502,7 +1502,7 @@ final class Schema3 extends i0.VersionedSchema {
     ),
     alias: null,
   );
-  late final Shape15 miscCache = Shape15(
+  late final Shape16 miscCache = Shape16(
     source: i0.VersionedTable(
       entityName: 'misc_cache',
       withoutRowId: false,
@@ -1522,8 +1522,8 @@ final class Schema3 extends i0.VersionedSchema {
         _column_86,
         _column_87,
         _column_88,
-        _column_101,
-        _column_102,
+        _column_103,
+        _column_104,
       ],
       attachedDatabase: database,
     ),
@@ -1603,6 +1603,34 @@ i1.GeneratedColumn<String> _column_98(String aliasedName) =>
 
 class Shape14 extends i0.VersionedTable {
   Shape14({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get server =>
+      columnsByName['server']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get owner =>
+      columnsByName['owner']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<int> _column_99(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'server',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (server IN (0, 1))',
+      defaultValue: const i1.CustomExpression('0'),
+    );
+i1.GeneratedColumn<String> _column_100(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'owner',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+
+class Shape15 extends i0.VersionedTable {
+  Shape15({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<String> get name =>
       columnsByName['name']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get autoSwitchAccount =>
@@ -1723,7 +1751,7 @@ class Shape14 extends i0.VersionedTable {
       columnsByName['show_errors']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<String> _column_99(String aliasedName) =>
+i1.GeneratedColumn<String> _column_101(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'default_link_action',
       aliasedName,
@@ -1731,7 +1759,7 @@ i1.GeneratedColumn<String> _column_99(String aliasedName) =>
       type: i1.DriftSqlType.string,
       $customConstraints: 'NULL',
     );
-i1.GeneratedColumn<String> _column_100(String aliasedName) =>
+i1.GeneratedColumn<String> _column_102(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'post_mode',
       aliasedName,
@@ -1740,8 +1768,8 @@ i1.GeneratedColumn<String> _column_100(String aliasedName) =>
       $customConstraints: 'NULL',
     );
 
-class Shape15 extends i0.VersionedTable {
-  Shape15({required super.source, required super.alias}) : super.aliased();
+class Shape16 extends i0.VersionedTable {
+  Shape16({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get mainProfile =>
@@ -1775,7 +1803,7 @@ class Shape15 extends i0.VersionedTable {
       columnsByName['unifiedpush_distributor_ack']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<String> _column_101(String aliasedName) =>
+i1.GeneratedColumn<String> _column_103(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'unifiedpush_distributor_name',
       aliasedName,
@@ -1783,7 +1811,7 @@ i1.GeneratedColumn<String> _column_101(String aliasedName) =>
       type: i1.DriftSqlType.string,
       $customConstraints: 'NULL',
     );
-i1.GeneratedColumn<int> _column_102(String aliasedName) =>
+i1.GeneratedColumn<int> _column_104(String aliasedName) =>
     i1.GeneratedColumn<int>(
       'unifiedpush_distributor_ack',
       aliasedName,

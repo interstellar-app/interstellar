@@ -266,6 +266,8 @@ class AppController with ChangeNotifier {
                           FeedInput(name: input.name, sourceType: input.source),
                     )
                     .toSet(),
+            server: feed.server,
+            owner: feed.owner,
           ),
         ),
       ),
@@ -810,7 +812,13 @@ class AppController with ChangeNotifier {
 
     await database
         .into(database.feeds)
-        .insertOnConflictUpdate(FeedsCompanion.insert(name: name));
+        .insertOnConflictUpdate(
+          FeedsCompanion.insert(
+            name: name,
+            server: Value(value.server),
+            owner: Value(value.owner),
+          ),
+        );
 
     await database.transaction(() async {
       for (final input in value.inputs) {
