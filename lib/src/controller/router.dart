@@ -72,6 +72,10 @@ class AppRouter extends RootStackRouter {
         //settings
         AutoRoute(page: BehaviorSettingsRoute.page, path: 'settings/behavior'),
         AutoRoute(page: DisplaySettingsRoute.page, path: 'settings/display'),
+        AutoRoute(
+          page: PostLayoutSettingsRoute.page,
+          path: 'settings/display/layout',
+        ),
         AutoRoute(page: FeedSettingsRoute.page, path: 'settings/feeds'),
         AutoRoute(
           page: FeedActionsSettingsRoute.page,

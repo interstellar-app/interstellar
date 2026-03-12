@@ -22,7 +22,7 @@
             "nullable": false,
             "customConstraints": null,
             "default_dart": null,
-            "default_client_dart": "() => '@kbin.earth'",
+            "default_client_dart": "() => defaultAccount",
             "dsl_features": [
               {
                 "allowed-lengths": {
@@ -833,18 +833,18 @@
             "dsl_features": []
           },
           {
-            "name": "compact_mode",
-            "getter_name": "compactMode",
-            "moor_type": "bool",
+            "name": "post_mode",
+            "getter_name": "postMode",
+            "moor_type": "string",
             "nullable": true,
             "customConstraints": null,
-            "defaultConstraints": "CHECK (\"compact_mode\" IN (0, 1))",
-            "dialectAwareDefaultConstraints": {
-              "sqlite": "CHECK (\"compact_mode\" IN (0, 1))"
-            },
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": []
+            "dsl_features": [],
+            "type_converter": {
+              "dart_expr": "const EnumNameConverter<PostMode>(PostMode.values)",
+              "dart_type_name": "PostMode"
+            }
           },
           {
             "name": "hide_action_buttons",
@@ -935,20 +935,6 @@
             "defaultConstraints": "CHECK (\"full_image_size_microblogs\" IN (0, 1))",
             "dialectAwareDefaultConstraints": {
               "sqlite": "CHECK (\"full_image_size_microblogs\" IN (0, 1))"
-            },
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "show_posts_cards",
-            "getter_name": "showPostsCards",
-            "moor_type": "bool",
-            "nullable": true,
-            "customConstraints": null,
-            "defaultConstraints": "CHECK (\"show_posts_cards\" IN (0, 1))",
-            "dialectAwareDefaultConstraints": {
-              "sqlite": "CHECK (\"show_posts_cards\" IN (0, 1))"
             },
             "default_dart": null,
             "default_client_dart": null,
@@ -1518,7 +1504,7 @@
               "sqlite": "REFERENCES accounts (handle) ON DELETE SET DEFAULT"
             },
             "default_dart": null,
-            "default_client_dart": "() => '@kbin.earth'",
+            "default_client_dart": "() => defaultAccount",
             "dsl_features": [
               {
                 "foreign_key": {
@@ -1955,7 +1941,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"profiles\" (\"name\" TEXT NOT NULL, \"auto_switch_account\" TEXT NULL REFERENCES accounts (handle) ON DELETE SET NULL, \"default_create_language\" TEXT NULL, \"disable_tab_swiping\" INTEGER NULL CHECK (\"disable_tab_swiping\" IN (0, 1)), \"ask_before_unsubscribing\" INTEGER NULL CHECK (\"ask_before_unsubscribing\" IN (0, 1)), \"ask_before_deleting\" INTEGER NULL CHECK (\"ask_before_deleting\" IN (0, 1)), \"auto_play_videos\" INTEGER NULL CHECK (\"auto_play_videos\" IN (0, 1)), \"haptic_feedback\" INTEGER NULL CHECK (\"haptic_feedback\" IN (0, 1)), \"auto_translate\" INTEGER NULL CHECK (\"auto_translate\" IN (0, 1)), \"mark_threads_read_on_scroll\" INTEGER NULL CHECK (\"mark_threads_read_on_scroll\" IN (0, 1)), \"mark_microblogs_read_on_scroll\" INTEGER NULL CHECK (\"mark_microblogs_read_on_scroll\" IN (0, 1)), \"animation_speed\" REAL NULL, \"inline_replies\" INTEGER NULL CHECK (\"inline_replies\" IN (0, 1)), \"show_cross_post_comments\" INTEGER NULL CHECK (\"show_cross_post_comments\" IN (0, 1)), \"mark_cross_posts_as_read\" INTEGER NULL CHECK (\"mark_cross_posts_as_read\" IN (0, 1)), \"default_image_store\" TEXT NULL, \"default_link_action\" TEXT NULL, \"app_language\" TEXT NULL, \"theme_mode\" TEXT NULL, \"color_scheme\" TEXT NULL, \"enable_true_black\" INTEGER NULL CHECK (\"enable_true_black\" IN (0, 1)), \"compact_mode\" INTEGER NULL CHECK (\"compact_mode\" IN (0, 1)), \"hide_action_buttons\" INTEGER NULL CHECK (\"hide_action_buttons\" IN (0, 1)), \"hide_feed_u_i_on_scroll\" INTEGER NULL CHECK (\"hide_feed_u_i_on_scroll\" IN (0, 1)), \"global_text_scale\" REAL NULL, \"always_show_instance\" INTEGER NULL CHECK (\"always_show_instance\" IN (0, 1)), \"cover_media_marked_sensitive\" INTEGER NULL CHECK (\"cover_media_marked_sensitive\" IN (0, 1)), \"full_image_size_threads\" INTEGER NULL CHECK (\"full_image_size_threads\" IN (0, 1)), \"full_image_size_microblogs\" INTEGER NULL CHECK (\"full_image_size_microblogs\" IN (0, 1)), \"show_posts_cards\" INTEGER NULL CHECK (\"show_posts_cards\" IN (0, 1)), \"post_component_order\" TEXT NULL, \"divider_thickness\" REAL NULL, \"hide_emoji_reactions\" INTEGER NULL CHECK (\"hide_emoji_reactions\" IN (0, 1)), \"feed_view_order\" TEXT NULL, \"feed_source_order\" TEXT NULL, \"feed_sort_order\" TEXT NULL, \"feed_default_threads_sort\" TEXT NULL, \"feed_default_microblog_sort\" TEXT NULL, \"feed_default_combined_sort\" TEXT NULL, \"feed_default_explore_sort\" TEXT NULL, \"feed_default_comment_sort\" TEXT NULL, \"feed_default_hide_read_posts\" INTEGER NULL CHECK (\"feed_default_hide_read_posts\" IN (0, 1)), \"feed_action_back_to_top\" TEXT NULL, \"feed_action_create_new\" TEXT NULL, \"feed_action_expand_fab\" TEXT NULL, \"feed_action_refresh\" TEXT NULL, \"feed_action_set_filter\" TEXT NULL, \"feed_action_set_sort\" TEXT NULL, \"feed_action_set_view\" TEXT NULL, \"feed_action_hide_read_posts\" TEXT NULL, \"enable_swipe_actions\" INTEGER NULL CHECK (\"enable_swipe_actions\" IN (0, 1)), \"swipe_action_left_short\" TEXT NULL, \"swipe_action_left_long\" TEXT NULL, \"swipe_action_right_short\" TEXT NULL, \"swipe_action_right_long\" TEXT NULL, \"swipe_action_threshold\" REAL NULL, \"filter_lists\" TEXT NULL, \"show_errors\" INTEGER NULL CHECK (\"show_errors\" IN (0, 1)), PRIMARY KEY (\"name\"));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"profiles\" (\"name\" TEXT NOT NULL, \"auto_switch_account\" TEXT NULL REFERENCES accounts (handle) ON DELETE SET NULL, \"default_create_language\" TEXT NULL, \"disable_tab_swiping\" INTEGER NULL CHECK (\"disable_tab_swiping\" IN (0, 1)), \"ask_before_unsubscribing\" INTEGER NULL CHECK (\"ask_before_unsubscribing\" IN (0, 1)), \"ask_before_deleting\" INTEGER NULL CHECK (\"ask_before_deleting\" IN (0, 1)), \"auto_play_videos\" INTEGER NULL CHECK (\"auto_play_videos\" IN (0, 1)), \"haptic_feedback\" INTEGER NULL CHECK (\"haptic_feedback\" IN (0, 1)), \"auto_translate\" INTEGER NULL CHECK (\"auto_translate\" IN (0, 1)), \"mark_threads_read_on_scroll\" INTEGER NULL CHECK (\"mark_threads_read_on_scroll\" IN (0, 1)), \"mark_microblogs_read_on_scroll\" INTEGER NULL CHECK (\"mark_microblogs_read_on_scroll\" IN (0, 1)), \"animation_speed\" REAL NULL, \"inline_replies\" INTEGER NULL CHECK (\"inline_replies\" IN (0, 1)), \"show_cross_post_comments\" INTEGER NULL CHECK (\"show_cross_post_comments\" IN (0, 1)), \"mark_cross_posts_as_read\" INTEGER NULL CHECK (\"mark_cross_posts_as_read\" IN (0, 1)), \"default_image_store\" TEXT NULL, \"default_link_action\" TEXT NULL, \"app_language\" TEXT NULL, \"theme_mode\" TEXT NULL, \"color_scheme\" TEXT NULL, \"enable_true_black\" INTEGER NULL CHECK (\"enable_true_black\" IN (0, 1)), \"post_mode\" TEXT NULL, \"hide_action_buttons\" INTEGER NULL CHECK (\"hide_action_buttons\" IN (0, 1)), \"hide_feed_u_i_on_scroll\" INTEGER NULL CHECK (\"hide_feed_u_i_on_scroll\" IN (0, 1)), \"global_text_scale\" REAL NULL, \"always_show_instance\" INTEGER NULL CHECK (\"always_show_instance\" IN (0, 1)), \"cover_media_marked_sensitive\" INTEGER NULL CHECK (\"cover_media_marked_sensitive\" IN (0, 1)), \"full_image_size_threads\" INTEGER NULL CHECK (\"full_image_size_threads\" IN (0, 1)), \"full_image_size_microblogs\" INTEGER NULL CHECK (\"full_image_size_microblogs\" IN (0, 1)), \"post_component_order\" TEXT NULL, \"divider_thickness\" REAL NULL, \"hide_emoji_reactions\" INTEGER NULL CHECK (\"hide_emoji_reactions\" IN (0, 1)), \"feed_view_order\" TEXT NULL, \"feed_source_order\" TEXT NULL, \"feed_sort_order\" TEXT NULL, \"feed_default_threads_sort\" TEXT NULL, \"feed_default_microblog_sort\" TEXT NULL, \"feed_default_combined_sort\" TEXT NULL, \"feed_default_explore_sort\" TEXT NULL, \"feed_default_comment_sort\" TEXT NULL, \"feed_default_hide_read_posts\" INTEGER NULL CHECK (\"feed_default_hide_read_posts\" IN (0, 1)), \"feed_action_back_to_top\" TEXT NULL, \"feed_action_create_new\" TEXT NULL, \"feed_action_expand_fab\" TEXT NULL, \"feed_action_refresh\" TEXT NULL, \"feed_action_set_filter\" TEXT NULL, \"feed_action_set_sort\" TEXT NULL, \"feed_action_set_view\" TEXT NULL, \"feed_action_hide_read_posts\" TEXT NULL, \"enable_swipe_actions\" INTEGER NULL CHECK (\"enable_swipe_actions\" IN (0, 1)), \"swipe_action_left_short\" TEXT NULL, \"swipe_action_left_long\" TEXT NULL, \"swipe_action_right_short\" TEXT NULL, \"swipe_action_right_long\" TEXT NULL, \"swipe_action_threshold\" REAL NULL, \"filter_lists\" TEXT NULL, \"show_errors\" INTEGER NULL CHECK (\"show_errors\" IN (0, 1)), PRIMARY KEY (\"name\"));"
         }
       ]
     },
