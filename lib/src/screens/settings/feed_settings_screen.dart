@@ -432,6 +432,22 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     context.router.pop();
   }
 
+  Future<void> delete() async {
+    final ac = context.read<AppController>();
+
+    if (_feedModel != null) {
+      await ac.api.feed.delete(feedId: _feedModel!.id);
+      await ac.removeFeed(widget.feed!);
+      if (!mounted) return;
+      context.router.pop();
+      return;
+    }
+
+    await ac.removeFeed(widget.feed!);
+    if (!mounted) return;
+    context.router.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final ac = context.watch<AppController>();
@@ -569,19 +585,19 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               child: OutlinedButton.icon(
                 icon: const Icon(Symbols.delete_rounded),
                 onPressed: () async {
-                  final shouldPop = await showDialog<bool>(
+                  showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text(l(context).feeds_delete),
                       content: Text(widget.feed!),
                       actions: <Widget>[
                         OutlinedButton(
-                          onPressed: () => context.router.pop(false),
+                          onPressed: () => context.router.pop(),
                           child: Text(l(context).cancel),
                         ),
                         FilledButton(
                           onPressed: () async {
-                            await ac.removeFeed(widget.feed!);
+                            await delete();
 
                             if (!context.mounted) return;
                             context.router.pop(true);
@@ -591,10 +607,6 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                       ],
                     ),
                   );
-                  if (!context.mounted) return;
-                  if (shouldPop ?? false) {
-                    context.router.pop();
-                  }
                 },
                 label: Text(l(context).feeds_delete),
               ),

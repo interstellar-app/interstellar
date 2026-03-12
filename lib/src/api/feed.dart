@@ -135,4 +135,22 @@ class APIFeed {
         return FeedModel.fromPiefed(response.bodyJson);
     }
   }
+
+  Future<void> delete({required int feedId}) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw Exception('Feeds not available on mbin');
+
+      case ServerSoftware.lemmy:
+        throw Exception('Feeds not available on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/feed/delete';
+
+        final response = await client.post(
+          path,
+          body: {'feed_id': feedId, 'deleted': true},
+        );
+    }
+  }
 }
