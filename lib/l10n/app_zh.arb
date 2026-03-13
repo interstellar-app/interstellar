@@ -60,7 +60,7 @@
     "accounts": "账号",
     "addAccount": "添加账号",
     "removeAccount": "移除账号",
-    "instanceHost": "实例主机",
+    "instanceHost": "实例",
     "recommendedInstances": "推荐实例",
     "usernameOrEmail": "用户名或邮箱",
     "password": "密码",
@@ -833,5 +833,37 @@
         }
     },
     "errorPage_authError": "账号授权似乎出现了问题。\n请点击下方按钮刷新授权。",
-    "crossPost": "转发帖子"
+    "crossPost": "转发帖子",
+    "settings_hideEmojiReactions": "隐藏表情反应",
+    "settings_debug_clearOauth": "清除 Oauth 标识符",
+    "lock": "锁定",
+    "locked": "已锁定",
+    "openLinkMenu": "链接菜单",
+    "setLinkAction": "设置链接操作",
+    "action_moderateLock": "锁定帖子",
+    "errorPage_restrictedAuthError": "此实例似乎仅限于已登录账号访问。请登录以继续",
+    "modlog": "管理日志",
+    "modlog_deletedPost": "已删除帖子",
+    "modlog_restoredPost": "已恢复帖子",
+    "modlog_deletedComment": "已删除评论",
+    "modlog_restoredComment": "已恢复评论",
+    "modlog_pinnedPost": "已置顶帖子",
+    "modlog_unpinnedPost": "已取消置顶帖子",
+    "modlog_bannedUser": "已封禁用户",
+    "modlog_unbannedUser": "已解封用户",
+    "modlog_addModerator": "已添加版主",
+    "modlog_removedModerator": "已移除版主",
+    "modlog_reason": "原因：{reason}",
+    "@modlog_reason": {
+        "placeholders": {
+            "reason": {
+                "type": "String"
+            }
+        }
+    },
+    "modlog_all": "全部",
+    "modlog_communityAdded": "已添加社区",
+    "modlog_communityRemoved": "已移除社区",
+    "modlog_postLocked": "帖子已锁定",
+    "modlog_postUnlocked": "帖子已解锁"
 }
