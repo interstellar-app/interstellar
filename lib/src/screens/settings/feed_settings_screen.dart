@@ -191,66 +191,8 @@ void newFeed(BuildContext context) {
         ContextMenuItem(
           title: l(context).serverFeed,
           subtitle: l(context).serverFeedSubtitle,
-          onTap: () => context.router.push(
-            ExploreRoute(
-              mode: ExploreType.feeds,
-              onTap: (selected, item) async {
-                if (item is! FeedModel) return;
-
-                final feed = Feed(
-                  inputs: {
-                    FeedInput(
-                      name: normalizeName(item.name, ac.instanceHost),
-                      sourceType: FeedSource.feed,
-                      serverId: item.id,
-                    ), // TODO(olorin99): tmp until proper getByName method can be made
-                  },
-                  server: true,
-                  owner: item.owner ?? false ? ac.selectedAccount : null,
-                );
-
-                var title = item.title;
-                if (ac.feeds[title] != null) {
-                  await showDialog<void>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(l(context).feeds_exist),
-                        actions: [
-                          OutlinedButton(
-                            onPressed: () {
-                              context.router.pop();
-                            },
-                            child: Text(l(context).cancel),
-                          ),
-                          LoadingFilledButton(
-                            onPressed: () async {
-                              var num = 0;
-                              while (ac.feeds[title] != null) {
-                                title = '${item.title} ${num++}';
-                              }
-                              context.router.pop();
-                            },
-                            label: Text(l(context).rename),
-                          ),
-                          LoadingFilledButton(
-                            onPressed: () async {
-                              context.router.pop();
-                            },
-                            label: Text(l(context).replace),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-
-                if (!context.mounted) return;
-                ac.setFeed(title, feed);
-                context.router.pop();
-              },
-            ),
-          ),
+          onTap: () =>
+              context.router.push(EditFeedRoute(feed: 'new', server: true)),
         ),
         ContextMenuItem(
           title: l(context).serverTopic,
@@ -328,11 +270,13 @@ class EditFeedScreen extends StatefulWidget {
   const EditFeedScreen({
     @PathParam('feed') required this.feed,
     this.feedData,
+    this.server = false,
     super.key,
   });
 
   final String? feed;
   final Feed? feedData;
+  final bool server;
 
   @override
   State<EditFeedScreen> createState() => _EditFeedScreenState();
@@ -385,6 +329,31 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               descriptionController.text = feed.description ?? '';
             }),
           );
+    } else if (widget.feedData == null && widget.server) {
+      // create new server feed
+      _feedModel = const FeedModel(
+        id: 0,
+        userId: null,
+        title: '',
+        name: '',
+        description: null,
+        isNSFW: null,
+        isNSFL: null,
+        subscriptionCount: null,
+        communityCount: 0,
+        communities: [],
+        public: null,
+        parentId: null,
+        isInstanceFeed: null,
+        icon: null,
+        banner: null,
+        subscribed: null,
+        owner: null,
+        published: null,
+        updated: null,
+        children: [],
+        apId: null,
+      );
     }
   }
 
@@ -407,8 +376,39 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     final name = nameController.text;
     final description = descriptionController.text;
 
+    // create new serverfeed
+    if (widget.server && widget.feedData == null) {
+      final feed = await ac.api.feed.create(
+        title: name,
+        description: description,
+        nsfw: _feedModel?.isNSFW,
+        nsfl: _feedModel?.isNSFL,
+        public: _feedModel?.public,
+        communities: feedData.inputs.map((input) => input.name).toList(),
+      );
+
+      await ac.setFeed(
+        feed.title,
+        Feed(
+          server: true,
+          owner: ac.selectedAccount,
+          inputs: {
+            FeedInput(
+              name: normalizeName(feed.name, ac.instanceHost),
+              sourceType: FeedSource.feed,
+            ),
+          },
+        ),
+      );
+
+      if (!mounted) return;
+      context.router.pop();
+      return;
+    }
+
+    // edit existing server feed
     if (_feedModel != null && (_feedModel!.owner ?? false)) {
-      ac.api.feed.edit(
+      await ac.api.feed.edit(
         feedId: _feedModel!.id,
         title: name,
         description: description,
@@ -570,8 +570,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             child: LoadingFilledButton(
               icon: const Icon(Symbols.save_rounded),
               onPressed:
-                  (_feedModel != null && !(_feedModel!.owner ?? false)) ||
-                      nameController.text.isEmpty ||
+                  nameController.text.isEmpty ||
                       (nameController.text != widget.feed &&
                           ac.filterLists.containsKey(nameController.text))
                   ? null

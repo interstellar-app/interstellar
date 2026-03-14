@@ -61,7 +61,9 @@ class _FeedDetails extends State<FeedDetails> {
   Widget build(BuildContext context) {
     final ac = context.read<AppController>();
 
-    final globalName = _data.name;
+    final globalName = _data.name.contains('@')
+        ? '~${_data.name}'
+        : '~${_data.name}@${ac.instanceHost}';
 
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -90,7 +92,6 @@ class _FeedDetails extends State<FeedDetails> {
                     },
                     followMode: false,
                   ),
-                  // StarButton(globalName),
                   IconButton(
                     onPressed: () => showFeedMenu(
                       context,
@@ -106,29 +107,6 @@ class _FeedDetails extends State<FeedDetails> {
                   ),
                 ],
               ),
-              // if (_data!.notificationControlStatus != null)
-              //   Padding(
-              //     padding: const EdgeInsets.only(top: 8),
-              //     child: NotificationControlSegment(
-              //       _data!.notificationControlStatus!,
-              //           (newStatus) async {
-              //         await ac.api.notifications.updateControl(
-              //           targetType: NotificationControlUpdateTargetType
-              //               .community,
-              //           targetId: _data!.id,
-              //           status: newStatus,
-              //         );
-              //
-              //         final newValue = _data!.copyWith(
-              //           notificationControlStatus: newStatus,
-              //         );
-              //         setState(() {
-              //           _data = newValue;
-              //         });
-              //         widget.onUpdate?.call(newValue);
-              //       },
-              //     ),
-              //   ),
             ],
           );
 
