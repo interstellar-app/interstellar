@@ -355,7 +355,21 @@ class APIModeration {
         }, langCodeIdPairs: await client.languageCodeIdPairs());
 
       case ServerSoftware.piefed:
-        throw UnimplementedError('Not yet implemented for PieFed');
+        const path = '/modlog';
+        final query = {
+          if (communityId != null) 'community_id': communityId.toString(),
+          if (userId != null) 'mod_person_id': userId.toString(),
+          'page': page,
+          'type_': type.toLemmy,
+        };
+        final response = await client.get(path, queryParams: query);
+        final json = response.bodyJson;
+        return ModlogListModel.fromPiefed({
+          'next_page':
+              (int.parse(((page?.isNotEmpty ?? false) ? page : '0') ?? '0') + 1)
+                  .toString(),
+          ...json,
+        }, langCodeIdPairs: await client.languageCodeIdPairs());
     }
   }
 }

@@ -124,7 +124,7 @@ Future<void> showUserMenu(
           ),
         ),
       ),
-      if (ac.serverSoftware == ServerSoftware.lemmy)
+      if (ac.serverSoftware != ServerSoftware.mbin)
         ContextMenuItem(
           title: l(context).modlog,
           onTap: () => context.router.push(

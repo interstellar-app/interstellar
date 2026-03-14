@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
@@ -162,16 +161,16 @@ Future<void> showCommunityMenu(
           ),
         ),
       ),
-      if (ac.serverSoftware != ServerSoftware.piefed)
-        ContextMenuItem(
-          title: l(context).modlog,
-          onTap: () => context.router.push(
-            ModLogCommunityRoute(
-              communityName: detailedCommunity?.name ?? community!.name,
-              communityId: detailedCommunity?.id ?? community!.id,
-            ),
+      // if (ac.serverSoftware != ServerSoftware.piefed)
+      ContextMenuItem(
+        title: l(context).modlog,
+        onTap: () => context.router.push(
+          ModLogCommunityRoute(
+            communityName: detailedCommunity?.name ?? community!.name,
+            communityId: detailedCommunity?.id ?? community!.id,
           ),
         ),
+      ),
     ],
   ).openMenu(context);
 }

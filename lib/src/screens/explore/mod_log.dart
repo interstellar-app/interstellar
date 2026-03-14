@@ -81,7 +81,10 @@ class _ModLogScreenState extends State<ModLogScreen> {
         // Lemmy API returns both positive and negative mod action types for each filter type.
         // e.g. passing PinnedPost to the API returns both pinned and unpinned actions.
         // So we do a little extra filtering here to narrow it down further.
-        ServerSoftware.piefed => throw UnimplementedError(),
+        ServerSoftware.piefed =>
+          _filter != ModLogType.all
+              ? newPage.items.where((item) => item.type == _filter).toList()
+              : newPage.items,
       };
 
       return (newItems, newPage.nextPage);
@@ -96,7 +99,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -105,7 +108,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -132,7 +135,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -141,7 +144,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -150,7 +153,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -159,7 +162,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -205,24 +208,30 @@ class _ModLogScreenState extends State<ModLogScreen> {
           : () => context.router.push(
               UserRoute(username: item.user!.name, userId: item.user!.id),
             ),
-    ModLogType.communityAdded => () => context.router.push(
-      CommunityRoute(
-        communityName: item.community.name,
-        communityId: item.community.id,
-      ),
-    ),
-    ModLogType.communityRemoved => () => context.router.push(
-      CommunityRoute(
-        communityName: item.community.name,
-        communityId: item.community.id,
-      ),
-    ),
+    ModLogType.communityAdded =>
+      item.community == null
+          ? null
+          : () => context.router.push(
+              CommunityRoute(
+                communityName: item.community!.name,
+                communityId: item.community!.id,
+              ),
+            ),
+    ModLogType.communityRemoved =>
+      item.community == null
+          ? null
+          : () => context.router.push(
+              CommunityRoute(
+                communityName: item.community!.name,
+                communityId: item.community!.id,
+              ),
+            ),
     ModLogType.postLocked =>
       item.postId == null
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),
@@ -231,7 +240,7 @@ class _ModLogScreenState extends State<ModLogScreen> {
           ? null
           : () => pushPostPage(
               context,
-              communityName: item.community.name,
+              communityName: item.community?.name,
               postId: item.postId,
               postType: PostType.thread,
             ),

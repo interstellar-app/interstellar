@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
-import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
@@ -41,13 +40,11 @@ class _AboutScreenState extends State<AboutScreen> {
             title: Text(l(context).settings_debug),
             onTap: () => context.router.push(const DebugSettingsRoute()),
           ),
-          if (context.read<AppController>().serverSoftware !=
-              ServerSoftware.piefed)
-            ListTile(
-              leading: const Icon(Symbols.shield_rounded),
-              title: Text(l(context).modlog),
-              onTap: () => context.router.push(ModLogRoute()),
-            ),
+          ListTile(
+            leading: const Icon(Symbols.shield_rounded),
+            title: Text(l(context).modlog),
+            onTap: () => context.router.push(ModLogRoute()),
+          ),
           ListTile(
             leading: const Icon(Symbols.favorite_rounded),
             title: Text(l(context).settings_donate),
