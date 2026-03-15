@@ -3,6 +3,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -87,6 +88,18 @@ List<Uri> genUserUrls(BuildContext context, UserModel user) {
         ac.instanceHost,
         '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, user.name) != ac.instanceHost ? '@' : ''}${user.name}',
       ),
+    ?apUrl,
+  ];
+}
+
+List<Uri> genFeedUrls(BuildContext context, FeedModel feed) {
+  final ac = context.read<AppController>();
+
+  final apUrl = feed.apId == null ? null : Uri.tryParse(feed.apId!);
+
+  return [
+    if (apUrl == null || apUrl.host != ac.instanceHost)
+      Uri.https(ac.instanceHost, '/f/${feed.name}'),
     ?apUrl,
   ];
 }

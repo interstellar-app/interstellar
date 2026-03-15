@@ -252,7 +252,9 @@ class _NavDrawerState extends State<NavDrawer> {
                     feed.value,
                   );
                   if (!context.mounted) return;
-                  context.router.push(FeedRoute(feed: aggregator));
+                  context.router.push(
+                    FeedRoute(feedName: aggregator.name, feed: aggregator),
+                  );
                 },
               ),
             ),

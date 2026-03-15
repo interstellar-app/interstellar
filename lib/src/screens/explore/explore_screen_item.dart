@@ -10,12 +10,14 @@ import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
+import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/menus/community_menu.dart';
+import 'package:interstellar/src/widgets/menus/feed_menu.dart';
 import 'package:interstellar/src/widgets/menus/user_menu.dart';
 import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/user_status_icons.dart';
@@ -106,7 +108,15 @@ class ExploreScreenItem extends StatelessWidget {
 
           onUpdate(newValue);
         },
-        FeedModel _ => null,
+        final FeedModel i => (bool selected) async {
+          final newValue = await context
+              .read<AppController>()
+              .api
+              .feed
+              .subscribe(i.id, selected);
+
+          onUpdate(newValue);
+        },
         _ => throw UnreachableError(),
       };
       final navigate = switch (item) {
@@ -131,6 +141,7 @@ class ExploreScreenItem extends StatelessWidget {
         ),
         final FeedModel i => () => context.router.push(
           FeedRoute(
+            feedName: title,
             feed: FeedAggregator(
               name: title,
               inputs: [
@@ -141,6 +152,7 @@ class ExploreScreenItem extends StatelessWidget {
                 ),
               ],
             ),
+            details: FeedDetails(feed: i),
           ),
         ),
         _ => throw UnreachableError(),
@@ -170,12 +182,16 @@ class ExploreScreenItem extends StatelessWidget {
             navigateOption: true,
           ),
           DomainModel _ => {},
-          FeedModel _ => {},
+          final FeedModel i => showFeedMenu(
+            context,
+            feed: i,
+            navigateOption: true,
+          ),
           _ => throw UnreachableError(),
         },
         subtitle: subtitle == null ? null : Text(subtitle),
         trailing: button == null
-            ? subscriptions != null && onSubscribe != null
+            ? subscriptions != null
                   ? SubscriptionButton(
                       isSubscribed: isSubscribed,
                       subscriptionCount: subscriptions,

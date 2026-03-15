@@ -82,6 +82,8 @@ class Accounts extends Table {
 @DataClassName('RawFeed')
 class Feeds extends Table {
   TextColumn get name => text().withLength(min: 1)();
+  BoolColumn get server => boolean().withDefault(const Constant(false))();
+  TextColumn get owner => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {name};
@@ -491,6 +493,9 @@ class InterstellarDatabase extends _$InterstellarDatabase {
 
           await m.dropColumn(schema.profiles, 'compact_mode');
           await m.dropColumn(schema.profiles, 'show_posts_cards');
+
+          await m.addColumn(schema.feeds, schema.feeds.server);
+          await m.addColumn(schema.feeds, schema.feeds.owner);
 
           await m.addColumn(schema.accounts, schema.accounts.unifiedpushKey);
           await m.addColumn(schema.accounts, schema.accounts.unifiedpushToken);

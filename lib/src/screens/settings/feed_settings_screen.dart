@@ -12,10 +12,14 @@ import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
+import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
+import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
+import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
+import 'package:interstellar/src/widgets/markdown/markdown_editor.dart';
 import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
@@ -54,25 +58,66 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                       entry.value.inputs.first.name.split('@').last ==
                           ac.instanceHost),
               onTap: () async {
+                final serverFeed = entry.value.serverFeed
+                    ? await ac.api.feed.getByName(entry.value.inputs.first.name)
+                    : null;
+
                 final feed = await FeedAggregator.create(
                   ac,
                   entry.key,
                   ac.feeds[entry.key]!,
                 );
                 if (!context.mounted) return;
-                context.router.push(FeedRoute(feed: feed));
+                context.router.push(
+                  FeedRoute(
+                    feedName: feed.name,
+                    feed: feed,
+                    details: serverFeed == null
+                        ? null
+                        : FeedDetails(feed: serverFeed),
+                  ),
+                );
               },
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () => context.router.push(
-                      EditFeedRoute(
-                        feed: entry.key,
-                        feedData: ac.feeds[entry.key],
+                    onPressed:
+                        entry.value.serverFeed &&
+                            entry.value.owner != ac.selectedAccount
+                        ? null
+                        : () => context.router.push(
+                            EditFeedRoute(
+                              feed: entry.key,
+                              feedData: ac.feeds[entry.key],
+                            ),
+                          ),
+                    icon: const Icon(Symbols.edit_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(l(context).feeds_delete),
+                        content: Text(entry.key),
+                        actions: <Widget>[
+                          OutlinedButton(
+                            onPressed: () => context.router.pop(),
+                            child: Text(l(context).cancel),
+                          ),
+                          FilledButton(
+                            onPressed: () async {
+                              await ac.removeFeed(entry.key);
+
+                              if (!context.mounted) return;
+                              context.router.pop();
+                            },
+                            child: Text(l(context).delete),
+                          ),
+                        ],
                       ),
                     ),
-                    icon: const Icon(Symbols.edit_rounded),
+                    icon: const Icon(Symbols.delete_rounded),
                   ),
                   IconButton(
                     onPressed: () async {
@@ -146,67 +191,8 @@ void newFeed(BuildContext context) {
         ContextMenuItem(
           title: l(context).serverFeed,
           subtitle: l(context).serverFeedSubtitle,
-          onTap: () => context.router.push(
-            ExploreRoute(
-              mode: ExploreType.feeds,
-              onTap: (selected, item) async {
-                if (item is! FeedModel) return;
-
-                final feed = Feed(
-                  inputs: {
-                    FeedInput(
-                      name: normalizeName(item.name, ac.instanceHost),
-                      sourceType: FeedSource.feed,
-                      serverId: item.id,
-                    ), // TODO(olorin99): tmp until proper getByName method can be made
-                  },
-                );
-
-                var title = item.title;
-                if (ac.feeds[title] != null) {
-                  await showDialog<void>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(l(context).feeds_exist),
-                        actions: [
-                          OutlinedButton(
-                            onPressed: () {
-                              context.router.pop();
-                              context.router.pop();
-                              context.router.pop();
-                            },
-                            child: Text(l(context).cancel),
-                          ),
-                          LoadingFilledButton(
-                            onPressed: () async {
-                              var num = 0;
-                              while (ac.feeds[title] != null) {
-                                title = '${item.title} ${num++}';
-                              }
-                              context.router.pop();
-                            },
-                            label: Text(l(context).rename),
-                          ),
-                          LoadingFilledButton(
-                            onPressed: () async {
-                              context.router.pop();
-                            },
-                            label: Text(l(context).replace),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-
-                if (!context.mounted) return;
-                ac.setFeed(title, feed);
-                context.router.pop();
-                context.router.pop();
-              },
-            ),
-          ),
+          onTap: () =>
+              context.router.push(EditFeedRoute(feed: 'new', server: true)),
         ),
         ContextMenuItem(
           title: l(context).serverTopic,
@@ -225,6 +211,8 @@ void newFeed(BuildContext context) {
                       serverId: item.id,
                     ), // TODO(olorin99): tmp until proper getByName method can be made
                   },
+                  server: true,
+                  owner: null,
                 );
 
                 var title = item.title;
@@ -268,7 +256,6 @@ void newFeed(BuildContext context) {
                 if (!context.mounted) return;
                 ac.setFeed(title, feed);
                 context.router.pop();
-                context.router.pop();
               },
             ),
           ),
@@ -283,11 +270,13 @@ class EditFeedScreen extends StatefulWidget {
   const EditFeedScreen({
     @PathParam('feed') required this.feed,
     this.feedData,
+    this.server = false,
     super.key,
   });
 
   final String? feed;
   final Feed? feedData;
+  final bool server;
 
   @override
   State<EditFeedScreen> createState() => _EditFeedScreenState();
@@ -296,6 +285,8 @@ class EditFeedScreen extends StatefulWidget {
 class _EditFeedScreenState extends State<EditFeedScreen> {
   late Feed feedData;
   final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  FeedModel? _feedModel;
 
   @override
   void initState() {
@@ -306,8 +297,64 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     }
 
     feedData = widget.feedData == null
-        ? const Feed(inputs: {})
+        ? const Feed(inputs: {}, server: false, owner: null)
         : widget.feedData!;
+
+    if (widget.feedData != null && widget.feedData!.serverFeed) {
+      context
+          .read<AppController>()
+          .api
+          .feed
+          .getByName(widget.feedData!.inputs.first.name)
+          .then(
+            (feed) => setState(() {
+              _feedModel = feed;
+              feedData = Feed(
+                inputs: feed.communities
+                    .map(
+                      (community) => FeedInput(
+                        name: normalizeName(
+                          community.name,
+                          context.read<AppController>().instanceHost,
+                        ),
+                        sourceType: FeedSource.community,
+                      ),
+                    )
+                    .toSet(),
+                server: true,
+                owner: feed.owner ?? false
+                    ? context.read<AppController>().selectedAccount
+                    : null,
+              );
+              descriptionController.text = feed.description ?? '';
+            }),
+          );
+    } else if (widget.feedData == null && widget.server) {
+      // create new server feed
+      _feedModel = const FeedModel(
+        id: 0,
+        userId: null,
+        title: '',
+        name: '',
+        description: null,
+        isNSFW: null,
+        isNSFL: null,
+        subscriptionCount: null,
+        communityCount: 0,
+        communities: [],
+        public: null,
+        parentId: null,
+        isInstanceFeed: null,
+        icon: null,
+        banner: null,
+        subscribed: null,
+        owner: null,
+        published: null,
+        updated: null,
+        children: [],
+        apId: null,
+      );
+    }
   }
 
   void addInput(FeedInput input) {
@@ -322,6 +369,83 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     setState(() {
       feedData = feedData.copyWith(inputs: inputs);
     });
+  }
+
+  Future<void> save() async {
+    final ac = context.read<AppController>();
+    final name = nameController.text;
+    final description = descriptionController.text;
+
+    // create new serverfeed
+    if (widget.server && widget.feedData == null) {
+      final feed = await ac.api.feed.create(
+        title: name,
+        description: description,
+        nsfw: _feedModel?.isNSFW,
+        nsfl: _feedModel?.isNSFL,
+        public: _feedModel?.public,
+        communities: feedData.inputs.map((input) => input.name).toList(),
+      );
+
+      await ac.setFeed(
+        feed.title,
+        Feed(
+          server: true,
+          owner: ac.selectedAccount,
+          inputs: {
+            FeedInput(
+              name: normalizeName(feed.name, ac.instanceHost),
+              sourceType: FeedSource.feed,
+            ),
+          },
+        ),
+      );
+
+      if (!mounted) return;
+      context.router.pop();
+      return;
+    }
+
+    // edit existing server feed
+    if (_feedModel != null && (_feedModel!.owner ?? false)) {
+      await ac.api.feed.edit(
+        feedId: _feedModel!.id,
+        title: name,
+        description: description,
+        nsfw: _feedModel!.isNSFW,
+        nsfl: _feedModel!.isNSFL,
+        public: _feedModel!.public,
+        communities: feedData.inputs.map((input) => input.name).toList(),
+      );
+
+      if (!mounted) return;
+      context.router.pop();
+      return;
+    }
+
+    if (widget.feed != null && name != widget.feed) {
+      await ac.renameFeed(widget.feed!, name);
+    }
+
+    await ac.setFeed(name, feedData);
+    if (!mounted) return;
+    context.router.pop();
+  }
+
+  Future<void> delete() async {
+    final ac = context.read<AppController>();
+
+    if (_feedModel != null) {
+      await ac.api.feed.delete(feedId: _feedModel!.id);
+      await ac.removeFeed(widget.feed!);
+      if (!mounted) return;
+      context.router.pop();
+      return;
+    }
+
+    await ac.removeFeed(widget.feed!);
+    if (!mounted) return;
+    context.router.pop();
   }
 
   @override
@@ -339,6 +463,48 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               nameController,
               label: l(context).filterList_name,
               onChanged: (_) => setState(() {}),
+            ),
+          ),
+          if (_feedModel != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+              child: MarkdownEditor(
+                descriptionController,
+                label: l(context).description,
+                onChanged: (_) => setState(() {}),
+                originInstance: ac.instanceHost,
+                draftController: context.watch<DraftsController>().auto(
+                  'feed_description:${_feedModel!.name}:${ac.instanceHost}:${_feedModel!.id}',
+                ),
+              ),
+            ),
+            ListTileSwitch(
+              title: Text(l(context).isNSFW),
+              value: _feedModel!.isNSFW ?? false,
+              onChanged: (newValue) => setState(() {
+                _feedModel = _feedModel!.copyWith(isNSFW: newValue);
+              }),
+            ),
+            ListTileSwitch(
+              title: Text(l(context).isNSFL),
+              value: _feedModel!.isNSFL ?? false,
+              onChanged: (newValue) => setState(() {
+                _feedModel = _feedModel!.copyWith(isNSFL: newValue);
+              }),
+            ),
+            ListTileSwitch(
+              title: Text(l(context).public),
+              value: _feedModel!.public ?? false,
+              onChanged: (newValue) => setState(() {
+                _feedModel = _feedModel!.copyWith(public: newValue);
+              }),
+            ),
+            const SizedBox(height: 16),
+          ],
+          ListTile(
+            title: Text(
+              l(context).feeds_inputs,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           ...feedData.inputs.map((input) {
@@ -408,16 +574,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                       (nameController.text != widget.feed &&
                           ac.filterLists.containsKey(nameController.text))
                   ? null
-                  : () async {
-                      final name = nameController.text;
-                      if (widget.feed != null && name != widget.feed) {
-                        await ac.renameFeed(widget.feed!, name);
-                      }
-
-                      await ac.setFeed(name, feedData);
-                      if (!context.mounted) return;
-                      context.router.pop();
-                    },
+                  : save,
               label: Text(l(context).saveChanges),
             ),
           ),
@@ -426,10 +583,10 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: OutlinedButton.icon(
                 icon: const Icon(Symbols.delete_rounded),
-                onPressed: () {
-                  showDialog<String>(
+                onPressed: () async {
+                  showDialog<bool>(
                     context: context,
-                    builder: (BuildContext context) => AlertDialog(
+                    builder: (context) => AlertDialog(
                       title: Text(l(context).feeds_delete),
                       content: Text(widget.feed!),
                       actions: <Widget>[
@@ -439,11 +596,10 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                         ),
                         FilledButton(
                           onPressed: () async {
-                            await ac.removeFeed(widget.feed!);
+                            await delete();
 
                             if (!context.mounted) return;
-                            context.router.pop();
-                            context.router.pop();
+                            context.router.pop(true);
                           },
                           child: Text(l(context).delete),
                         ),

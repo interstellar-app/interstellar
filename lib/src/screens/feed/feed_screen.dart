@@ -3,6 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -10,6 +12,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
@@ -19,21 +22,169 @@ import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/debouncer.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/actions.dart';
+import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:interstellar/src/widgets/error_page.dart';
 import 'package:interstellar/src/widgets/floating_menu.dart';
 import 'package:interstellar/src/widgets/hide_on_scroll.dart';
+import 'package:interstellar/src/widgets/menus/feed_menu.dart';
 import 'package:interstellar/src/widgets/paging.dart';
 import 'package:interstellar/src/widgets/scaffold.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:interstellar/src/widgets/subordinate_scroll.dart';
+import 'package:interstellar/src/widgets/subscription_button.dart';
 import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+class FeedDetails extends StatefulWidget {
+  const FeedDetails({required this.feed, super.key, this.onUpdate});
+
+  final FeedModel feed;
+  final void Function(FeedModel)? onUpdate;
+
+  @override
+  State<FeedDetails> createState() => _FeedDetails();
+}
+
+class _FeedDetails extends State<FeedDetails> {
+  late FeedModel _data;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _data = widget.feed;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ac = context.read<AppController>();
+
+    final globalName = _data.name.contains('@')
+        ? '~${_data.name}'
+        : '~${_data.name}@${ac.instanceHost}';
+
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final actions = Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SubscriptionButton(
+                    isSubscribed: _data.subscribed,
+                    subscriptionCount: _data.subscriptionCount,
+                    onSubscribe: (selected) async {
+                      final newValue = await ac.api.feed.subscribe(
+                        _data.id,
+                        selected,
+                      );
+
+                      setState(() {
+                        _data = newValue;
+                      });
+                      widget.onUpdate?.call(newValue);
+                    },
+                    followMode: false,
+                  ),
+                  IconButton(
+                    onPressed: () => showFeedMenu(
+                      context,
+                      feed: _data,
+                      update: (newFeed) {
+                        setState(() {
+                          _data = newFeed;
+                        });
+                        widget.onUpdate?.call(newFeed);
+                      },
+                    ),
+                    icon: const Icon(Symbols.more_vert_rounded),
+                  ),
+                ],
+              ),
+            ],
+          );
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  if (_data.icon != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Avatar(_data.icon, radius: 32),
+                    ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              _data.title,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            await Clipboard.setData(
+                              ClipboardData(
+                                text: _data.name.contains('@')
+                                    ? '!${_data.name}'
+                                    : '!${_data.name}@${ac.instanceHost}',
+                              ),
+                            );
+
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l(context).copied),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          child: Text(globalName),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (constraints.maxWidth > 600) actions,
+                ],
+              ),
+              if (constraints.maxWidth <= 600) actions,
+              if (_data.description != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Markdown(
+                    _data.description!,
+                    getNameHost(context, _data.name),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+@RoutePage()
+class HomeScreen extends FeedScreen {
+  const HomeScreen({super.key, super.scrollController})
+    : super(feedName: 'home');
+}
+
 @RoutePage()
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
+    @PathParam('feedName') required this.feedName,
     super.key,
     this.feed,
     this.details,
@@ -41,6 +192,7 @@ class FeedScreen extends StatefulWidget {
     this.scrollController,
   });
 
+  final String feedName;
   final FeedAggregator? feed;
   final Widget? details;
   final DetailedCommunityModel? createPostCommunity;

@@ -47,6 +47,7 @@ class _DomainScreenState extends State<DomainScreen> {
   @override
   Widget build(BuildContext context) {
     return FeedScreen(
+      feedName: _data?.name ?? '',
       feed: FeedAggregator.fromSingleSource(
         name: _data?.name ?? '',
         source: FeedSource.domain,

@@ -266,6 +266,8 @@ class AppController with ChangeNotifier {
                           FeedInput(name: input.name, sourceType: input.source),
                     )
                     .toSet(),
+            server: feed.server,
+            owner: feed.owner,
           ),
         ),
       ),
@@ -810,7 +812,13 @@ class AppController with ChangeNotifier {
 
     await database
         .into(database.feeds)
-        .insertOnConflictUpdate(FeedsCompanion.insert(name: name));
+        .insertOnConflictUpdate(
+          FeedsCompanion.insert(
+            name: name,
+            server: Value(value.server),
+            owner: Value(value.owner),
+          ),
+        );
 
     await database.transaction(() async {
       for (final input in value.inputs) {
@@ -1003,17 +1011,15 @@ class AppController with ChangeNotifier {
                 .get())
             .firstOrNull;
 
-    if (cachedValue != null) return cachedValue.sourceId;
+    if (cachedValue != null && cachedValue.sourceId != null) {
+      return cachedValue.sourceId;
+    }
 
     try {
       final newValue = switch (source) {
         FeedSource.community => (await api.community.getByName(name)).id,
         FeedSource.user => (await api.users.getByName(name)).id,
-        FeedSource.feed =>
-          name.split(':').last !=
-                  instanceHost // tmp until proper getByName method can be made
-              ? throw Exception('Wrong instance')
-              : int.parse(name.split(':').first),
+        FeedSource.feed => (await api.feed.getByName(normalisedName)).id,
         FeedSource.topic =>
           name.split(':').last !=
                   instanceHost // tmp until proper getByName method can be made

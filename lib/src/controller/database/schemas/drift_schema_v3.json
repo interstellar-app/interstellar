@@ -123,6 +123,30 @@
                 }
               }
             ]
+          },
+          {
+            "name": "server",
+            "getter_name": "server",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"server\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"server\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "owner",
+            "getter_name": "owner",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
           }
         ],
         "is_virtual": false,
@@ -1887,7 +1911,7 @@
       "sql": [
         {
           "dialect": "sqlite",
-          "sql": "CREATE TABLE IF NOT EXISTS \"feeds\" (\"name\" TEXT NOT NULL, PRIMARY KEY (\"name\"));"
+          "sql": "CREATE TABLE IF NOT EXISTS \"feeds\" (\"name\" TEXT NOT NULL, \"server\" INTEGER NOT NULL DEFAULT 0 CHECK (\"server\" IN (0, 1)), \"owner\" TEXT NULL, PRIMARY KEY (\"name\"));"
         }
       ]
     },
