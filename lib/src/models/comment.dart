@@ -249,7 +249,7 @@ abstract class CommentModel with _$CommentModel {
     int? postId,
   }) {
     final piefedComment = json['comment']! as JsonMap;
-    final piefedCounts = json['counts']! as JsonMap;
+    final piefedCounts = json['counts'] as JsonMap?;
 
     final piefedPath = piefedComment['path']! as String;
     final piefedPathSegments = piefedPath.split('.').map(int.parse).toList();
@@ -310,15 +310,15 @@ abstract class CommentModel with _$CommentModel {
           .firstOrNull
           ?.$1,
       isLocked: piefedComment['locked']! as bool,
-      upvotes: piefedCounts['upvotes']! as int,
-      downvotes: piefedCounts['downvotes']! as int,
+      upvotes: piefedCounts?['upvotes'] as int? ?? 0,
+      downvotes: piefedCounts?['downvotes'] as int? ?? 0,
       boosts: null,
       myVote: json['my_vote'] as int?,
       myBoost: null,
       createdAt: DateTime.parse(piefedComment['published']! as String),
       editedAt: optionalDateTime(json['updated'] as String?),
       children: children,
-      childCount: piefedCounts['child_count']! as int,
+      childCount: piefedCounts?['child_count'] as int? ?? 0,
       visibility: 'visible',
       canAuthUserModerate: json['can_auth_user_moderate'] as bool?,
       notificationControlStatus: json['activity_alert'] == null
@@ -328,7 +328,7 @@ abstract class CommentModel with _$CommentModel {
           : NotificationControlStatus.default_,
       bookmarks: [
         // Empty string indicates comment is saved. No string indicates comment is not saved.
-        if (json['saved']! as bool) '',
+        if (((json['saved'] as bool?) != null) && json['saved']! as bool) '',
       ],
       apId: piefedComment['ap_id']! as String,
       emojiReactions:
