@@ -3,6 +3,7 @@ import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/models/emoji_reaction.dart';
+import 'package:interstellar/src/models/event.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
@@ -103,6 +104,7 @@ abstract class PostModel with _$PostModel {
     required List<PostModel> crossPosts,
     required List<Tag> flairs,
     required PollModel? poll,
+    required EventModel? event,
     required String? apId,
     required List<EmojiReactionModel>? emojiReactions,
   }) = _PostModel;
@@ -154,6 +156,7 @@ abstract class PostModel with _$PostModel {
         [],
     flairs: [],
     poll: null,
+    event: null,
     apId: json['apId'] as String?,
     emojiReactions: null,
   );
@@ -196,6 +199,7 @@ abstract class PostModel with _$PostModel {
     crossPosts: [],
     flairs: [],
     poll: null,
+    event: null,
     apId: json['apId'] as String?,
     emojiReactions: null,
   );
@@ -280,6 +284,7 @@ abstract class PostModel with _$PostModel {
           [],
       flairs: [],
       poll: null,
+      event: null,
       apId: lemmyPost['ap_id']! as String,
       emojiReactions: null,
     );
@@ -381,6 +386,12 @@ abstract class PostModel with _$PostModel {
           ? PollModel.fromPiefed(
               piefedPost['id']! as int,
               piefedPost['poll']! as Map<String, Object?>,
+            )
+          : null,
+      event: piefedPost['post_type'] == 'Event'
+          ? EventModel.fromPiefed(
+              piefedPost['id']! as int,
+              piefedPost['event']! as JsonMap,
             )
           : null,
       apId: piefedPost['ap_id']! as String,

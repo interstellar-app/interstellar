@@ -132,7 +132,7 @@ class ContentInfo extends StatelessWidget {
                     : '\n${l(context).editedAt(dateTimeFormat(editedAt!))}'),
             triggerMode: TooltipTriggerMode.tap,
             child: Text(
-              dateDiffFormat(createdAt!),
+              dateDiffFormat(start: createdAt!),
               style: const TextStyle(fontWeight: FontWeight.w300),
             ),
           );
