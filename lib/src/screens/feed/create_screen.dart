@@ -66,7 +66,7 @@ class _CreateScreenState extends State<CreateScreen> {
   bool _pollModeMultiple = false;
   Duration _pollDuration = const Duration(days: 3);
   DateTime _startDate = DateTime.now();
-  DateTime? _endDate;
+  DateTime _endDate = DateTime.now();
   JoinMode _eventMode = JoinMode.free;
 
   @override
@@ -703,12 +703,14 @@ class _CreateScreenState extends State<CreateScreen> {
                 ?postFlairsWidget(),
                 bodyEditorWidget(),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     dateTimeSelectWidget(
                       _startDate,
                       (date) => setState(() {
                         _startDate = date;
+                        if (_endDate.isBefore(_startDate)) {
+                          _endDate = _startDate;
+                        }
                       }),
                       valid: _startDate.isAfter(DateTime.now()),
                     ),
@@ -717,22 +719,14 @@ class _CreateScreenState extends State<CreateScreen> {
                         l(context).eventError_start,
                         style: const TextStyle(fontWeight: FontWeight.w200),
                       ),
-                    if (_endDate == null)
-                      TextButton(
-                        onPressed: () => setState(() {
-                          _endDate = DateTime.now();
-                        }),
-                        child: Text(l(context).eventAddEnd),
-                      ),
-                    if (_endDate != null)
-                      dateTimeSelectWidget(
-                        _endDate,
-                        (date) => setState(() {
-                          _endDate = date;
-                        }),
-                        valid: _endDate?.isAfter(_startDate) ?? true,
-                      ),
-                    if (_endDate?.isBefore(_startDate) ?? false)
+                    dateTimeSelectWidget(
+                      _endDate,
+                      (date) => setState(() {
+                        _endDate = date;
+                      }),
+                      valid: _endDate.isAfter(_startDate),
+                    ),
+                    if (_endDate.isBefore(_startDate))
                       Text(
                         l(context).eventError_end,
                         style: const TextStyle(fontWeight: FontWeight.w200),
@@ -746,7 +740,8 @@ class _CreateScreenState extends State<CreateScreen> {
                 submitButtonWidget(
                   _community == null ||
                           _startDate.isBefore(DateTime.now()) ||
-                          (_endDate?.isBefore(_startDate) ?? false)
+                          _endDate.isBefore(_startDate) ||
+                          (_isOnline && _urlTextController.text.isEmpty)
                       ? null
                       : () async {
                           final post = await ac.api.threads.createEvent(

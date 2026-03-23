@@ -74,7 +74,14 @@ class _EventState extends State<Event> {
                 ).colorScheme.primary.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Text('Join mode: ${widget.event.joinMode}'),
+              child: Text(
+                'Join mode: ${switch (widget.event.joinMode) {
+                  JoinMode.free => l(context).eventMode_free,
+                  JoinMode.restricted => l(context).eventMode_restricted,
+                  JoinMode.external => l(context).eventMode_external,
+                  JoinMode.invite => l(context).eventMode_invite,
+                }}',
+              ),
             ),
             if (widget.event.eventFee != 0)
               Container(
