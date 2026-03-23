@@ -625,7 +625,7 @@
   "eventOnline": "Online Event",
   "eventAddEnd": "Add end date",
   "eventError_start": "The start date/time is required to be after the current date/time.",
-  "eventError_end": "Teh end date/time is required to be before the start date/time.",
+  "eventError_end": "The end date/time is required to be before the start date/time.",
   "action_setLocation": "Set Action Location",
   "action_hide": "Hide",
   "action_appBar": "App Bar",

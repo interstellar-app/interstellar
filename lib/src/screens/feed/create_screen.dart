@@ -726,7 +726,7 @@ class _CreateScreenState extends State<CreateScreen> {
                       }),
                       valid: _endDate.isAfter(_startDate),
                     ),
-                    if (_endDate.isBefore(_startDate))
+                    if (!_endDate.isAfter(_startDate))
                       Text(
                         l(context).eventError_end,
                         style: const TextStyle(fontWeight: FontWeight.w200),
