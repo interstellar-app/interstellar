@@ -74,7 +74,7 @@ class _CommunityPickerState extends State<CommunityPicker> {
                 .onError((error, stackTrace) => null);
 
         final searchFuture = context.read<AppController>().api.community.list(
-          search: textEditingValue.text,
+          search: nullIfEmpty(textEditingValue.text),
         );
 
         final [
