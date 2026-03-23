@@ -16,6 +16,8 @@ abstract class LocationModel with _$LocationModel {
   factory LocationModel.fromJson(JsonMap json) => _$LocationModelFromJson(json);
 }
 
+enum JoinMode { free, restricted, external, invite }
+
 @freezed
 abstract class EventModel with _$EventModel {
   const factory EventModel({
@@ -27,7 +29,7 @@ abstract class EventModel with _$EventModel {
     required int participantCount,
     required bool full,
     required Uri? onlineUrl,
-    required String joinMode,
+    required JoinMode joinMode,
     required String? externalParticipationUrl,
     required bool anonymousParticipation,
     required bool online,
@@ -48,7 +50,7 @@ abstract class EventModel with _$EventModel {
     onlineUrl: json['online_link'] == null
         ? null
         : Uri.parse(json['online_link']! as String),
-    joinMode: json['join_mode'] as String? ?? 'free',
+    joinMode: JoinMode.values.byName(json['join_mode'] as String? ?? 'free'),
     externalParticipationUrl: json['external_participation_url'] as String?,
     anonymousParticipation: json['anonymous_participation'] as bool? ?? false,
     online: json['online'] as bool? ?? false,
