@@ -312,7 +312,7 @@ class _CreateScreenState extends State<CreateScreen> {
     );
 
     Widget dateTimeSelectWidget(
-      DateTime? date,
+      DateTime date,
       void Function(DateTime time) onSelect, {
       bool valid = true,
     }) => ListTile(
@@ -326,50 +326,34 @@ class _CreateScreenState extends State<CreateScreen> {
           children: [
             TextButton(
               onPressed: () async {
-                var pickedDate = await showDatePicker(
+                final pickedDate = await showDatePicker(
                   context: context,
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+                  initialDate: date,
                 );
                 if (pickedDate == null) return;
                 onSelect(pickedDate);
-
-                if (!context.mounted) return;
-
-                final pickedTime = await showTimePicker(
-                  context: context,
-                  initialTime: const TimeOfDay(hour: 0, minute: 0),
-                );
-                if (pickedTime == null) return;
-                pickedDate = DateTime(
-                  pickedDate.year,
-                  pickedDate.month,
-                  pickedDate.day,
-                  pickedTime.hour,
-                  pickedTime.minute,
-                );
-                onSelect(pickedDate);
               },
-              child: Text(date != null ? dateOnlyFormat(date) : 'Unset'),
+              child: Text(dateOnlyFormat(date)),
             ),
             TextButton(
               onPressed: () async {
                 final pickedTime = await showTimePicker(
                   context: context,
-                  initialTime: const TimeOfDay(hour: 0, minute: 0),
+                  initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
                 );
                 if (pickedTime == null) return;
-                date ??= DateTime.now();
                 date = DateTime(
-                  date!.year,
-                  date!.month,
-                  date!.day,
+                  date.year,
+                  date.month,
+                  date.day,
                   pickedTime.hour,
                   pickedTime.minute,
                 );
-                onSelect(date!);
+                onSelect(date);
               },
-              child: Text(date != null ? timeOnlyFormat(date) : 'Unset'),
+              child: Text(timeOnlyFormat(date)),
             ),
           ],
         ),

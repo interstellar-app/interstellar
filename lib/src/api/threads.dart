@@ -550,10 +550,10 @@ class APIThreads {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        throw UnimplementedError('Polls are unsupported on mbin');
+        throw UnimplementedError('Events are unsupported on mbin');
 
       case ServerSoftware.lemmy:
-        throw UnimplementedError('Polls are unsupported on lemmy');
+        throw UnimplementedError('Events are unsupported on lemmy');
 
       case ServerSoftware.piefed:
         const path = '/post';
