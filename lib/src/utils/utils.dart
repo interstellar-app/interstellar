@@ -37,22 +37,23 @@ String timeOnlyFormat(DateTime input) {
   return DateFormat.jms().format(input);
 }
 
-String dateDiffFormat(DateTime input) {
-  final difference = DateTime.now().difference(input);
+String dateDiffFormat({required DateTime start, DateTime? end}) {
+  end ??= DateTime.now();
+  final difference = end.difference(start);
 
-  if (difference.inDays > 0) {
+  if (difference.inDays.abs() > 0) {
     final years = (difference.inDays / 365).truncate();
-    if (years >= 1) {
+    if (years.abs() >= 1) {
       return '${years}Y';
     }
 
     final months = (difference.inDays / 30).truncate();
-    if (months >= 1) {
+    if (months.abs() >= 1) {
       return '${months}M';
     }
 
     final weeks = (difference.inDays / 7).truncate();
-    if (weeks >= 1) {
+    if (weeks.abs() >= 1) {
       return '${weeks}w';
     }
 
@@ -61,12 +62,12 @@ String dateDiffFormat(DateTime input) {
   }
 
   final hours = difference.inHours;
-  if (hours > 0) {
+  if (hours.abs() > 0) {
     return '${hours}h';
   }
 
   final minutes = difference.inMinutes;
-  if (minutes > 0) {
+  if (minutes.abs() > 0) {
     return '${minutes}m';
   }
 

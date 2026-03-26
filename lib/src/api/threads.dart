@@ -1,14 +1,12 @@
 import 'package:collection/collection.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/event.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:mime/mime.dart';
 
 const Map<FeedSort, String> lemmyFeedSortMap = {
   FeedSort.active: 'Active',
@@ -523,6 +521,59 @@ class APIThreads {
                     },
                   )
                   .toList(),
+            },
+          },
+        );
+
+        return PostModel.fromPiefed(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+    }
+  }
+
+  Future<PostModel> createEvent(
+    int communityId, {
+    required String title,
+    required bool isOc,
+    required String body,
+    required String lang,
+    required bool isAdult,
+    required DateTime startDate,
+    required DateTime endDate,
+    required String timezone,
+    String? onlineUrl,
+    JoinMode joinMode = JoinMode.free,
+    bool online = true,
+    String feeCurrency = 'USD',
+    int fee = 0,
+  }) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        throw UnimplementedError('Events are unsupported on mbin');
+
+      case ServerSoftware.lemmy:
+        throw UnimplementedError('Events are unsupported on lemmy');
+
+      case ServerSoftware.piefed:
+        const path = '/post';
+        final response = await client.post(
+          path,
+          body: {
+            'title': title,
+            'community_id': communityId,
+            'body': body,
+            'nsfw': isAdult,
+            'language_id': await client.languageIdFromCode(lang),
+            'event': {
+              'start': startDate.toUtc().toIso8601String(),
+              'end': endDate.toUtc().toIso8601String(),
+              'timezone': timezone,
+              'online_link': ?onlineUrl,
+              'join_mode': joinMode.name,
+              'online': online,
+              'event_fee_currency': feeCurrency,
+              'event_fee_amount': fee,
             },
           },
         );

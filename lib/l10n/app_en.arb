@@ -616,6 +616,16 @@
       }
     }
   },
+  "event": "Event",
+  "eventMode": "Event Mode",
+  "eventMode_free": "Free",
+  "eventMode_restricted": "Restricted",
+  "eventMode_external": "External",
+  "eventMode_invite": "Invite",
+  "eventOnline": "Online Event",
+  "eventAddEnd": "Add end date",
+  "eventError_start": "The start date/time must be in the future.",
+  "eventError_end": "The end date/time must be after the start.",
   "action_setLocation": "Set Action Location",
   "action_hide": "Hide",
   "action_appBar": "App Bar",

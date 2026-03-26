@@ -31,7 +31,9 @@ class MessageItem extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       leading: Avatar(messageUser.avatar),
-      trailing: Text('${dateDiffFormat(item.messages.first.createdAt)} ago'),
+      trailing: Text(
+        '${dateDiffFormat(start: item.messages.first.createdAt)} ago',
+      ),
       onTap: onClick,
     );
   }

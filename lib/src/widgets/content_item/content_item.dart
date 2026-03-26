@@ -9,6 +9,7 @@ import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/emoji_reaction.dart';
+import 'package:interstellar/src/models/event.dart';
 import 'package:interstellar/src/models/image.dart';
 import 'package:interstellar/src/models/notification.dart';
 import 'package:interstellar/src/models/poll.dart';
@@ -20,6 +21,7 @@ import 'package:interstellar/src/widgets/content_item/action_buttons.dart';
 import 'package:interstellar/src/widgets/content_item/content_info.dart';
 import 'package:interstellar/src/widgets/content_item/content_item_link_panel.dart';
 import 'package:interstellar/src/widgets/content_item/content_reply.dart';
+import 'package:interstellar/src/widgets/content_item/event.dart';
 import 'package:interstellar/src/widgets/content_item/poll.dart';
 import 'package:interstellar/src/widgets/content_item/swipe_item.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
@@ -70,6 +72,7 @@ class ContentItem extends StatefulWidget {
     this.createdAt,
     this.editedAt,
     this.poll,
+    this.event,
     this.isPreview = false,
     this.fullImageSize = false,
     this.showCommunityFirst = false,
@@ -137,6 +140,7 @@ class ContentItem extends StatefulWidget {
   final DateTime? createdAt;
   final DateTime? editedAt;
   final PollModel? poll;
+  final EventModel? event;
 
   final bool isPreview;
   final bool fullImageSize;
@@ -425,12 +429,16 @@ class _ContentItemState extends State<ContentItem> {
                           widget.body!.isNotEmpty &&
                           !(widget.isPreview &&
                               ac.profile.postMode == PostMode.compact))
-                      ? widget.poll != null
+                      ? widget.poll != null || widget.event != null
                             ? Column(
+                                spacing: 10,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  if (widget.event != null)
+                                    Event(event: widget.event!),
                                   contentBody(context),
-                                  Poll(poll: widget.poll!),
+                                  if (widget.poll != null)
+                                    Poll(poll: widget.poll!),
                                 ],
                               )
                             : contentBody(context)
@@ -947,7 +955,7 @@ class _ContentItemState extends State<ContentItem> {
                                   size: 16,
                                 ),
                                 const SizedBox(width: 2),
-                                Text(dateDiffFormat(widget.createdAt!)),
+                                Text(dateDiffFormat(start: widget.createdAt!)),
                               ],
                             ),
                           ),

@@ -7,6 +7,7 @@ import 'package:interstellar/src/controller/database/database.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/event.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/community_owner_panel.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
@@ -54,6 +55,7 @@ class _CreateScreenState extends State<CreateScreen> {
   final TextEditingController _tagsTextController = TextEditingController();
   bool _isOc = false;
   bool _isAdult = false;
+  bool _isOnline = true;
   XFile? _imageFile;
   String? _altText = '';
   String _lang = '';
@@ -63,6 +65,9 @@ class _CreateScreenState extends State<CreateScreen> {
   ];
   bool _pollModeMultiple = false;
   Duration _pollDuration = const Duration(days: 3);
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
+  JoinMode _eventMode = JoinMode.free;
 
   @override
   void initState() {
@@ -306,6 +311,81 @@ class _CreateScreenState extends State<CreateScreen> {
       ],
     );
 
+    Widget dateTimeSelectWidget(
+      DateTime date,
+      void Function(DateTime time) onSelect, {
+      bool valid = true,
+    }) => ListTile(
+      title: DecoratedBox(
+        decoration: BoxDecoration(
+          color: valid ? null : Colors.red,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () async {
+                final pickedDate = await showDatePicker(
+                  context: context,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+                  initialDate: date,
+                );
+                if (pickedDate == null) return;
+                onSelect(pickedDate);
+              },
+              child: Text(dateOnlyFormat(date)),
+            ),
+            TextButton(
+              onPressed: () async {
+                final pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
+                );
+                if (pickedTime == null) return;
+                date = DateTime(
+                  date.year,
+                  date.month,
+                  date.day,
+                  pickedTime.hour,
+                  pickedTime.minute,
+                );
+                onSelect(date);
+              },
+              child: Text(timeOnlyFormat(date)),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Widget eventModeWidget() => ListTile(
+      title: Text(l(context).eventMode),
+      onTap: () async {
+        final mode = await eventMode(context).askSelection(context, _eventMode);
+        if (mode == null) return;
+        setState(() {
+          _eventMode = mode;
+        });
+      },
+      trailing: Text(switch (_eventMode) {
+        JoinMode.free => l(context).eventMode_free,
+        JoinMode.restricted => l(context).eventMode_restricted,
+        JoinMode.external => l(context).eventMode_external,
+        JoinMode.invite => l(context).eventMode_invite,
+      }),
+    );
+
+    Widget eventOnlineWidget() => CheckboxListTile(
+      title: Text(l(context).eventOnline),
+      value: _isOnline,
+      onChanged: (newValue) => setState(() {
+        _isOnline = newValue!;
+      }),
+      controlAffinity: ListTileControlAffinity.leading,
+    );
+
     Widget submitButtonWidget(Future<void> Function()? onPressed) => Padding(
       padding: const EdgeInsets.all(8),
       child: LoadingFilledButton(
@@ -350,7 +430,7 @@ class _CreateScreenState extends State<CreateScreen> {
         ServerSoftware.mbin => 5,
         // Microblog tab only for Mbin
         ServerSoftware.lemmy => 4,
-        ServerSoftware.piefed => 5,
+        ServerSoftware.piefed => 6,
         // Poll tab only for Piefed
       },
       child: Scaffold(
@@ -375,11 +455,16 @@ class _CreateScreenState extends State<CreateScreen> {
                   text: l(context).create_microblog,
                   icon: const Icon(Symbols.edit_note_rounded),
                 ),
-              if (ac.serverSoftware == ServerSoftware.piefed)
+              if (ac.serverSoftware == ServerSoftware.piefed) ...[
                 Tab(
                   text: l(context).poll,
                   icon: const Icon(Symbols.poll_rounded),
                 ),
+                Tab(
+                  text: l(context).event,
+                  icon: const Icon(Symbols.event_rounded),
+                ),
+              ],
               Tab(
                 text: l(context).create_community,
                 icon: const Icon(Symbols.group_rounded),
@@ -555,7 +640,7 @@ class _CreateScreenState extends State<CreateScreen> {
                   context.router.pop();
                 }),
               ]),
-            if (ac.serverSoftware == ServerSoftware.piefed)
+            if (ac.serverSoftware == ServerSoftware.piefed) ...[
               listViewWidget([
                 communityPickerWidget(),
                 titleEditorWidget(),
@@ -595,6 +680,81 @@ class _CreateScreenState extends State<CreateScreen> {
                         },
                 ),
               ]),
+              listViewWidget([
+                communityPickerWidget(),
+                linkEditorWidget(),
+                titleEditorWidget(),
+                ?postFlairsWidget(),
+                bodyEditorWidget(),
+                Column(
+                  children: [
+                    dateTimeSelectWidget(
+                      _startDate,
+                      (date) => setState(() {
+                        _startDate = date;
+                        if (_endDate.isBefore(_startDate)) {
+                          _endDate = _startDate;
+                        }
+                      }),
+                      valid: _startDate.isAfter(DateTime.now()),
+                    ),
+                    if (_startDate.isBefore(DateTime.now()))
+                      Text(
+                        l(context).eventError_start,
+                        style: const TextStyle(fontWeight: FontWeight.w200),
+                      ),
+                    dateTimeSelectWidget(
+                      _endDate,
+                      (date) => setState(() {
+                        _endDate = date;
+                      }),
+                      valid: _endDate.isAfter(_startDate),
+                    ),
+                    if (!_endDate.isAfter(_startDate))
+                      Text(
+                        l(context).eventError_end,
+                        style: const TextStyle(fontWeight: FontWeight.w200),
+                      ),
+                  ],
+                ),
+                eventModeWidget(),
+                eventOnlineWidget(),
+                nsfwToggleWidget(),
+                languagePickerWidget(),
+                submitButtonWidget(
+                  _community == null ||
+                          _startDate.isBefore(DateTime.now()) ||
+                          _endDate.isBefore(_startDate) ||
+                          (_isOnline && _urlTextController.text.isEmpty)
+                      ? null
+                      : () async {
+                          final post = await ac.api.threads.createEvent(
+                            _community!.id,
+                            title: _titleTextController.text,
+                            isOc: _isOc,
+                            body: _bodyTextController.text,
+                            lang: _lang,
+                            isAdult: _isAdult,
+                            startDate: _startDate,
+                            endDate: _endDate,
+                            timezone: DateTime.now().timeZoneName,
+                            joinMode: _eventMode,
+                            online: _isOnline,
+                            onlineUrl: _urlTextController.text.isEmpty
+                                ? null
+                                : _urlTextController.text,
+                          );
+                          await ac.api.threads.assignFlairs(
+                            post.id,
+                            _postFlairs.map((flair) => flair.id).toList(),
+                          );
+
+                          if (!context.mounted) return;
+                          context.router.pop();
+                        },
+                ),
+              ]),
+            ],
             CommunityOwnerPanelGeneral(
               data: null,
               onUpdate: (newCommunity) {
@@ -648,5 +808,22 @@ SelectionMenu<Duration?> pollDuration(BuildContext context) =>
       SelectionMenuItem(
         value: const Duration(days: 365),
         title: l(context).pollDuration_days(365),
+      ),
+    ]);
+
+SelectionMenu<JoinMode?> eventMode(BuildContext context) =>
+    SelectionMenu(l(context).event, [
+      SelectionMenuItem(value: JoinMode.free, title: l(context).eventMode_free),
+      SelectionMenuItem(
+        value: JoinMode.restricted,
+        title: l(context).eventMode_restricted,
+      ),
+      SelectionMenuItem(
+        value: JoinMode.external,
+        title: l(context).eventMode_external,
+      ),
+      SelectionMenuItem(
+        value: JoinMode.invite,
+        title: l(context).eventMode_invite,
       ),
     ]);
