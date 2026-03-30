@@ -1,7 +1,14 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/feed.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/search.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
+import 'package:interstellar/src/utils/utils.dart';
 
 class APISearch {
   APISearch(this.client);
@@ -96,6 +103,95 @@ class APISearch {
           json,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
+    }
+  }
+
+  Future<dynamic> resolveObject(String search) async {
+    try {
+      switch (client.software) {
+        case ServerSoftware.mbin:
+          // using the search api here kinda works but is slow and throws 500 errors occasionally
+
+          const path = '/search';
+
+          final response = await client.get(path, queryParams: {'q': search});
+
+          // get first of the ap objects found.
+          final json = response.bodyJson;
+          final actor = (json['apActors']! as List<dynamic>).firstOrNull;
+          if (actor?['type'] == 'user')
+            return DetailedUserModel.fromMbin(actor['object'] as JsonMap);
+          if (actor?['type'] == 'magazine')
+            return DetailedCommunityModel.fromMbin(actor['object'] as JsonMap);
+
+          final object = (json['apObjects']! as List<dynamic>).firstOrNull;
+          if (object?['itemType'] == 'entry')
+            return PostModel.fromMbinEntry(object as JsonMap);
+          if (object?['itemType'] == 'post')
+            return PostModel.fromMbinPost(object as JsonMap);
+          if (object?['itemType'] == 'entry_comment' ||
+              object?['itemType'] == 'post_comment')
+            return CommentModel.fromMbin(object as JsonMap);
+
+          return null;
+
+        case ServerSoftware.lemmy:
+          const path = '/resolve_object';
+
+          final response = await client.get(path, queryParams: {'q': search});
+
+          final json = response.bodyJson;
+          if (json['comment'] != null) {
+            return CommentModel.fromPiefed(
+              json['comment']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['post'] != null) {
+            return PostModel.fromPiefed(
+              json['post']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['community'] != null) {
+            return DetailedCommunityModel.fromPiefed(
+              json['community']! as JsonMap,
+            );
+          } else if (json['person'] != null) {
+            return DetailedUserModel.fromPiefed(json['person']! as JsonMap);
+          }
+          return null;
+
+        case ServerSoftware.piefed:
+          const path = '/resolve_object';
+
+          final response = await client.get(path, queryParams: {'q': search});
+
+          final json = response.bodyJson;
+          if (json['comment'] != null) {
+            return CommentModel.fromPiefed(
+              json['comment']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['post'] != null) {
+            return PostModel.fromPiefed(
+              json['post']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['community'] != null) {
+            return DetailedCommunityModel.fromPiefed(
+              json['community']! as JsonMap,
+            );
+          } else if (json['person'] != null) {
+            return DetailedUserModel.fromPiefed(json['person']! as JsonMap);
+          } else if (json['feed'] != null) {
+            return FeedModel.fromPiefed(json['feed']! as JsonMap);
+          }
+          return null;
+      }
+    } on ClientException catch (e) {
+      if (e.message.contains('No object found')) {
+        return null;
+      }
+      rethrow;
     }
   }
 }

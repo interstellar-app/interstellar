@@ -286,6 +286,17 @@ class AppController with ChangeNotifier {
     _defaultDownloadsDir = await getDefaultDownloadDir();
 
     await _updateAPI();
+
+    final federatedDomains = await api.instance.federated();
+
+    await database.transaction(() async {
+      for (final instance in federatedDomains) {
+        await database
+            .into(database.instances)
+            .insertOnConflictUpdate(instance);
+      }
+    });
+
     logger.i('Finished init');
   }
 
