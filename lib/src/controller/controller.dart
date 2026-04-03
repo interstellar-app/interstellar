@@ -286,7 +286,12 @@ class AppController with ChangeNotifier {
     _defaultDownloadsDir = await getDefaultDownloadDir();
 
     await _updateAPI();
+    _cacheFederatedInstances();
 
+    logger.i('Finished init');
+  }
+
+  Future<void> _cacheFederatedInstances() async {
     final federatedDomains = await api.instance.federated();
 
     await database.transaction(() async {
@@ -295,9 +300,13 @@ class AppController with ChangeNotifier {
             .into(database.instances)
             .insertOnConflictUpdate(instance);
       }
+      await database
+          .into(database.instances)
+          .insertOnConflictUpdate(
+            InstancesCompanion.insert(domain: instanceHost),
+          );
     });
-
-    logger.i('Finished init');
+    logger.i('Cached instances federated with $instanceHost');
   }
 
   Future<void> _rebuildProfile() async {
@@ -602,7 +611,8 @@ class AppController with ChangeNotifier {
       await switchAccounts(key, force: forceSwitch);
     } else {
       // The following is already done when switchAccounts is run, so only needed without switchAccounts.
-      _updateAPI();
+      await _updateAPI();
+      _cacheFederatedInstances();
 
       notifyListeners();
     }
@@ -672,6 +682,7 @@ class AppController with ChangeNotifier {
 
     _selectedAccount = newAccount;
     await _updateAPI();
+    _cacheFederatedInstances();
 
     userMentionCache.clear();
     communityMentionCache.clear();

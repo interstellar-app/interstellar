@@ -299,6 +299,31 @@ class DebugSettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Symbols.device_hub_rounded),
+            title: Text(l(context).settings_debug_clearInstancesCache),
+            onTap: () => showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l(context).settings_debug_clearInstancesCache),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => context.router.pop(),
+                    child: Text(l(context).cancel),
+                  ),
+                  FilledButton(
+                    onPressed: () async {
+                      await database.delete(database.instances).go();
+                      ac.logger.i('Cleared federated instances cache');
+                      if (!context.mounted) return;
+                      context.router.pop();
+                    },
+                    child: Text(l(context).remove),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
             leading: const Icon(Symbols.list_rounded),
             title: Text(l(context).settings_debug_log),
             onTap: () => context.router.push(const LogConsole()),
