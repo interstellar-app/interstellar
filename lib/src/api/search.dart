@@ -119,19 +119,24 @@ class APISearch {
           // get first of the ap objects found.
           final json = response.bodyJson;
           final actor = (json['apActors']! as List<dynamic>).firstOrNull;
-          if (actor?['type'] == 'user')
+          if (actor?['type'] == 'user') {
             return DetailedUserModel.fromMbin(actor['object'] as JsonMap);
-          if (actor?['type'] == 'magazine')
+          }
+          if (actor?['type'] == 'magazine') {
             return DetailedCommunityModel.fromMbin(actor['object'] as JsonMap);
+          }
 
           final object = (json['apObjects']! as List<dynamic>).firstOrNull;
-          if (object?['itemType'] == 'entry')
+          if (object?['itemType'] == 'entry') {
             return PostModel.fromMbinEntry(object as JsonMap);
-          if (object?['itemType'] == 'post')
+          }
+          if (object?['itemType'] == 'post') {
             return PostModel.fromMbinPost(object as JsonMap);
+          }
           if (object?['itemType'] == 'entry_comment' ||
-              object?['itemType'] == 'post_comment')
+              object?['itemType'] == 'post_comment') {
             return CommentModel.fromMbin(object as JsonMap);
+          }
 
           return null;
 
@@ -142,21 +147,21 @@ class APISearch {
 
           final json = response.bodyJson;
           if (json['comment'] != null) {
-            return CommentModel.fromPiefed(
+            return CommentModel.fromLemmy(
               json['comment']! as JsonMap,
               langCodeIdPairs: await client.languageCodeIdPairs(),
             );
           } else if (json['post'] != null) {
-            return PostModel.fromPiefed(
+            return PostModel.fromLemmy(
               json['post']! as JsonMap,
               langCodeIdPairs: await client.languageCodeIdPairs(),
             );
           } else if (json['community'] != null) {
-            return DetailedCommunityModel.fromPiefed(
+            return DetailedCommunityModel.fromLemmy(
               json['community']! as JsonMap,
             );
           } else if (json['person'] != null) {
-            return DetailedUserModel.fromPiefed(json['person']! as JsonMap);
+            return DetailedUserModel.fromLemmy(json['person']! as JsonMap);
           }
           return null;
 
@@ -188,7 +193,8 @@ class APISearch {
           return null;
       }
     } on ClientException catch (e) {
-      if (e.message.contains('No object found')) {
+      if (e.message.contains('No object found') ||
+          e.message.contains('couldnt_find_object')) {
         return null;
       }
       rethrow;

@@ -208,7 +208,7 @@ abstract class PostModel with _$PostModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    final postView = json['post_view']! as JsonMap;
+    final postView = json['post_view'] as JsonMap? ?? json;
     final lemmyPost = postView['post']! as JsonMap;
     final lemmyCounts = postView['counts'] as JsonMap?;
 
