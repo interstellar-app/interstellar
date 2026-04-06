@@ -1,14 +1,184 @@
 {
-  "interstellar": "Interstellar",
-  "@interstellar": {},
-  "explore": "Jelajah",
-  "@explore": {},
-  "feed": "Linimasa",
-  "@feed": {},
-  "accounts": "Akun-akun",
-  "@accounts": {},
-  "addAccount": "Tambahkan Akun",
-  "@addAccount": {},
-  "removeAccount": "Hapus Akun",
-  "@removeAccount": {}
+    "interstellar": "Interstellar",
+    "explore": "Jelajah",
+    "feed": "Linimasa",
+    "accounts": "Akun-akun",
+    "addAccount": "Tambahkan Akun",
+    "removeAccount": "Hapus Akun",
+    "usernameOrEmail": "Nama pengguna atau Email",
+    "password": "Masuk",
+    "login": "Login",
+    "refreshAuth": "Perbarui login",
+    "totpToken": "TOTP Token (jika diperlukan)",
+    "cancel": "Batal",
+    "rename": "Ganti nama",
+    "replace": "Ganti",
+    "continue_": "Lanjutkan",
+    "remove": "Hapus",
+    "guest": "Pengunjung",
+    "botAccount": "Akun Bot",
+    "newUser": "Pengguna Baru",
+    "description": "Deskripsi",
+    "isNSFW": "Merupakan Konten Dewasa",
+    "isNSFL": "Merupakan Sangat Menggangu",
+    "public": "Publik",
+    "filter": "Filter berdasarkan",
+    "filter_all": "Semua",
+    "filter_allResults": "Seluruh hasil",
+    "filter_subscribed": "Berlangganan",
+    "filter_moderated": "Termoderasi",
+    "filter_favorited": "Ditandai Favorit",
+    "filter_blocked": "Diblokir",
+    "filter_local": "Lokal",
+    "filter_followed": "Diikuti",
+    "filter_followers": "Pengikut",
+    "filter_new": "Baru",
+    "filter_read": "Baca",
+    "sort": "Urutkan berdasarkan",
+    "sortComments": "Urutkan komentar",
+    "sort_active": "Aktif",
+    "sort_hot": "Populer",
+    "sort_newest": "Terbaru",
+    "sort_oldest": "Paling Lama",
+    "sort_top": "Top",
+    "sort_top_1h": "Teratas dalam 1 Jam",
+    "sort_top_3h": "Teratas dalam 3 Jam",
+    "sort_top_6h": "Teratas dalam 6 Jam",
+    "sort_top_12h": "Teratas dalam 12 Jam",
+    "sort_top_1d": "Teratas Hari Ini",
+    "sort_top_1w": "Teratas Minggu Ini",
+    "sort_top_1m": "Teratas Bulan Ini",
+    "sort_top_3m": "Teratas dalam 3 Bulan",
+    "sort_top_6m": "Teratas dalam 6 Bulan",
+    "sort_top_9m": "Teratas dalam 9 Bulan",
+    "sort_top_1y": "Teratas Tahun Ini",
+    "sort_top_all": "Teratas Sepanjang Waktu",
+    "sort_commented": "Berkomentar",
+    "sort_commented_3h": "Berkomentar 3 Jam",
+    "sort_newComments": "­­­Komentar Baru",
+    "sort_controversial": "Kontroversial",
+    "sort_scaled": "Diskalakan",
+    "microblog": "Blog singkat",
+    "combined": "Gabungan",
+    "stars": "Bintang",
+    "stars_empty": "Ini terasa kosong; komunitas atau pengguna yang Anda bintangi akan muncul disini.",
+    "subscriptions": "Langganan",
+    "subscriptions_community_empty": "Ini terasa kosong; berlangganan ke komunitas untuk muncul disini.",
+    "subscriptions_user": "Pengguna Diikuti",
+    "subscriptions_user_all": "Diikuti",
+    "subscriptions_user_empty": "Ini terasa kosong; ikuti pengguna untuk muncul di sini.",
+    "subscriptions_domain": "Domain Langganan",
+    "subscriptions_domain_empty": "Ini terasa kosong; ikuti domain untuk muncul.",
+    "feeds_input": "Tambahkan masukan",
+    "topics": "Topik",
+    "topic": "Topik",
+    "server": "Server",
+    "client": "Klien",
+    "clientFeedSubtitle": "Masukan feed diambil dan digabungkan secara lokal di perangkat. Dapat digunakan di berbagai sesi.",
+    "serverFeed": "Feed server",
+    "serverFeedSubtitle": "Masukan feed digabungkan di server. Sesuai dengan PieFed.",
+    "serverTopic": "Topik server",
+    "serverTopicSubtitle": "Masukan feed digabungkan di server. Sesuai dengan topik PieFed.",
+    "color": "Warna",
+    "tags_new": "Tag baru",
+    "tags_users": "Pengguna ditag",
+    "tags_noUsers": "Tidak ada pengguna yang ditemukan dengan tag tersebut. Tetapkan tag ke pengguna melalui halaman profil mereka untuk memulai.",
+    "pickColor": "Pilih warna",
+    "post": "Unggah",
+    "postDeleted": "Unggahan Dihapus",
+    "crossPostComments": "Komentar dari {community}",
+    "@crossPostComments": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "comment": "Komentar",
+    "comments": "Komentar",
+    "commentDeleted": "Komentar Dihapus",
+    "commentBy": "Komentar {username}",
+    "@commentBy": {
+        "placeholders": {
+            "username": {
+                "type": "String"
+            }
+        }
+    },
+    "search": "Cari",
+    "searchSource": "Cari {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "communities": "Komunitas",
+    "people": "Pengguna",
+    "domains": "Domain",
+    "openInBrowser": "Buka di Peramban",
+    "openItem": "Buka {item}",
+    "@openItem": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "modsOf": "Mods di {community}",
+    "@modsOf": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "viewMods": "Lihat Moderator",
+    "modPanel": "Panel Moderator",
+    "ownerPanel": "Pemilik Panel",
+    "reportStatus_any": "Semua",
+    "reportStatus_appeal": "Banding",
+    "reportStatus_approved": "Diterima",
+    "reportStatus_closed": "Ditutup",
+    "reportStatus_pending": "Pending",
+    "reportStatus_rejected": "Ditolak",
+    "report_accept": "Diterima",
+    "report_reject": "Tolak",
+    "reportedUser": "Pengguna yang dilaporkan: ",
+    "reportedBy": "Dilaporkan oleh: ",
+    "copy": "Salin",
+    "copied": "Disalin",
+    "share": "Bagikan",
+    "postingRestricted": "Posting dibatasi untuk mods",
+    "owner": "Pemilik",
+    "account": "Akun",
+    "account_switch": "Ganti akun",
+    "account_edit": "Sunting profil akun",
+    "account_settings_about": "Tentang",
+    "account_settings_settings": "Pengaturan",
+    "account_settings_showNSFW": "Tunjukkan NSFW",
+    "account_settings_blurNSFW": "Kaburkan NSFW",
+    "feeds_addTo": "Tambahkan ke feed",
+    "clientFeed": "Feed klien",
+    "tags_exist": "Tag sudah ada",
+    "inbox": "Pesan",
+    "notifications": "Notifikasi",
+    "notifications_readAll": "Tandai dibaca seluruhnya",
+    "newChat": "Pesan baru",
+    "reply": "Balas",
+    "replying_toX": "Balas ke {user}",
+    "@replying_toX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "send": "Kirim",
+    "settings": "Pengaturan",
+    "settings_behavior": "Perilaku",
+    "settings_display": "Tampilan",
+    "settings_feedActions": "Aksi Feed",
+    "settings_notifications": "Notifikasi"
 }
