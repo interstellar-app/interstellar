@@ -72,6 +72,12 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 flutter {
