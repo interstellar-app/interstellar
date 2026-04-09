@@ -48,21 +48,21 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     _data = widget.initData;
 
-    if (_data == null) {
-      (widget.communityId == null
-              ? context.read<AppController>().api.community.getByName(
-                  widget.communityName,
-                )
-              : context.read<AppController>().api.community.get(
-                  widget.communityId!,
-                ))
-          .then((value) {
-            if (!mounted) return;
-            setState(() {
-              _data = value;
-            });
+    // if (_data == null) {
+    (widget.communityId == null
+            ? context.read<AppController>().api.community.getByName(
+                widget.communityName,
+              )
+            : context.read<AppController>().api.community.get(
+                widget.communityId!,
+              ))
+        .then((value) {
+          if (!mounted) return;
+          setState(() {
+            _data = value;
           });
-    }
+        });
+    // }
   }
 
   @override

@@ -1,9 +1,10 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-enum ReportStatus { any, approved, pending, rejected }
+enum ReportStatus { any, approved, pending, rejected, resolved }
 
 class APICommunityModeration {
   APICommunityModeration(this.client);
@@ -24,6 +25,56 @@ class APICommunityModeration {
 
         return CommunityReportListModel.fromMbin(response.bodyJson);
       case ServerSoftware.lemmy:
+        const path = '/post/report/list';
+        final query = {
+          'page': page,
+          'community_id': communityId.toString(),
+          'unresolved_only': (status == ReportStatus.pending).toString(),
+        };
+
+        final response = await client.get(path, queryParams: query);
+
+        final json = response.bodyJson;
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['post_reports']! as List<dynamic>,
+          page,
+        );
+
+        return CommunityReportListModel.fromLemmy(
+          json,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+      case ServerSoftware.piefed:
+        throw UnimplementedError('Not yet implemented');
+    }
+  }
+
+  Future<CommunityReportModel> resolve(
+    int communityId,
+    int reportId,
+    bool delete,
+  ) async {
+    switch (client.software) {
+      case ServerSoftware.mbin:
+        final path =
+            '/moderate/magazine/$communityId/reports/$reportId/${delete ? 'reject' : 'accept'}';
+
+        final response = await client.post(path);
+
+        return CommunityReportModel.fromMbin(response.bodyJson);
+      case ServerSoftware.lemmy:
+        const path = '/post/report/resolve';
+
+        final response = await client.put(
+          path,
+          body: {'report_id': reportId, 'resolved': delete},
+        );
+
+        return CommunityReportModel.fromLemmy(
+          response.bodyJson['post_report_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+
       case ServerSoftware.piefed:
         throw UnimplementedError('Not yet implemented');
     }

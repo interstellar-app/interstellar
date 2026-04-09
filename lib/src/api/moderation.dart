@@ -116,7 +116,21 @@ class APIModeration {
         };
 
       case ServerSoftware.lemmy:
-        throw Exception('Moderation not implemented on Lemmy yet');
+        const path = '/post/feature';
+
+        final response = await client.post(
+          path,
+          body: {
+            'post_id': postId,
+            'featured': pinned,
+            'feature_type': 'Community',
+          },
+        );
+
+        return PostModel.fromLemmy(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post/feature';
@@ -188,7 +202,17 @@ class APIModeration {
         };
 
       case ServerSoftware.lemmy:
-        throw Exception('Moderation not implemented on Lemmy yet');
+        const path = '/post/remove';
+
+        final response = await client.post(
+          path,
+          body: {'post_id': postId, 'removed': status, 'reason': 'Moderated'},
+        );
+
+        return PostModel.fromLemmy(
+          response.bodyJson,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/post/remove';
@@ -287,7 +311,21 @@ class APIModeration {
         return CommentModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        throw Exception('Moderation not implemented on Lemmy yet');
+        const path = '/comment/remove';
+
+        final response = await client.post(
+          path,
+          body: {
+            'comment_id': commentId,
+            'removed': status,
+            'reason': 'Moderated',
+          },
+        );
+
+        return CommentModel.fromLemmy(
+          response.bodyJson['comment_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
 
       case ServerSoftware.piefed:
         const path = '/comment/remove';

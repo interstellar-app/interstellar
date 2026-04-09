@@ -457,6 +457,7 @@
     }
   },
   "edit": "Edit",
+  "restore": "Restore",
   "delete": "Delete",
   "deleteX": "Delete {name}",
   "@deleteX": {
@@ -494,6 +495,8 @@
   "reason": "Reason",
   "moderate": "Moderate",
   "submit": "Submit",
+  "resolve": "Resolve",
+  "unresolve": "Unresolve",
   "alternativeSources": "Alternative Sources",
   "markdownEditor_heading": "Heading",
   "markdownEditor_bold": "Bold",
