@@ -104,6 +104,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 setState(() {});
               },
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TabBar(
                     tabs: [
