@@ -10,6 +10,8 @@ import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/ban_dialog.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
@@ -271,6 +273,54 @@ class _CommunityModReportState extends State<CommunityModReport> {
         widget.report.subjectPost?.visibility == PostVisibility.soft_deleted;
   }
 
+  void _modMenu(BuildContext context) {
+    final ac = context.read<AppController>();
+    ContextMenu(
+      items: [
+        ContextMenuItem(
+          title: l(context).pin,
+          onTap: () async => ac.api.moderation.postPin(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !widget.report.subjectPost!.isPinned,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).notSafeForWork_mark,
+          onTap: () async => ac.api.moderation.postMarkNSFW(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !widget.report.subjectPost!.isNSFW,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).delete,
+          onTap: () async => ac.api.moderation.postDelete(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !_deleted,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).banUser,
+          onTap: () async => openBanDialog(
+            context,
+            user: widget.report.subjectPost!.user,
+            community: widget.report.subjectPost!.community,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).lock,
+          onTap: () async => ac.api.moderation.postLock(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !widget.report.subjectPost!.isLocked,
+          ),
+        ),
+      ],
+    ).openMenu(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final ac = context.read<AppController>();
@@ -295,6 +345,12 @@ class _CommunityModReportState extends State<CommunityModReport> {
           );
         }
       },
+      onLongPress: widget.report.subjectPost == null
+          ? null
+          : () => _modMenu(context),
+      onSecondaryTap: widget.report.subjectPost == null
+          ? null
+          : () => _modMenu(context),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
