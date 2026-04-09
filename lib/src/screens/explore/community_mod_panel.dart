@@ -445,7 +445,9 @@ class _CommunityModReportState extends State<CommunityModReport> {
                     final report = await ac.api.communityModeration.resolve(
                       widget.communityId,
                       widget.report.id,
-                      widget.report.status == ReportStatus.pending,
+                      ac.serverSoftware == ServerSoftware.mbin
+                          ? !_deleted
+                          : widget.report.status == ReportStatus.pending,
                     );
 
                     widget.updateItem(report);

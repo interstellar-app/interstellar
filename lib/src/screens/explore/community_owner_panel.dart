@@ -157,7 +157,7 @@ class _CommunityOwnerPanelGeneralState
               SwitchListTile(
                 title: const Text('Is adult'),
                 value: _isAdult,
-                onChanged: (bool value) {
+                onChanged: (value) {
                   setState(() {
                     _isAdult = value;
                   });
@@ -166,7 +166,7 @@ class _CommunityOwnerPanelGeneralState
               SwitchListTile(
                 title: const Text('Is posting restricted to mods'),
                 value: _isPostingRestrictedToMods,
-                onChanged: (bool value) {
+                onChanged: (value) {
                   setState(() {
                     _isPostingRestrictedToMods = value;
                   });
@@ -264,9 +264,9 @@ class _CommunityOwnerPanelModeratorsState
                           .getByName(_addModController.text);
 
                       if (!context.mounted) return;
-                      final result = await showDialog<DetailedCommunityModel>(
+                      final result = await showDialog<List<UserModel>>(
                         context: context,
-                        builder: (BuildContext context) => AlertDialog(
+                        builder: (context) => AlertDialog(
                           title: const Text('Add Moderator'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -299,7 +299,11 @@ class _CommunityOwnerPanelModeratorsState
                         ),
                       );
 
-                      if (result != null) widget.onUpdate(result);
+                      if (result != null) {
+                        widget.onUpdate(
+                          widget.data.copyWith(moderators: result),
+                        );
+                      }
                     },
               label: const Text('Add'),
               icon: const Icon(Symbols.add_rounded),
@@ -317,7 +321,7 @@ class _CommunityOwnerPanelModeratorsState
                 onPressed: () async {
                   final result = await showDialog<DetailedCommunityModel>(
                     context: context,
-                    builder: (BuildContext context) => AlertDialog(
+                    builder: (context) => AlertDialog(
                       title: const Text('Remove moderator'),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -411,7 +415,7 @@ class _CommunityOwnerPanelDeletionState
             onPressed: () async {
               final result = await showDialog<bool>(
                 context: context,
-                builder: (BuildContext context) =>
+                builder: (context) =>
                     CommunityOwnerPanelDeletionDialog(data: widget.data),
               );
 
