@@ -38,6 +38,7 @@
   "filter_followers": "Followers",
   "filter_new": "New",
   "filter_read": "Read",
+  "filter_personal": "Personal",
   "sort": "Sort by",
   "sortComments": "Sort comments",
   "sort_active": "Active",

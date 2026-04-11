@@ -57,6 +57,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   APIExploreSort sort = APIExploreSort.hot;
   ExploreFilter filter = ExploreFilter.all;
+  FeedFilter feedFilter = FeedFilter.all;
 
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
@@ -111,6 +112,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         case ExploreType.feeds:
         case ExploreType.topics:
           final newPage = await ac.api.feed.list(
+            mineOnly: feedFilter == FeedFilter.mine,
             topics: type == ExploreType.topics,
             includeCommunities: true,
           );
@@ -157,6 +159,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
       context,
       type,
     ).getOption(filter);
+    final currentFeedFilter = feedFilterSelection(
+      context,
+    ).getOption(feedFilter);
 
     final ac = context.watch<AppController>();
 
@@ -368,19 +373,38 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           padding: chipDropdownPadding,
                           label: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(currentExploreFilter.icon, size: 20),
-                              const SizedBox(width: 4),
-                              Text(currentExploreFilter.title),
-                              const Icon(Symbols.arrow_drop_down_rounded),
-                            ],
+                            children: type != ExploreType.feeds
+                                ? [
+                                    Icon(currentExploreFilter.icon, size: 20),
+                                    const SizedBox(width: 4),
+                                    Text(currentExploreFilter.title),
+                                    const Icon(Symbols.arrow_drop_down_rounded),
+                                  ]
+                                : [
+                                    Icon(currentFeedFilter.icon, size: 20),
+                                    const SizedBox(width: 4),
+                                    Text(currentFeedFilter.title),
+                                    const Icon(Symbols.arrow_drop_down_rounded),
+                                  ],
                           ),
                           onPressed:
                               ac.serverSoftware == ServerSoftware.mbin &&
                                       type == ExploreType.all ||
-                                  type == ExploreType.feeds ||
                                   type == ExploreType.topics
                               ? null
+                              : type == ExploreType.feeds
+                              ? () async {
+                                  final result = await feedFilterSelection(
+                                    context,
+                                  ).askSelection(context, feedFilter);
+
+                                  if (result != null) {
+                                    setState(() {
+                                      feedFilter = result;
+                                      _pagingController.refresh();
+                                    });
+                                  }
+                                }
                               : () async {
                                   final result = await exploreFilterSelection(
                                     context,
@@ -569,6 +593,22 @@ SelectionMenu<ExploreFilter> exploreFilterSelection(
       ]) ??
       []),
 ]);
+
+enum FeedFilter { all, mine }
+
+SelectionMenu<FeedFilter> feedFilterSelection(BuildContext context) =>
+    SelectionMenu(l(context).sort, [
+      SelectionMenuItem(
+        value: FeedFilter.all,
+        title: l(context).filter_allResults,
+        icon: Symbols.newspaper_rounded,
+      ),
+      SelectionMenuItem(
+        value: FeedFilter.mine,
+        title: l(context).filter_personal,
+        icon: Symbols.home_rounded,
+      ),
+    ]);
 
 SelectionMenu<APIExploreSort> exploreSortSelection(BuildContext context) {
   final options = [
