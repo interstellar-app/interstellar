@@ -1878,6 +1878,53 @@
     },
     {
       "id": 13,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "instances",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "domain",
+            "getter_name": "domain",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "software",
+            "getter_name": "software",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "version",
+            "getter_name": "version",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "id": 14,
       "references": [
         0
       ],
@@ -2011,6 +2058,15 @@
         {
           "dialect": "sqlite",
           "sql": "CREATE TABLE IF NOT EXISTS \"user_tags\" (\"user\" TEXT NOT NULL, \"tag_id\" INTEGER NOT NULL REFERENCES tags (id) ON DELETE CASCADE, PRIMARY KEY (\"user\", \"tag_id\"));"
+        }
+      ]
+    },
+    {
+      "name": "instances",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"instances\" (\"domain\" TEXT NOT NULL, \"software\" TEXT NULL, \"version\" TEXT NULL, PRIMARY KEY (\"domain\"));"
         }
       ]
     },
