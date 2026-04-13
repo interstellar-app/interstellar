@@ -57,7 +57,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   APIExploreSort sort = APIExploreSort.hot;
   ExploreFilter filter = ExploreFilter.all;
-  FeedFilter feedFilter = FeedFilter.all;
+  FeedFilter feedFilter = FeedFilter.public;
 
   late final _pagingController = AdvancedPagingController<String, dynamic, int>(
     logger: context.read<AppController>().logger,
@@ -112,7 +112,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         case ExploreType.feeds:
         case ExploreType.topics:
           final newPage = await ac.api.feed.list(
-            mineOnly: feedFilter == FeedFilter.mine,
+            mineOnly: feedFilter == FeedFilter.personal,
             topics: type == ExploreType.topics,
             includeCommunities: true,
           );
@@ -390,7 +390,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           onPressed:
                               ac.serverSoftware == ServerSoftware.mbin &&
                                       type == ExploreType.all ||
-                                  type == ExploreType.topics
+                                  type == ExploreType.topics ||
+                                  (type == ExploreType.feeds &&
+                                      (whenLoggedIn(context, false) ?? true))
                               ? null
                               : type == ExploreType.feeds
                               ? () async {
@@ -594,17 +596,17 @@ SelectionMenu<ExploreFilter> exploreFilterSelection(
       []),
 ]);
 
-enum FeedFilter { all, mine }
+enum FeedFilter { public, personal }
 
 SelectionMenu<FeedFilter> feedFilterSelection(BuildContext context) =>
     SelectionMenu(l(context).sort, [
       SelectionMenuItem(
-        value: FeedFilter.all,
-        title: l(context).filter_allResults,
+        value: FeedFilter.public,
+        title: l(context).public,
         icon: Symbols.newspaper_rounded,
       ),
       SelectionMenuItem(
-        value: FeedFilter.mine,
+        value: FeedFilter.personal,
         title: l(context).filter_personal,
         icon: Symbols.home_rounded,
       ),
