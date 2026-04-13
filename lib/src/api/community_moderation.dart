@@ -5,7 +5,7 @@ import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-enum ReportStatus { any, approved, pending, rejected, resolved }
+enum ReportStatus { any, approved, pending, rejected }
 
 class APICommunityModeration {
   APICommunityModeration(this.client);
@@ -50,25 +50,33 @@ class APICommunityModeration {
     }
   }
 
-  Future<CommunityReportModel> resolve(
+  Future<CommunityReportModel> acceptReport(
     int communityId,
     int reportId,
-    bool state,
+    int postId,
   ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path =
-            '/moderate/magazine/$communityId/reports/$reportId/${state ? 'reject' : 'accept'}';
+        final path = '/moderate/magazine/$communityId/reports/$reportId/accept';
 
         final response = await client.post(path);
 
         return CommunityReportModel.fromMbin(response.bodyJson);
       case ServerSoftware.lemmy:
+        {
+          const path = '/post/remove';
+
+          final response = await client.post(
+            path,
+            body: {'post_id': postId, 'removed': true, 'reason': 'Moderated'},
+          );
+        }
+
         const path = '/post/report/resolve';
 
         final response = await client.put(
           path,
-          body: {'report_id': reportId, 'resolved': state},
+          body: {'report_id': reportId, 'resolved': true},
         );
 
         return CommunityReportModel.fromLemmy(
@@ -81,26 +89,10 @@ class APICommunityModeration {
     }
   }
 
-  Future<CommunityReportModel> acceptReport(
-    int communityId,
-    int reportId,
-  ) async {
-    switch (client.software) {
-      case ServerSoftware.mbin:
-        final path = '/moderate/magazine/$communityId/reports/$reportId/accept';
-
-        final response = await client.post(path);
-
-        return CommunityReportModel.fromMbin(response.bodyJson);
-      case ServerSoftware.lemmy:
-      case ServerSoftware.piefed:
-        throw UnimplementedError('Not yet implemented');
-    }
-  }
-
   Future<CommunityReportModel> rejectReport(
     int communityId,
     int reportId,
+    int postId,
   ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
@@ -110,6 +102,27 @@ class APICommunityModeration {
 
         return CommunityReportModel.fromMbin(response.bodyJson);
       case ServerSoftware.lemmy:
+        {
+          const path = '/post/remove';
+
+          final response = await client.post(
+            path,
+            body: {'post_id': postId, 'removed': false, 'reason': 'Moderated'},
+          );
+        }
+
+        const path = '/post/report/resolve';
+
+        final response = await client.put(
+          path,
+          body: {'report_id': reportId, 'resolved': true},
+        );
+
+        return CommunityReportModel.fromLemmy(
+          response.bodyJson['post_report_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+
       case ServerSoftware.piefed:
         throw UnimplementedError('Not yet implemented');
     }

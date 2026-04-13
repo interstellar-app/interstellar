@@ -433,9 +433,12 @@ abstract class CommunityReportModel with _$CommunityReportModel {
       subjectPost: subjectPost,
       subjectComment: subjectComment,
       reason: report['reason']! as String,
-      status: (report['resolved']! as bool)
-          ? ReportStatus.resolved
-          : ReportStatus.pending,
+      status: !(report['resolved']! as bool)
+          ? ReportStatus.pending
+          : (subjectPost?.visibility == PostVisibility.trashed ||
+                subjectComment?.visibility == PostVisibility.trashed)
+          ? ReportStatus.approved
+          : ReportStatus.rejected,
       createdAt: optionalDateTime(report['published'] as String?),
       consideredAt: null,
       consideredBy: json['resolver'] != null

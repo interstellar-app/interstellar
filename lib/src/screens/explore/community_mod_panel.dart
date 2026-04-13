@@ -379,11 +379,22 @@ class _CommunityModReportState extends State<CommunityModReport> {
                     children: [
                       Text('${l(context).status}: '),
                       Text(
-                        widget.report.status.name,
+                        switch (widget.report.status) {
+                          ReportStatus.pending => l(
+                            context,
+                          ).reportStatus_pending,
+                          ReportStatus.any => l(context).reportStatus_any,
+                          ReportStatus.approved => l(
+                            context,
+                          ).reportStatus_deleted,
+                          ReportStatus.rejected => l(
+                            context,
+                          ).reportStatus_restored,
+                        },
                         style: TextStyle(
                           color: widget.report.status == ReportStatus.pending
                               ? Colors.blue
-                              : widget.report.status == ReportStatus.approved
+                              : widget.report.status == ReportStatus.rejected
                               ? Colors.green
                               : Colors.red,
                         ),
@@ -412,54 +423,44 @@ class _CommunityModReportState extends State<CommunityModReport> {
                     l(context).banUserX(widget.report.reportedUser!.name),
                   ),
                 ),
-                LoadingOutlinedButton(
-                  onPressed: () async {
-                    if (ac.serverSoftware != ServerSoftware.mbin &&
-                        widget.report.subjectPost != null) {
-                      final post = await ac.api.moderation.postDelete(
-                        widget.report.subjectPost!.type,
-                        widget.report.subjectPost!.id,
-                        !_deleted,
-                      );
-                      setState(() {
-                        _deleted =
-                            post.visibility == PostVisibility.trashed ||
-                            post.visibility == PostVisibility.soft_deleted;
-                      });
-                    } else {
-                      setState(() {
-                        _deleted = !_deleted;
-                      });
-                    }
-                  },
-                  icon: const Icon(Symbols.delete_rounded),
-                  label: _deleted
-                      ? Text(l(context).restore)
-                      : Text(l(context).delete),
-                  style: _deleted
-                      ? OutlinedButton.styleFrom(foregroundColor: Colors.blue)
-                      : OutlinedButton.styleFrom(foregroundColor: Colors.red),
-                ),
-                LoadingOutlinedButton(
-                  onPressed: () async {
-                    final report = await ac.api.communityModeration.resolve(
-                      widget.communityId,
-                      widget.report.id,
-                      ac.serverSoftware == ServerSoftware.mbin
-                          ? !_deleted
-                          : widget.report.status == ReportStatus.pending,
-                    );
-
-                    widget.updateItem(report);
-                  },
-                  icon: const Icon(Symbols.check_rounded),
-                  label: widget.report.status != ReportStatus.pending
-                      ? Text(l(context).unresolve)
-                      : Text(l(context).resolve),
-                  style: widget.report.status != ReportStatus.pending
-                      ? OutlinedButton.styleFrom(foregroundColor: Colors.green)
-                      : null,
-                ),
+                if (widget.report.status != ReportStatus.approved)
+                  Tooltip(
+                    message: l(context).reportDeleteMessage,
+                    child: LoadingOutlinedButton(
+                      onPressed: () async {
+                        final report = await ac.api.communityModeration
+                            .acceptReport(
+                              widget.communityId,
+                              widget.report.id,
+                              widget.report.subjectPost!.id,
+                            );
+                        widget.updateItem(report);
+                      },
+                      label: Text(l(context).delete),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ),
+                    ),
+                  ),
+                if (widget.report.status != ReportStatus.rejected)
+                  Tooltip(
+                    message: l(context).reportRestoreMessage,
+                    child: LoadingOutlinedButton(
+                      onPressed: () async {
+                        final report = await ac.api.communityModeration
+                            .rejectReport(
+                              widget.communityId,
+                              widget.report.id,
+                              widget.report.subjectPost!.id,
+                            );
+                        widget.updateItem(report);
+                      },
+                      label: Text(l(context).restore),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.green,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ],
@@ -484,13 +485,13 @@ SelectionMenu<ReportStatus> reportStatusSelect(BuildContext context) =>
       if (context.read<AppController>().serverSoftware == ServerSoftware.mbin)
         SelectionMenuItem(
           value: ReportStatus.approved,
-          title: l(context).reportStatus_approved,
+          title: l(context).reportStatus_deleted,
           icon: Symbols.check_rounded,
         ),
       if (context.read<AppController>().serverSoftware == ServerSoftware.mbin)
         SelectionMenuItem(
           value: ReportStatus.rejected,
-          title: l(context).reportStatus_rejected,
+          title: l(context).reportStatus_restored,
           icon: Symbols.close_rounded,
         ),
     ]);
