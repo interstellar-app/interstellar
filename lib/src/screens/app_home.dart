@@ -144,6 +144,7 @@ class _AppHomeState extends State<AppHome> {
           InboxRoute(key: _inboxKey),
           const SettingsRoute(),
         ],
+        homeIndex: 0,
         builder: (context, child) {
           final tabsRouter = AutoTabsRouter.of(context);
           final notCompact = !Breakpoints.isCompact(context);
