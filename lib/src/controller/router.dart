@@ -29,19 +29,41 @@ class AppRouter extends RootStackRouter {
 
         AutoRoute(page: FeedRoute.page, path: 'f/:feedName'),
 
-        AutoRoute(page: ThreadRoute.page, path: 'c/:communityName/thread/:id'),
+        AutoRoute(
+          page: ThreadRoute.page,
+          path: 'c/:communityName/thread/:id',
+          restorationId: (route) =>
+              '${route.name}-${route.pathParams.get('id')}',
+        ),
         AutoRoute(
           page: MicroblogRoute.page,
           path: 'c/:communityName/microblog/:id',
+          restorationId: (route) =>
+              '${route.name}-${route.pathParams.get('id')}',
         ),
-        AutoRoute(page: PostCommentRoute.page, path: 'comment/:id'),
+        AutoRoute(
+          page: PostCommentRoute.page,
+          path: 'comment/:id',
+          restorationId: (route) =>
+              '${route.name}-${route.pathParams.get('id')}',
+        ),
         AutoRoute(page: ContentReplyRoute.page, path: 'reply'),
 
-        AutoRoute(page: UserRoute.page, path: 'u/:username'),
+        AutoRoute(
+          page: UserRoute.page,
+          path: 'u/:username',
+          restorationId: (route) =>
+              '${route.name}-${route.pathParams.get('username')}',
+        ),
         AutoRoute(page: ModLogUserRoute.page, path: 'u/:username/modlog'),
         AutoRoute(page: MessageThreadRoute.page, path: 'u/:username/message'),
 
-        AutoRoute(page: CommunityRoute.page, path: 'c/:communityName'),
+        AutoRoute(
+          page: CommunityRoute.page,
+          path: 'c/:communityName',
+          restorationId: (route) =>
+              '${route.name}-${route.pathParams.get('communityName')}',
+        ),
         AutoRoute(
           page: ModLogCommunityRoute.page,
           path: 'c/:communityName/modlog',
