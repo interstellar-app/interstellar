@@ -52,6 +52,7 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
               padding: const EdgeInsets.all(16),
               child: AutofillGroup(
                 child: Column(
+                  spacing: 12,
                   children: [
                     TextEditor(
                       _usernameEmailTextController,
@@ -63,13 +64,14 @@ class _LoginConfirmScreenState extends State<LoginConfirmScreen> {
                         AutofillHints.email,
                       ],
                     ),
-                    const SizedBox(height: 12),
                     PasswordEditor(
                       _passwordTextController,
                       onChanged: (_) => setState(() {}),
+                      maxLength: widget.software == ServerSoftware.lemmy
+                          ? 60
+                          : 128,
                     ),
                     if (widget.software == ServerSoftware.lemmy) ...[
-                      const SizedBox(height: 12),
                       TextEditor(
                         _totpTokenTextController,
                         label: l(context).totpToken,
