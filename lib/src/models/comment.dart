@@ -131,7 +131,7 @@ abstract class CommentModel with _$CommentModel {
     required DateTime? editedAt,
     required List<CommentModel>? children,
     required int childCount,
-    required String visibility,
+    required PostVisibility visibility,
     required bool? canAuthUserModerate,
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
@@ -164,7 +164,7 @@ abstract class CommentModel with _$CommentModel {
         .map((c) => CommentModel.fromMbin(c as JsonMap))
         .toList(),
     childCount: json['childCount']! as int,
-    visibility: json['visibility']! as String,
+    visibility: PostVisibility.values.byName(json['visibility']! as String),
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: null,
     bookmarks: optionalStringList(json['bookmarks']),
@@ -229,7 +229,11 @@ abstract class CommentModel with _$CommentModel {
       editedAt: optionalDateTime(json['updated'] as String?),
       children: children,
       childCount: lemmyCounts?['child_count'] as int? ?? 0,
-      visibility: 'visible',
+      visibility: (lemmyComment['deleted']! as bool)
+          ? PostVisibility.soft_deleted
+          : (lemmyComment['removed']! as bool)
+          ? PostVisibility.trashed
+          : PostVisibility.visible,
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
@@ -319,7 +323,11 @@ abstract class CommentModel with _$CommentModel {
       editedAt: optionalDateTime(json['updated'] as String?),
       children: children,
       childCount: piefedCounts?['child_count'] as int? ?? 0,
-      visibility: 'visible',
+      visibility: (piefedComment['deleted']! as bool)
+          ? PostVisibility.soft_deleted
+          : (piefedComment['removed']! as bool)
+          ? PostVisibility.trashed
+          : PostVisibility.visible,
       canAuthUserModerate: json['can_auth_user_moderate'] as bool?,
       notificationControlStatus: json['activity_alert'] == null
           ? null

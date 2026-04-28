@@ -233,9 +233,7 @@ class APICommunity {
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view']! as JsonMap,
-        );
+        return DetailedCommunityModel.fromLemmy(response.bodyJson);
 
       case ServerSoftware.piefed:
         const path = '/community';
@@ -262,9 +260,7 @@ class APICommunity {
 
         final response = await client.get(path, queryParams: query);
 
-        return DetailedCommunityModel.fromLemmy(
-          response.bodyJson['community_view']! as JsonMap,
-        );
+        return DetailedCommunityModel.fromLemmy(response.bodyJson);
 
       case ServerSoftware.piefed:
         const path = '/community';

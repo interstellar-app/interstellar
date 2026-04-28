@@ -16,6 +16,8 @@ part 'post.freezed.dart';
 
 enum PostType { thread, microblog }
 
+enum PostVisibility { visible, trashed, soft_deleted, private }
+
 @freezed
 abstract class PostListModel with _$PostListModel {
   const factory PostListModel({
@@ -96,7 +98,7 @@ abstract class PostModel with _$PostModel {
     required DateTime createdAt,
     required DateTime? editedAt,
     required DateTime lastActive,
-    required String visibility,
+    required PostVisibility visibility,
     required bool? canAuthUserModerate,
     required NotificationControlStatus? notificationControlStatus,
     required List<String>? bookmarks,
@@ -140,7 +142,7 @@ abstract class PostModel with _$PostModel {
     createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
     lastActive: DateTime.parse(json['lastActive']! as String),
-    visibility: json['visibility']! as String,
+    visibility: PostVisibility.values.byName(json['visibility']! as String),
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: json['notificationStatus'] == null
         ? null
@@ -187,7 +189,7 @@ abstract class PostModel with _$PostModel {
     createdAt: DateTime.parse(json['createdAt']! as String),
     editedAt: optionalDateTime(json['editedAt'] as String?),
     lastActive: DateTime.parse(json['lastActive']! as String),
-    visibility: json['visibility']! as String,
+    visibility: PostVisibility.values.byName(json['visibility']! as String),
     canAuthUserModerate: json['canAuthUserModerate'] as bool?,
     notificationControlStatus: json['notificationStatus'] == null
         ? null
@@ -261,7 +263,11 @@ abstract class PostModel with _$PostModel {
       lastActive: lemmyCounts == null
           ? DateTime.now()
           : DateTime.parse(lemmyCounts['newest_comment_time']! as String),
-      visibility: 'visible',
+      visibility: (lemmyPost['deleted']! as bool)
+          ? PostVisibility.soft_deleted
+          : (lemmyPost['removed']! as bool)
+          ? PostVisibility.trashed
+          : PostVisibility.visible,
       canAuthUserModerate: null,
       notificationControlStatus: null,
       bookmarks: [
@@ -345,7 +351,7 @@ abstract class PostModel with _$PostModel {
       lastActive: DateTime.parse(
         piefedCounts['newest_comment_time']! as String,
       ),
-      visibility: 'visible',
+      visibility: PostVisibility.visible,
       canAuthUserModerate: postView['can_auth_user_moderate'] as bool?,
       notificationControlStatus: postView['activity_alert'] == null
           ? null

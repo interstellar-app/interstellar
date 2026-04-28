@@ -106,8 +106,16 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
   }
 
   factory DetailedCommunityModel.fromLemmy(JsonMap json) {
-    final lemmyCommunity = json['community']! as JsonMap;
-    final lemmyCounts = json['counts']! as JsonMap;
+    final communityView = json['community_view'] as JsonMap? ?? json;
+    final lemmyCommunity = communityView['community']! as JsonMap;
+    final lemmyCounts = communityView['counts']! as JsonMap;
+
+    final mods = ((json['moderators'] ?? []) as List<dynamic>)
+        .map(
+          (user) =>
+              UserModel.fromLemmy((user as JsonMap)['moderator']! as JsonMap),
+        )
+        .toList();
 
     final community = DetailedCommunityModel(
       id: lemmyCommunity['id']! as int,
@@ -115,16 +123,17 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
       title: lemmyCommunity['title']! as String,
       icon: lemmyGetOptionalImage(lemmyCommunity['icon'] as String?),
       description: lemmyCommunity['description'] as String?,
-      owner: null,
-      moderators: [],
+      owner: mods.firstOrNull,
+      moderators: mods,
       subscriptionsCount: lemmyCounts['subscribers']! as int,
       threadCount: lemmyCounts['posts']! as int,
       threadCommentCount: lemmyCounts['comments']! as int,
       microblogCount: null,
       microblogCommentCount: null,
       isAdult: lemmyCommunity['nsfw']! as bool,
-      isUserSubscribed: (json['subscribed']! as String) != 'NotSubscribed',
-      isBlockedByUser: json['blocked'] as bool?,
+      isUserSubscribed:
+          (communityView['subscribed']! as String) != 'NotSubscribed',
+      isBlockedByUser: communityView['blocked'] as bool?,
       isPostingRestrictedToMods:
           lemmyCommunity['posting_restricted_to_mods']! as bool,
       notificationControlStatus: null,
@@ -142,27 +151,21 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     final piefedCommunity = communityView['community']! as JsonMap;
     final piefedCounts = communityView['counts']! as JsonMap;
 
+    final mods = ((json['moderators'] ?? []) as List<dynamic>)
+        .map(
+          (user) =>
+              UserModel.fromPiefed((user as JsonMap)['moderator']! as JsonMap),
+        )
+        .toList();
+
     final community = DetailedCommunityModel(
       id: piefedCommunity['id']! as int,
       name: getLemmyPiefedActorName(piefedCommunity),
       title: piefedCommunity['title']! as String,
       icon: lemmyGetOptionalImage(piefedCommunity['icon'] as String?),
       description: piefedCommunity['description'] as String?,
-      owner: ((json['moderators'] ?? []) as List<dynamic>)
-          .map(
-            (user) => UserModel.fromPiefed(
-              (user as JsonMap)['moderator']! as JsonMap,
-            ),
-          )
-          .toList()
-          .firstOrNull,
-      moderators: ((json['moderators'] ?? []) as List<dynamic>)
-          .map(
-            (user) => UserModel.fromPiefed(
-              (user as JsonMap)['moderator']! as JsonMap,
-            ),
-          )
-          .toList(),
+      owner: mods.firstOrNull,
+      moderators: mods,
       subscriptionsCount: piefedCounts['subscriptions_count']! as int,
       threadCount: piefedCounts['post_count']! as int,
       threadCommentCount: piefedCounts['post_reply_count']! as int,
@@ -325,6 +328,21 @@ abstract class CommunityReportListModel with _$CommunityReportListModel {
             .toList(),
         nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
       );
+
+  factory CommunityReportListModel.fromLemmy(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) => CommunityReportListModel(
+    items: (json['post_reports']! as List<dynamic>)
+        .map(
+          (item) => CommunityReportModel.fromLemmy(
+            item as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          ),
+        )
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed
@@ -381,6 +399,52 @@ abstract class CommunityReportModel with _$CommunityReportModel {
           ? UserModel.fromMbin(json['consideredBy']! as JsonMap)
           : null,
       weight: json['weight'] as int?,
+    );
+  }
+
+  factory CommunityReportModel.fromLemmy(
+    JsonMap json, {
+    required List<(String, int)> langCodeIdPairs,
+  }) {
+    final type = json['type'] as String?;
+    final report = json['post_report']! as JsonMap;
+
+    final subjectPost = json['post'] == null
+        ? null
+        : PostModel.fromLemmy({
+            'post_view': {
+              'post': json['post']! as JsonMap,
+              'community': json['community']! as JsonMap,
+              'creator': json['post_creator']! as JsonMap,
+            },
+          }, langCodeIdPairs: langCodeIdPairs);
+    final subjectComment = json['comment'] == null
+        ? null
+        : CommentModel.fromLemmy(
+            json['comment']! as JsonMap,
+            langCodeIdPairs: langCodeIdPairs,
+          );
+
+    return CommunityReportModel(
+      id: report['id']! as int,
+      community: CommunityModel.fromLemmy(json['community']! as JsonMap),
+      reportedBy: UserModel.fromLemmy(json['creator']! as JsonMap),
+      reportedUser: UserModel.fromLemmy(json['post_creator']! as JsonMap),
+      subjectPost: subjectPost,
+      subjectComment: subjectComment,
+      reason: report['reason']! as String,
+      status: !(report['resolved']! as bool)
+          ? ReportStatus.pending
+          : (subjectPost?.visibility == PostVisibility.trashed ||
+                subjectComment?.visibility == PostVisibility.trashed)
+          ? ReportStatus.approved
+          : ReportStatus.rejected,
+      createdAt: optionalDateTime(report['published'] as String?),
+      consideredAt: null,
+      consideredBy: json['resolver'] != null
+          ? UserModel.fromLemmy(json['resolver']! as JsonMap)
+          : null,
+      weight: null,
     );
   }
 }

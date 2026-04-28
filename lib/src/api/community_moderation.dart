@@ -1,6 +1,8 @@
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/user.dart';
+import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 enum ReportStatus { any, approved, pending, rejected }
@@ -24,6 +26,25 @@ class APICommunityModeration {
 
         return CommunityReportListModel.fromMbin(response.bodyJson);
       case ServerSoftware.lemmy:
+        const path = '/post/report/list';
+        final query = {
+          'page': page,
+          'community_id': communityId.toString(),
+          'unresolved_only': (status == ReportStatus.pending).toString(),
+        };
+
+        final response = await client.get(path, queryParams: query);
+
+        final json = response.bodyJson;
+        json['next_page'] = lemmyCalcNextIntPage(
+          json['post_reports']! as List<dynamic>,
+          page,
+        );
+
+        return CommunityReportListModel.fromLemmy(
+          json,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
       case ServerSoftware.piefed:
         throw UnimplementedError('Not yet implemented');
     }
@@ -32,6 +53,7 @@ class APICommunityModeration {
   Future<CommunityReportModel> acceptReport(
     int communityId,
     int reportId,
+    int postId,
   ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
@@ -41,6 +63,27 @@ class APICommunityModeration {
 
         return CommunityReportModel.fromMbin(response.bodyJson);
       case ServerSoftware.lemmy:
+        {
+          const path = '/post/remove';
+
+          final response = await client.post(
+            path,
+            body: {'post_id': postId, 'removed': true, 'reason': 'Moderated'},
+          );
+        }
+
+        const path = '/post/report/resolve';
+
+        final response = await client.put(
+          path,
+          body: {'report_id': reportId, 'resolved': true},
+        );
+
+        return CommunityReportModel.fromLemmy(
+          response.bodyJson['post_report_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+
       case ServerSoftware.piefed:
         throw UnimplementedError('Not yet implemented');
     }
@@ -49,6 +92,7 @@ class APICommunityModeration {
   Future<CommunityReportModel> rejectReport(
     int communityId,
     int reportId,
+    int postId,
   ) async {
     switch (client.software) {
       case ServerSoftware.mbin:
@@ -58,6 +102,27 @@ class APICommunityModeration {
 
         return CommunityReportModel.fromMbin(response.bodyJson);
       case ServerSoftware.lemmy:
+        {
+          const path = '/post/remove';
+
+          final response = await client.post(
+            path,
+            body: {'post_id': postId, 'removed': false, 'reason': 'Moderated'},
+          );
+        }
+
+        const path = '/post/report/resolve';
+
+        final response = await client.put(
+          path,
+          body: {'report_id': reportId, 'resolved': true},
+        );
+
+        return CommunityReportModel.fromLemmy(
+          response.bodyJson['post_report_view']! as JsonMap,
+          langCodeIdPairs: await client.languageCodeIdPairs(),
+        );
+
       case ServerSoftware.piefed:
         throw UnimplementedError('Not yet implemented');
     }
@@ -108,7 +173,20 @@ class APICommunityModeration {
         return CommunityBanModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        throw Exception('Ban update not implemented on Lemmy yet');
+        const path = '/community/ban_user';
+
+        final response = await client.post(
+          path,
+          body: {
+            'community_id': communityId,
+            'person_id': userId,
+            'ban': true,
+            'reason': reason,
+            'expires_at': ?expiredAt?.microsecondsSinceEpoch,
+          },
+        );
+
+        return CommunityBanModel.fromLemmy(response.bodyJson);
 
       case ServerSoftware.piefed:
         const path = '/community/moderate/ban';
@@ -116,7 +194,7 @@ class APICommunityModeration {
           'community_id': communityId,
           'user_id': userId,
           'reason': reason,
-          if (expiredAt != null) 'expires_at': expiredAt.toIso8601String(),
+          'expires_at': ?expiredAt?.toIso8601String(),
         };
 
         final response = await client.post(path, body: body);
@@ -135,7 +213,18 @@ class APICommunityModeration {
         return CommunityBanModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        throw Exception('Ban update not implemented on Lemmy yet');
+        const path = '/community/ban_user';
+
+        final response = await client.post(
+          path,
+          body: {
+            'community_id': communityId,
+            'person_id': userId,
+            'ban': false,
+          },
+        );
+
+        return CommunityBanModel.fromLemmy(response.bodyJson);
 
       case ServerSoftware.piefed:
         const path = '/community/moderate/unban';
@@ -232,7 +321,20 @@ class APICommunityModeration {
         return DetailedCommunityModel.fromMbin(response.bodyJson);
 
       case ServerSoftware.lemmy:
-        throw Exception('Community edit not implemented on Lemmy yet');
+        const path = '/community';
+
+        final response = await client.put(
+          path,
+          body: {
+            'community_id': communityId,
+            'title': title,
+            'description': description,
+            'nsfw': isAdult,
+            'posting_restricted_to_mods': isPostingRestrictedToMods,
+          },
+        );
+
+        return DetailedCommunityModel.fromLemmy(response.bodyJson);
 
       case ServerSoftware.piefed:
         const path = '/community';
@@ -252,7 +354,7 @@ class APICommunityModeration {
     }
   }
 
-  Future<DetailedCommunityModel> updateModerator(
+  Future<List<UserModel>> updateModerator(
     int communityId,
     int userId,
     bool state,
@@ -265,10 +367,23 @@ class APICommunityModeration {
             ? await client.post(path)
             : await client.delete(path);
 
-        return DetailedCommunityModel.fromMbin(response.bodyJson);
+        return DetailedCommunityModel.fromMbin(response.bodyJson).moderators;
 
       case ServerSoftware.lemmy:
-        throw Exception('Moderator update not implemented on Lemmy yet');
+        const path = '/community/mod';
+
+        final response = await client.post(
+          path,
+          body: {
+            'community_id': communityId,
+            'person_id': userId,
+            'added': state,
+          },
+        );
+
+        return (response.bodyJson['moderators']! as List<dynamic>)
+            .map((moderator) => UserModel.fromLemmy(moderator['moderator']))
+            .toList();
 
       case ServerSoftware.piefed:
         throw UnimplementedError();
