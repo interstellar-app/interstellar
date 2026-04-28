@@ -1,14 +1,890 @@
 {
-  "interstellar": "Interstellar",
-  "@interstellar": {},
-  "explore": "Jelajah",
-  "@explore": {},
-  "feed": "Linimasa",
-  "@feed": {},
-  "accounts": "Akun-akun",
-  "@accounts": {},
-  "addAccount": "Tambahkan Akun",
-  "@addAccount": {},
-  "removeAccount": "Hapus Akun",
-  "@removeAccount": {}
+    "interstellar": "Interstellar",
+    "explore": "Jelajah",
+    "feed": "Linimasa",
+    "accounts": "Akun",
+    "addAccount": "Tambah Akun",
+    "removeAccount": "Hapus Akun",
+    "usernameOrEmail": "Nama Pengguna atau Email",
+    "password": "Kata Sandi",
+    "login": "Masuk",
+    "refreshAuth": "Perbarui Sesi Masuk",
+    "totpToken": "Token TOTP (jika diperlukan)",
+    "cancel": "Batal",
+    "rename": "Ganti Nama",
+    "replace": "Ganti",
+    "continue_": "Lanjutkan",
+    "remove": "Hapus",
+    "guest": "Tamu",
+    "botAccount": "Akun Bot",
+    "newUser": "Pengguna Baru",
+    "description": "Deskripsi",
+    "isNSFW": "Konten Dewasa (NSFW)",
+    "isNSFL": "Sangat Mengganggu (NSFL)",
+    "public": "Publik",
+    "filter": "Filter berdasarkan",
+    "filter_all": "Semua",
+    "filter_allResults": "Semua Hasil",
+    "filter_subscribed": "Berlangganan",
+    "filter_moderated": "Dimoderasi",
+    "filter_favorited": "Difavoritkan",
+    "filter_blocked": "Diblokir",
+    "filter_local": "Lokal",
+    "filter_followed": "Diikuti",
+    "filter_followers": "Pengikut",
+    "filter_new": "Baru",
+    "filter_read": "Telah Dibaca",
+    "sort": "Urutkan berdasarkan",
+    "sortComments": "Urutkan komentar",
+    "sort_active": "Aktif",
+    "sort_hot": "Populer",
+    "sort_newest": "Terbaru",
+    "sort_oldest": "Terlama",
+    "sort_top": "Teratas",
+    "sort_top_1h": "Teratas dalam 1 Jam",
+    "sort_top_3h": "Teratas dalam 3 Jam",
+    "sort_top_6h": "Teratas dalam 6 Jam",
+    "sort_top_12h": "Teratas dalam 12 Jam",
+    "sort_top_1d": "Teratas Hari Ini",
+    "sort_top_1w": "Teratas Minggu Ini",
+    "sort_top_1m": "Teratas Bulan Ini",
+    "sort_top_3m": "Teratas dalam 3 Bulan",
+    "sort_top_6m": "Teratas dalam 6 Bulan",
+    "sort_top_9m": "Teratas dalam 9 Bulan",
+    "sort_top_1y": "Teratas Tahun Ini",
+    "sort_top_all": "Teratas Sepanjang Waktu",
+    "sort_commented": "Dikomentari",
+    "sort_commented_3h": "Dikomentari 3 Jam",
+    "sort_newComments": "Komentar Baru",
+    "sort_controversial": "Kontroversial",
+    "sort_scaled": "Diskalakan",
+    "microblog": "Blog Singkat",
+    "combined": "Gabungan",
+    "stars": "Bintang",
+    "stars_empty": "Masih kosong; komunitas atau pengguna yang Anda bintangi akan muncul di sini.",
+    "subscriptions": "Langganan",
+    "subscriptions_community_empty": "Masih kosong; berlangganan ke sebuah komunitas agar muncul di sini.",
+    "subscriptions_user": "Pengguna Diikuti",
+    "subscriptions_user_all": "Semua Pengguna Diikuti",
+    "subscriptions_user_empty": "Masih kosong; ikuti pengguna agar muncul di sini.",
+    "subscriptions_domain": "Domain Langganan",
+    "subscriptions_domain_empty": "Masih kosong; ikuti domain agar muncul di sini.",
+    "feeds_input": "Tambahkan masukan",
+    "topics": "Topik",
+    "topic": "Topik",
+    "server": "Server",
+    "client": "Klien",
+    "clientFeedSubtitle": "Masukan linimasa diambil dan digabungkan secara lokal di perangkat. Dapat digunakan di berbagai sesi.",
+    "serverFeed": "Linimasa Server",
+    "serverFeedSubtitle": "Masukan linimasa digabungkan di server. Sesuai dengan standar PieFed.",
+    "serverTopic": "Topik Server",
+    "serverTopicSubtitle": "Masukan linimasa digabungkan di server. Sesuai dengan topik PieFed.",
+    "color": "Warna",
+    "tags_new": "Tag baru",
+    "tags_users": "Pengguna yang ditandai",
+    "tags_noUsers": "Tidak ada pengguna yang ditemukan dengan tag tersebut. Tetapkan tag ke pengguna melalui halaman profil mereka untuk memulai.",
+    "pickColor": "Pilih warna",
+    "post": "Unggah",
+    "postDeleted": "Unggahan Dihapus",
+    "crossPostComments": "Komentar dari {community}",
+    "@crossPostComments": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "comment": "Komentar",
+    "comments": "Komentar",
+    "commentDeleted": "Komentar Dihapus",
+    "commentBy": "Komentar oleh {username}",
+    "@commentBy": {
+        "placeholders": {
+            "username": {
+                "type": "String"
+            }
+        }
+    },
+    "search": "Cari",
+    "searchSource": "Cari di {source}",
+    "@searchSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            }
+        }
+    },
+    "communities": "Komunitas",
+    "people": "Pengguna",
+    "domains": "Domain",
+    "openInBrowser": "Buka di Peramban",
+    "openItem": "Buka {item}",
+    "@openItem": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "modsOf": "Moderator di {community}",
+    "@modsOf": {
+        "placeholders": {
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "viewMods": "Lihat Moderator",
+    "modPanel": "Panel Moderator",
+    "ownerPanel": "Panel Pemilik",
+    "reportStatus_any": "Semua",
+    "reportStatus_appeal": "Banding",
+    "reportStatus_approved": "Disetujui",
+    "reportStatus_closed": "Ditutup",
+    "reportStatus_pending": "Tertunda",
+    "reportStatus_rejected": "Ditolak",
+    "report_accept": "Terima",
+    "report_reject": "Tolak",
+    "reportedUser": "Pengguna yang dilaporkan: ",
+    "reportedBy": "Dilaporkan oleh: ",
+    "copy": "Salin",
+    "copied": "Tersalin",
+    "share": "Bagikan",
+    "postingRestricted": "Akses unggah dibatasi hanya untuk moderator",
+    "owner": "Pemilik",
+    "account": "Akun",
+    "account_switch": "Ganti akun",
+    "account_edit": "Edit profil akun",
+    "account_settings_about": "Tentang",
+    "account_settings_settings": "Pengaturan",
+    "account_settings_showNSFW": "Tampilkan Konten NSFW",
+    "account_settings_blurNSFW": "Kaburkan Konten NSFW",
+    "feeds_addTo": "Tambahkan ke linimasa",
+    "clientFeed": "Linimasa Klien",
+    "tags_exist": "Tag sudah ada",
+    "inbox": "Kotak Masuk",
+    "notifications": "Notifikasi",
+    "notifications_readAll": "Tandai dibaca seluruhnya",
+    "newChat": "Pesan Baru",
+    "reply": "Balas",
+    "replying_toX": "Membalas {user}",
+    "@replying_toX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "send": "Kirim",
+    "settings": "Pengaturan",
+    "settings_behavior": "Perilaku",
+    "settings_display": "Tampilan",
+    "settings_feedActions": "Aksi Linimasa",
+    "settings_notifications": "Notifikasi",
+    "instanceHost": "Host Instans",
+    "recommendedInstances": "Instans yang Disarankan",
+    "okay": "Oke",
+    "cakeDay": "Hari Jadi (Cake Day)",
+    "sort_commented_6h": "Berkomentar 6 Jam",
+    "sort_commented_12h": "Dikomentari 12 Jam",
+    "sort_commented_1d": "Dikomentari Hari Ini",
+    "sort_commented_1w": "Dikomentari Minggu Ini",
+    "sort_commented_1m": "Dikomentari Bulan Ini",
+    "sort_commented_1y": "Dikomentari Tahun Ini",
+    "sort_commented_all": "Dikomentari Sepanjang Waktu",
+    "sort_topDay": "Teratas Hari Ini",
+    "sort_topWeek": "Teratas Minggu Ini",
+    "sort_topMonth": "Teratas Bulan Ini",
+    "sort_topYear": "Teratas Tahun Ini",
+    "sort_topHour": "Teratas 1 Jam",
+    "sort_topSixHour": "Teratas 6 Jam",
+    "sort_topTwelveHour": "Teratas 12 Jam",
+    "sort_topThreeMonths": "Teratas 3 Bulan",
+    "sort_topSixMonths": "Teratas 6 Bulan",
+    "sort_topNineMonths": "Teratas 9 Bulan",
+    "feedView": "Tampilan Linimasa",
+    "threads": "Utas",
+    "subscriptions_community": "Komunitas Langganan",
+    "subscriptions_community_all": "Semua Komunitas Langganan",
+    "subscriptions_domain_all": "Semua Domain Langganan",
+    "feeds": "Linimasa",
+    "feeds_empty": "Belum ada linimasa.",
+    "feeds_exist": "Linimasa sudah ada.",
+    "feeds_new": "Linimasa Baru",
+    "feeds_edit": "Edit Linimasa",
+    "@feeds_edit": {
+        "placeholders": {
+            "feed": {
+                "type": "String"
+            }
+        }
+    },
+    "feeds_delete": "Hapus Linimasa",
+    "feeds_import": "Impor Linimasa",
+    "feeds_selectInputs": "Pilih Masukan",
+    "feeds_inputs": "Masukan",
+    "crossPosts": "Kiriman Silang",
+    "crossPostCount": "Jumlah Kiriman Silang",
+    "@crossPostCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "comment_openOriginalPost": "Buka Unggahan Asli",
+    "comment_openRoot": "Buka Akar Komentar",
+    "comment_openParent": "Buka Induk Komentar",
+    "openReplies": "Buka Balasan",
+    "@openReplies": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "account_overview": "Ringkasan Akun",
+    "account_settings_showReadPosts": "Tampilkan Unggahan yang Telah Dibaca",
+    "account_settings_showSubscribedUsers": "Tampilkan Pengguna yang Diikuti",
+    "account_settings_showSubscribedCommunities": "Tampilkan Komunitas Langganan",
+    "account_settings_showSubscribedDomains": "Tampilkan Domain Langganan",
+    "account_settings_showProfileSubscriptions": "Tampilkan Langganan Profil",
+    "account_settings_showProfileFollowings": "Tampilkan Pengikut Profil",
+    "account_settings_notifyOnThread": "Notifikasi untuk Utas",
+    "account_settings_notifyOnMicroblog": "Notifikasi untuk Blog Singkat",
+    "account_settings_notifyOnThreadReply": "Notifikasi untuk Balasan Utas",
+    "account_settings_notifyOnThreadCommentReply": "Notifikasi untuk Balasan Komentar Utas",
+    "account_settings_notifyOnMicroblogReply": "Notifikasi untuk Balasan Blog Singkat",
+    "account_settings_notifyOnMicroblogCommentReply": "Notifikasi untuk Balasan Komentar Blog Singkat",
+    "notifications_registerPush": "Daftarkan Push Notification",
+    "notifications_unregisterPush": "Batalkan Push Notification",
+    "messages": "Pesan",
+    "notLoggedIn": "Belum Masuk",
+    "settings_feedDefaults": "Bawaan Linimasa",
+    "settings_notificationsForX": "Notifikasi untuk {name}",
+    "@settings_notificationsForX": {
+        "placeholders": {
+            "account": {
+                "type": "String"
+            }
+        }
+    },
+    "settings_debug": "Awakutu (Debug)",
+    "settings_about": "Tentang",
+    "settings_defaultCreateLanguage": "Bahasa Penulisan Bawaan",
+    "settings_disableTabSwiping": "Nonaktifkan Geser Tab",
+    "settings_askBeforeUnsubscribing": "Tanya Sebelum Berhenti Berlangganan",
+    "settings_askBeforeDeleting": "Tanya Sebelum Menghapus",
+    "settings_autoPlayVideos": "Putar Video Otomatis",
+    "settings_hapticFeedback": "Umpan Balik Haptik",
+    "settings_autoTranslate": "Terjemahkan Otomatis",
+    "settings_markThreadsReadOnScroll": "Tandai Utas Telah Dibaca Saat Menggulir",
+    "settings_markMicroblogsReadOnScroll": "Tandai Blog Singkat Telah Dibaca Saat Menggulir",
+    "settings_animationSpeed": "Kecepatan Animasi",
+    "settings_animationDisabled": "Animasi Dinonaktifkan",
+    "settings_inlineReplies": "Balasan Dalam-Baris",
+    "settings_crosspostComments": "Komentar Kiriman Silang",
+    "settings_crossPostMarkAsRead": "Tandai Kiriman Silang Telah Dibaca",
+    "settings_imageStore": "Penyimpanan Gambar",
+    "settings_defaultDownloadDir": "Direktori Unduhan Bawaan",
+    "settings_themeMode": "Mode Tema",
+    "settings_themeMode_system": "Sistem",
+    "settings_themeMode_light": "Terang",
+    "settings_themeMode_dark": "Gelap",
+    "settings_enableTrueBlack": "Gunakan Hitam Pekat (True Black)",
+    "settings_enableTrueBlack_help": "Menghemat baterai pada layar OLED",
+    "settings_compactMode": "Mode Ringkas",
+    "settings_hideActionButtons": "Sembunyikan Tombol Aksi",
+    "settings_hideActionButtons_help": "Sembunyikan tombol upvote/downvote di daftar linimasa",
+    "settings_hideFeedUIOnScroll": "Sembunyikan UI Linimasa Saat Menggulir",
+    "settings_dividerThickness": "Ketebalan Garis Pembatas",
+    "settings_globalTextScale": "Skala Teks Global",
+    "settings_alwaysShowInstance": "Selalu Tampilkan Instans",
+    "settings_alwaysShowInstance_help": "Tampilkan nama instans di setiap unggahan",
+    "settings_coverMediaMarkedSensitive": "Tutupi Media yang Ditandai Sensitif",
+    "settings_fullImageSizeThreads": "Gambar Ukuran Penuh di Utas",
+    "settings_fullImageSizeMicroblogs": "Gambar Ukuran Penuh di Blog Singkat",
+    "settings_hideEmojiReactions": "Sembunyikan Reaksi Emoji",
+    "settings_postsAsCards": "Tampilkan Unggahan Sebagai Kartu",
+    "settings_postMode": "Mode Unggahan",
+    "settings_postMode_card": "Kartu",
+    "settings_postMode_list": "Daftar",
+    "settings_postMode_compact": "Ringkas",
+    "settings_postMode_extraCompact": "Ekstra Ringkas",
+    "settings_postLayoutOrder": "Urutan Tata Letak Unggahan",
+    "settings_reduceAnimationMotion": "Kurangi Gerakan Animasi",
+    "settings_aboutInterstellar": "Tentang Interstellar",
+    "settings_donate": "Donasi",
+    "settings_contribute": "Berkontribusi",
+    "settings_translate": "Terjemahkan",
+    "settings_reportIssue": "Laporkan Masalah",
+    "settings_matrixSpace": "Ruang Matrix",
+    "settings_mbinCommunity": "Komunitas mbin",
+    "settings_mbinConfigsCommunity": "Komunitas Konfigurasi mbin",
+    "settings_colorScheme": "Skema Warna",
+    "settings_colorScheme_dynamic": "Dinamis",
+    "settings_colorScheme_blue": "Biru",
+    "settings_colorScheme_indigo": "Nila",
+    "settings_colorScheme_hippieBlue": "Biru Hippie",
+    "settings_colorScheme_aquaBlue": "Biru Akua",
+    "settings_colorScheme_brandBlue": "Biru Merek",
+    "settings_colorScheme_deepBlue": "Biru Tua",
+    "settings_colorScheme_sakura": "Sakura",
+    "settings_colorScheme_mandyRed": "Merah Mandy",
+    "settings_colorScheme_red": "Merah",
+    "settings_colorScheme_redWine": "Anggur Merah",
+    "settings_colorScheme_purpleBrown": "Cokelat Ungu",
+    "settings_colorScheme_green": "Hijau",
+    "settings_colorScheme_money": "Uang",
+    "settings_colorScheme_jungle": "Rimba",
+    "settings_colorScheme_greyLaw": "Hukum Abu-abu",
+    "settings_colorScheme_wasabi": "Wasabi",
+    "settings_colorScheme_gold": "Emas",
+    "settings_colorScheme_mango": "Mangga",
+    "settings_colorScheme_amber": "Kuning Sawo",
+    "settings_colorScheme_vesuviusBurn": "Luka Bakar Vesuvius",
+    "settings_colorScheme_deepPurple": "Ungu Tua",
+    "settings_colorScheme_ebonyClay": "Tanah Liat Hitam",
+    "settings_colorScheme_barossa": "Barossa",
+    "settings_colorScheme_shark": "Hiu",
+    "settings_colorScheme_bigStone": "Batu Besar",
+    "settings_colorScheme_damask": "Damask",
+    "settings_colorScheme_bahamaBlue": "Biru Bahama",
+    "settings_colorScheme_mallardGreen": "Hijau Itik",
+    "settings_colorScheme_espresso": "Espresso",
+    "settings_colorScheme_outerSpace": "Luar Angkasa",
+    "settings_colorScheme_blueWhale": "Paus Biru",
+    "settings_colorScheme_sanJuanBlue": "Biru San Juan",
+    "settings_colorScheme_rosewood": "Kayu Mawar",
+    "settings_colorScheme_blumineBlue": "Biru Blumine",
+    "settings_colorScheme_flutterDash": "Flutter Dash",
+    "settings_feedDefaults_view": "Tampilan Bawaan",
+    "settings_feedDefaults_filter": "Filter Bawaan",
+    "settings_feedDefaults_threadsSort": "Urutan Utas",
+    "settings_feedDefaults_microblogSort": "Urutan Blog Singkat",
+    "settings_feedDefaults_combinedSort": "Urutan Gabungan",
+    "settings_feedDefaults_exploreSort": "Urutan Jelajah",
+    "settings_feedDefaults_commentSort": "Urutan Komentar",
+    "settings_feedDefaults_hideReadPosts": "Sembunyikan Kiriman yang Telah Dibaca",
+    "settings_feedSourceOrder": "Urutan Sumber Linimasa",
+    "settings_feedViewOrder": "Urutan Tampilan Linimasa",
+    "settings_feedSortOrder": "Urutan Sortir Linimasa",
+    "settings_swipeActionLeftShort": "Geser Kiri (Pendek)",
+    "settings_swipeActionLeftLong": "Geser Kiri (Panjang)",
+    "settings_swipeActionRightShort": "Geser Kanan (Pendek)",
+    "settings_swipeActionRightLong": "Geser Kanan (Panjang)",
+    "settings_enableSwipeActions": "Aktifkan Tindakan Geser",
+    "settings_swipeThreshold": "Batas Jarak Geser",
+    "settings_debug_showErrors": "Tampilkan Kesalahan",
+    "settings_debug_inspectDatabase": "Periksa Basis Data",
+    "settings_debug_exportDatabase": "Ekspor Basis Data",
+    "settings_debug_importDatabase": "Impor Basis Data",
+    "settings_debug_clearDatabase": "Bersihkan Basis Data",
+    "settings_debug_clearAccounts": "Bersihkan Akun",
+    "settings_debug_clearProfiles": "Bersihkan Profil",
+    "settings_debug_clearReadPosts": "Bersihkan Riwayat Baca",
+    "settings_debug_clearFeedCache": "Bersihkan Tembolok Linimasa",
+    "settings_debug_clearTags": "Bersihkan Tag",
+    "settings_debug_clearOauth": "Bersihkan OAuth",
+    "settings_debug_log": "Log Awakutu",
+    "profiles": "Profil",
+    "profile_switch": "Ganti Profil",
+    "profile_main": "Profil Utama",
+    "profile_new": "Profil Baru",
+    "profile_edit": "Edit Profil",
+    "profile_import": "Impor Profil",
+    "profile_delete": "Hapus Profil",
+    "profile_name": "Nama Profil",
+    "profile_setAsMain": "Jadikan Profil Utama",
+    "profile_setAsMain_help": "Profil ini akan digunakan secara otomatis saat aplikasi dibuka",
+    "profile_autoSelect": "Pilih Otomatis",
+    "profile_autoSelectAccount": "Pilih Akun Otomatis",
+    "profile_autoSelectAccount_none": "Tidak Ada",
+    "profile_about_title": "Tentang Profil",
+    "profile_about_body": "Profil adalah cara untuk mengelompokkan pengaturan dan akun secara terpisah.",
+    "unsupportedSoftware": "Perangkat Lunak Tidak Didukung",
+    "@unsupportedSoftware": {
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "originalPoster_short": "OP",
+    "originalPoster_long": "Pengunggah Asli",
+    "pin": "Sematkan",
+    "pinnedInCommunity": "Disematkan di Komunitas",
+    "lock": "Kunci",
+    "locked": "Terkunci",
+    "notSafeForWork_short": "NSFW",
+    "notSafeForWork_long": "Konten Dewasa",
+    "notSafeForWork_mark": "Tandai sebagai NSFW",
+    "originalContent_short": "OC",
+    "originalContent_long": "Konten Orisinal",
+    "createdAt": "Dibuat pada",
+    "@createdAt": {
+        "placeholders": {
+            "datetime": {
+                "type": "String"
+            }
+        }
+    },
+    "editedAt": "Diedit pada",
+    "@editedAt": {
+        "placeholders": {
+            "datetime": {
+                "type": "String"
+            }
+        }
+    },
+    "expand": "Perluas",
+    "collapse": "Tutup",
+    "moreFrom": "Lainnya dari {name}",
+    "@moreFrom": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "report": "Laporkan",
+    "reportX": "Laporkan {name}",
+    "@reportX": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "edit": "Edit",
+    "delete": "Hapus",
+    "deleteX": "Hapus {name}",
+    "@deleteX": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "editFlairs": "Edit Lencana (Flair)",
+    "addFlair": "Tambah Lencana",
+    "viewSource": "Lihat Sumber",
+    "close": "Tutup",
+    "banUser": "Blokir Pengguna",
+    "banUserX": "Blokir {user}",
+    "@banUserX": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            }
+        }
+    },
+    "banUser_help": "Pengguna yang diblokir tidak akan bisa lagi berinteraksi dengan komunitas ini.",
+    "@banUser_help": {
+        "placeholders": {
+            "user": {
+                "type": "String"
+            },
+            "community": {
+                "type": "String"
+            }
+        }
+    },
+    "status": "Status",
+    "reason": "Alasan",
+    "moderate": "Moderasi",
+    "submit": "Kirim",
+    "alternativeSources": "Sumber Alternatif",
+    "markdownEditor_heading": "Judul",
+    "markdownEditor_bold": "Tebal",
+    "markdownEditor_italic": "Miring",
+    "markdownEditor_strikethrough": "Coret",
+    "markdownEditor_inlineCode": "Kode Dalam-Baris",
+    "markdownEditor_codeBlock": "Blok Kode",
+    "markdownEditor_link": "Tautan",
+    "markdownEditor_image": "Gambar",
+    "markdownEditor_subscript": "Subskrip",
+    "markdownEditor_superscript": "Superskrip",
+    "markdownEditor_quote": "Kutipan",
+    "markdownEditor_horizontalRule": "Garis Pemisah",
+    "markdownEditor_bulletedList": "Daftar Tak Berurutan",
+    "markdownEditor_numberedList": "Daftar Berurutan",
+    "markdownEditor_spoiler": "Bocoran (Spoiler)",
+    "markdownEditor_edit": "Edit",
+    "markdownEditor_preview": "Pratinjau",
+    "markdownEditor_drafts": "Draf",
+    "markdownEditor_drafts_manuallySave": "Simpan Draf Manual",
+    "markdownEditor_drafts_discardAll": "Buang Semua Draf",
+    "markdownEditor_drafts_apply": "Terapkan Draf",
+    "markdownEditor_drafts_applyAndKeep": "Terapkan dan Simpan Draf",
+    "markdownEditor_drafts_applyAndDiscard": "Terapkan dan Hapus Draf",
+    "markdownEditor_drafts_savedAutomatically": "Draf Tersimpan Otomatis",
+    "markdownEditor_drafts_savedManually": "Draf Tersimpan Manual",
+    "uploadFromGallery": "Unggah dari Galeri",
+    "uploadFromCamera": "Unggah dari Kamera",
+    "openLink": "Buka Tautan",
+    "openLinkMenu": "Menu Buka Tautan",
+    "setLinkAction": "Atur Aksi Tautan",
+    "webView": "Tampilan Web",
+    "browser": "Peramban",
+    "create_text": "Teks",
+    "create_image": "Gambar",
+    "create_link": "Tautan",
+    "create_link_invalid": "Tautan tidak valid",
+    "create_microblog": "Blog Singkat",
+    "create_community": "Komunitas",
+    "microblog_communityHelperText": "Pilih komunitas untuk memublikasikan ke audiens spesifik.",
+    "selectCommunity": "Pilih Komunitas",
+    "title": "Judul",
+    "body": "Isi",
+    "link": "Tautan",
+    "tags": "Tag",
+    "tags_hint": "Pisahkan dengan koma",
+    "language": "Bahasa",
+    "community": "Komunitas",
+    "translate": "Terjemahkan",
+    "user": "Pengguna",
+    "subscribe": "Berlangganan",
+    "poll": "Jajak Pendapat",
+    "addChoice": "Tambah Pilihan",
+    "pollDuration": "Durasi Jajak Pendapat",
+    "pollDuration_minutes": "Menit",
+    "@pollDuration_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_hours": "Jam",
+    "@pollDuration_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollDuration_days": "Hari",
+    "@pollDuration_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollMode": "Mode Jajak Pendapat",
+    "pollShowResults": "Tampilkan Hasil",
+    "pollHideResults": "Sembunyikan Hasil",
+    "pollSubmitError": "Terjadi kesalahan saat mengirim hasil jajak pendapat.",
+    "pollVotes": "Suara",
+    "@pollVotes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_days": "{days} hari",
+    "@pollExpiry_days": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_hours": "{hours} jam",
+    "@pollExpiry_hours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_minutes": "{minutes} menit",
+    "@pollExpiry_minutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pollExpiry_seconds": "{seconds} detik",
+    "@pollExpiry_seconds": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "event": "Acara",
+    "eventMode": "Mode Acara",
+    "eventMode_free": "Gratis",
+    "eventMode_restricted": "Terbatas",
+    "eventMode_external": "Eksternal",
+    "eventMode_invite": "Hanya Undangan",
+    "eventOnline": "Daring (Online)",
+    "eventAddEnd": "Tambahkan Waktu Selesai",
+    "eventError_start": "Waktu mulai tidak valid",
+    "eventError_end": "Waktu selesai tidak valid",
+    "action_setLocation": "Atur Lokasi",
+    "action_hide": "Sembunyikan",
+    "action_appBar": "Bilah Aplikasi",
+    "action_fabTap": "Ketuk Tombol Mengambang (FAB)",
+    "action_fabHold": "Tahan Tombol Mengambang (FAB)",
+    "action_fabMenu": "Menu Tombol Mengambang (FAB)",
+    "action_tabs": "Tab",
+    "action_backToTop": "Kembali ke Atas",
+    "action_createNew": "Buat Baru",
+    "action_expandFABMenu": "Perluas Menu FAB",
+    "action_refresh": "Segarkan",
+    "action_setFilter": "Atur Filter",
+    "action_setSort": "Atur Urutan",
+    "action_setView": "Atur Tampilan",
+    "action_showReadPosts": "Tampilkan Unggahan yang Telah Dibaca",
+    "action_upvote": "Dukung (Upvote)",
+    "action_downvote": "Tolak (Downvote)",
+    "action_boost": "Dorong (Boost)",
+    "action_bookmark": "Markah Buku",
+    "action_reply": "Balas",
+    "action_markRead": "Tandai Telah Dibaca",
+    "action_markUnread": "Tandai Belum Dibaca",
+    "action_moderatePin": "Sematkan",
+    "action_moderateMarkNSFW": "Tandai NSFW",
+    "action_moderateDelete": "Hapus",
+    "action_moderateBan": "Blokir",
+    "action_moderateLock": "Kunci",
+    "save": "Simpan",
+    "saveChanges": "Simpan Perubahan",
+    "saveLocal": "Simpan Lokal",
+    "searchTheFediverse": "Cari di Fediverse",
+    "languages": "Bahasa",
+    "systemLanguage": "Bahasa Sistem",
+    "settings_appLanguage": "Bahasa Aplikasi",
+    "pointsX": "{points} poin",
+    "@pointsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "commentsX": "{comments} komentar",
+    "@commentsX": {
+        "placeholders": {
+            "num": {
+                "type": "int"
+            }
+        }
+    },
+    "filterLists": "Daftar Filter",
+    "filterList_activateFilter": "Aktifkan Filter",
+    "filterList_new": "Filter Baru",
+    "filterList_edit": "Edit Filter",
+    "filterList_import": "Impor Filter",
+    "filterList_delete": "Hapus Filter",
+    "filterList_name": "Nama Filter",
+    "filterList_phrases": "Frasa Filter",
+    "filterList_addPhrase": "Tambah Frasa",
+    "filterList_showWithContentWarning": "Tampilkan Peringatan Konten",
+    "filterList_matchMode": "Mode Pencocokan",
+    "filterList_matchMode_simple": "Sederhana",
+    "filterList_matchMode_simple_help": "Pencocokan sebagian kata sederhana",
+    "filterList_matchMode_wholeWords": "Kata Utuh",
+    "filterList_matchMode_wholeWords_help": "Cocokkan dengan kata utuh saja",
+    "filterList_matchMode_regex": "Regex",
+    "filterList_matchMode_regex_help": "Pencocokan menggunakan Regular Expression",
+    "filterList_caseSensitive": "Peka Huruf Besar/Kecil",
+    "filterList_caseSensitive_help": "Bedakan huruf besar dan kecil dalam pencocokan",
+    "filterListWarningX": "Peringatan Filter: {name}",
+    "@filterListWarningX": {
+        "placeholders": {
+            "lists": {
+                "type": "String"
+            }
+        }
+    },
+    "confirmUnsubscribe": "Berhenti Berlangganan?",
+    "confirmUnfollow": "Berhenti Mengikuti?",
+    "altText": "Teks Alternatif",
+    "settings_dataUtilities": "Utilitas Data",
+    "settings_accountMigration": "Migrasi Akun",
+    "settings_accountMigration_help": "Pindahkan langganan dan blokir dari akun lain ke akun ini.",
+    "settings_accountMigration_step1": "Langkah 1: Pilih Sumber dan Tujuan",
+    "settings_accountMigration_step1_source": "Akun Sumber",
+    "settings_accountMigration_step1_destination": "Akun Tujuan",
+    "settings_accountMigration_step2": "Langkah 2: Pilih Data yang Akan Dimigrasi",
+    "settings_accountMigration_step2_migrateCommunitySubscriptions": "Migrasikan Langganan Komunitas",
+    "settings_accountMigration_step2_migrateCommunityBlocks": "Migrasikan Blokir Komunitas",
+    "settings_accountMigration_step2_migrateUserFollows": "Migrasikan Pengguna yang Diikuti",
+    "settings_accountMigration_step2_migrateUserBlocks": "Migrasikan Pengguna yang Diblokir",
+    "settings_accountMigration_step3": "Langkah 3: Migrasi",
+    "settings_accountMigration_readingFromSource": "Membaca dari sumber...",
+    "settings_accountMigration_writingFromSource": "Menulis ke tujuan...",
+    "settings_accountMigration_complete": "Migrasi Selesai",
+    "settings_accountMigration_failed": "Migrasi Gagal",
+    "settings_accountMigration_foundXItems": "Ditemukan {count} item",
+    "@settings_accountMigration_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountMigration_completeXItems": "Berhasil memigrasi {count} item",
+    "@settings_accountMigration_completeXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountMigration_failedXItems": "Gagal memigrasi {count} item",
+    "@settings_accountMigration_failedXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset": "Atur Ulang Akun",
+    "settings_accountReset_help": "Hapus semua langganan dan pengaturan blokir dari akun ini.",
+    "settings_accountReset_step1": "Langkah 1: Konfirmasi Akun",
+    "settings_accountReset_step2": "Langkah 2: Pilih Data yang Akan Diatur Ulang",
+    "settings_accountReset_step2_resetCommunitySubscriptions": "Hapus Langganan Komunitas",
+    "settings_accountReset_step2_resetCommunityBlocks": "Hapus Blokir Komunitas",
+    "settings_accountReset_step2_resetUserFollows": "Hapus Pengguna yang Diikuti",
+    "settings_accountReset_step2_resetUserBlocks": "Hapus Pengguna yang Diblokir",
+    "settings_accountReset_step3": "Langkah 3: Atur Ulang",
+    "settings_accountReset_readingFromAccount": "Membaca dari akun...",
+    "settings_accountReset_removingItems": "Menghapus item...",
+    "settings_accountReset_complete": "Pengaturan Ulang Selesai",
+    "settings_accountReset_failed": "Pengaturan Ulang Gagal",
+    "settings_accountReset_foundXItems": "Ditemukan {count} item",
+    "@settings_accountReset_foundXItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset_completeXItems": "Berhasil menghapus {count} item",
+    "@settings_accountReset_completeXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "settings_accountReset_failedXItems": "Gagal menghapus {count} item",
+    "@settings_accountReset_failedXItems": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "notificationControlStatus_default": "Bawaan",
+    "notificationControlStatus_muted": "Bisukan",
+    "notificationControlStatus_loud": "Bising",
+    "bookmark": "Markah Buku",
+    "bookmark_addToX": "Tambahkan ke {name}",
+    "bookmark_removeFromX": "Hapus dari {name}",
+    "bookmarks": "Markah Buku",
+    "bookmarkLists": "Daftar Markah Buku",
+    "bookmarkLists_create": "Buat Daftar Markah Buku",
+    "bookmarkLists_setDefault": "Jadikan Bawaan",
+    "bookmarkLists_createHint": "Masukkan nama daftar...",
+    "configShare": "Bagikan Konfigurasi",
+    "configShare_profile_title": "Bagikan Profil",
+    "configShare_profile_info": "Ini akan membagikan tata letak, tema, dan pengaturan aplikasi Anda.",
+    "@configShare_profile_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_filterList_title": "Bagikan Daftar Filter",
+    "configShare_filterList_info": "Ini akan membagikan daftar filter dan kata kunci yang Anda gunakan.",
+    "@configShare_filterList_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_feed_title": "Bagikan Linimasa",
+    "configShare_feed_info": "Ini akan membagikan konfigurasi linimasa khusus yang Anda buat.",
+    "@configShare_feed_info": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "configShare_created": "Berhasil dibuat!",
+    "@configShare_created": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            },
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "errorPage_firstPage": "Gagal memuat halaman pertama",
+    "errorPage_firstPage_button": "Coba Lagi",
+    "errorPage_newPage": "Gagal memuat halaman baru",
+    "errorPage_caughtUp": "Anda sudah melihat semuanya!",
+    "errorPage_authError": "Kesalahan Otentikasi. Silakan masuk kembali.",
+    "errorPage_restrictedAuthError": "Akses Dibatasi",
+    "exitMessage": "Tekan sekali lagi untuk keluar",
+    "pushNotificationsDialog_title": "Pemberitahuan Push",
+    "pushNotificationsDialog_noDistributor": "Tidak ada penyedia notifikasi push yang ditemukan di perangkat Anda.",
+    "@pushNotificationsDialog_noDistributor": {
+        "placeholders": {
+            "url": {
+                "type": "String"
+            }
+        }
+    },
+    "pushNotificationsDialog_selectDistributor": "Pilih penyedia push",
+    "crossPost": "Kiriman Silang",
+    "modlog": "Log Moderator",
+    "modlog_deletedPost": "Unggahan Dihapus",
+    "modlog_restoredPost": "Unggahan Dipulihkan",
+    "modlog_deletedComment": "Komentar Dihapus",
+    "modlog_restoredComment": "Komentar Dipulihkan",
+    "modlog_pinnedPost": "Unggahan Disematkan",
+    "modlog_unpinnedPost": "Sematkan Unggahan Dilepas",
+    "modlog_bannedUser": "Pengguna Diblokir",
+    "modlog_unbannedUser": "Blokir Pengguna Dicabut",
+    "modlog_addModerator": "Moderator Ditambahkan",
+    "modlog_removedModerator": "Moderator Dihapus",
+    "modlog_reason": "Alasan",
+    "@modlog_reason": {
+        "placeholders": {
+            "reason": {
+                "type": "String"
+            }
+        }
+    },
+    "modlog_all": "Semua Log Mod",
+    "modlog_communityAdded": "Komunitas Ditambahkan",
+    "modlog_communityRemoved": "Komunitas Dihapus",
+    "modlog_postLocked": "Unggahan Dikunci",
+    "modlog_postUnlocked": "Kunci Unggahan Dibuka"
 }
