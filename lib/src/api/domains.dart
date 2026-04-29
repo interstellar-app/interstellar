@@ -38,6 +38,10 @@ class MbinAPIDomains {
     return DomainModel.fromMbin(response.bodyJson);
   }
 
+  Future<DomainModel> getByName(String domain) async {
+    return (await list(search: domain)).items.first;
+  }
+
   Future<DomainModel> putSubscribe(int domainId, bool state) async {
     final path = '/domain/$domainId/${state ? 'subscribe' : 'unsubscribe'}';
 
