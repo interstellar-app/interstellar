@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:drift/drift.dart';
@@ -286,27 +287,8 @@ class AppController with ChangeNotifier {
     _defaultDownloadsDir = await getDefaultDownloadDir();
 
     await _updateAPI();
-    _cacheFederatedInstances();
 
     logger.i('Finished init');
-  }
-
-  Future<void> _cacheFederatedInstances() async {
-    final federatedDomains = await api.instance.federated();
-
-    await database.transaction(() async {
-      for (final instance in federatedDomains) {
-        await database
-            .into(database.instances)
-            .insertOnConflictUpdate(instance);
-      }
-      await database
-          .into(database.instances)
-          .insertOnConflictUpdate(
-            InstancesCompanion.insert(domain: instanceHost),
-          );
-    });
-    logger.i('Cached instances federated with $instanceHost');
   }
 
   Future<void> _rebuildProfile() async {
@@ -495,7 +477,7 @@ class AppController with ChangeNotifier {
             }: username,
             'password': password?.substring(
               0,
-              software == ServerSoftware.lemmy ? 60 : 128,
+              min(password.length, software == ServerSoftware.lemmy ? 60 : 128),
             ),
             if (software == ServerSoftware.lemmy) 'totp_2fa_token': totp,
           }),
@@ -615,7 +597,6 @@ class AppController with ChangeNotifier {
     } else {
       // The following is already done when switchAccounts is run, so only needed without switchAccounts.
       await _updateAPI();
-      _cacheFederatedInstances();
 
       notifyListeners();
     }
@@ -685,7 +666,6 @@ class AppController with ChangeNotifier {
 
     _selectedAccount = newAccount;
     await _updateAPI();
-    _cacheFederatedInstances();
 
     userMentionCache.clear();
     communityMentionCache.clear();

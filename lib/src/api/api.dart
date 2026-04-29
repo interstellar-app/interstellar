@@ -6,7 +6,6 @@ import 'package:interstellar/src/api/community_moderation.dart';
 import 'package:interstellar/src/api/domains.dart';
 import 'package:interstellar/src/api/feed.dart';
 import 'package:interstellar/src/api/images.dart';
-import 'package:interstellar/src/api/instance.dart';
 import 'package:interstellar/src/api/messages.dart';
 import 'package:interstellar/src/api/microblogs.dart';
 import 'package:interstellar/src/api/moderation.dart';
@@ -26,7 +25,6 @@ class API {
       community = APICommunity(client),
       communityModeration = APICommunityModeration(client),
       feed = APIFeed(client),
-      instance = APIInstance(client),
       messages = APIMessages(client),
       moderation = APIModeration(client),
       notifications = APINotifications(client),
@@ -44,7 +42,6 @@ class API {
   final APICommunity community;
   final APICommunityModeration communityModeration;
   final APIFeed feed;
-  final APIInstance instance;
   final APIMessages messages;
   final APIModeration moderation;
   final APINotifications notifications;

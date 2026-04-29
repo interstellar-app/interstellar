@@ -1336,7 +1336,6 @@ final class Schema3 extends i0.VersionedSchema {
     drafts,
     tags,
     userTags,
-    instances,
     accountUnifiedpushToken,
   ];
   late final Shape13 accounts = Shape13(
@@ -1559,17 +1558,6 @@ final class Schema3 extends i0.VersionedSchema {
       isStrict: false,
       tableConstraints: ['PRIMARY KEY(user, tag_id)'],
       columns: [_column_95, _column_96],
-      attachedDatabase: database,
-    ),
-    alias: null,
-  );
-  late final Shape17 instances = Shape17(
-    source: i0.VersionedTable(
-      entityName: 'instances',
-      withoutRowId: false,
-      isStrict: false,
-      tableConstraints: ['PRIMARY KEY(domain)'],
-      columns: [_column_105, _column_106, _column_107],
       attachedDatabase: database,
     ),
     alias: null,
@@ -1832,41 +1820,6 @@ i1.GeneratedColumn<int> _column_104(String aliasedName) =>
       $customConstraints:
           'NOT NULL DEFAULT 0 CHECK (unifiedpush_distributor_ack IN (0, 1))',
       defaultValue: const i1.CustomExpression('0'),
-    );
-
-class Shape17 extends i0.VersionedTable {
-  Shape17({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<String> get domain =>
-      columnsByName['domain']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get software =>
-      columnsByName['software']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get version =>
-      columnsByName['version']! as i1.GeneratedColumn<String>;
-}
-
-i1.GeneratedColumn<String> _column_105(String aliasedName) =>
-    i1.GeneratedColumn<String>(
-      'domain',
-      aliasedName,
-      false,
-      type: i1.DriftSqlType.string,
-      $customConstraints: 'NOT NULL',
-    );
-i1.GeneratedColumn<String> _column_106(String aliasedName) =>
-    i1.GeneratedColumn<String>(
-      'software',
-      aliasedName,
-      true,
-      type: i1.DriftSqlType.string,
-      $customConstraints: 'NULL',
-    );
-i1.GeneratedColumn<String> _column_107(String aliasedName) =>
-    i1.GeneratedColumn<String>(
-      'version',
-      aliasedName,
-      true,
-      type: i1.DriftSqlType.string,
-      $customConstraints: 'NULL',
     );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,

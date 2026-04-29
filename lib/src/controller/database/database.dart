@@ -441,15 +441,6 @@ class UserTags extends Table {
   Set<Column<Object>> get primaryKey => {user, tagId};
 }
 
-class Instances extends Table {
-  TextColumn get domain => text()();
-  TextColumn get software => text().nullable()();
-  TextColumn get version => text().nullable()();
-
-  @override
-  Set<Column<Object>> get primaryKey => {domain};
-}
-
 @DriftDatabase(
   tables: [
     Accounts,
@@ -465,7 +456,6 @@ class Instances extends Table {
     Drafts,
     Tags,
     UserTags,
-    Instances,
   ],
 )
 class InterstellarDatabase extends _$InterstellarDatabase {
@@ -550,13 +540,6 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     await (update(servers)..where((f) => f.oauthIdentifier.isNotNull())).write(
       const ServersCompanion(oauthIdentifier: Value(null)),
     );
-  }
-
-  Future<bool> knownInstance(String domain) async {
-    final instance = await (select(
-      instances,
-    )..where((f) => f.domain.equals(domain))).getSingleOrNull();
-    return instance != null;
   }
 }
 
