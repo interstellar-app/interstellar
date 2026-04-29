@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:interstellar/src/models/image.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/widgets/image.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_config_share.dart';
 import 'package:interstellar/src/widgets/markdown/markdown_mention.dart';
@@ -9,6 +10,7 @@ import 'package:interstellar/src/widgets/markdown/markdown_subscript_superscript
 import 'package:interstellar/src/widgets/markdown/markdown_video.dart';
 import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:interstellar/src/widgets/video.dart';
+import 'package:interstellar/src/utils/instances.dart';
 
 class Markdown extends StatelessWidget {
   const Markdown(
@@ -41,6 +43,12 @@ class Markdown extends StatelessWidget {
           ),
       onTapLink: (text, href, title) async {
         if (href != null) {
+          final isKnownInstance = knownInstances[Uri.parse(href).host];
+          if (!context.mounted) return;
+          if (isKnownInstance != null) {
+            if (await navigateApObject(context, href)) return;
+          }
+          if (!context.mounted) return;
           openWebpageSecondary(context, Uri.parse(href));
         }
       },

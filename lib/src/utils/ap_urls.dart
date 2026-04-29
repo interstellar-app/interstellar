@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/feed.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/user.dart';
+import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -102,4 +105,33 @@ List<Uri> genFeedUrls(BuildContext context, FeedModel feed) {
       Uri.https(ac.instanceHost, '/f/${feed.name}'),
     ?apUrl,
   ];
+}
+
+Future<bool> navigateApObject(BuildContext context, String apId) async {
+  final ac = context.read<AppController>();
+
+  final object = await ac.api.search.resolveObject(apId);
+  if (object == null || !context.mounted) return false;
+
+  switch (object) {
+    case final CommentModel i:
+      context.router.push(
+        PostCommentRoute(postType: i.postType, commentId: i.id),
+      );
+    case final PostModel i:
+      pushPostPage(
+        context,
+        communityName: i.community.name,
+        postId: i.id,
+        postType: i.type,
+        initData: i,
+      );
+    case final DetailedCommunityModel i:
+      context.router.push(CommunityRoute(communityName: i.name, initData: i));
+    case final DetailedUserModel i:
+      context.router.push(UserRoute(username: i.name, initData: i));
+    case final FeedModel i:
+      context.router.push(FeedRoute(feedName: i.name));
+  }
+  return true;
 }
