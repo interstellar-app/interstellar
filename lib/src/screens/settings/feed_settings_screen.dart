@@ -529,11 +529,17 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     )
                     .toSet(),
                 onTap: (selected, item) {
-                  var name = switch (item) {
-                    final DetailedCommunityModel i => i.name,
-                    final DetailedUserModel i => i.name,
+                  final name = switch (item) {
+                    final DetailedCommunityModel i => normalizeName(
+                      i.name,
+                      ac.instanceHost,
+                    ),
+                    final DetailedUserModel i => normalizeName(
+                      i.name,
+                      ac.instanceHost,
+                    ),
                     final DomainModel i => i.name,
-                    final FeedModel i => i.name,
+                    final FeedModel i => normalizeName(i.name, ac.instanceHost),
                     _ => null,
                   };
                   final source = switch (item) {
@@ -549,8 +555,6 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                   };
 
                   if (name == null || source == null) return;
-
-                  name = normalizeName(name, ac.instanceHost);
 
                   if (selected) {
                     addInput(

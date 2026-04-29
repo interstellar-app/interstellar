@@ -286,8 +286,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               padding: chipPadding,
                             ),
                             const SizedBox(width: 4),
-                            if (ac.serverSoftware == ServerSoftware.mbin &&
-                                _selected == null) ...[
+                            if (ac.serverSoftware == ServerSoftware.mbin) ...[
                               ChoiceChip(
                                 label: Text(l(context).domains),
                                 selected: type == ExploreType.domains,
