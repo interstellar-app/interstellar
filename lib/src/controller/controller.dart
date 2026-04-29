@@ -493,7 +493,10 @@ class AppController with ChangeNotifier {
               ServerSoftware.piefed => 'username',
               ServerSoftware.mbin => throw UnreachableError(),
             }: username,
-            'password': password,
+            'password': password?.substring(
+              0,
+              software == ServerSoftware.lemmy ? 60 : 128,
+            ),
             if (software == ServerSoftware.lemmy) 'totp_2fa_token': totp,
           }),
         );

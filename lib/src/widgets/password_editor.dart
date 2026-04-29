@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class PasswordEditor extends StatefulWidget {
-  const PasswordEditor(this.controller, {this.onChanged, super.key});
+  const PasswordEditor(
+    this.controller, {
+    this.onChanged,
+    this.maxLength,
+    super.key,
+  });
 
   final TextEditingController controller;
   final void Function(String)? onChanged;
+  final int? maxLength;
 
   @override
   State<PasswordEditor> createState() => _PasswordEditorState();
@@ -34,6 +40,7 @@ class _PasswordEditorState extends State<PasswordEditor> {
       onChanged: widget.onChanged,
       autofillHints: const [AutofillHints.password],
       obscureText: obscureText,
+      maxLength: widget.maxLength,
     );
   }
 }

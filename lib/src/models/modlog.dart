@@ -67,9 +67,9 @@ abstract class ModlogItemModel with _$ModlogItemModel {
         ModLogType.postPinned => null,
         ModLogType.postUnpinned => null,
         ModLogType.microblogPostDeleted =>
-          (json['subject']! as JsonMap)['body']! as String,
+          (json['subject']! as JsonMap)['body'] as String?,
         ModLogType.microblogPostRestored =>
-          (json['subject']! as JsonMap)['body']! as String,
+          (json['subject']! as JsonMap)['body'] as String?,
         ModLogType.microblogCommentDeleted => null,
         ModLogType.microblogCommentRestored => null,
         ModLogType.ban => null,
