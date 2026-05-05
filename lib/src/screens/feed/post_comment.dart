@@ -392,6 +392,7 @@ class _PostCommentState extends State<PostComment> {
               isLocked: widget.comment.isLocked,
               createdAt: widget.comment.createdAt,
               editedAt: widget.comment.editedAt,
+              menuWidget: menuWidget,
             ),
           ),
         ),
