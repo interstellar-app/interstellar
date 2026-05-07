@@ -887,5 +887,13 @@
   "modlog_communityAdded": "Community added",
   "modlog_communityRemoved": "Community removed",
   "modlog_postLocked": "Post locked",
-  "modlog_postUnlocked": "Post unlocked"
+  "modlog_postUnlocked": "Post unlocked",
+  "downloaded_file": "Downloaded {file}.",
+  "@downloaded_file": {
+    "placeholders": {
+        "file": {
+            "type": "String"
+        }
+    }
+  }
 }
