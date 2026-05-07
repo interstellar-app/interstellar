@@ -8,6 +8,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/ban_dialog.dart';
@@ -185,7 +186,7 @@ class _PostCommentState extends State<PostComment> {
           reason,
         );
       }),
-      onEdit: widget.comment.visibility != 'soft_deleted'
+      onEdit: widget.comment.visibility != PostVisibility.soft_deleted
           ? whenLoggedIn(context, (body) async {
               final newValue = await ac.api.comments.edit(
                 widget.comment.postType,
@@ -201,7 +202,7 @@ class _PostCommentState extends State<PostComment> {
               );
             }, matchesUsername: widget.comment.user.name)
           : null,
-      onDelete: widget.comment.visibility != 'soft_deleted'
+      onDelete: widget.comment.visibility != PostVisibility.soft_deleted
           ? whenLoggedIn(context, () async {
               await ac.api.comments.delete(
                 widget.comment.postType,
@@ -216,7 +217,7 @@ class _PostCommentState extends State<PostComment> {
                   upvotes: null,
                   downvotes: null,
                   boosts: null,
-                  visibility: 'soft_deleted',
+                  visibility: PostVisibility.soft_deleted,
                 ),
               );
             }, matchesUsername: widget.comment.user.name)

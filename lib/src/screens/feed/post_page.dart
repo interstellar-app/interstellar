@@ -513,7 +513,7 @@ class _PostPageState extends State<PostPage> {
                     _mainCommentSectionKey.currentState?._pagingController
                         .prependPage('', [newComment]);
                   }),
-                  onEdit: post.visibility != 'soft_deleted'
+                  onEdit: post.visibility != PostVisibility.soft_deleted
                       ? whenLoggedIn(context, (body) async {
                           final newPost = await switch (post.type) {
                             PostType.thread => ac.api.threads.edit(
@@ -534,7 +534,7 @@ class _PostPageState extends State<PostPage> {
                           _onUpdate(newPost);
                         }, matchesUsername: post.user.name)
                       : null,
-                  onDelete: post.visibility != 'soft_deleted'
+                  onDelete: post.visibility != PostVisibility.soft_deleted
                       ? whenLoggedIn(context, () async {
                           await switch (post.type) {
                             PostType.thread => ac.api.threads.delete(post.id),
@@ -551,7 +551,7 @@ class _PostPageState extends State<PostPage> {
                               upvotes: null,
                               downvotes: null,
                               boosts: null,
-                              visibility: 'soft_deleted',
+                              visibility: PostVisibility.soft_deleted,
                             ),
                           );
                         }, matchesUsername: post.user.name)

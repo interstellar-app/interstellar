@@ -346,7 +346,6 @@ Future<void> showContentMenu(
           widget.onModerateLock != null)
         ContextMenuItem(
           title: l(context).moderate,
-          // onTap: () async => showModerateMenu(context, widget),
           subItems: [
             if (widget.onModeratePin != null)
               ContextMenuItem(
