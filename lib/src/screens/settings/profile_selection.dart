@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/profile.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
+import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
@@ -126,6 +132,36 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                           },
                           icon: const Icon(Symbols.edit_rounded),
                         ),
+                        LoadingIconButton(
+                          onPressed: () async {
+                            final profile =
+                                (await context.read<AppController>().getProfile(
+                                  profileName,
+                                )).exportReady();
+
+                            final config = await ConfigShare.create(
+                              type: ConfigShareType.profile,
+                              name: profileName,
+                              payload: profile.toJson(),
+                            );
+
+                            final file = XFile.fromData(
+                              Uint8List.fromList(
+                                jsonEncode(config.toJson()).codeUnits,
+                              ),
+                              mimeType: 'application/json',
+                            );
+
+                            if (!context.mounted) return;
+                            await downloadFile(
+                              context,
+                              file,
+                              '$profileName.json',
+                              defaultDir: ac.defaultDownloadDir,
+                            );
+                          },
+                          icon: const Icon(Symbols.download_rounded),
+                        ),
                         IconButton(
                           onPressed: () async {
                             final profile =
@@ -182,6 +218,40 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                     );
                     getProfiles();
                   },
+                  trailing: LoadingTextButton(
+                    onPressed: () async {
+                      XFile? file;
+                      try {
+                        final result = await FilePicker.platform.pickFiles();
+                        file = result?.files.single.xFile;
+                      } catch (e) {
+                        //
+                      }
+                      if (file == null) return;
+
+                      final json = jsonDecode(await file.readAsString());
+
+                      final config = ConfigShare.fromJson(json);
+
+                      if (config.type != ConfigShareType.profile) return;
+
+                      final profile = ProfileOptional.fromJson({
+                        ...config.payload,
+                        'name': config.name,
+                      });
+
+                      if (!context.mounted) return;
+                      await context.router.push(
+                        EditProfileRoute(
+                          profile: config.name,
+                          profileList: profileList!,
+                          importProfile: profile,
+                        ),
+                      );
+                      getProfiles();
+                    },
+                    label: Text(l(context).profile_import),
+                  ),
                 ),
                 const SizedBox(height: 16),
               ],
