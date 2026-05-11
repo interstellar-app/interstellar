@@ -1,10 +1,16 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
+import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -37,58 +43,82 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
       body: ListView(
         children: [
           ...ac.filterLists.keys.map(
-            (name) => Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: Text(name),
-                    onTap: () => context.router.push(
-                      EditFilterListRoute(filterList: name),
-                    ),
-                    trailing: IconButton(
-                      onPressed: () async {
-                        final filterList = context
-                            .read<AppController>()
-                            .filterLists[name]!;
+            (name) => ListTile(
+              title: Text(name),
+              onTap: () =>
+                  context.router.push(EditFilterListRoute(filterList: name)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LoadingIconButton(
+                    onPressed: () async {
+                      final filterList = context
+                          .read<AppController>()
+                          .filterLists[name]!;
 
-                        final config = await ConfigShare.create(
-                          type: ConfigShareType.filterList,
-                          name: name,
-                          payload: filterList.toJson(),
-                        );
+                      final config = await ConfigShare.create(
+                        type: ConfigShareType.filterList,
+                        name: name,
+                        payload: filterList.toJson(),
+                      );
 
-                        if (!context.mounted) return;
-                        var communityName = mbinConfigsCommunityName;
-                        if (communityName.endsWith(
-                          context.read<AppController>().instanceHost,
-                        )) {
-                          communityName = communityName.split('@').first;
-                        }
+                      final file = XFile.fromData(
+                        Uint8List.fromList(
+                          jsonEncode(config.toJson()).codeUnits,
+                        ),
+                        mimeType: 'application/json',
+                      );
 
-                        final community = await context
-                            .read<AppController>()
-                            .api
-                            .community
-                            .getByName(communityName);
-
-                        if (!context.mounted) return;
-
-                        await context.router.push(
-                          CreateRoute(
-                            initTitle: '[Filter List] $name',
-                            initBody:
-                                'Short description here...\n\n${config.toMarkdown()}',
-                            initCommunity: community,
-                          ),
-                        );
-                      },
-                      icon: const Icon(Symbols.share_rounded),
-                    ),
+                      if (!context.mounted) return;
+                      await downloadFile(
+                        context,
+                        file,
+                        '$name.json',
+                        defaultDir: ac.defaultDownloadDir,
+                      );
+                    },
+                    icon: const Icon(Symbols.download_rounded),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Switch(
+                  IconButton(
+                    onPressed: () async {
+                      final filterList = context
+                          .read<AppController>()
+                          .filterLists[name]!;
+
+                      final config = await ConfigShare.create(
+                        type: ConfigShareType.filterList,
+                        name: name,
+                        payload: filterList.toJson(),
+                      );
+
+                      if (!context.mounted) return;
+                      var communityName = mbinConfigsCommunityName;
+                      if (communityName.endsWith(
+                        context.read<AppController>().instanceHost,
+                      )) {
+                        communityName = communityName.split('@').first;
+                      }
+
+                      final community = await context
+                          .read<AppController>()
+                          .api
+                          .community
+                          .getByName(communityName);
+
+                      if (!context.mounted) return;
+
+                      await context.router.push(
+                        CreateRoute(
+                          initTitle: '[Filter List] $name',
+                          initBody:
+                              'Short description here...\n\n${config.toMarkdown()}',
+                          initCommunity: community,
+                        ),
+                      );
+                    },
+                    icon: const Icon(Symbols.share_rounded),
+                  ),
+                  Switch(
                     value: ac.profile.filterLists[name] ?? false,
                     onChanged: (value) {
                       ac.updateProfile(
@@ -101,8 +131,8 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
                       );
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           ListTile(
@@ -110,6 +140,38 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
             title: Text(l(context).filterList_new),
             onTap: () =>
                 context.router.push(EditFilterListRoute(filterList: null)),
+            trailing: LoadingTextButton(
+              onPressed: () async {
+                XFile? file;
+                try {
+                  final result = await FilePicker.platform.pickFiles();
+                  file = result?.files.single.xFile;
+                } catch (e) {
+                  //
+                }
+                if (file == null) return;
+
+                final json = jsonDecode(await file.readAsString());
+
+                final config = ConfigShare.fromJson(json);
+
+                if (config.type != ConfigShareType.filterList) return;
+
+                final filterList = FilterList.fromJson({
+                  ...config.payload,
+                  'name': config.name,
+                });
+
+                if (!context.mounted) return;
+                await context.router.push(
+                  EditFilterListRoute(
+                    filterList: config.name,
+                    importFilterList: filterList,
+                  ),
+                );
+              },
+              label: Text(l(context).filterList_import),
+            ),
           ),
         ],
       ),
