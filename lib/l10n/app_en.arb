@@ -898,5 +898,6 @@
             "type": "String"
         }
     }
-  }
+  },
+  "invalidFile": "Invalid file"
 }

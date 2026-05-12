@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
@@ -14,6 +19,8 @@ import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/feed_screen.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
+import 'package:interstellar/src/utils/globals.dart';
+import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -119,6 +126,33 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                     ),
                     icon: const Icon(Symbols.delete_rounded),
                   ),
+                  LoadingIconButton(
+                    onPressed: () async {
+                      final feed = ac.feeds[entry.key]!;
+
+                      final config = await ConfigShare.create(
+                        type: ConfigShareType.feed,
+                        name: entry.key,
+                        payload: feed.toJson(),
+                      );
+
+                      final file = XFile.fromData(
+                        Uint8List.fromList(
+                          jsonEncode(config.toJson()).codeUnits,
+                        ),
+                        mimeType: 'application/json',
+                      );
+
+                      if (!context.mounted) return;
+                      await downloadFile(
+                        context,
+                        file,
+                        '${entry.key}.json',
+                        defaultDir: ac.defaultDownloadDir,
+                      );
+                    },
+                    icon: const Icon(Symbols.download_rounded),
+                  ),
                   IconButton(
                     onPressed: () async {
                       final feed = ac.feeds[entry.key]!;
@@ -165,6 +199,41 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
             leading: const Icon(Symbols.add_rounded),
             title: Text(l(context).feeds_new),
             onTap: () => newFeed(context),
+            trailing: LoadingTextButton(
+              onPressed: () async {
+                XFile? file;
+                try {
+                  final result = await FilePicker.platform.pickFiles();
+                  file = result?.files.single.xFile;
+                } catch (e) {
+                  //
+                }
+                if (file == null) return;
+
+                final json = jsonDecode(await file.readAsString());
+
+                final config = ConfigShare.fromJson(json);
+
+                if (config.type != ConfigShareType.feed) {
+                  if (!context.mounted) return;
+                  scaffoldMessengerKey.currentState?.showSnackBar(
+                    SnackBar(
+                      content: Text(l(context).invalidFile),
+                      showCloseIcon: true,
+                    ),
+                  );
+                  return;
+                }
+
+                final feed = Feed.fromJson({...config.payload});
+
+                if (!context.mounted) return;
+                await context.router.push(
+                  EditFeedRoute(feed: config.name, feedData: feed),
+                );
+              },
+              label: Text(l(context).feeds_import),
+            ),
           ),
         ],
       ),

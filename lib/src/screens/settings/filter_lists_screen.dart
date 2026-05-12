@@ -10,6 +10,7 @@ import 'package:interstellar/src/controller/filter_list.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_select.dart';
@@ -155,7 +156,16 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
 
                 final config = ConfigShare.fromJson(json);
 
-                if (config.type != ConfigShareType.filterList) return;
+                if (config.type != ConfigShareType.filterList) {
+                  if (!context.mounted) return;
+                  scaffoldMessengerKey.currentState?.showSnackBar(
+                    SnackBar(
+                      content: Text(l(context).invalidFile),
+                      showCloseIcon: true,
+                    ),
+                  );
+                  return;
+                }
 
                 final filterList = FilterList.fromJson({
                   ...config.payload,

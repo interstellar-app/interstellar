@@ -11,6 +11,7 @@ import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/models/config_share.dart';
 import 'package:interstellar/src/screens/settings/about_screen.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
+import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/share.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/list_tile_switch.dart';
@@ -233,7 +234,17 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
                       final config = ConfigShare.fromJson(json);
 
-                      if (config.type != ConfigShareType.profile) return;
+                      if (config.type != ConfigShareType.profile) {
+                        if (!context.mounted) return;
+                        scaffoldMessengerKey.currentState?.showSnackBar(
+                          SnackBar(
+                            content: Text(l(context).invalidFile),
+                            showCloseIcon: true,
+                          ),
+                        );
+                        context.router.pop();
+                        return;
+                      }
 
                       final profile = ProfileOptional.fromJson({
                         ...config.payload,
