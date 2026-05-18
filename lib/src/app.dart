@@ -61,6 +61,15 @@ class App extends StatelessWidget {
                     link.toString(),
                   );
 
+                  if (item == null) {
+                    scaffoldMessengerKey.currentState?.showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to open link.'),
+                        showCloseIcon: true,
+                      ),
+                    );
+                  }
+
                   // Construct interstellar compatible uri.
                   final newUri = switch (item) {
                     final PostModel p => Uri.parse(
