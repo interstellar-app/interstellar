@@ -207,7 +207,7 @@
     "feeds_empty": "Belum ada linimasa.",
     "feeds_exist": "Linimasa sudah ada.",
     "feeds_new": "Linimasa Baru",
-    "feeds_edit": "Edit Linimasa",
+    "feeds_edit": "Edit Linimasa {feed}",
     "@feeds_edit": {
         "placeholders": {
             "feed": {
@@ -220,7 +220,7 @@
     "feeds_selectInputs": "Pilih Masukan",
     "feeds_inputs": "Masukan",
     "crossPosts": "Kiriman Silang",
-    "crossPostCount": "Jumlah Kiriman Silang",
+    "crossPostCount": "{count} Jumlah Kiriman Silang",
     "@crossPostCount": {
         "placeholders": {
             "count": {
@@ -231,7 +231,7 @@
     "comment_openOriginalPost": "Buka Unggahan Asli",
     "comment_openRoot": "Buka Akar Komentar",
     "comment_openParent": "Buka Induk Komentar",
-    "openReplies": "Buka Balasan",
+    "openReplies": "Buka Balasan {count}",
     "@openReplies": {
         "placeholders": {
             "count": {
@@ -257,7 +257,7 @@
     "messages": "Pesan",
     "notLoggedIn": "Belum Masuk",
     "settings_feedDefaults": "Bawaan Linimasa",
-    "settings_notificationsForX": "Notifikasi untuk {name}",
+    "settings_notificationsForX": "Notifikasi untuk {account}",
     "@settings_notificationsForX": {
         "placeholders": {
             "account": {
@@ -398,7 +398,7 @@
     "profile_autoSelectAccount_none": "Tidak Ada",
     "profile_about_title": "Tentang Profil",
     "profile_about_body": "Profil adalah cara untuk mengelompokkan pengaturan dan akun secara terpisah.",
-    "unsupportedSoftware": "Perangkat Lunak Tidak Didukung",
+    "unsupportedSoftware": "Perangkat Lunak Tidak Didukung {host}",
     "@unsupportedSoftware": {
         "placeholders": {
             "host": {
@@ -417,7 +417,7 @@
     "notSafeForWork_mark": "Tandai sebagai NSFW",
     "originalContent_short": "OC",
     "originalContent_long": "Konten Orisinal",
-    "createdAt": "Dibuat pada",
+    "createdAt": "Dibuat pada {datetime}",
     "@createdAt": {
         "placeholders": {
             "datetime": {
@@ -425,7 +425,7 @@
             }
         }
     },
-    "editedAt": "Diedit pada",
+    "editedAt": "Diedit pada {datetime}",
     "@editedAt": {
         "placeholders": {
             "datetime": {
@@ -475,7 +475,7 @@
             }
         }
     },
-    "banUser_help": "Pengguna yang diblokir tidak akan bisa lagi berinteraksi dengan komunitas ini.",
+    "banUser_help": "Pengguna yang {user} diblokir tidak akan bisa lagi berinteraksi dengan komunitas ini {community}.",
     "@banUser_help": {
         "placeholders": {
             "user": {
@@ -544,7 +544,7 @@
     "poll": "Jajak Pendapat",
     "addChoice": "Tambah Pilihan",
     "pollDuration": "Durasi Jajak Pendapat",
-    "pollDuration_minutes": "Menit",
+    "pollDuration_minutes": "{count} menit",
     "@pollDuration_minutes": {
         "placeholders": {
             "count": {
@@ -552,7 +552,7 @@
             }
         }
     },
-    "pollDuration_hours": "Jam",
+    "pollDuration_hours": "{count} jam",
     "@pollDuration_hours": {
         "placeholders": {
             "count": {
@@ -560,7 +560,7 @@
             }
         }
     },
-    "pollDuration_days": "Hari",
+    "pollDuration_days": "{count} hari",
     "@pollDuration_days": {
         "placeholders": {
             "count": {
@@ -572,7 +572,7 @@
     "pollShowResults": "Tampilkan Hasil",
     "pollHideResults": "Sembunyikan Hasil",
     "pollSubmitError": "Terjadi kesalahan saat mengirim hasil jajak pendapat.",
-    "pollVotes": "Suara",
+    "pollVotes": "{count} suara",
     "@pollVotes": {
         "placeholders": {
             "count": {
@@ -580,7 +580,7 @@
             }
         }
     },
-    "pollExpiry_days": "{days} hari",
+    "pollExpiry_days": "{count} hari",
     "@pollExpiry_days": {
         "placeholders": {
             "count": {
@@ -588,7 +588,7 @@
             }
         }
     },
-    "pollExpiry_hours": "{hours} jam",
+    "pollExpiry_hours": "{count} jam",
     "@pollExpiry_hours": {
         "placeholders": {
             "count": {
@@ -596,7 +596,7 @@
             }
         }
     },
-    "pollExpiry_minutes": "{minutes} menit",
+    "pollExpiry_minutes": "{count} menit",
     "@pollExpiry_minutes": {
         "placeholders": {
             "count": {
@@ -604,7 +604,7 @@
             }
         }
     },
-    "pollExpiry_seconds": "{seconds} detik",
+    "pollExpiry_seconds": "{count} detik",
     "@pollExpiry_seconds": {
         "placeholders": {
             "count": {
@@ -656,7 +656,7 @@
     "languages": "Bahasa",
     "systemLanguage": "Bahasa Sistem",
     "settings_appLanguage": "Bahasa Aplikasi",
-    "pointsX": "{points} poin",
+    "pointsX": "{num} poin",
     "@pointsX": {
         "placeholders": {
             "num": {
@@ -664,7 +664,7 @@
             }
         }
     },
-    "commentsX": "{comments} komentar",
+    "commentsX": "{num} komentar",
     "@commentsX": {
         "placeholders": {
             "num": {
@@ -691,7 +691,7 @@
     "filterList_matchMode_regex_help": "Pencocokan menggunakan Regular Expression",
     "filterList_caseSensitive": "Peka Huruf Besar/Kecil",
     "filterList_caseSensitive_help": "Bedakan huruf besar dan kecil dalam pencocokan",
-    "filterListWarningX": "Peringatan Filter: {name}",
+    "filterListWarningX": "Peringatan Filter: {lists}",
     "@filterListWarningX": {
         "placeholders": {
             "lists": {
@@ -726,7 +726,7 @@
             }
         }
     },
-    "settings_accountMigration_completeXItems": "Berhasil memigrasi {count} item",
+    "settings_accountMigration_completeXItems": "Berhasil memigrasi {current}/{total} item",
     "@settings_accountMigration_completeXItems": {
         "placeholders": {
             "current": {
@@ -737,7 +737,7 @@
             }
         }
     },
-    "settings_accountMigration_failedXItems": "Gagal memigrasi {count} item",
+    "settings_accountMigration_failedXItems": "Gagal memigrasi {current}/{total} item",
     "@settings_accountMigration_failedXItems": {
         "placeholders": {
             "current": {
@@ -769,7 +769,7 @@
             }
         }
     },
-    "settings_accountReset_completeXItems": "Berhasil menghapus {count} item",
+    "settings_accountReset_completeXItems": "Berhasil menghapus {current}/{total} item",
     "@settings_accountReset_completeXItems": {
         "placeholders": {
             "current": {
@@ -780,7 +780,7 @@
             }
         }
     },
-    "settings_accountReset_failedXItems": "Gagal menghapus {count} item",
+    "settings_accountReset_failedXItems": "Gagal menghapus {current}/{total} item",
     "@settings_accountReset_failedXItems": {
         "placeholders": {
             "current": {
@@ -804,7 +804,7 @@
     "bookmarkLists_createHint": "Masukkan nama daftar...",
     "configShare": "Bagikan Konfigurasi",
     "configShare_profile_title": "Bagikan Profil",
-    "configShare_profile_info": "Ini akan membagikan tata letak, tema, dan pengaturan aplikasi Anda.",
+    "configShare_profile_info": "{count} Ini akan membagikan tata letak, tema, dan pengaturan aplikasi Anda.",
     "@configShare_profile_info": {
         "placeholders": {
             "count": {
@@ -813,7 +813,7 @@
         }
     },
     "configShare_filterList_title": "Bagikan Daftar Filter",
-    "configShare_filterList_info": "Ini akan membagikan daftar filter dan kata kunci yang Anda gunakan.",
+    "configShare_filterList_info": "{count} Ini akan membagikan daftar filter dan kata kunci yang Anda gunakan.",
     "@configShare_filterList_info": {
         "placeholders": {
             "count": {
@@ -822,7 +822,7 @@
         }
     },
     "configShare_feed_title": "Bagikan Linimasa",
-    "configShare_feed_info": "Ini akan membagikan konfigurasi linimasa khusus yang Anda buat.",
+    "configShare_feed_info": "{count} Ini akan membagikan konfigurasi linimasa khusus yang Anda buat.",
     "@configShare_feed_info": {
         "placeholders": {
             "count": {
@@ -830,7 +830,7 @@
             }
         }
     },
-    "configShare_created": "Berhasil dibuat!",
+    "configShare_created": "Dibuat pada {date} dengan {version}!",
     "@configShare_created": {
         "placeholders": {
             "date": {
@@ -849,7 +849,7 @@
     "errorPage_restrictedAuthError": "Akses Dibatasi",
     "exitMessage": "Tekan sekali lagi untuk keluar",
     "pushNotificationsDialog_title": "Pemberitahuan Push",
-    "pushNotificationsDialog_noDistributor": "Tidak ada penyedia notifikasi push yang ditemukan di perangkat Anda.",
+    "pushNotificationsDialog_noDistributor": "Tidak ada penyedia notifikasi push yang ditemukan di perangkat Anda. {url}",
     "@pushNotificationsDialog_noDistributor": {
         "placeholders": {
             "url": {
@@ -870,7 +870,7 @@
     "modlog_unbannedUser": "Blokir Pengguna Dicabut",
     "modlog_addModerator": "Moderator Ditambahkan",
     "modlog_removedModerator": "Moderator Dihapus",
-    "modlog_reason": "Alasan",
+    "modlog_reason": "Alasan {reason}",
     "@modlog_reason": {
         "placeholders": {
             "reason": {
