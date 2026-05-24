@@ -407,12 +407,8 @@
     "sort_top_1y": "Top 1 Jahr",
     "settings_animationDisabled": "Deaktiviert",
     "reportStatus_any": "Alle",
-    "reportStatus_approved": "Genehmigt",
     "reportStatus_closed": "Geschlossen",
     "reportStatus_pending": "Ausstehend",
-    "reportStatus_rejected": "Abgelehnt",
-    "report_accept": "Annehmen",
-    "report_reject": "Ablehnen",
     "rename": "Umbenennen",
     "replace": "Ersetzen",
     "combined": "Kombiniert"
