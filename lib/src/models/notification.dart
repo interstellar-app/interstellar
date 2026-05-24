@@ -60,17 +60,17 @@ abstract class NotificationModel with _$NotificationModel {
   factory NotificationModel.fromMbin(JsonMap json) {
     final subject = json['subject'] as JsonMap?;
 
+    final user = subject == null
+        ? null
+        : (subject['user'] ?? subject['sender'] ?? subject['bannedBy'])
+              as JsonMap?;
+
     return NotificationModel(
       id: json['notificationId']! as int,
       type: notificationTypeMap[json['type']],
       isRead: json['status'] == 'read',
       subject: subject,
-      creator: subject == null
-          ? null
-          : UserModel.fromMbin(
-              (subject['user'] ?? subject['sender'] ?? subject['bannedBy'])!
-                  as JsonMap,
-            ),
+      creator: user == null ? null : UserModel.fromMbin(user),
     );
   }
 
