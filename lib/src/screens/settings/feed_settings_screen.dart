@@ -127,30 +127,67 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                     icon: const Icon(Symbols.delete_rounded),
                   ),
                   LoadingIconButton(
-                    onPressed: () async {
-                      final feed = ac.feeds[entry.key]!;
+                    onPressed: () async => ContextMenu(
+                      title: l(context).downloadFeed,
+                      items: [
+                        ContextMenuItem(
+                          title: l(context).asJSON,
+                          onTap: () async {
+                            final feed = ac.feeds[entry.key]!;
 
-                      final config = await ConfigShare.create(
-                        type: ConfigShareType.feed,
-                        name: entry.key,
-                        payload: feed.toJson(),
-                      );
+                            final config = await ConfigShare.create(
+                              type: ConfigShareType.feed,
+                              name: entry.key,
+                              payload: feed.toJson(),
+                            );
 
-                      final file = XFile.fromData(
-                        Uint8List.fromList(
-                          jsonEncode(config.toJson()).codeUnits,
+                            final file = XFile.fromData(
+                              Uint8List.fromList(
+                                jsonEncode(config.toJson()).codeUnits,
+                              ),
+                              mimeType: 'application/json',
+                            );
+
+                            if (!context.mounted) return;
+                            await downloadFile(
+                              context,
+                              file,
+                              '${entry.key}.json',
+                              defaultDir: ac.defaultDownloadDir,
+                            );
+                            if (!context.mounted) return;
+                            context.router.pop();
+                          },
                         ),
-                        mimeType: 'application/json',
-                      );
+                        ContextMenuItem(
+                          title: l(context).asOPML,
+                          onTap: () async {
+                            final feed = ac.feeds[entry.key]!;
 
-                      if (!context.mounted) return;
-                      await downloadFile(
-                        context,
-                        file,
-                        '${entry.key}.json',
-                        defaultDir: ac.defaultDownloadDir,
-                      );
-                    },
+                            final opml = convertFeedToOPML(
+                              context,
+                              entry.key,
+                              feed,
+                            );
+
+                            final file = XFile.fromData(
+                              Uint8List.fromList(opml.codeUnits),
+                              mimeType: 'application/xml',
+                            );
+
+                            if (!context.mounted) return;
+                            await downloadFile(
+                              context,
+                              file,
+                              '${entry.key}.xml',
+                              defaultDir: ac.defaultDownloadDir,
+                            );
+                            if (!context.mounted) return;
+                            context.router.pop();
+                          },
+                        ),
+                      ],
+                    ).openMenu(context),
                     icon: const Icon(Symbols.download_rounded),
                   ),
                   IconButton(

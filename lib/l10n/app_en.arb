@@ -899,5 +899,8 @@
         }
     }
   },
-  "invalidFile": "Invalid file"
+  "invalidFile": "Invalid file",
+  "downloadFeed": "Download feed",
+  "asJSON": "As JSON",
+  "asOPML": "As OPML"
 }
