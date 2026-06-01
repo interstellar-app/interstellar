@@ -53,9 +53,7 @@ final Map<String, List<(String, ServerSoftware)>> _recommendedInstances = {
     ('feddit.nl', ServerSoftware.lemmy),
     ('lemy.nl', ServerSoftware.lemmy),
   ],
-  'pl': [
-    ('szmer.info', ServerSoftware.lemmy),
-  ],
+  'pl': [('szmer.info', ServerSoftware.lemmy)],
   'pt': [
     ('lemmy.eco.br', ServerSoftware.lemmy),
     ('forum.ayom.media', ServerSoftware.lemmy),
