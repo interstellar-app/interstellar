@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:drift/drift.dart';
@@ -475,7 +476,7 @@ class AppController with ChangeNotifier {
             }: username,
             'password': password?.substring(
               0,
-              software == ServerSoftware.lemmy ? 60 : 128,
+              min(password.length, software == ServerSoftware.lemmy ? 60 : 128),
             ),
             if (software == ServerSoftware.lemmy) 'totp_2fa_token': totp,
           }),
