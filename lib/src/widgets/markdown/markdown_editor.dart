@@ -107,6 +107,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.center,
                     tabs: [
                       Tab(
                         child: Row(
