@@ -8,7 +8,10 @@ import 'package:http/http.dart' as http;
 import 'package:interstellar/l10n/app_localizations.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/config_share.dart';
+import 'package:interstellar/src/utils/ap_urls.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -329,4 +332,57 @@ Future<File> cacheRemoteFile(String url) async {
   }
 
   return file;
+}
+
+Uri? getRssUrl(AppController ac, String name, FeedSource source) {
+  return switch (ac.serverSoftware) {
+    ServerSoftware.mbin => Uri.https(
+      ac.instanceHost,
+      'rss?${source == FeedSource.community ? 'magazine' : 'user'}=$name&content=combined',
+    ),
+    ServerSoftware.piefed =>
+      source == FeedSource.user
+          ? null
+          : Uri.https(ac.instanceHost, 'community/$name/feed'),
+    ServerSoftware.lemmy => Uri.https(
+      ac.instanceHost,
+      'feeds/${source == FeedSource.community ? 'c' : 'u'}/$name.xml',
+    ),
+  };
+}
+
+String convertFeedToOPML(BuildContext context, String name, Feed feed) {
+  final ac = context.read<AppController>();
+  var output = '<?xml version="1.0" encoding="UTF-8"?>';
+  output += '<opml version="2.0">';
+  output +=
+      '<head>\n<title>$name</title>\n</head>\n<body>\n<outline text="$name">';
+
+  for (final input in feed.inputs) {
+    if (input.sourceType != FeedSource.community &&
+        input.sourceType != FeedSource.user) {
+      continue;
+    }
+
+    final rss = getRssUrl(ac, input.name, input.sourceType);
+    if (rss == null) continue;
+    final apUrl = switch (input.sourceType) {
+      FeedSource.community => Uri.https(
+        ac.instanceHost,
+        ac.serverSoftware == ServerSoftware.mbin
+            ? '/m/${input.name}'
+            : '/c/${input.name}',
+      ),
+      FeedSource.user => Uri.https(
+        ac.instanceHost,
+        '/u/${ac.serverSoftware == ServerSoftware.mbin && getNameHost(context, input.name) != ac.instanceHost ? '@' : ''}${input.name}',
+      ),
+      _ => null,
+    };
+    output +=
+        '<outline text="${input.name}" type="rss" xmlUrl="$rss" ${apUrl != null ? 'htmlUrl="${apUrl}"' : ''}/>\n';
+  }
+
+  output += '</outline>\n</body>\n</opml>';
+  return output;
 }
