@@ -22,7 +22,6 @@ Future<ShareResult> shareFile(Uri uri, String filename) async {
   final file = XFile.fromData(response.bodyBytes);
 
   final params = ShareParams(
-    text: uri.toString(),
     files: [file],
     fileNameOverrides: [basename(uri.toString())],
   );
