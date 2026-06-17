@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
-import 'package:mime/mime.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sqlite3/wasm.dart';
 import 'package:web/web.dart' as web;
 
@@ -14,19 +13,19 @@ Future<CommonSqlite3> getSqlite() async {
   return sqlite;
 }
 
-Future<void> downloadFromUri(
-  Uri uri,
+Future<bool> downloadFromFile(
+  XFile file,
   String filename, {
   Directory? defaultDir,
 }) async {
-  final response = await http.get(uri);
-
-  final data = base64Encode(response.bodyBytes);
-  final mimeType = lookupMimeType(uri.toString());
+  final data = base64Encode(await file.readAsBytes());
+  final mimeType = file.mimeType;
 
   final a = web.HTMLAnchorElement()
     ..href = 'data:$mimeType;base64,$data'
-    ..download = 'image.${uri.pathSegments.last}'
+    ..download = filename
     ..click()
     ..remove();
+
+  return true;
 }
