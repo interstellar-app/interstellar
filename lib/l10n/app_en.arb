@@ -205,14 +205,14 @@
   "ownerPanel": "Owner Panel",
   "reportStatus_any": "All",
   "reportStatus_appeal": "Appeal",
-  "reportStatus_approved": "Approved",
   "reportStatus_closed": "Closed",
   "reportStatus_pending": "Pending",
-  "reportStatus_rejected": "Rejected",
-  "report_accept": "Accept",
-  "report_reject": "Reject",
+  "reportStatus_deleted": "Deleted",
+  "reportStatus_restored": "Restored",
   "reportedUser": "Reported user: ",
   "reportedBy": "Reported by: ",
+  "reportDeleteMessage": "Delete the reported post.",
+  "reportRestoreMessage": "Resolve or restore the reported post.",
   "copy": "Copy",
   "copied": "Copied",
   "share": "Share",
@@ -459,6 +459,7 @@
     }
   },
   "edit": "Edit",
+  "restore": "Restore",
   "delete": "Delete",
   "deleteX": "Delete {name}",
   "@deleteX": {
@@ -496,6 +497,8 @@
   "reason": "Reason",
   "moderate": "Moderate",
   "submit": "Submit",
+  "resolve": "Resolve",
+  "unresolve": "Unresolve",
   "alternativeSources": "Alternative Sources",
   "markdownEditor_heading": "Heading",
   "markdownEditor_bold": "Bold",
@@ -888,5 +891,13 @@
   "modlog_communityAdded": "Community added",
   "modlog_communityRemoved": "Community removed",
   "modlog_postLocked": "Post locked",
-  "modlog_postUnlocked": "Post unlocked"
+  "modlog_postUnlocked": "Post unlocked",
+  "downloaded_file": "Downloaded {file}.",
+  "@downloaded_file": {
+    "placeholders": {
+        "file": {
+            "type": "String"
+        }
+    }
+  }
 }

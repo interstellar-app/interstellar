@@ -397,12 +397,8 @@
         }
     },
     "reportStatus_appeal": "Odwołanie",
-    "reportStatus_approved": "Zatwierdzone",
     "reportStatus_closed": "Zamknięte",
     "reportStatus_pending": "W toku",
-    "reportStatus_rejected": "Odrzucone",
-    "report_accept": "Akceptacja",
-    "report_reject": "Odrzucenie",
     "reportedUser": "Zgłoszona osoba: ",
     "reportedBy": "Zgłoszenie od: ",
     "account_switch": "Przełącz konta",

@@ -162,6 +162,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
           LoadingIconButton(
             onPressed: () async {
               await downloadFile(
+                context,
                 Uri.parse(widget.image.src),
                 widget.image.src.split('/').last,
                 defaultDir: context.read<AppController>().defaultDownloadDir,
@@ -169,6 +170,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
             },
             onLongPress: () async {
               await downloadFile(
+                context,
                 Uri.parse(widget.image.src),
                 widget.image.src.split('/').last,
               );

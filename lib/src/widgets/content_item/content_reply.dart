@@ -78,56 +78,58 @@ class _ContentReplyState extends State<ContentReply> {
             ),
           ),
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (context.read<AppController>().serverSoftware ==
-                  ServerSoftware.mbin)
-                ImageSelector(
-                  _imageFile,
-                  (file, altText) => setState(() {
-                    _imageFile = file;
-                    _altText = altText;
-                  }),
-                  inline: true,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              spacing: 8,
+              children: [
+                if (context.read<AppController>().serverSoftware ==
+                    ServerSoftware.mbin)
+                  ImageSelector(
+                    _imageFile,
+                    (file, altText) => setState(() {
+                      _imageFile = file;
+                      _altText = altText;
+                    }),
+                    inline: true,
+                  ),
+                IconButton(
+                  onPressed: () async {
+                    final newLang = await languageSelectionMenu(
+                      context,
+                    ).askSelection(context, _replyLanguage);
+
+                    if (newLang != null) {
+                      setState(() {
+                        _replyLanguage = newLang;
+                      });
+                    }
+                  },
+                  icon: const Icon(Symbols.globe_rounded),
+                  tooltip: getLanguageName(context, _replyLanguage),
                 ),
-              IconButton(
-                onPressed: () async {
-                  final newLang = await languageSelectionMenu(
-                    context,
-                  ).askSelection(context, _replyLanguage);
+                OutlinedButton(
+                  onPressed: widget.onComplete,
+                  child: Text(l(context).cancel),
+                ),
+                LoadingFilledButton(
+                  onPressed: () async {
+                    await widget.onReply(
+                      _textController.text,
+                      _replyLanguage,
+                      image: _imageFile,
+                      alt: _altText,
+                    );
 
-                  if (newLang != null) {
-                    setState(() {
-                      _replyLanguage = newLang;
-                    });
-                  }
-                },
-                icon: const Icon(Symbols.globe_rounded),
-                tooltip: getLanguageName(context, _replyLanguage),
-              ),
-              const SizedBox(width: 8),
-              OutlinedButton(
-                onPressed: widget.onComplete,
-                child: Text(l(context).cancel),
-              ),
-              const SizedBox(width: 8),
-              LoadingFilledButton(
-                onPressed: () async {
-                  await widget.onReply(
-                    _textController.text,
-                    _replyLanguage,
-                    image: _imageFile,
-                    alt: _altText,
-                  );
-
-                  await replyDraftController.discard();
-                  widget.onComplete();
-                },
-                label: Text(l(context).submit),
-                uesHaptics: true,
-              ),
-            ],
+                    await replyDraftController.discard();
+                    widget.onComplete();
+                  },
+                  label: Text(l(context).submit),
+                  uesHaptics: true,
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -5,10 +5,13 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:interstellar/src/widgets/ban_dialog.dart';
+import 'package:interstellar/src/widgets/context_menu.dart';
 import 'package:interstellar/src/widgets/display_name.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/paging.dart';
@@ -46,6 +49,8 @@ class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ac = context.read<AppController>();
+
     void onUpdate(DetailedCommunityModel newValue) {
       setState(() {
         _data = newValue;
@@ -54,18 +59,15 @@ class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
     }
 
     return DefaultTabController(
-      length:
-          context.read<AppController>().serverSoftware == ServerSoftware.mbin
-          ? 2
-          : 1,
+      length: ac.serverSoftware == ServerSoftware.mbin ? 2 : 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Mod Panel for ${widget.initData.name}'),
           bottom: TabBar(
             tabs: [
-              const Tab(text: 'Bans'),
-              if (context.read<AppController>().serverSoftware ==
-                  ServerSoftware.mbin)
+              if (ac.serverSoftware != ServerSoftware.lemmy)
+                const Tab(text: 'Bans'),
+              if (ac.serverSoftware != ServerSoftware.piefed)
                 const Tab(text: 'Reports'),
             ],
           ),
@@ -73,9 +75,9 @@ class _CommunityModPanelScreenState extends State<CommunityModPanelScreen> {
         body: TabBarView(
           physics: appTabViewPhysics(context),
           children: <Widget>[
-            CommunityModPanelBans(data: _data, onUpdate: onUpdate),
-            if (context.read<AppController>().serverSoftware ==
-                ServerSoftware.mbin)
+            if (ac.serverSoftware != ServerSoftware.lemmy)
+              CommunityModPanelBans(data: _data, onUpdate: onUpdate),
+            if (ac.serverSoftware != ServerSoftware.piefed)
               CommunityModPanelReports(data: _data, onUpdate: onUpdate),
           ],
         ),
@@ -221,123 +223,16 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
         ),
       ],
       itemBuilder: (context, item, index) {
-        return InkWell(
-          onTap: () {
-            if (item.subjectPost != null) {
-              pushPostPage(
-                context,
-                communityName: item.subjectPost!.community.name,
-                postId: item.subjectPost!.id,
-                postType: item.subjectPost!.type,
-                initData: item.subjectPost,
-                userCanModerate: true,
-              );
-            } else if (item.subjectComment != null) {
-              context.router.push(
-                PostCommentRoute(
-                  postType: item.subjectComment!.postType,
-                  commentId: item.subjectComment!.id,
-                ),
-              );
+        return CommunityModReport(
+          communityId: widget.data.id,
+          report: item,
+          updateItem: (newItem) {
+            if (newItem == null) {
+              _pagingController.removeItem(item);
+            } else {
+              _pagingController.updateItem(item, newItem);
             }
           },
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(l(context).reportedBy),
-                          DisplayName(
-                            item.reportedBy!.name,
-                            icon: item.reportedBy!.avatar,
-                            onTap: () => context.router.push(
-                              UserRoute(
-                                username: item.reportedBy!.name,
-                                userId: item.reportedBy!.id,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text('${l(context).reason}: ${item.reason}'),
-                      Row(
-                        children: [
-                          Text('${l(context).status}: '),
-                          Text(
-                            item.status.name,
-                            style: TextStyle(
-                              color: item.status == ReportStatus.pending
-                                  ? Colors.blue
-                                  : item.status == ReportStatus.approved
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Flex(
-                  direction: Breakpoints.isCompact(context)
-                      ? Axis.vertical
-                      : Axis.horizontal,
-                  spacing: 4,
-                  children: [
-                    if (item.status != ReportStatus.approved)
-                      LoadingOutlinedButton(
-                        onPressed: () async {
-                          final report = await context
-                              .read<AppController>()
-                              .api
-                              .communityModeration
-                              .acceptReport(widget.data.id, item.id);
-
-                          _pagingController.updateItem(item, report);
-                        },
-                        label: Text(l(context).report_accept),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.green,
-                        ),
-                      ),
-                    if (item.status != ReportStatus.rejected)
-                      LoadingOutlinedButton(
-                        onPressed: () async {
-                          final report = await context
-                              .read<AppController>()
-                              .api
-                              .communityModeration
-                              .rejectReport(widget.data.id, item.id);
-
-                          _pagingController.updateItem(item, report);
-                        },
-                        label: Text(l(context).report_reject),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
-                        ),
-                      ),
-                    LoadingOutlinedButton(
-                      onPressed: () async {
-                        await context
-                            .read<AppController>()
-                            .api
-                            .communityModeration
-                            .createBan(widget.data.id, item.reportedUser!.id);
-
-                        _pagingController.removeItem(item);
-                      },
-                      label: Text(l(context).banUserX(item.reportedUser!.name)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
         );
       },
     );
@@ -347,6 +242,231 @@ class _MagazineModPanelReportsState extends State<CommunityModPanelReports> {
   void dispose() {
     _pagingController.dispose();
     super.dispose();
+  }
+}
+
+class CommunityModReport extends StatefulWidget {
+  const CommunityModReport({
+    required this.communityId,
+    required this.report,
+    required this.updateItem,
+    super.key,
+  });
+
+  final int communityId;
+  final CommunityReportModel report;
+  final void Function(CommunityReportModel? newItem) updateItem;
+
+  @override
+  State<CommunityModReport> createState() => _CommunityModReportState();
+}
+
+class _CommunityModReportState extends State<CommunityModReport> {
+  bool _deleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _deleted =
+        widget.report.subjectPost?.visibility == PostVisibility.trashed ||
+        widget.report.subjectPost?.visibility == PostVisibility.soft_deleted;
+  }
+
+  void _modMenu(BuildContext context) {
+    final ac = context.read<AppController>();
+    ContextMenu(
+      items: [
+        ContextMenuItem(
+          title: l(context).pin,
+          onTap: () async => ac.api.moderation.postPin(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !widget.report.subjectPost!.isPinned,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).notSafeForWork_mark,
+          onTap: () async => ac.api.moderation.postMarkNSFW(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !widget.report.subjectPost!.isNSFW,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).delete,
+          onTap: () async => ac.api.moderation.postDelete(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !_deleted,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).banUser,
+          onTap: () async => openBanDialog(
+            context,
+            user: widget.report.subjectPost!.user,
+            community: widget.report.subjectPost!.community,
+          ),
+        ),
+        ContextMenuItem(
+          title: l(context).lock,
+          onTap: () async => ac.api.moderation.postLock(
+            widget.report.subjectPost!.type,
+            widget.report.subjectPost!.id,
+            !widget.report.subjectPost!.isLocked,
+          ),
+        ),
+      ],
+    ).openMenu(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ac = context.read<AppController>();
+
+    return InkWell(
+      onTap: () {
+        if (widget.report.subjectPost != null) {
+          pushPostPage(
+            context,
+            communityName: widget.report.subjectPost!.community.name,
+            postId: widget.report.subjectPost!.id,
+            postType: widget.report.subjectPost!.type,
+            initData: widget.report.subjectPost,
+            userCanModerate: true,
+          );
+        } else if (widget.report.subjectComment != null) {
+          context.router.push(
+            PostCommentRoute(
+              postType: widget.report.subjectComment!.postType,
+              commentId: widget.report.subjectComment!.id,
+            ),
+          );
+        }
+      },
+      onLongPress: widget.report.subjectPost == null
+          ? null
+          : () => _modMenu(context),
+      onSecondaryTap: widget.report.subjectPost == null
+          ? null
+          : () => _modMenu(context),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(l(context).reportedBy),
+                      DisplayName(
+                        widget.report.reportedBy!.name,
+                        icon: widget.report.reportedBy!.avatar,
+                        onTap: () => context.router.push(
+                          UserRoute(
+                            username: widget.report.reportedBy!.name,
+                            userId: widget.report.reportedBy!.id,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text('${l(context).reason}: ${widget.report.reason}'),
+                  Row(
+                    children: [
+                      Text('${l(context).status}: '),
+                      Text(
+                        switch (widget.report.status) {
+                          ReportStatus.pending => l(
+                            context,
+                          ).reportStatus_pending,
+                          ReportStatus.any => l(context).reportStatus_any,
+                          ReportStatus.approved => l(
+                            context,
+                          ).reportStatus_deleted,
+                          ReportStatus.rejected => l(
+                            context,
+                          ).reportStatus_restored,
+                        },
+                        style: TextStyle(
+                          color: widget.report.status == ReportStatus.pending
+                              ? Colors.blue
+                              : widget.report.status == ReportStatus.rejected
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Flex(
+              direction: Breakpoints.isCompact(context)
+                  ? Axis.vertical
+                  : Axis.horizontal,
+              spacing: 4,
+              children: [
+                LoadingOutlinedButton(
+                  onPressed: () async {
+                    await ac.api.communityModeration.createBan(
+                      widget.communityId,
+                      widget.report.reportedUser!.id,
+                    );
+
+                    widget.updateItem(null);
+                  },
+                  label: Text(
+                    l(context).banUserX(widget.report.reportedUser!.name),
+                  ),
+                ),
+                if (widget.report.status != ReportStatus.approved)
+                  Tooltip(
+                    message: l(context).reportDeleteMessage,
+                    child: LoadingOutlinedButton(
+                      onPressed: () async {
+                        final report = await ac.api.communityModeration
+                            .acceptReport(
+                              widget.communityId,
+                              widget.report.id,
+                              widget.report.subjectPost!.id,
+                            );
+                        widget.updateItem(report);
+                      },
+                      label: Text(l(context).delete),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ),
+                    ),
+                  ),
+                if (widget.report.status != ReportStatus.rejected)
+                  Tooltip(
+                    message: l(context).reportRestoreMessage,
+                    child: LoadingOutlinedButton(
+                      onPressed: () async {
+                        final report = await ac.api.communityModeration
+                            .rejectReport(
+                              widget.communityId,
+                              widget.report.id,
+                              widget.report.subjectPost!.id,
+                            );
+                        widget.updateItem(report);
+                      },
+                      label: Text(l(context).restore),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.green,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -362,14 +482,16 @@ SelectionMenu<ReportStatus> reportStatusSelect(BuildContext context) =>
         title: l(context).reportStatus_pending,
         icon: Symbols.schedule_rounded,
       ),
-      SelectionMenuItem(
-        value: ReportStatus.approved,
-        title: l(context).reportStatus_approved,
-        icon: Symbols.check_rounded,
-      ),
-      SelectionMenuItem(
-        value: ReportStatus.rejected,
-        title: l(context).reportStatus_rejected,
-        icon: Symbols.close_rounded,
-      ),
+      if (context.read<AppController>().serverSoftware == ServerSoftware.mbin)
+        SelectionMenuItem(
+          value: ReportStatus.approved,
+          title: l(context).reportStatus_deleted,
+          icon: Symbols.check_rounded,
+        ),
+      if (context.read<AppController>().serverSoftware == ServerSoftware.mbin)
+        SelectionMenuItem(
+          value: ReportStatus.rejected,
+          title: l(context).reportStatus_restored,
+          icon: Symbols.close_rounded,
+        ),
     ]);

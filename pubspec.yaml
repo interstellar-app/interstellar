@@ -3,7 +3,7 @@ name: interstellar
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.11.2+24
+version: 0.11.4+26
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
@@ -28,7 +28,7 @@ dependencies:
   provider: ^6.1.5
   url_launcher: ^6.3.2
   webview_flutter: ^4.13.1
-  youtube_explode_dart: ^3.0.5
+  youtube_explode_dart: ^3.1.0
   freezed_annotation: ^3.1.0
   image_picker: ^1.2.1
   dynamic_color: ^1.8.1

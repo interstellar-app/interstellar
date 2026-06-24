@@ -832,7 +832,9 @@ class AppController with ChangeNotifier {
             .insertOnConflictUpdate(
               FeedInputsCompanion.insert(
                 feed: name,
-                name: normalizeName(input.name, instanceHost),
+                name: input.sourceType == FeedSource.domain
+                    ? input.name
+                    : normalizeName(input.name, instanceHost),
                 source: input.sourceType,
               ),
             );
@@ -1005,7 +1007,9 @@ class AppController with ChangeNotifier {
   }
 
   Future<int?> fetchCachedFeedInput(String name, FeedSource source) async {
-    final normalisedName = normalizeName(name, instanceHost);
+    final normalisedName = source == FeedSource.domain
+        ? name
+        : normalizeName(name, instanceHost);
     final cachedValue =
         (await (database.select(database.feedSourceCache)..where(
                   (t) =>
@@ -1030,6 +1034,7 @@ class AppController with ChangeNotifier {
                   instanceHost // tmp until proper getByName method can be made
               ? throw Exception('Wrong instance')
               : int.parse(name.split(':').first),
+        FeedSource.domain => (await api.domains.getByName(normalisedName)).id,
         _ => null,
       };
 
