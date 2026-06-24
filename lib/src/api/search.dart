@@ -1,7 +1,14 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/comment.dart';
+import 'package:interstellar/src/models/community.dart';
+import 'package:interstellar/src/models/feed.dart';
+import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/models/search.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
+import 'package:interstellar/src/utils/utils.dart';
 
 class APISearch {
   APISearch(this.client);
@@ -17,7 +24,7 @@ class APISearch {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        const path = '/search';
+        const path = '/search/v2';
 
         final response = await client.get(
           path,
@@ -96,6 +103,81 @@ class APISearch {
           json,
           langCodeIdPairs: await client.languageCodeIdPairs(),
         );
+    }
+  }
+
+  Future<dynamic> resolveObject(String search) async {
+    try {
+      switch (client.software) {
+        case ServerSoftware.mbin:
+          const path = '/search/v2';
+
+          final response = await client.get(
+            path,
+            queryParams: {'q': search, 'onlyAP': 'true'},
+          );
+
+          // get first of the ap objects found.
+          return SearchListModel.fromMbin(response.bodyJson).items.firstOrNull;
+
+        case ServerSoftware.lemmy:
+          const path = '/resolve_object';
+
+          final response = await client.get(path, queryParams: {'q': search});
+
+          final json = response.bodyJson;
+          if (json['comment'] != null) {
+            return CommentModel.fromLemmy(
+              json['comment']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['post'] != null) {
+            return PostModel.fromLemmy(
+              json['post']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['community'] != null) {
+            return DetailedCommunityModel.fromLemmy(
+              json['community']! as JsonMap,
+            );
+          } else if (json['person'] != null) {
+            return DetailedUserModel.fromLemmy(json['person']! as JsonMap);
+          }
+          return null;
+
+        case ServerSoftware.piefed:
+          const path = '/resolve_object';
+
+          final response = await client.get(path, queryParams: {'q': search});
+
+          final json = response.bodyJson;
+          if (json['comment'] != null) {
+            return CommentModel.fromPiefed(
+              json['comment']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['post'] != null) {
+            return PostModel.fromPiefed(
+              json['post']! as JsonMap,
+              langCodeIdPairs: await client.languageCodeIdPairs(),
+            );
+          } else if (json['community'] != null) {
+            return DetailedCommunityModel.fromPiefed(
+              json['community']! as JsonMap,
+            );
+          } else if (json['person'] != null) {
+            return DetailedUserModel.fromPiefed(json['person']! as JsonMap);
+          } else if (json['feed'] != null) {
+            return FeedModel.fromPiefed(json['feed']! as JsonMap);
+          }
+          return null;
+      }
+    } on ClientException catch (e) {
+      if (e.message.contains('No object found') ||
+          e.message.contains('couldnt_find_object')) {
+        return null;
+      }
+      rethrow;
     }
   }
 }
