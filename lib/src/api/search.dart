@@ -24,7 +24,7 @@ class APISearch {
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        const path = '/search';
+        const path = '/search/v2';
 
         final response = await client.get(
           path,
@@ -110,35 +110,15 @@ class APISearch {
     try {
       switch (client.software) {
         case ServerSoftware.mbin:
-          // using the search api here kinda works but is slow and throws 500 errors occasionally
+          const path = '/search/v2';
 
-          const path = '/search';
-
-          final response = await client.get(path, queryParams: {'q': search});
+          final response = await client.get(
+            path,
+            queryParams: {'q': search, 'onlyAP': 'true'},
+          );
 
           // get first of the ap objects found.
-          final json = response.bodyJson;
-          final actor = (json['apActors']! as List<dynamic>).firstOrNull;
-          if (actor?['type'] == 'user') {
-            return DetailedUserModel.fromMbin(actor['object'] as JsonMap);
-          }
-          if (actor?['type'] == 'magazine') {
-            return DetailedCommunityModel.fromMbin(actor['object'] as JsonMap);
-          }
-
-          final object = (json['apObjects']! as List<dynamic>).firstOrNull;
-          if (object?['itemType'] == 'entry') {
-            return PostModel.fromMbinEntry(object as JsonMap);
-          }
-          if (object?['itemType'] == 'post') {
-            return PostModel.fromMbinPost(object as JsonMap);
-          }
-          if (object?['itemType'] == 'entry_comment' ||
-              object?['itemType'] == 'post_comment') {
-            return CommentModel.fromMbin(object as JsonMap);
-          }
-
-          return null;
+          return SearchListModel.fromMbin(response.bodyJson).items.firstOrNull;
 
         case ServerSoftware.lemmy:
           const path = '/resolve_object';
