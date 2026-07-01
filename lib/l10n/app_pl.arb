@@ -829,5 +829,21 @@
     },
     "pollMode": "Pozwalaj wybrać wiele",
     "pollShowResults": "Pokaż wyniki",
-    "pollHideResults": "Ukryj wyniki"
+    "pollHideResults": "Ukryj wyniki",
+    "description": "Opis",
+    "public": "Publiczny",
+    "filter_personal": "Osobisty",
+    "locked": "Zablokowany",
+    "restore": "Przywróć",
+    "resolve": "Rozwiąż",
+    "event": "Wydarzenie",
+    "eventMode_restricted": "Ograniczony",
+    "eventOnline": "Wydarzenie online",
+    "saveLocal": "Zapisz lokalnie",
+    "modlog_deletedPost": "Usunięty post",
+    "modlog_restoredPost": "Przywrócony post",
+    "modlog_deletedComment": "Usunięty komentarz",
+    "modlog_restoredComment": "Przywrócony komentarz",
+    "modlog_pinnedPost": "Przypięty post",
+    "modlog_all": "Wszystko"
 }
