@@ -40,17 +40,24 @@ class APIThreads {
     int? sourceId,
     String? page,
     FeedSort? sort,
+    bool combined = false,
+    bool includeBoosts = false,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = switch (source) {
-          FeedSource.all => '/entries',
-          FeedSource.local => '/entries',
-          FeedSource.subscribed => '/entries/subscribed',
-          FeedSource.moderated => '/entries/moderated',
-          FeedSource.favorited => '/entries/favourited',
-          FeedSource.community => '/magazine/${sourceId!}/entries',
-          FeedSource.user => '/users/${sourceId!}/entries',
+          FeedSource.all => '/${combined ? 'combined' : 'entries'}',
+          FeedSource.local => '/${combined ? 'combined' : 'entries'}',
+          FeedSource.subscribed =>
+            '/${combined ? 'combined' : 'entries'}/subscribed',
+          FeedSource.moderated =>
+            '/${combined ? 'combined' : 'entries'}/moderated',
+          FeedSource.favorited =>
+            '/${combined ? 'combined' : 'entries'}/favourited',
+          FeedSource.community =>
+            '/magazine/${sourceId!}/${combined ? 'combined' : 'entries'}',
+          FeedSource.user =>
+            '/users/${sourceId!}/${combined ? 'content' : 'entries'}',
           FeedSource.domain => '/domain/${sourceId!}/entries',
           FeedSource.feed => throw Exception(
             'Feeds source not allowed for mbin',
@@ -64,10 +71,12 @@ class APIThreads {
           'sort': mbinGetSort(sort)?.name,
           'time': mbinGetSortTime(sort),
           if (source == FeedSource.local) 'federation': 'local',
+          if (combined && includeBoosts) 'includeBoosts': 'true',
         };
 
         final response = await client.get(path, queryParams: query);
 
+        if (combined) return PostListModel.fromMbinCombined(response.bodyJson);
         return PostListModel.fromMbinEntries(response.bodyJson);
 
       case ServerSoftware.lemmy:

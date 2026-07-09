@@ -39,6 +39,21 @@ abstract class PostListModel with _$PostListModel {
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
+  factory PostListModel.fromMbinCombined(JsonMap json) => PostListModel(
+    items: (json['items']! as List<dynamic>)
+        .map((content) {
+          if (content['entry'] != null) {
+            return PostModel.fromMbinEntry(content['entry'] as JsonMap);
+          }
+          if (content['post'] != null) {
+            return PostModel.fromMbinPost(content['post'] as JsonMap);
+          }
+        })
+        .nonNulls
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
+  );
+
   factory PostListModel.fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
