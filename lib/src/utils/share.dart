@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/platform/platform.dart';
 import 'package:interstellar/src/utils/utils.dart';
+import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -30,18 +31,41 @@ Future<ShareResult> shareFile(Uri uri, String filename) async {
   return result;
 }
 
-Future<void> downloadFile(
+Future<void> downloadUri(
   BuildContext context,
   Uri uri,
   String filename, {
   Directory? defaultDir,
 }) async {
-  await downloadFromUri(uri, filename, defaultDir: defaultDir);
-  if (!context.mounted) return;
-  scaffoldMessengerKey.currentState?.showSnackBar(
-    SnackBar(
-      content: Text(l(context).downloaded_file(filename)),
-      showCloseIcon: true,
-    ),
-  );
+  final response = await http.get(uri);
+
+  final mimeType = lookupMimeType(uri.toString());
+  final file = XFile.fromData(response.bodyBytes, mimeType: mimeType);
+
+  if (await downloadFromFile(file, filename, defaultDir: defaultDir)) {
+    if (!context.mounted) return;
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(l(context).downloaded_file(filename)),
+        showCloseIcon: true,
+      ),
+    );
+  }
+}
+
+Future<void> downloadFile(
+  BuildContext context,
+  XFile file,
+  String filename, {
+  Directory? defaultDir,
+}) async {
+  if (await downloadFromFile(file, filename, defaultDir: defaultDir)) {
+    if (!context.mounted) return;
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(l(context).downloaded_file(filename)),
+        showCloseIcon: true,
+      ),
+    );
+  }
 }
