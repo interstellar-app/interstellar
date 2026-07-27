@@ -49,7 +49,8 @@ enum FeedSource {
   user,
   domain,
   feed,
-  topic;
+  topic,
+  tag;
 
   const FeedSource({this.icon});
 
@@ -66,6 +67,7 @@ enum FeedSource {
     FeedSource.domain => name.capitalize,
     FeedSource.feed => name.capitalize,
     FeedSource.topic => name.capitalize,
+    FeedSource.tag => name.capitalize,
   };
 }
 
