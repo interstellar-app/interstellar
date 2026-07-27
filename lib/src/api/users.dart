@@ -196,7 +196,7 @@ class APIUsers {
         throw Exception('User follow not allowed on lemmy');
 
       case ServerSoftware.piefed:
-        const path = '/user/follow';
+        final path = '/user/${state ? 'follow' : 'unfollow'}';
 
         final response = await client.post(
           path,
