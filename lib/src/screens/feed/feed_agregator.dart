@@ -200,10 +200,7 @@ class FeedInputState {
   final FeedSource source;
   final int? sourceId;
   List<PostModel> _leftover = [];
-  List<PostModel> _combinedThreadsLeftover = [];
-  List<PostModel> _combinedMicroblogsLeftover = [];
   String? _nextPage = '';
-  String? _combinedPage = '';
 
   Future<(List<PostModel>, String?)> fetchPage(
     AppController ac,
@@ -235,57 +232,15 @@ class FeedInputState {
         _nextPage = postListModel.nextPage;
         return ([..._leftover, ...postListModel.items], postListModel.nextPage);
       case FeedView.combined:
-        final threadFuture =
-            _nextPage != null && _combinedThreadsLeftover.length < 25
-            ? ac.api.threads.list(
-                source,
-                sourceId: sourceId,
-                page: nullIfEmpty(_nextPage!),
-                sort: sort,
-              )
-            : Future<PostListModel?>.value();
-        final microblogFuture =
-            _combinedPage != null && _combinedMicroblogsLeftover.length < 25
-            ? ac.api.microblogs.list(
-                source,
-                sourceId: sourceId,
-                page: nullIfEmpty(_combinedPage!),
-                sort: sort,
-              )
-            : Future<PostListModel?>.value();
-        final results = await Future.wait([threadFuture, microblogFuture]);
-
-        final postLists = results
-            .map((postListModel) => postListModel?.items ?? <PostModel>[])
-            .toList();
-        final merged = merge(ac.serverSoftware, [
-          [..._combinedThreadsLeftover, ...postLists[0]],
-          [..._combinedMicroblogsLeftover, ...postLists[1]],
-        ], sort);
-
-        // get next page if new request was sent
-        if (_combinedMicroblogsLeftover.length < 25) {
-          _combinedPage = results.last?.nextPage;
-        }
-        if (_combinedThreadsLeftover.length < 25) {
-          _nextPage = results.first?.nextPage;
-        }
-
-        _combinedThreadsLeftover = merged.$2.isNotEmpty ? merged.$2.first : [];
-        _combinedMicroblogsLeftover = merged.$2.length > 1
-            ? merged.$2.last
-            : [];
-
-        // if final page of input also return leftover posts
-        final result = [..._leftover, ...merged.$1];
-        if (_nextPage == null) {
-          result.addAll(_combinedThreadsLeftover);
-        }
-        if (_combinedPage == null) {
-          result.addAll(_combinedMicroblogsLeftover);
-        }
-
-        return (result, _nextPage ?? _combinedPage);
+        final postListModel = await ac.api.threads.list(
+          source,
+          sourceId: sourceId,
+          page: nullIfEmpty(_nextPage!),
+          sort: sort,
+          combined: true,
+        );
+        _nextPage = postListModel.nextPage;
+        return ([..._leftover, ...postListModel.items], postListModel.nextPage);
     }
   }
 
@@ -381,10 +336,7 @@ class FeedAggregator {
     for (final input in inputs) {
       input
         .._leftover = []
-        .._nextPage = ''
-        .._combinedPage = ''
-        .._combinedThreadsLeftover = []
-        .._combinedMicroblogsLeftover = [];
+        .._nextPage = '';
     }
   }
 
