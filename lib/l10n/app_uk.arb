@@ -72,7 +72,7 @@
         }
     },
     "messages": "Повідомлень",
-    "settings": "Настройка",
+    "settings": "Налаштування",
     "settings_themeMode": "Тематичний режим",
     "settings_themeMode_system": "Система",
     "settings_colorScheme_indigo": "Індиго",
@@ -853,5 +853,6 @@
     "modlog_communityAdded": "Спільноту додано",
     "modlog_communityRemoved": "Спільноту видалено",
     "modlog_postLocked": "Публікацію заблоковано",
-    "modlog_postUnlocked": "Публікацію розблоковано"
+    "modlog_postUnlocked": "Публікацію розблоковано",
+    "description": "Опис"
 }
