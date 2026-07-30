@@ -78,7 +78,9 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        if (combined) return PostListModel.fromMbinCombined(response.bodyJson);
+        if (combined && source != FeedSource.tag) {
+          return PostListModel.fromMbinCombined(response.bodyJson);
+        }
         return PostListModel.fromMbinEntries(response.bodyJson);
 
       case ServerSoftware.lemmy:
