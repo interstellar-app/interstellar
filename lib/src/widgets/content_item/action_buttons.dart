@@ -92,16 +92,19 @@ class ActionButtons extends StatelessWidget {
             onSelect: (emoji) => onEmojiReact!(emoji),
           ),
         if (boosts != null)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                onPressed: onBoost,
-                color: isBoosted ? Colors.purple.shade400 : null,
-                icon: const Icon(Symbols.rocket_launch_rounded),
-              ),
-              Text(intFormat(boosts!)),
-            ],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: onBoost,
+                  color: isBoosted ? Colors.purple.shade400 : null,
+                  icon: const Icon(Symbols.rocket_launch_rounded),
+                ),
+                Text(intFormat(boosts!)),
+              ],
+            ),
           ),
         if (upVotes != null)
           IconButton(
@@ -109,19 +112,22 @@ class ActionButtons extends StatelessWidget {
             color: isUpvoted ? Colors.green.shade400 : null,
             icon: const Icon(Symbols.arrow_upward_rounded),
           ),
-        Text(intFormat((upVotes ?? 0) - (downVotes ?? 0))),
+        if (!ac.profile.splitVotes)
+          Text(intFormat((upVotes ?? 0) - (downVotes ?? 0))),
+        if (ac.profile.splitVotes) Text(intFormat(upVotes ?? 0)),
         if (downVotes != null)
           IconButton(
             onPressed: onDownVote,
             color: isDownvoted ? Colors.red.shade400 : null,
             icon: const Icon(Symbols.arrow_downward_rounded),
           ),
+        if (ac.profile.splitVotes) Text(intFormat(downVotes ?? 0)),
       ],
     );
 
-    return LayoutBuilder(
-      builder: (context, constraints) =>
-          Row(children: [comments, const Spacer(), ?bookmarks, voting]),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [comments, const Spacer(), ?bookmarks, voting],
     );
   }
 }
