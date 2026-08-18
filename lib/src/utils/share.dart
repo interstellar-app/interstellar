@@ -36,8 +36,12 @@ Future<void> downloadFile(
   String filename, {
   Directory? defaultDir,
 }) async {
-  await downloadFromUri(uri, filename, defaultDir: defaultDir);
-  if (!context.mounted) return;
+  final downloaded = await downloadFromUri(
+    uri,
+    filename,
+    defaultDir: defaultDir,
+  );
+  if (!context.mounted || !downloaded) return;
   scaffoldMessengerKey.currentState?.showSnackBar(
     SnackBar(
       content: Text(l(context).downloaded_file(filename)),

@@ -14,7 +14,7 @@ Future<CommonSqlite3> getSqlite() async {
   return sqlite;
 }
 
-Future<void> downloadFromUri(
+Future<bool> downloadFromUri(
   Uri uri,
   String filename, {
   Directory? defaultDir,
@@ -29,4 +29,5 @@ Future<void> downloadFromUri(
     ..download = 'image.${uri.pathSegments.last}'
     ..click()
     ..remove();
+  return true;
 }
