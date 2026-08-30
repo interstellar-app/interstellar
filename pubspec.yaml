@@ -49,6 +49,7 @@ dependencies:
   flutter_localized_locales: ^2.0.5
   crypto: ^3.0.7
   file_picker: ^10.3.10
+  media_scanner: ^2.2.1
   any_link_preview: ^3.0.3
   simplytranslate: ^2.2.2
   visibility_detector: ^0.4.0+2
