@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
@@ -101,6 +102,13 @@ class _CommunityOwnerPanelGeneralState
   late bool _isAdult;
   late bool _isPostingRestrictedToMods;
 
+  /// Name validation message returned by the server, and the name it was
+  /// returned for. It is only shown while the field still holds that name, so
+  /// it clears itself on any edit, including the suggestion button setting the
+  /// controller text directly.
+  String? _nameServerError;
+  String? _nameServerErrorFor;
+
   @override
   void initState() {
     super.initState();
@@ -149,6 +157,9 @@ class _CommunityOwnerPanelGeneralState
     final nameInvalidForMbin =
         enforceMbinName && !isValidMbinCommunityName(name);
     final mbinNameErrorText = _mbinNameError(context, mbinNameIssue);
+    final serverNameError = _nameServerErrorFor == name
+        ? _nameServerError
+        : null;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -167,7 +178,7 @@ class _CommunityOwnerPanelGeneralState
                   helperText: enforceMbinName
                       ? l(context).community_nameMbinHelp
                       : null,
-                  errorText: mbinNameErrorText,
+                  errorText: serverNameError ?? mbinNameErrorText,
                 ),
                 if (mbinNameSuggestion case final suggestion?)
                   Align(
@@ -245,23 +256,45 @@ class _CommunityOwnerPanelGeneralState
                 ? null
                 : () async {
                     final ac = context.read<AppController>();
-                    final result = widget.data == null
-                        ? await ac.api.communityModeration.create(
-                            name: _nameController.text,
-                            title: _titleController.text,
-                            description: _descriptionController.text,
-                            isAdult: _isAdult,
-                            isPostingRestrictedToMods:
-                                _isPostingRestrictedToMods,
-                          )
-                        : await ac.api.communityModeration.edit(
-                            widget.data!.id,
-                            title: _titleController.text,
-                            description: _descriptionController.text,
-                            isAdult: _isAdult,
-                            isPostingRestrictedToMods:
-                                _isPostingRestrictedToMods,
-                          );
+
+                    if (isCreating) {
+                      final DetailedCommunityModel result;
+                      try {
+                        result = await ac.api.communityModeration.create(
+                          name: _nameController.text,
+                          title: _titleController.text,
+                          description: _descriptionController.text,
+                          isAdult: _isAdult,
+                          isPostingRestrictedToMods: _isPostingRestrictedToMods,
+                        );
+                      } on ServerErrorException catch (e) {
+                        // Name problems only the server can know about (already
+                        // taken, reserved, instance policy) come back as a 400
+                        // with a human-readable detail. Show it on the Name
+                        // field instead of letting the global snackbar fire.
+                        if (e.statusCode == 400 && e.detail != null) {
+                          setState(() {
+                            _nameServerError = e.detail;
+                            _nameServerErrorFor = _nameController.text;
+                          });
+                          return;
+                        }
+                        rethrow;
+                      }
+
+                      await descriptionDraftController.discard();
+
+                      widget.onUpdate(result);
+                      return;
+                    }
+
+                    final result = await ac.api.communityModeration.edit(
+                      widget.data!.id,
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                      isAdult: _isAdult,
+                      isPostingRestrictedToMods: _isPostingRestrictedToMods,
+                    );
 
                     await descriptionDraftController.discard();
 

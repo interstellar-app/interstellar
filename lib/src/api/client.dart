@@ -26,6 +26,40 @@ class RestrictedAuthException implements Exception {
   }
 }
 
+/// Thrown when the server responds with an error status and a structured
+/// problem body (RFC 7807 / RFC 2616-style JSON), e.g.
+/// `{"type": ..., "title": ..., "status": 400, "detail": "..."}`.
+///
+/// Callers that know a given failure is really a validation problem can catch
+/// this and surface [detail] as a friendly, inline message. Everything else can
+/// keep relying on [toString], which stays human-readable.
+class ServerErrorException implements Exception {
+  ServerErrorException({
+    required this.statusCode,
+    required this.uri,
+    required this.rawBody,
+    this.title,
+    this.detail,
+  });
+
+  final int statusCode;
+
+  final Uri uri;
+
+  /// Raw response body, kept for logging / debugging.
+  final String rawBody;
+
+  /// Short summary of the error, if the server provided one.
+  final String? title;
+
+  /// Human-readable explanation of the error, suitable for showing to users.
+  final String? detail;
+
+  @override
+  String toString() =>
+      detail ?? title ?? 'Request failed with status $statusCode: $rawBody';
+}
+
 class ServerClient {
   ServerClient({
     required this.httpClient,
@@ -198,6 +232,12 @@ class ServerClient {
       throw RestrictedAuthException(response.body, url);
     }
 
+    // Prefer a structured problem body (e.g. `{"title": ..., "detail": ...}`)
+    // so callers can show `detail` as a friendly, inline message instead of a
+    // raw JSON blob.
+    final structured = _tryParseServerError(url, response);
+    if (structured != null) throw structured;
+
     var message = 'Request failed with status ${response.statusCode}';
 
     if (response.reasonPhrase != null) {
@@ -209,6 +249,35 @@ class ServerClient {
     }
 
     throw http.ClientException(message, url);
+  }
+
+  static ServerErrorException? _tryParseServerError(
+    Uri url,
+    http.Response response,
+  ) {
+    if (response.body.isEmpty) return null;
+
+    try {
+      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      if (decoded is! Map) return null;
+
+      final title = decoded['title'];
+      final detail = decoded['detail'];
+
+      // Only treat this as a structured error if it actually carries a
+      // human-readable message; otherwise fall back to the generic exception.
+      if (title is! String && detail is! String) return null;
+
+      return ServerErrorException(
+        statusCode: response.statusCode,
+        uri: url,
+        rawBody: response.body,
+        title: title is String ? title : null,
+        detail: detail is String ? detail : null,
+      );
+    } catch (_) {
+      return null;
+    }
   }
 }
 
