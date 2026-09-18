@@ -1,5 +1,3 @@
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/community.dart';
@@ -8,8 +6,6 @@ import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
 
 class APIUsers {
   APIUsers(this.client);
@@ -187,10 +183,10 @@ class APIUsers {
     }
   }
 
-  Future<DetailedUserModel> follow(int userId, bool state) async {
+  Future<DetailedUserModel> follow(DetailedUserModel user, bool state) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/users/$userId/${state ? 'follow' : 'unfollow'}';
+        final path = '/users/${user.id}/${state ? 'follow' : 'unfollow'}';
 
         final response = await client.put(path);
 
@@ -200,7 +196,14 @@ class APIUsers {
         throw Exception('User follow not allowed on lemmy');
 
       case ServerSoftware.piefed:
-        throw Exception('User follow not allowed on piefed');
+        final path = '/user/${state ? 'follow' : 'unfollow'}';
+
+        final response = await client.post(
+          path,
+          body: {'user_id': user.id.toString()},
+        );
+
+        return user;
     }
   }
 

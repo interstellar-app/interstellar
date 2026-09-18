@@ -93,7 +93,7 @@ class ExploreScreenItem extends StatelessWidget {
         },
         final DetailedUserModel i => (bool selected) async {
           final newValue = await context.read<AppController>().api.users.follow(
-            i.id,
+            i,
             selected,
           );
 
