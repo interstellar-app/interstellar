@@ -148,7 +148,7 @@ class ExploreScreenItem extends StatelessWidget {
                 FeedInputState(
                   title: title,
                   source: i.owner == null ? FeedSource.topic : FeedSource.feed,
-                  sourceId: i.id,
+                  sourceId: i.id.toString(),
                 ),
               ],
             ),

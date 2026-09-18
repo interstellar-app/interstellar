@@ -82,7 +82,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       feed: FeedAggregator.fromSingleSource(
         name: _data?.name ?? '',
         source: FeedSource.community,
-        sourceId: _data?.id,
+        sourceId: _data?.id.toString(),
       ),
       createPostCommunity: _data,
       details: _data == null

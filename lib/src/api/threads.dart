@@ -37,7 +37,7 @@ class APIThreads {
 
   Future<PostListModel> list(
     FeedSource source, {
-    int? sourceId,
+    String? sourceId,
     String? page,
     FeedSort? sort,
     bool combined = false,
@@ -65,10 +65,12 @@ class APIThreads {
           FeedSource.topic => throw Exception(
             'Topics source not allowed for mbin',
           ),
+          FeedSource.tag => '/tag/${sourceId!}/entries',
         };
         final query = {
           'p': page,
-          'sort': mbinGetSort(sort)?.name,
+          if (source == FeedSource.tag) 'sortBy': mbinGetSort(sort)?.name,
+          if (source != FeedSource.tag) 'sort': mbinGetSort(sort)?.name,
           'time': mbinGetSortTime(sort),
           if (source == FeedSource.local) 'federation': 'local',
           if (combined && includeBoosts) 'includeBoosts': 'true',
@@ -76,7 +78,9 @@ class APIThreads {
 
         final response = await client.get(path, queryParams: query);
 
-        if (combined) return PostListModel.fromMbinCombined(response.bodyJson);
+        if (combined && source != FeedSource.tag) {
+          return PostListModel.fromMbinCombined(response.bodyJson);
+        }
         return PostListModel.fromMbinEntries(response.bodyJson);
 
       case ServerSoftware.lemmy:
@@ -122,6 +126,9 @@ class APIThreads {
             FeedSource.topic => throw Exception(
               'Topics source not allowed for lemmy',
             ),
+            FeedSource.tag => throw Exception(
+              'Tags source not allowed for lemmy',
+            ),
           });
 
         final response = await client.get(path, queryParams: query);
@@ -147,6 +154,9 @@ class APIThreads {
             ),
             FeedSource.feed => {'feed_id': sourceId.toString()},
             FeedSource.topic => {'topic_id': sourceId.toString()},
+            FeedSource.tag => throw Exception(
+              'Tags source not allowed for Piefed',
+            ),
           });
 
         final response = await client.get(path, queryParams: query);

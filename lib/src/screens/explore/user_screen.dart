@@ -542,13 +542,13 @@ class _UserScreenBodyState extends State<UserScreenBody>
       final newPage = await (switch (widget.mode) {
         UserFeedType.thread => ac.api.threads.list(
           FeedSource.user,
-          sourceId: widget.data!.id,
+          sourceId: widget.data!.id.toString(),
           page: nullIfEmpty(pageKey),
           sort: widget.sort,
         ),
         UserFeedType.microblog => ac.api.microblogs.list(
           FeedSource.user,
-          sourceId: widget.data!.id,
+          sourceId: widget.data!.id.toString(),
           page: nullIfEmpty(pageKey),
           sort: widget.sort,
         ),

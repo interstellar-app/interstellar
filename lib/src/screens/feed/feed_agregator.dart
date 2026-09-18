@@ -198,7 +198,7 @@ class FeedInputState {
 
   final String title;
   final FeedSource source;
-  final int? sourceId;
+  final String? sourceId;
   List<PostModel> _leftover = [];
   String? _nextPage = '';
 
@@ -255,7 +255,7 @@ class FeedAggregator {
   factory FeedAggregator.fromSingleSource({
     required String name,
     required FeedSource source,
-    int? sourceId,
+    String? sourceId,
   }) => FeedAggregator(
     name: name,
     inputs: [
@@ -279,7 +279,7 @@ class FeedAggregator {
       return FeedInputState(
         title: input.name,
         source: input.sourceType,
-        sourceId: source,
+        sourceId: source.toString(),
       );
     }).wait;
     return FeedAggregator(name: name, inputs: inputs.nonNulls.toList());
