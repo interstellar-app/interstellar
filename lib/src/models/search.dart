@@ -18,32 +18,55 @@ abstract class SearchListModel with _$SearchListModel {
   factory SearchListModel.fromMbin(Map<String, dynamic> json) {
     final items = <Object>[];
 
-    for (final actor in json['apActors']) {
-      final type = actor['type'];
-      if (type == 'user') {
-        items.add(DetailedUserModel.fromMbin(actor['object'] as JsonMap));
-      } else if (type == 'magazine') {
-        items.add(DetailedCommunityModel.fromMbin(actor['object'] as JsonMap));
+    final itemsJson = json['items']! as List<dynamic>;
+    final apResultsJson = json['apResults']! as List<dynamic>;
+
+    for (final itemJson in itemsJson) {
+      if (itemJson['entry'] != null) {
+        items.add(PostModel.fromMbinEntry(itemJson['entry'] as JsonMap));
+      }
+      if (itemJson['entryComment'] != null) {
+        items.add(CommentModel.fromMbin(itemJson['entryComment'] as JsonMap));
+      }
+      if (itemJson['post'] != null) {
+        items.add(PostModel.fromMbinPost(itemJson['post'] as JsonMap));
+      }
+      if (itemJson['postComment'] != null) {
+        items.add(CommentModel.fromMbin(itemJson['postComment'] as JsonMap));
+      }
+      if (itemJson['magazine'] != null) {
+        items.add(
+          DetailedCommunityModel.fromMbin(itemJson['magazine'] as JsonMap),
+        );
+      }
+      if (itemJson['user'] != null) {
+        items.add(DetailedUserModel.fromMbin(itemJson['user'] as JsonMap));
       }
     }
-    for (final item in json['apObjects']) {
-      final itemType = item['itemType'];
-      if (itemType == 'entry') {
-        items.add(PostModel.fromMbinEntry(item as JsonMap));
-      } else if (itemType == 'post') {
-        items.add(PostModel.fromMbinPost(item as JsonMap));
-      } else if (itemType == 'entry_comment' || itemType == 'post_comment') {
-        items.add(CommentModel.fromMbin(item as JsonMap));
+    for (final apResultJson in apResultsJson) {
+      if (apResultJson['entry'] != null) {
+        items.add(PostModel.fromMbinEntry(apResultJson['entry'] as JsonMap));
       }
-    }
-    for (final item in json['items']) {
-      final itemType = item['itemType'];
-      if (itemType == 'entry') {
-        items.add(PostModel.fromMbinEntry(item as JsonMap));
-      } else if (itemType == 'post') {
-        items.add(PostModel.fromMbinPost(item as JsonMap));
-      } else if (itemType == 'entry_comment' || itemType == 'post_comment') {
-        items.add(CommentModel.fromMbin(item as JsonMap));
+      if (apResultJson['entryComment'] != null) {
+        items.add(
+          CommentModel.fromMbin(apResultJson['entryComment'] as JsonMap),
+        );
+      }
+      if (apResultJson['post'] != null) {
+        items.add(PostModel.fromMbinPost(apResultJson['post'] as JsonMap));
+      }
+      if (apResultJson['postComment'] != null) {
+        items.add(
+          CommentModel.fromMbin(apResultJson['postComment'] as JsonMap),
+        );
+      }
+      if (apResultJson['magazine'] != null) {
+        items.add(
+          DetailedCommunityModel.fromMbin(apResultJson['magazine'] as JsonMap),
+        );
+      }
+      if (apResultJson['user'] != null) {
+        items.add(DetailedUserModel.fromMbin(apResultJson['user'] as JsonMap));
       }
     }
 
