@@ -108,6 +108,15 @@ class DisplaySettingsScreen extends StatelessWidget {
             onTap: () => context.router.push(const PostLayoutSettingsRoute()),
           ),
           ListTileSwitch(
+            leading: const Icon(Symbols.arrow_upward_rounded),
+            title: Text(l(context).settings_splitVotes),
+            subtitle: Text(l(context).settings_splitVotes_help),
+            value: ac.profile.splitVotes,
+            onChanged: (newValue) => ac.updateProfile(
+              ac.selectedProfileValue.copyWith(splitVotes: newValue),
+            ),
+          ),
+          ListTileSwitch(
             leading: const Icon(Symbols.view_day_rounded),
             title: Text(l(context).settings_hideActionButtons),
             subtitle: Text(l(context).settings_hideActionButtons_help),
