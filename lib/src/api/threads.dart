@@ -474,10 +474,10 @@ class APIThreads {
           body: {
             'title': title,
             'community_id': communityId,
-            'url': url,
-            'body': body,
+            'url': ?url,
+            'body': ?body,
             'nsfw': isAdult,
-            'alt_text': alt,
+            'alt_text': ?alt,
             'language_id': await client.languageIdFromCode(lang),
           },
         );
