@@ -79,6 +79,10 @@ dependencies:
   unifiedpush_platform_interface: ^4.0.0
   unifiedpush_storage_interface: ^1.0.0
 
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
 # Needed for 16kb page, remove once this pr (https://github.com/google/webcrypto.dart/pull/238) is merged and the next version is released.
 dependency_overrides:
   webcrypto:

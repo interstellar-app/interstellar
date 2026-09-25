@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
+import 'package:interstellar/src/utils/mbin_community_name.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
@@ -99,6 +102,13 @@ class _CommunityOwnerPanelGeneralState
   late bool _isAdult;
   late bool _isPostingRestrictedToMods;
 
+  /// Name validation message returned by the server, and the name it was
+  /// returned for. It is only shown while the field still holds that name, so
+  /// it clears itself on any edit, including the suggestion button setting the
+  /// controller text directly.
+  String? _nameServerError;
+  String? _nameServerErrorFor;
+
   @override
   void initState() {
     super.initState();
@@ -112,23 +122,78 @@ class _CommunityOwnerPanelGeneralState
         widget.data?.isPostingRestrictedToMods ?? false;
   }
 
+  String? _mbinNameError(BuildContext context, MbinCommunityNameIssue? issue) {
+    switch (issue) {
+      case MbinCommunityNameIssue.invalidCharacters:
+        return l(context).community_nameInvalidCharacters;
+      case MbinCommunityNameIssue.tooShort:
+        return l(context).community_nameTooShort(mbinCommunityNameMinLength);
+      case MbinCommunityNameIssue.tooLong:
+        return l(context).community_nameTooLong(mbinCommunityNameMaxLength);
+      case null:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final descriptionDraftController = context.watch<DraftsController>().auto(
       'community:description${widget.data == null ? '' : ':${widget.data}'}',
     );
 
+    final isCreating = widget.data == null;
+    // Mbin is the only backend that rejects names outside of
+    // /^[a-zA-Z0-9_]{2,25}$/, so only validate/suggest for it. The name field
+    // itself is only shown while creating; edits never touch the name.
+    final enforceMbinName =
+        isCreating &&
+        context.watch<AppController>().serverSoftware == ServerSoftware.mbin;
+
+    final name = _nameController.text;
+    final mbinNameIssue = enforceMbinName ? mbinCommunityNameIssue(name) : null;
+    final mbinNameSuggestion = enforceMbinName
+        ? suggestMbinCommunityName(name)
+        : null;
+    final nameInvalidForMbin =
+        enforceMbinName && !isValidMbinCommunityName(name);
+    final mbinNameErrorText = _mbinNameError(context, mbinNameIssue);
+    final serverNameError = _nameServerErrorFor == name
+        ? _nameServerError
+        : null;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (widget.data == null)
+        if (isCreating)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: TextEditor(
-              _nameController,
-              label: 'Name',
-              onChanged: (_) => setState(() {}),
-              maxLength: 25,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextEditor(
+                  _nameController,
+                  label: 'Name',
+                  onChanged: (_) => setState(() {}),
+                  maxLength: enforceMbinName ? mbinCommunityNameMaxLength : 25,
+                  helperText: enforceMbinName
+                      ? l(context).community_nameMbinHelp
+                      : null,
+                  errorText: serverNameError ?? mbinNameErrorText,
+                ),
+                if (mbinNameSuggestion case final suggestion?)
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: TextButton.icon(
+                      onPressed: () => setState(() {
+                        _nameController.text = suggestion;
+                      }),
+                      icon: const Icon(Symbols.auto_fix_high_rounded),
+                      label: Text(
+                        l(context).community_nameUseSuggestion(suggestion),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         Padding(
@@ -180,6 +245,7 @@ class _CommunityOwnerPanelGeneralState
           child: LoadingFilledButton(
             onPressed:
                 _nameController.text.isEmpty ||
+                    nameInvalidForMbin ||
                     _titleController.text.isEmpty ||
                     (_titleController.text == widget.data?.title &&
                         _descriptionController.text ==
@@ -190,23 +256,45 @@ class _CommunityOwnerPanelGeneralState
                 ? null
                 : () async {
                     final ac = context.read<AppController>();
-                    final result = widget.data == null
-                        ? await ac.api.communityModeration.create(
-                            name: _nameController.text,
-                            title: _titleController.text,
-                            description: _descriptionController.text,
-                            isAdult: _isAdult,
-                            isPostingRestrictedToMods:
-                                _isPostingRestrictedToMods,
-                          )
-                        : await ac.api.communityModeration.edit(
-                            widget.data!.id,
-                            title: _titleController.text,
-                            description: _descriptionController.text,
-                            isAdult: _isAdult,
-                            isPostingRestrictedToMods:
-                                _isPostingRestrictedToMods,
-                          );
+
+                    if (isCreating) {
+                      final DetailedCommunityModel result;
+                      try {
+                        result = await ac.api.communityModeration.create(
+                          name: _nameController.text,
+                          title: _titleController.text,
+                          description: _descriptionController.text,
+                          isAdult: _isAdult,
+                          isPostingRestrictedToMods: _isPostingRestrictedToMods,
+                        );
+                      } on ServerErrorException catch (e) {
+                        // Name problems only the server can know about (already
+                        // taken, reserved, instance policy) come back as a 400
+                        // with a human-readable detail. Show it on the Name
+                        // field instead of letting the global snackbar fire.
+                        if (e.statusCode == 400 && e.detail != null) {
+                          setState(() {
+                            _nameServerError = e.detail;
+                            _nameServerErrorFor = _nameController.text;
+                          });
+                          return;
+                        }
+                        rethrow;
+                      }
+
+                      await descriptionDraftController.discard();
+
+                      widget.onUpdate(result);
+                      return;
+                    }
+
+                    final result = await ac.api.communityModeration.edit(
+                      widget.data!.id,
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                      isAdult: _isAdult,
+                      isPostingRestrictedToMods: _isPostingRestrictedToMods,
+                    );
 
                     await descriptionDraftController.discard();
 
