@@ -537,6 +537,32 @@
   "create_link_invalid": "Url is invalid",
   "create_microblog": "Microblog",
   "create_community": "Community",
+  "community_nameMbinHelp": "2–25 characters. Letters, numbers and underscores only.",
+  "community_nameInvalidCharacters": "Only letters, numbers and underscores are allowed.",
+  "community_nameTooShort": "Name must be at least {count} characters.",
+  "@community_nameTooShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "community_nameTooLong": "Name must be at most {count} characters.",
+  "@community_nameTooLong": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "community_nameUseSuggestion": "Use “{name}”",
+  "@community_nameUseSuggestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "microblog_communityHelperText": "Defaults to the 'random' community for microblogs since that's where Mbin stores uncatagorized microblogs.",
   "selectCommunity": "Select a community ...",
   "title": "Title",

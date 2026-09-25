@@ -6,6 +6,8 @@ class TextEditor extends StatelessWidget {
     this.keyboardType,
     this.label,
     this.hint,
+    this.helperText,
+    this.errorText,
     this.onChanged,
     this.enabled,
     this.maxLength,
@@ -17,6 +19,8 @@ class TextEditor extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? label;
   final String? hint;
+  final String? helperText;
+  final String? errorText;
   final void Function(String)? onChanged;
   final bool? enabled;
   final int? maxLength;
@@ -31,6 +35,10 @@ class TextEditor extends StatelessWidget {
         border: const OutlineInputBorder(),
         labelText: label,
         hintText: hint,
+        helperText: helperText,
+        helperMaxLines: 3,
+        errorText: errorText,
+        errorMaxLines: 3,
       ),
       onChanged: onChanged,
       enabled: enabled,
