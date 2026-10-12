@@ -287,6 +287,7 @@ class AppController with ChangeNotifier {
     _defaultDownloadsDir = await getDefaultDownloadDir();
 
     await _updateAPI();
+
     logger.i('Finished init');
   }
 
@@ -595,7 +596,7 @@ class AppController with ChangeNotifier {
       await switchAccounts(key, force: forceSwitch);
     } else {
       // The following is already done when switchAccounts is run, so only needed without switchAccounts.
-      _updateAPI();
+      await _updateAPI();
 
       notifyListeners();
     }
