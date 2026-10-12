@@ -2,6 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/server.dart';
+import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 import 'package:interstellar/src/screens/settings/account_migration.dart';
 import 'package:interstellar/src/screens/settings/account_selection.dart';
@@ -25,7 +26,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
 
   final _resetCommunitySubscriptions = MigrationOrResetType<int>();
   final _resetCommunityBlocks = MigrationOrResetType<int>();
-  final _resetUserFollows = MigrationOrResetType<int>();
+  final _resetUserFollows = MigrationOrResetType<DetailedUserModel>();
   final _resetUserBlocks = MigrationOrResetType<int>();
 
   @override
@@ -93,7 +94,7 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
               filter: ExploreFilter.subscribed,
             );
 
-            _resetUserFollows.found.addAll(res.items.map((e) => e.id));
+            _resetUserFollows.found.addAll(res.items.map((e) => e));
             nextPage = res.nextPage;
 
             if (progressAndCheckCancel()) return;

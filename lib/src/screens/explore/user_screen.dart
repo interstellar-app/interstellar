@@ -231,14 +231,14 @@ class _UserScreenState extends State<UserScreen> {
                                       child: Text(l(context).account_edit),
                                     ),
                                   if (!isMyUser &&
-                                      ac.serverSoftware == ServerSoftware.mbin)
+                                      ac.serverSoftware != ServerSoftware.lemmy)
                                     SubscriptionButton(
                                       isSubscribed: user.isFollowedByUser,
                                       subscriptionCount:
                                           user.followersCount ?? 0,
                                       onSubscribe: (selected) async {
                                         final newValue = await ac.api.users
-                                            .follow(user.id, selected);
+                                            .follow(user, selected);
                                         setState(() {
                                           _data = newValue;
                                         });
