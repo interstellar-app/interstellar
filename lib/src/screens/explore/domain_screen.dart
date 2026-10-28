@@ -51,7 +51,7 @@ class _DomainScreenState extends State<DomainScreen> {
       feed: FeedAggregator.fromSingleSource(
         name: _data?.name ?? '',
         source: FeedSource.domain,
-        sourceId: widget.domainId,
+        sourceId: widget.domainId.toString(),
       ),
       details: _data != null
           ? Padding(

@@ -65,7 +65,7 @@ Future<void> showFeedMenu(
                     source: feed.owner == null
                         ? FeedSource.topic
                         : FeedSource.feed,
-                    sourceId: feed.id,
+                    sourceId: feed.id.toString(),
                   ),
                 ],
               ),
