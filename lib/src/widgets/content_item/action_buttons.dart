@@ -121,7 +121,11 @@ class ActionButtons extends StatelessWidget {
             color: isDownvoted ? Colors.red.shade400 : null,
             icon: const Icon(Symbols.arrow_downward_rounded),
           ),
-        if (ac.profile.splitVotes) Text(intFormat(downVotes ?? 0)),
+        if (ac.profile.splitVotes)
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Text(intFormat(downVotes ?? 0)),
+          ),
       ],
     );
 
