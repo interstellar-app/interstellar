@@ -9,8 +9,17 @@ import 'package:markdown/markdown.dart' as md;
 class HashtagMarkdownSyntax extends md.InlineSyntax {
   HashtagMarkdownSyntax() : super(_tagPattern);
 
-  static const String _tagPattern =
-      r'(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w*?)(?:\s|$)))(\w+)(?=\s|$)';
+  /*
+    This expression checks the following:
+    
+    - Ensure there is no more than one # at the start.
+    - Ensure there is not a word character preceding the match.
+    - Match only word characters after the #.
+    - Don't match if there are only digits after the #.
+    - Ensure the match ends at the end of the whole set of word characters.
+    - Ensure there is not a # immediately following the match.
+   */
+  static const String _tagPattern = r'(?<!#)\B#(?!\d+\b)(\w+)\b(?!#)';
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -49,17 +58,26 @@ class HashtagWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Text(tag, style: const TextStyle(color: Colors.blue)),
-      onTap: () => context.router.push(
-        FeedRoute(
-          feedName: tag,
-          feed: FeedAggregator.fromSingleSource(
-            name: tag,
-            source: FeedSource.tag,
-            sourceId: tag,
+    return RichText(
+      text: TextSpan(
+        children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: InkWell(
+              child: Text(tag, style: const TextStyle(color: Colors.blue)),
+              onTap: () => context.router.push(
+                FeedRoute(
+                  feedName: tag,
+                  feed: FeedAggregator.fromSingleSource(
+                    name: tag,
+                    source: FeedSource.tag,
+                    sourceId: tag,
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
