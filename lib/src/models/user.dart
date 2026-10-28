@@ -65,7 +65,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     final user = DetailedUserModel(
       id: json['userId']! as int,
       name: mbinNormalizeUsername(json['username']! as String),
-      displayName: null,
+      displayName: json['title'] as String?,
       avatar: mbinGetOptionalImage(json['avatar'] as JsonMap?),
       cover: mbinGetOptionalImage(json['cover'] as JsonMap?),
       createdAt: DateTime.parse(json['createdAt']! as String),

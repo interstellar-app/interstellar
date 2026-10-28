@@ -7,7 +7,7 @@ Future<CommonSqlite3> getSqlite() async {
   throw UnsupportedError('Unknown pipeline');
 }
 
-Future<void> downloadFromUri(
+Future<bool> downloadFromUri(
   Uri uri,
   String filename, {
   Directory? defaultDir,

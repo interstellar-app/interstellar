@@ -651,9 +651,15 @@ class _ContentItemState extends State<ContentItem> {
         widget.isNSFW &&
         context.read<AppController>().profile.coverMediaMarkedSensitive;
 
+    // If post body is long and has no whitespace just skip markdown rendering. It gets bogged down parsing it otherwise.
+    final renderAsMarkdown =
+        !widget.isPreview &&
+        !((widget.body?.length ?? 0) > 10000 &&
+            !RegExp(r'\s').hasMatch(widget.body ?? ''));
+
     return widget.translation != null
         // A translation is available
-        ? widget.isPreview
+        ? !renderAsMarkdown
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -703,7 +709,7 @@ class _ContentItemState extends State<ContentItem> {
                   ],
                 )
         // No translation is available
-        : widget.isPreview
+        : !renderAsMarkdown
         ? Text(widget.body!, maxLines: 4, overflow: TextOverflow.ellipsis)
         : Markdown(widget.body!, widget.originInstance, nsfw: isNSFW);
   }

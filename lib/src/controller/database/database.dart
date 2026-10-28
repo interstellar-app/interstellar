@@ -296,6 +296,7 @@ class Profiles extends Table {
   TextColumn get colorScheme => textEnum<FlexScheme>().nullable()();
   BoolColumn get enableTrueBlack => boolean().nullable()();
   TextColumn get postMode => textEnum<PostMode>().nullable()();
+  BoolColumn get splitVotes => boolean().nullable()();
   BoolColumn get hideActionButtons => boolean().nullable()();
   BoolColumn get hideFeedUIOnScroll => boolean().nullable()();
   RealColumn get globalTextScale => real().nullable()();
@@ -463,7 +464,7 @@ class InterstellarDatabase extends _$InterstellarDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -508,6 +509,9 @@ class InterstellarDatabase extends _$InterstellarDatabase {
             schema.miscCache,
             schema.miscCache.unifiedpushDistributorAck,
           );
+        },
+        from3To4: (m, schema) async {
+          m.addColumn(schema.profiles, schema.profiles.splitVotes);
         },
       ),
     );
