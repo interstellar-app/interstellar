@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/controller.dart';
+import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/user.dart';
 import 'package:interstellar/src/screens/explore/user_item.dart';
+import 'package:interstellar/src/utils/mbin_community_name.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/loading_button.dart';
 import 'package:interstellar/src/widgets/markdown/drafts_controller.dart';
@@ -112,23 +114,75 @@ class _CommunityOwnerPanelGeneralState
         widget.data?.isPostingRestrictedToMods ?? false;
   }
 
+  String? _mbinNameError(BuildContext context, MbinCommunityNameIssue? issue) {
+    switch (issue) {
+      case MbinCommunityNameIssue.invalidCharacters:
+        return l(context).community_nameInvalidCharacters;
+      case MbinCommunityNameIssue.tooShort:
+        return l(context).community_nameTooShort(mbinCommunityNameMinLength);
+      case MbinCommunityNameIssue.tooLong:
+        return l(context).community_nameTooLong(mbinCommunityNameMaxLength);
+      case null:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final descriptionDraftController = context.watch<DraftsController>().auto(
       'community:description${widget.data == null ? '' : ':${widget.data}'}',
     );
 
+    final isCreating = widget.data == null;
+    // Mbin is the only backend that rejects names outside of
+    // /^[a-zA-Z0-9_]{2,25}$/, so only validate/suggest for it. The name field
+    // itself is only shown while creating; edits never touch the name.
+    final enforceMbinName =
+        isCreating &&
+        context.watch<AppController>().serverSoftware == ServerSoftware.mbin;
+
+    final name = _nameController.text;
+    final mbinNameIssue = enforceMbinName ? mbinCommunityNameIssue(name) : null;
+    final mbinNameSuggestion = enforceMbinName
+        ? suggestMbinCommunityName(name)
+        : null;
+    final nameInvalidForMbin =
+        enforceMbinName && !isValidMbinCommunityName(name);
+    final mbinNameErrorText = _mbinNameError(context, mbinNameIssue);
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (widget.data == null)
+        if (isCreating)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: TextEditor(
-              _nameController,
-              label: 'Name',
-              onChanged: (_) => setState(() {}),
-              maxLength: 25,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextEditor(
+                  _nameController,
+                  label: 'Name',
+                  onChanged: (_) => setState(() {}),
+                  maxLength: enforceMbinName ? mbinCommunityNameMaxLength : 25,
+                  helperText: enforceMbinName
+                      ? l(context).community_nameMbinHelp
+                      : null,
+                  errorText: mbinNameErrorText,
+                ),
+                if (mbinNameSuggestion case final suggestion?)
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: TextButton.icon(
+                      onPressed: () => setState(() {
+                        _nameController.text = suggestion;
+                      }),
+                      icon: const Icon(Symbols.auto_fix_high_rounded),
+                      label: Text(
+                        l(context).community_nameUseSuggestion(suggestion),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         Padding(
@@ -180,6 +234,7 @@ class _CommunityOwnerPanelGeneralState
           child: LoadingFilledButton(
             onPressed:
                 _nameController.text.isEmpty ||
+                    nameInvalidForMbin ||
                     _titleController.text.isEmpty ||
                     (_titleController.text == widget.data?.title &&
                         _descriptionController.text ==
