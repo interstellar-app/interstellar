@@ -59,7 +59,13 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
     final isMarkdownLink =
         String.fromCharCode(parser.charAt(parser.pos)) == '[';
 
-    if (parser.pos > 0 && !isMarkdownLink) {
+    // The pattern starts with the whitespace before the mention, so when the
+    // match starts on whitespace that is already the boundary. Only otherwise
+    // look at the character before it.
+    final startsOnWhitespace =
+        startMatchPos < parser.source.length &&
+        parser.source[startMatchPos].trim().isEmpty;
+    if (parser.pos > 0 && !isMarkdownLink && !startsOnWhitespace) {
       final precededBy = String.fromCharCode(parser.charAt(parser.pos - 1));
       if (_borderRegExp.matchAsPrefix(precededBy) == null) {
         return false;
@@ -93,6 +99,10 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
     final host = match.group(5) ?? urlDomain;
 
     final result = '$modifier$name${host != null ? '@$host' : ''}';
+
+    // Keep the whitespace the pattern consumed before the mention.
+    final lead = match[0]![0];
+    if (lead.trim().isEmpty) parser.addNode(md.Text(lead));
 
     final node = md.Element.text('mention', result);
 
