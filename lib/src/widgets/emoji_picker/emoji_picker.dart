@@ -27,11 +27,7 @@ final List<IconData> emojiGroupIcons = [
 ];
 
 class EmojiPicker extends StatefulWidget {
-  const EmojiPicker({
-    required this.childBuilder,
-    required this.onSelect,
-    super.key,
-  });
+  const new({required this.childBuilder, required this.onSelect, super.key});
 
   final Widget Function(void Function() onClick, FocusNode focusNode)
   childBuilder;

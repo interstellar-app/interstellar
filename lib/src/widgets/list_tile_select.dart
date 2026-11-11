@@ -3,7 +3,7 @@ import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ListTileSelect<T> extends StatelessWidget {
-  const ListTileSelect({
+  const new({
     required this.title,
     required this.selectionMenu,
     required this.value,

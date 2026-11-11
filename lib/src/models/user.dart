@@ -12,38 +12,36 @@ part 'user.freezed.dart';
 
 @freezed
 abstract class DetailedUserListModel with _$DetailedUserListModel {
-  const factory DetailedUserListModel({
+  const factory({
     required List<DetailedUserModel> items,
     required String? nextPage,
   }) = _DetailedUserListModel;
 
-  factory DetailedUserListModel.fromMbin(JsonMap json) => DetailedUserListModel(
+  factory fromMbin(JsonMap json) => DetailedUserListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => DetailedUserModel.fromMbin(post as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory DetailedUserListModel.fromLemmy(JsonMap json) =>
-      DetailedUserListModel(
-        items: (json['users']! as List<dynamic>)
-            .map((item) => DetailedUserModel.fromLemmy(item as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+  factory fromLemmy(JsonMap json) => DetailedUserListModel(
+    items: (json['users']! as List<dynamic>)
+        .map((item) => DetailedUserModel.fromLemmy(item as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 
-  factory DetailedUserListModel.fromPiefed(JsonMap json) =>
-      DetailedUserListModel(
-        items: (json['users']! as List<dynamic>)
-            .map((item) => DetailedUserModel.fromPiefed(item as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+  factory fromPiefed(JsonMap json) => DetailedUserListModel(
+    items: (json['users']! as List<dynamic>)
+        .map((item) => DetailedUserModel.fromPiefed(item as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed
 abstract class DetailedUserModel with _$DetailedUserModel {
-  const factory DetailedUserModel({
+  const factory({
     required int id,
     required String name,
     required String? displayName,
@@ -61,7 +59,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     required String? apId,
   }) = _DetailedUserModel;
 
-  factory DetailedUserModel.fromMbin(JsonMap json) {
+  factory fromMbin(JsonMap json) {
     final user = DetailedUserModel(
       id: json['userId']! as int,
       name: mbinNormalizeUsername(json['username']! as String),
@@ -89,7 +87,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     return user;
   }
 
-  factory DetailedUserModel.fromLemmy(JsonMap json) {
+  factory fromLemmy(JsonMap json) {
     final lemmyPerson = json['person'] as JsonMap? ?? json;
 
     return DetailedUserModel(
@@ -111,7 +109,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
     );
   }
 
-  factory DetailedUserModel.fromPiefed(JsonMap json, {bool blocked = false}) {
+  factory fromPiefed(JsonMap json, {bool blocked = false}) {
     final piefedPerson = json['person'] as JsonMap? ?? json;
 
     return DetailedUserModel(
@@ -177,7 +175,7 @@ abstract class DetailedUserModel with _$DetailedUserModel {
 
 @freezed
 abstract class UserModel with _$UserModel {
-  const factory UserModel({
+  const factory({
     required int id,
     required String name,
     required ImageModel? avatar,
@@ -186,7 +184,7 @@ abstract class UserModel with _$UserModel {
     required String? apId,
   }) = _UserModel;
 
-  factory UserModel.fromMbin(JsonMap json) => UserModel(
+  factory fromMbin(JsonMap json) => UserModel(
     id: json['userId']! as int,
     name: mbinNormalizeUsername(json['username']! as String),
     avatar: mbinGetOptionalImage(json['avatar'] as JsonMap?),
@@ -195,7 +193,7 @@ abstract class UserModel with _$UserModel {
     apId: json['apProfileId'] as String?,
   );
 
-  factory UserModel.fromLemmy(JsonMap json) => UserModel(
+  factory fromLemmy(JsonMap json) => UserModel(
     id: json['id']! as int,
     name: getLemmyPiefedActorName(json),
     avatar: lemmyGetOptionalImage(json['avatar'] as String?),
@@ -204,7 +202,7 @@ abstract class UserModel with _$UserModel {
     apId: json['actor_id']! as String,
   );
 
-  factory UserModel.fromPiefed(JsonMap json) => UserModel(
+  factory fromPiefed(JsonMap json) => UserModel(
     id: json['id']! as int,
     name: getLemmyPiefedActorName(json),
     avatar: lemmyGetOptionalImage(json['avatar'] as String?),
@@ -213,7 +211,7 @@ abstract class UserModel with _$UserModel {
     apId: json['actor_id']! as String,
   );
 
-  factory UserModel.fromDetailedUser(DetailedUserModel user) => UserModel(
+  factory fromDetailedUser(DetailedUserModel user) => UserModel(
     id: user.id,
     name: user.name,
     avatar: user.avatar,
@@ -225,7 +223,7 @@ abstract class UserModel with _$UserModel {
 
 @unfreezed
 abstract class UserSettings with _$UserSettings {
-  factory UserSettings({
+  factory({
     required bool showNSFW,
     required bool? blurNSFW,
     required bool? showReadPosts,
@@ -242,7 +240,7 @@ abstract class UserSettings with _$UserSettings {
     required bool? notifyOnNewPostCommentReply,
   }) = _UserSettings;
 
-  factory UserSettings.fromMbin(JsonMap json) => UserSettings(
+  factory fromMbin(JsonMap json) => UserSettings(
     showNSFW: !(json['hideAdult']! as bool),
     blurNSFW: null,
     showReadPosts: null,
@@ -259,7 +257,7 @@ abstract class UserSettings with _$UserSettings {
     notifyOnNewPostCommentReply: json['notifyOnNewPostCommentReply'] as bool?,
   );
 
-  factory UserSettings.fromLemmy(JsonMap json) => UserSettings(
+  factory fromLemmy(JsonMap json) => UserSettings(
     showNSFW: json['show_nsfw']! as bool,
     blurNSFW: json['blur_nsfw'] as bool?,
     showReadPosts: json['show_read_posts'] as bool?,
@@ -276,7 +274,7 @@ abstract class UserSettings with _$UserSettings {
     notifyOnNewPostCommentReply: null,
   );
 
-  factory UserSettings.fromPiefed(JsonMap json) => UserSettings(
+  factory fromPiefed(JsonMap json) => UserSettings(
     showNSFW: json['show_nsfw']! as bool,
     blurNSFW: null,
     showReadPosts: json['show_read_posts'] as bool?,

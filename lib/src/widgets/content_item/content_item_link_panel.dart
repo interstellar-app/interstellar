@@ -7,7 +7,7 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart'
     as youtube_explode_dart;
 
 class _LinkAltSource {
-  const _LinkAltSource({required this.name, required this.urlPrefix});
+  const new({required this.name, required this.urlPrefix});
 
   final String name;
   final String urlPrefix;
@@ -39,7 +39,7 @@ const _youtubeAltSources = [
 ];
 
 class ContentItemLinkPanel extends StatefulWidget {
-  const ContentItemLinkPanel({required this.link, super.key});
+  const new({required this.link, super.key});
 
   final Uri link;
 
@@ -138,9 +138,8 @@ class _ContentItemLinkPanelState extends State<ContentItemLinkPanel> {
                             '${widget.link.scheme}://${widget.link.host}'
                                 .length,
                           ),
-                          style: Theme.of(context).textTheme.bodyMedium!.apply(
-                            decoration: TextDecoration.underline,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .apply(decoration: TextDecoration.underline),
                         ),
                       ],
                     ),

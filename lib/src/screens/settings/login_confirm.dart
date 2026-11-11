@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class LoginConfirmScreen extends StatefulWidget {
-  const LoginConfirmScreen(this.software, this.server, {super.key});
+  const new(this.software, this.server, {super.key});
 
   final ServerSoftware software;
   final String server;

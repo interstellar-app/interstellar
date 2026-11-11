@@ -5,7 +5,7 @@ import 'package:interstellar/src/widgets/actions.dart';
 import 'package:provider/provider.dart';
 
 class SwipeItem extends StatefulWidget {
-  const SwipeItem({
+  const new({
     required this.child,
     super.key,
     this.onUpVote,

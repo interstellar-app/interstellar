@@ -12,7 +12,7 @@ enum ConfigShareType { profile, filterList, feed }
 @freezed
 abstract class ConfigShare with _$ConfigShare {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory ConfigShare({
+  const factory({
     // Interstellar version
     required String interstellar,
     required ConfigShareType type,
@@ -21,9 +21,9 @@ abstract class ConfigShare with _$ConfigShare {
     required JsonMap payload,
     required String hash,
   }) = _ConfigShare;
-  const ConfigShare._();
+  const new _();
 
-  factory ConfigShare.fromJson(JsonMap json) => _$ConfigShareFromJson(json);
+  factory fromJson(JsonMap json) => _$ConfigShareFromJson(json);
 
   static Future<ConfigShare> create({
     required ConfigShareType type,

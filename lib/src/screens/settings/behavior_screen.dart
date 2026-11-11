@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class BehaviorSettingsScreen extends StatefulWidget {
-  const BehaviorSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   State<BehaviorSettingsScreen> createState() => _BehaviorSettingsScreenState();

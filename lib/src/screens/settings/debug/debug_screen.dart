@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class DebugSettingsScreen extends StatelessWidget {
-  const DebugSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

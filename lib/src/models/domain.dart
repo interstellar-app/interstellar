@@ -6,12 +6,10 @@ part 'domain.freezed.dart';
 
 @freezed
 abstract class DomainListModel with _$DomainListModel {
-  const factory DomainListModel({
-    required List<DomainModel> items,
-    required String? nextPage,
-  }) = _DomainListModel;
+  const factory({required List<DomainModel> items, required String? nextPage}) =
+      _DomainListModel;
 
-  factory DomainListModel.fromMbin(JsonMap json) => DomainListModel(
+  factory fromMbin(JsonMap json) => DomainListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => DomainModel.fromMbin(post as JsonMap))
         .toList(),
@@ -21,7 +19,7 @@ abstract class DomainListModel with _$DomainListModel {
 
 @freezed
 abstract class DomainModel with _$DomainModel {
-  const factory DomainModel({
+  const factory({
     required int id,
     required String name,
     required int entryCount,
@@ -30,7 +28,7 @@ abstract class DomainModel with _$DomainModel {
     required bool? isBlockedByUser,
   }) = _DomainModel;
 
-  factory DomainModel.fromMbin(JsonMap json) => DomainModel(
+  factory fromMbin(JsonMap json) => DomainModel(
     id: json['domainId']! as int,
     name: json['name']! as String,
     entryCount: json['entryCount']! as int,

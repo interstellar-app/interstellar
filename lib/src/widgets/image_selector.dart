@@ -7,7 +7,7 @@ import 'package:interstellar/src/widgets/text_editor.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ImageSelector extends StatefulWidget {
-  const ImageSelector(
+  const new(
     this.selected,
     this.onSelected, {
     this.enabled = true,

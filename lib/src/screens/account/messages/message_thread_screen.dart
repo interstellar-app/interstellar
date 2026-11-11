@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class MessageThreadScreen extends StatefulWidget {
-  const MessageThreadScreen({
+  const new({
     this.threadId,
     @PathParam('userId') this.userId,
     this.otherUser,

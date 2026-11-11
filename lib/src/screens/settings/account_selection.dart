@@ -35,7 +35,7 @@ Future<String?> selectAccountWithNone(
 }
 
 class AccountSelectWidget extends StatefulWidget {
-  const AccountSelectWidget({
+  const new({
     this.showNoneOption = false,
     this.showAccountControls = false,
     this.onlyNonGuestAccounts = false,
@@ -108,9 +108,10 @@ class _AccountSelectWidgetState extends State<AccountSelectWidget> {
                         context.router.pop(account);
                       },
                       selected: account == oldAccount,
-                      selectedTileColor: Theme.of(
-                        context,
-                      ).colorScheme.primaryContainer.withOpacity(0.2),
+                      selectedTileColor: Theme.of(context)
+                          .colorScheme
+                          .primaryContainer
+                          .withOpacity(0.2),
                       trailing: widget.showAccountControls
                           ? IconButton(
                               icon: const Icon(Symbols.delete_rounded),

@@ -8,7 +8,7 @@ Builder emojiBuilder(BuilderOptions options) =>
     EmojiBuilder(options.config['sourcePrefix']);
 
 class EmojiBuilder implements Builder {
-  EmojiBuilder(this._sourcePrefix);
+  new(this._sourcePrefix);
 
   final String _sourcePrefix;
 

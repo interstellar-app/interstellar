@@ -8,7 +8,7 @@ enum ActionLocation { hide, appBar, fabTap, fabHold, fabMenu }
 enum ActionLocationWithTabs { hide, appBar, fabTap, fabHold, fabMenu, tabs }
 
 class ActionItem {
-  const ActionItem({
+  const new({
     required this.name,
     required this.icon,
     this.callback,

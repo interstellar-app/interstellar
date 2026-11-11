@@ -7,23 +7,19 @@ part 'message.freezed.dart';
 
 @freezed
 abstract class MessageListModel with _$MessageListModel {
-  const factory MessageListModel({
+  const factory({
     required List<MessageThreadModel> items,
     required String? nextPage,
   }) = _MessageListModel;
 
-  factory MessageListModel.fromMbin(JsonMap json) => MessageListModel(
+  factory fromMbin(JsonMap json) => MessageListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => MessageThreadModel.fromMbin(post as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory MessageListModel.fromLemmy(
-    JsonMap json,
-    int myUserId, {
-    int? filterByThreadId,
-  }) {
+  factory fromLemmy(JsonMap json, int myUserId, {int? filterByThreadId}) {
     final threads = <int, JsonMap>{};
 
     for (final message in json['private_messages']! as List<dynamic>) {
@@ -55,11 +51,7 @@ abstract class MessageListModel with _$MessageListModel {
     );
   }
 
-  factory MessageListModel.fromPiefed(
-    JsonMap json,
-    int myUserId, {
-    int? filterByThreadId,
-  }) {
+  factory fromPiefed(JsonMap json, int myUserId, {int? filterByThreadId}) {
     final threads = <int, JsonMap>{};
 
     for (final message in json['private_messages']! as List<dynamic>) {
@@ -94,14 +86,14 @@ abstract class MessageListModel with _$MessageListModel {
 
 @freezed
 abstract class MessageThreadModel with _$MessageThreadModel {
-  const factory MessageThreadModel({
+  const factory({
     required int id,
     required List<DetailedUserModel> participants,
     required List<MessageThreadItemModel> messages,
     required String? nextPage,
   }) = _MessageThreadModel;
 
-  factory MessageThreadModel.fromMbin(JsonMap json) => MessageThreadModel(
+  factory fromMbin(JsonMap json) => MessageThreadModel(
     id: json['threadId']! as int,
     participants: (json['participants']! as List<dynamic>)
         .map(
@@ -116,7 +108,7 @@ abstract class MessageThreadModel with _$MessageThreadModel {
         : mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory MessageThreadModel.fromLemmy(JsonMap json) => MessageThreadModel(
+  factory fromLemmy(JsonMap json) => MessageThreadModel(
     id: json['threadId']! as int,
     participants: (json['participants']! as List<dynamic>)
         .map(
@@ -130,7 +122,7 @@ abstract class MessageThreadModel with _$MessageThreadModel {
     nextPage: json['next_page'] as String?,
   );
 
-  factory MessageThreadModel.fromPiefed(JsonMap json) => MessageThreadModel(
+  factory fromPiefed(JsonMap json) => MessageThreadModel(
     id: json['threadId']! as int,
     participants: (json['participants']! as List<dynamic>)
         .map(
@@ -147,7 +139,7 @@ abstract class MessageThreadModel with _$MessageThreadModel {
 
 @freezed
 abstract class MessageThreadItemModel with _$MessageThreadItemModel {
-  const factory MessageThreadItemModel({
+  const factory({
     required int id,
     required UserModel sender,
     required String body,
@@ -155,16 +147,15 @@ abstract class MessageThreadItemModel with _$MessageThreadItemModel {
     required bool isRead,
   }) = _MessageThreadItemModel;
 
-  factory MessageThreadItemModel.fromMbin(JsonMap json) =>
-      MessageThreadItemModel(
-        id: json['messageId']! as int,
-        sender: UserModel.fromMbin(json['sender']! as JsonMap),
-        body: json['body']! as String,
-        createdAt: DateTime.parse(json['createdAt']! as String),
-        isRead: json['status']! as String == 'read',
-      );
+  factory fromMbin(JsonMap json) => MessageThreadItemModel(
+    id: json['messageId']! as int,
+    sender: UserModel.fromMbin(json['sender']! as JsonMap),
+    body: json['body']! as String,
+    createdAt: DateTime.parse(json['createdAt']! as String),
+    isRead: json['status']! as String == 'read',
+  );
 
-  factory MessageThreadItemModel.fromLemmy(JsonMap json) {
+  factory fromLemmy(JsonMap json) {
     final pm = json['private_message']! as JsonMap;
 
     return MessageThreadItemModel(
@@ -176,7 +167,7 @@ abstract class MessageThreadItemModel with _$MessageThreadItemModel {
     );
   }
 
-  factory MessageThreadItemModel.fromPiefed(JsonMap json) {
+  factory fromPiefed(JsonMap json) {
     final pm = json['private_message']! as JsonMap;
 
     return MessageThreadItemModel(

@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
 class PostItem extends StatefulWidget {
-  const PostItem(
+  const new(
     this.item,
     this.onUpdate, {
     super.key,

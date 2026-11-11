@@ -7,19 +7,19 @@ part 'notification.freezed.dart';
 
 @freezed
 abstract class NotificationListModel with _$NotificationListModel {
-  const factory NotificationListModel({
+  const factory({
     required List<NotificationModel> items,
     required String? nextPage,
   }) = _NotificationListModel;
 
-  factory NotificationListModel.fromMbin(JsonMap json) => NotificationListModel(
+  factory fromMbin(JsonMap json) => NotificationListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => NotificationModel.fromMbin(post as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory NotificationListModel.fromLemmy(
+  factory fromLemmy(
     JsonMap messagesJson,
     JsonMap mentionsJson,
     JsonMap repliesJson,
@@ -38,18 +38,17 @@ abstract class NotificationListModel with _$NotificationListModel {
     nextPage: null,
   );
 
-  factory NotificationListModel.fromPiefed(JsonMap json) =>
-      NotificationListModel(
-        items: (json['items']! as List<dynamic>)
-            .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+  factory fromPiefed(JsonMap json) => NotificationListModel(
+    items: (json['items']! as List<dynamic>)
+        .map((notif) => NotificationModel.fromPiefed(notif as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed
 abstract class NotificationModel with _$NotificationModel {
-  const factory NotificationModel({
+  const factory({
     required int id,
     required NotificationType? type,
     required bool isRead,
@@ -57,7 +56,7 @@ abstract class NotificationModel with _$NotificationModel {
     required UserModel? creator,
   }) = _NotificationModel;
 
-  factory NotificationModel.fromMbin(JsonMap json) {
+  factory fromMbin(JsonMap json) {
     final subject = json['subject'] as JsonMap?;
 
     final user = subject == null
@@ -74,7 +73,7 @@ abstract class NotificationModel with _$NotificationModel {
     );
   }
 
-  factory NotificationModel.fromLemmyMessage(JsonMap json) {
+  factory fromLemmyMessage(JsonMap json) {
     final pm = json['private_message']! as JsonMap;
 
     return NotificationModel(
@@ -86,7 +85,7 @@ abstract class NotificationModel with _$NotificationModel {
     );
   }
 
-  factory NotificationModel.fromLemmyMention(JsonMap json) {
+  factory fromLemmyMention(JsonMap json) {
     final pm = json['person_mention']! as JsonMap;
 
     return NotificationModel(
@@ -98,7 +97,7 @@ abstract class NotificationModel with _$NotificationModel {
     );
   }
 
-  factory NotificationModel.fromLemmyReply(JsonMap json) {
+  factory fromLemmyReply(JsonMap json) {
     final cr = json['comment_reply']! as JsonMap;
 
     return NotificationModel(
@@ -110,7 +109,7 @@ abstract class NotificationModel with _$NotificationModel {
     );
   }
 
-  factory NotificationModel.fromPiefed(JsonMap json) {
+  factory fromPiefed(JsonMap json) {
     final subject = json;
 
     return NotificationModel(
@@ -192,7 +191,7 @@ enum NotificationControlStatus {
   muted,
   loud;
 
-  factory NotificationControlStatus.fromJson(String json) => {
+  factory fromJson(String json) => {
     'Default': NotificationControlStatus.default_,
     'Muted': NotificationControlStatus.muted,
     'Loud': NotificationControlStatus.loud,

@@ -24,7 +24,7 @@ Future<void> switchProfileSelect(BuildContext context) async {
 }
 
 class _ProfileSelectWidget extends StatefulWidget {
-  const _ProfileSelectWidget();
+  const new();
 
   @override
   State<_ProfileSelectWidget> createState() => _ProfileSelectWidgetState();
@@ -108,9 +108,10 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
                       await ac.switchProfiles(profileName);
                     },
                     selected: profileName == ac.selectedProfile,
-                    selectedTileColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer.withOpacity(0.2),
+                    selectedTileColor: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withOpacity(0.2),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -194,7 +195,7 @@ class _ProfileSelectWidgetState extends State<_ProfileSelectWidget> {
 
 @RoutePage()
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({
+  const new({
     required this.profile,
     required this.profileList,
     this.importProfile,

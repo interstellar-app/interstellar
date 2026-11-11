@@ -5,7 +5,7 @@ part 'poll.freezed.dart';
 
 @freezed
 abstract class PollChoiceModel with _$PollChoiceModel {
-  const factory PollChoiceModel({
+  const factory({
     required int id,
     required String text,
     required int sortOrder,
@@ -16,7 +16,7 @@ abstract class PollChoiceModel with _$PollChoiceModel {
 
 @freezed
 abstract class PollModel with _$PollModel {
-  const factory PollModel({
+  const factory({
     required int postId,
     required DateTime endPoll,
     required bool multiple,
@@ -24,7 +24,7 @@ abstract class PollModel with _$PollModel {
     required List<PollChoiceModel> choices,
   }) = _PollModel;
 
-  factory PollModel.fromPiefed(int postId, JsonMap json) {
+  factory fromPiefed(int postId, JsonMap json) {
     final choices = json['choices']! as List<dynamic>;
     final votes = json['my_votes'] as List<dynamic>? ?? [];
 

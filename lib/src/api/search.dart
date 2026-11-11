@@ -4,7 +4,7 @@ import 'package:interstellar/src/models/search.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 
 class APISearch {
-  APISearch(this.client);
+  new(this.client);
 
   final ServerClient client;
 

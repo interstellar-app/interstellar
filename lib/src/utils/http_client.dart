@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 
 class UserAgentHttpClient extends http.BaseClient {
-  UserAgentHttpClient(this._userAgent);
+  new(this._userAgent);
 
   final String _userAgent;
   final http.Client _httpClient = http.Client();
@@ -22,7 +22,7 @@ class UserAgentHttpClient extends http.BaseClient {
 }
 
 class JwtHttpClient extends http.BaseClient {
-  JwtHttpClient(this._jwt, this._httpClient);
+  new(this._jwt, this._httpClient);
 
   final String _jwt;
 

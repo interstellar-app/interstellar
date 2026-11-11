@@ -3,7 +3,7 @@ import 'package:interstellar/src/models/domain.dart';
 import 'package:interstellar/src/screens/explore/explore_screen.dart';
 
 class MbinAPIDomains {
-  MbinAPIDomains(this.client);
+  new(this.client);
 
   final ServerClient client;
 

@@ -4,7 +4,7 @@ import 'package:interstellar/src/models/message.dart';
 import 'package:interstellar/src/utils/models.dart';
 
 class APIMessages {
-  APIMessages(this.client);
+  new(this.client);
 
   final ServerClient client;
 

@@ -7,7 +7,7 @@ import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class HashtagMarkdownSyntax extends md.InlineSyntax {
-  HashtagMarkdownSyntax() : super(_tagPattern);
+  new() : super(_tagPattern);
 
   /*
     This expression checks the following:
@@ -34,7 +34,7 @@ class HashtagMarkdownSyntax extends md.InlineSyntax {
 }
 
 class HashtagMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  HashtagMarkdownBuilder();
+  new();
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
@@ -52,7 +52,7 @@ class HashtagMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class HashtagWidget extends StatelessWidget {
-  const HashtagWidget(this.tag, {super.key});
+  const new(this.tag, {super.key});
 
   final String tag;
 

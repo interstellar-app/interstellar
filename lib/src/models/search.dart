@@ -10,12 +10,10 @@ part 'search.freezed.dart';
 
 @freezed
 abstract class SearchListModel with _$SearchListModel {
-  const factory SearchListModel({
-    required List<Object> items,
-    required String? nextPage,
-  }) = _SearchListModel;
+  const factory({required List<Object> items, required String? nextPage}) =
+      _SearchListModel;
 
-  factory SearchListModel.fromMbin(Map<String, dynamic> json) {
+  factory fromMbin(Map<String, dynamic> json) {
     final items = <Object>[];
 
     for (final actor in json['apActors']) {
@@ -53,7 +51,7 @@ abstract class SearchListModel with _$SearchListModel {
     );
   }
 
-  factory SearchListModel.fromLemmy(
+  factory fromLemmy(
     Map<String, dynamic> json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
@@ -90,7 +88,7 @@ abstract class SearchListModel with _$SearchListModel {
     );
   }
 
-  factory SearchListModel.fromPiefed(
+  factory fromPiefed(
     Map<String, dynamic> json, {
     required List<(String, int)> langCodeIdPairs,
   }) {

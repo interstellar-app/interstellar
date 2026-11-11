@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

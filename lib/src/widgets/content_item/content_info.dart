@@ -14,7 +14,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class ContentInfo extends StatelessWidget {
-  const ContentInfo({
+  const new({
     super.key,
     this.user,
     this.isOp = false,
@@ -55,9 +55,8 @@ class ContentInfo extends StatelessWidget {
     final warning = filterListWarnings == null || filterListWarnings!.isEmpty
         ? null
         : Tooltip(
-            message: l(
-              context,
-            ).filterListWarningX(filterListWarnings!.join(', ')),
+            message: l(context)
+                .filterListWarningX(filterListWarnings!.join(', ')),
             triggerMode: TooltipTriggerMode.tap,
             child: const Icon(Symbols.warning_amber_rounded, color: Colors.red),
           );

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class NotificationSettingsScreen extends StatefulWidget {
-  const NotificationSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   State<NotificationSettingsScreen> createState() =>

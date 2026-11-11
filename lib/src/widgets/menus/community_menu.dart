@@ -155,9 +155,8 @@ Future<void> showCommunityMenu(
           ExploreRoute(
             mode: ExploreType.communities,
             id: detailedCommunity?.id ?? community!.id,
-            title: l(
-              context,
-            ).searchSource(detailedCommunity?.name ?? community!.name),
+            title: l(context)
+                .searchSource(detailedCommunity?.name ?? community!.name),
           ),
         ),
       ),

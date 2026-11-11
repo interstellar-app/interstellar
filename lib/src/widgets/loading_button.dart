@@ -3,7 +3,7 @@ import 'package:interstellar/src/controller/controller.dart';
 import 'package:provider/provider.dart';
 
 class _LoadingButtonIndicator extends StatelessWidget {
-  const _LoadingButtonIndicator();
+  const new();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _LoadingButtonIndicator extends StatelessWidget {
 }
 
 class LoadingFilledButton extends StatefulWidget {
-  const LoadingFilledButton({
+  const new({
     required this.onPressed,
     required this.label,
     this.icon,
@@ -71,7 +71,7 @@ class _LoadingFilledButtonState extends State<LoadingFilledButton> {
 }
 
 class LoadingTonalButton extends StatefulWidget {
-  const LoadingTonalButton({
+  const new({
     required this.onPressed,
     required this.label,
     this.icon,
@@ -114,7 +114,7 @@ class _LoadingTonalButtonState extends State<LoadingTonalButton> {
 }
 
 class LoadingOutlinedButton extends StatefulWidget {
-  const LoadingOutlinedButton({
+  const new({
     required this.onPressed,
     required this.label,
     this.icon,
@@ -157,7 +157,7 @@ class _LoadingOutlinedButtonState extends State<LoadingOutlinedButton> {
 }
 
 class LoadingTextButton extends StatefulWidget {
-  const LoadingTextButton({
+  const new({
     required this.onPressed,
     required this.label,
     this.icon,
@@ -200,7 +200,7 @@ class _LoadingTextButtonState extends State<LoadingTextButton> {
 }
 
 class LoadingIconButton extends StatefulWidget {
-  const LoadingIconButton({
+  const new({
     required this.onPressed,
     required this.icon,
     this.onLongPress,
@@ -257,7 +257,7 @@ class _LoadingIconButtonState extends State<LoadingIconButton> {
 }
 
 class LoadingFilterChip extends StatefulWidget {
-  const LoadingFilterChip({
+  const new({
     required this.label,
     required this.selected,
     this.onSelected,
@@ -307,7 +307,7 @@ class _LoadingFilterChipState extends State<LoadingFilterChip> {
 }
 
 class LoadingInputChip extends StatefulWidget {
-  const LoadingInputChip({
+  const new({
     required this.label,
     required this.selected,
     this.onSelected,

@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class LogConsole extends StatefulWidget {
-  const LogConsole({super.key});
+  const new({super.key});
 
   @override
   State<LogConsole> createState() => _LogConsoleState();

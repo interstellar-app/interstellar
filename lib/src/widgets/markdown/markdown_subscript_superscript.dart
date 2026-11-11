@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:markdown/markdown.dart' as md;
 
 class SubscriptMarkdownSyntax extends md.InlineSyntax {
-  SubscriptMarkdownSyntax() : super(r'~([^~\s]+)~');
+  new() : super(r'~([^~\s]+)~');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -13,7 +13,7 @@ class SubscriptMarkdownSyntax extends md.InlineSyntax {
 }
 
 class SuperscriptMarkdownSyntax extends md.InlineSyntax {
-  SuperscriptMarkdownSyntax() : super(r'\^([^\s^]+)\^');
+  new() : super(r'\^([^\s^]+)\^');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -41,11 +41,7 @@ class SuperscriptMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class SubscriptSuperscriptWidget extends StatelessWidget {
-  const SubscriptSuperscriptWidget({
-    required this.text,
-    required this.isSuperscript,
-    super.key,
-  });
+  const new({required this.text, required this.isSuperscript, super.key});
 
   final String text;
   final bool isSuperscript;
@@ -60,9 +56,8 @@ class SubscriptSuperscriptWidget extends StatelessWidget {
               offset: Offset(0, isSuperscript ? -5.0 : 3.0),
               child: Text(
                 text,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(fontSize: 11),
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(fontSize: 11),
               ),
             ),
           ),

@@ -18,7 +18,7 @@ import 'package:interstellar/src/utils/globals.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class API {
-  API(this.client)
+  new(this.client)
     : comments = APIComments(client),
       domains = MbinAPIDomains(client),
       threads = APIThreads(client),

@@ -40,7 +40,7 @@ class SpoilerMarkdownSyntax extends md.BlockSyntax {
 }
 
 class SpoilerMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  SpoilerMarkdownBuilder({required this.originInstance});
+  new({required this.originInstance});
 
   final String originInstance;
 
@@ -60,12 +60,7 @@ class SpoilerMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class SpoilerWidget extends StatefulWidget {
-  const SpoilerWidget({
-    required this.originInstance,
-    super.key,
-    this.title,
-    this.body,
-  });
+  const new({required this.originInstance, super.key, this.title, this.body});
 
   final String originInstance;
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class _LoadingTileIndicator extends StatelessWidget {
-  const _LoadingTileIndicator();
+  const new();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class _LoadingTileIndicator extends StatelessWidget {
 }
 
 class LoadingListTile extends StatefulWidget {
-  const LoadingListTile({
+  const new({
     required this.onTap,
     this.leading,
     this.title,

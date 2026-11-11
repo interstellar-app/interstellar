@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 
 class DraftAutoController {
-  const DraftAutoController({
-    required this.read,
-    required this.save,
-    required this.discard,
-  });
+  const new({required this.read, required this.save, required this.discard});
 
   final Draft? Function() read;
   final Future<void> Function(String body) save;
@@ -15,7 +11,7 @@ class DraftAutoController {
 }
 
 class DraftsController with ChangeNotifier {
-  DraftsController() {
+  new() {
     _init();
   }
 

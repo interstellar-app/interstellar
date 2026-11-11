@@ -12,10 +12,8 @@ enum BookmarkListSubject {
   microblog,
   microblogComment;
 
-  factory BookmarkListSubject.fromPostType({
-    required PostType postType,
-    required bool isComment,
-  }) => isComment
+  factory fromPostType({required PostType postType, required bool isComment}) =>
+      isComment
       ? switch (postType) {
           PostType.thread => BookmarkListSubject.threadComment,
           PostType.microblog => BookmarkListSubject.microblogComment,
@@ -34,7 +32,7 @@ enum BookmarkListSubject {
 }
 
 class APIBookmark {
-  APIBookmark(this.client);
+  new(this.client);
 
   final ServerClient client;
 

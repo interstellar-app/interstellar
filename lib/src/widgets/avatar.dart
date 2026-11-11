@@ -3,7 +3,7 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:interstellar/src/models/image.dart';
 
 class Avatar extends StatelessWidget {
-  const Avatar(
+  const new(
     this.image, {
     super.key,
     this.overrideImageProvider,

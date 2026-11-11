@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class SelectionMenuItem<T> {
-  const SelectionMenuItem({
+  const new({
     required this.value,
     required this.title,
     this.icon,
@@ -23,7 +23,7 @@ class SelectionMenuItem<T> {
 }
 
 class SelectionMenu<T> {
-  const SelectionMenu(this.title, this.options);
+  const new(this.title, this.options);
 
   final String title;
   final List<SelectionMenuItem<T>> options;
@@ -54,9 +54,10 @@ class SelectionMenu<T> {
                         onTap: () => context.router.pop(option.value),
                         leading: Icon(option.icon, color: option.iconColor),
                         selected: oldSelection == option.value,
-                        selectedTileColor: Theme.of(
-                          context,
-                        ).colorScheme.primaryContainer.withOpacity(0.2),
+                        selectedTileColor: Theme.of(context)
+                            .colorScheme
+                            .primaryContainer
+                            .withOpacity(0.2),
                         subtitle: option.subtitle != null
                             ? Text(option.subtitle!)
                             : null,

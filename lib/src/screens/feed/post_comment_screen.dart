@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class PostCommentScreen extends StatefulWidget {
-  const PostCommentScreen(
+  const new(
     this.postType,
     @PathParam('id') this.commentId, {
     this.opUserId,

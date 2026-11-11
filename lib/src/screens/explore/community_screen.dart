@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityScreen extends StatefulWidget {
-  const CommunityScreen({
+  const new({
     @PathParam('communityName') required this.communityName,
     this.communityId,
     super.key,
@@ -196,9 +196,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   children: [
                                     Text(
                                       _data!.title,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleLarge,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
                                     ),
                                     if (_data!.isPostingRestrictedToMods)
                                       const PostingRestrictedIndicator(),
@@ -261,7 +261,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 }
 
 class PostingRestrictedIndicator extends StatelessWidget {
-  const PostingRestrictedIndicator({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

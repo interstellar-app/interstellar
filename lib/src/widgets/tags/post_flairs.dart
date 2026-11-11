@@ -4,7 +4,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/tags/tag_widget.dart';
 
 class PostFlairsModal extends StatefulWidget {
-  const PostFlairsModal({
+  const new({
     required this.flairs,
     required this.availableFlairs,
     required this.onUpdate,

@@ -1,5 +1,3 @@
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
@@ -7,7 +5,7 @@ import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class MbinAPIMicroblogs {
-  MbinAPIMicroblogs(this.client);
+  new(this.client);
 
   final ServerClient client;
 

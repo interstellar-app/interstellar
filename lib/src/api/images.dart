@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 enum ImageStore { platform, catbox, imgLink }
 
 class APIImages {
-  APIImages(this.client);
+  new(this.client);
 
   final ServerClient client;
 

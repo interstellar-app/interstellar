@@ -5,13 +5,7 @@ import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:provider/provider.dart';
 
 class DisplayName extends StatelessWidget {
-  const DisplayName(
-    this.name, {
-    super.key,
-    this.displayName,
-    this.icon,
-    this.onTap,
-  });
+  const new(this.name, {super.key, this.displayName, this.icon, this.onTap});
 
   final String name;
   final String? displayName;

@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
 class PasswordEditor extends StatefulWidget {
-  const PasswordEditor(
-    this.controller, {
-    this.onChanged,
-    this.maxLength,
-    super.key,
-  });
+  const new(this.controller, {this.onChanged, this.maxLength, super.key});
 
   final TextEditingController controller;
   final void Function(String)? onChanged;

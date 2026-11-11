@@ -11,7 +11,7 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 
 class MentionMarkdownSyntax extends md.InlineSyntax {
-  MentionMarkdownSyntax() : super(_mentionPattern);
+  new() : super(_mentionPattern);
 
   /*
     Should match the following patterns:
@@ -103,7 +103,7 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
 }
 
 class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  MentionMarkdownBuilder({required this.originInstance});
+  new({required this.originInstance});
 
   final String originInstance;
 
@@ -123,7 +123,7 @@ class MentionMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class MentionWidget extends StatefulWidget {
-  const MentionWidget(this.name, this.originInstance, {super.key});
+  const new(this.name, this.originInstance, {super.key});
 
   final String name;
   final String originInstance;
