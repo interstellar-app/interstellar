@@ -168,7 +168,7 @@ class _BehaviorSettingsScreenState extends State<BehaviorSettingsScreen> {
                 : null,
             onTap: () async {
               try {
-                final path = await FilePicker.platform.getDirectoryPath();
+                final path = await FilePicker.getDirectoryPath();
                 if (path == null) return;
                 ac.setDefaultDownloadDir(path);
                 setState(() {});

@@ -7,6 +7,12 @@ formatter:
 analyzer:
   exclude:
     - lib/**.g.dart
+    - build/**
+    - android/**
+    - ios/**
+    - windows/**
+    - macos/**
+    - linux/**
 
   errors:
     # Needed for build runner annotations (i.e., freezed, json_serializable).

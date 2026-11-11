@@ -51,13 +51,12 @@ class DebugSettingsScreen extends StatelessWidget {
                   ),
                 );
 
-                final useBytes = Platform.isAndroid || Platform.isIOS;
                 String? filePath;
                 try {
-                  filePath = await FilePicker.platform.saveFile(
+                  filePath = (await FilePicker.saveFile(
                     fileName: InterstellarDatabase.databaseFilename,
-                    bytes: useBytes ? dbFile.readAsBytesSync() : null,
-                  );
+                    bytes: dbFile.readAsBytesSync(),
+                  ))?.path;
                   if (filePath == null) return;
                 } catch (e) {
                   final dir = await getDownloadsDirectory();
@@ -69,10 +68,6 @@ class DebugSettingsScreen extends StatelessWidget {
                     InterstellarDatabase.databaseFilename,
                   );
                 }
-
-                if (!useBytes) {
-                  dbFile.copy(filePath);
-                }
               },
             ),
             ListTile(
@@ -80,8 +75,8 @@ class DebugSettingsScreen extends StatelessWidget {
               onTap: () async {
                 String? filePath;
                 try {
-                  final result = await FilePicker.platform.pickFiles();
-                  filePath = result?.files.single.path;
+                  final result = await FilePicker.pickFile();
+                  filePath = result?.path;
                 } catch (e) {
                   //
                 }
