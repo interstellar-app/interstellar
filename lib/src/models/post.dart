@@ -97,7 +97,7 @@ abstract class PostModel with _$PostModel {
     required DomainModel? domain,
     required String? title,
     required String? url,
-    required ImageModel? image,
+    required List<ImageModel>? images,
     required String? body,
     required String? lang,
     required int numComments,
@@ -139,7 +139,9 @@ abstract class PostModel with _$PostModel {
     url: (json['type'] == 'image' && json['image'] != null)
         ? null
         : json['url'] as String?,
-    image: mbinGetOptionalImage(json['image'] as JsonMap?),
+    images: json['image'] == null
+        ? null
+        : [?mbinGetOptionalImage(json['image'] as JsonMap?)],
     body: json['body'] as String?,
     lang: json['lang']! as String,
     numComments: json['numComments']! as int,
@@ -186,7 +188,9 @@ abstract class PostModel with _$PostModel {
     domain: null,
     title: null,
     url: null,
-    image: mbinGetOptionalImage(json['image'] as JsonMap?),
+    images: json['image'] == null
+        ? null
+        : [?mbinGetOptionalImage(json['image'] as JsonMap?)],
     body: json['body'] as String?,
     lang: json['lang']! as String,
     numComments: json['comments']! as int,
@@ -225,7 +229,7 @@ abstract class PostModel with _$PostModel {
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
-    final postView = json['post_view']! as JsonMap;
+    final postView = json['post_view'] as JsonMap? ?? json;
     final lemmyPost = postView['post']! as JsonMap;
     final lemmyCounts = postView['counts'] as JsonMap?;
 
@@ -240,6 +244,14 @@ abstract class PostModel with _$PostModel {
 
     final imageDetails = json['image_details'] as JsonMap?;
 
+    final image = lemmyGetOptionalImage(
+      isImagePost
+          ? lemmyPost['url'] as String?
+          : lemmyPost['thumbnail_url'] as String?,
+      lemmyPost['alt_text'] as String?,
+      imageDetails,
+    );
+
     return PostModel(
       type: PostType.thread,
       id: lemmyPost['id']! as int,
@@ -249,13 +261,7 @@ abstract class PostModel with _$PostModel {
       title: lemmyPost['name']! as String,
       // Only include link if it's not an Image post
       url: isImagePost ? null : lemmyPost['url'] as String?,
-      image: lemmyGetOptionalImage(
-        isImagePost
-            ? lemmyPost['url'] as String?
-            : lemmyPost['thumbnail_url'] as String?,
-        lemmyPost['alt_text'] as String?,
-        imageDetails,
-      ),
+      images: image == null ? null : [image],
       body: lemmyPost['body'] as String?,
       lang: langCodeIdPairs
           .where((pair) => pair.$2 == lemmyPost['language_id']! as int)
@@ -319,16 +325,35 @@ abstract class PostModel with _$PostModel {
     final piefedPost = postView['post']! as JsonMap;
     final piefedCounts = postView['counts']! as JsonMap;
 
-    final isImagePost =
-        (piefedPost['url_content_type'] != null &&
-            (piefedPost['url_content_type']! as String).startsWith('image/')) ||
-        (piefedPost['url'] != null &&
-            (lookupMimeType(
-                  piefedPost['url']! as String,
-                )?.startsWith('image/') ??
-                false));
-
-    final imageDetails = piefedPost['image_details'] as JsonMap?;
+    var images = <ImageModel>[];
+    switch (piefedPost['post_type']) {
+      case 'Image':
+        {
+          final isImagePost =
+              (piefedPost['url_content_type'] != null &&
+                  (piefedPost['url_content_type']! as String).startsWith(
+                    'image/',
+                  )) ||
+              (piefedPost['url'] != null &&
+                  (lookupMimeType(
+                        piefedPost['url']! as String,
+                      )?.startsWith('image/') ??
+                      false));
+          final imageDetails = piefedPost['image_details'] as JsonMap?;
+          images = [
+            ?lemmyGetOptionalImage(
+              isImagePost
+                  ? piefedPost['url'] as String?
+                  : piefedPost['thumbnail_url'] as String?,
+              piefedPost['alt_text'] as String?,
+              imageDetails,
+            ),
+          ];
+        }
+      case 'Gallery':
+        final gallery = piefedPost['gallery']! as List<dynamic>;
+        images = gallery.map((i) => ImageModel.fromLemmy(i as String)).toList();
+    }
 
     return PostModel(
       type: PostType.thread,
@@ -338,14 +363,8 @@ abstract class PostModel with _$PostModel {
       domain: null,
       title: piefedPost['title']! as String,
       // Only include link if it's not an Image post
-      url: isImagePost ? null : piefedPost['url'] as String?,
-      image: lemmyGetOptionalImage(
-        isImagePost
-            ? piefedPost['url'] as String?
-            : piefedPost['thumbnail_url'] as String?,
-        piefedPost['alt_text'] as String?,
-        imageDetails,
-      ),
+      url: images.isNotEmpty ? null : piefedPost['url'] as String?,
+      images: images.isEmpty ? null : images,
       body: piefedPost['body'] as String?,
       lang: langCodeIdPairs
           .where((pair) => pair.$2 == piefedPost['language_id']! as int)

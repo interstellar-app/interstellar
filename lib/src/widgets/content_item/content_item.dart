@@ -63,7 +63,7 @@ class ContentItem extends StatefulWidget {
     required this.editDraftResourceId,
     required this.replyDraftResourceId,
     this.title,
-    this.image,
+    this.images,
     this.link,
     this.body,
     this.translation,
@@ -74,6 +74,7 @@ class ContentItem extends StatefulWidget {
     this.poll,
     this.event,
     this.isPreview = false,
+    this.isEmbedded = false,
     this.fullImageSize = false,
     this.showCommunityFirst = false,
     this.read = false,
@@ -131,7 +132,7 @@ class ContentItem extends StatefulWidget {
 
   final int id;
   final String? title;
-  final ImageModel? image;
+  final List<ImageModel>? images;
   final Uri? link;
   final String? body;
   final Translation? translation;
@@ -143,6 +144,7 @@ class ContentItem extends StatefulWidget {
   final EventModel? event;
 
   final bool isPreview;
+  final bool isEmbedded;
   final bool fullImageSize;
   final bool showCommunityFirst;
   final bool read;
@@ -384,7 +386,7 @@ class _ContentItemState extends State<ContentItem> {
             final isThumbnail =
                 !isVideo &&
                 ((constraints.maxWidth > 800 && !widget.fullImageSize) ||
-                    (widget.image?.blurHashWidth ?? 500) <= 800 &&
+                    (widget.images?.first.blurHashWidth ?? 500) <= 800 &&
                         widget.link != null);
             final image = getImage(
               context,
@@ -422,7 +424,9 @@ class _ContentItemState extends State<ContentItem> {
                   createdAt: widget.createdAt,
                   editedAt: widget.editedAt,
                   userTags: _userTags,
-                  menuWidget: widget.title == null ? menuWidget : null,
+                  menuWidget: widget.title == null && !widget.isEmbedded
+                      ? menuWidget
+                      : null,
                 ),
                 PostComponent.body =>
                   (widget.body != null &&
@@ -595,7 +599,7 @@ class _ContentItemState extends State<ContentItem> {
                             .toList(),
                       ),
                     ),
-                  if (!ac.profile.hideActionButtons)
+                  if (!widget.isEmbedded && !ac.profile.hideActionButtons)
                     ActionButtons(
                       upVotes: widget.upVotes,
                       downVotes: widget.downVotes,
@@ -720,7 +724,7 @@ class _ContentItemState extends State<ContentItem> {
     bool isThumbnail = false,
     bool compact = false,
   }) {
-    if (widget.image == null) return null;
+    if (widget.images == null) return null;
     final fullImage = !isThumbnail && widget.fullImageSize;
     final imageSize =
         (compact
@@ -735,13 +739,24 @@ class _ContentItemState extends State<ContentItem> {
         widget.isNSFW &&
         context.watch<AppController>().profile.coverMediaMarkedSensitive;
 
-    final image = AdvancedImage(
-      widget.image!,
-      openTitle: imageOpenTitle,
-      fit: fullImage || isThumbnail ? BoxFit.contain : BoxFit.fitWidth,
-      enableBlur: enableBlur,
-      hero: AdvancedImage.getHeroTag(),
-    );
+    Widget image;
+    if (widget.images!.length > 1 && !isThumbnail) {
+      image = ImageGallery(
+        widget.images!,
+        openTitle: imageOpenTitle,
+        fit: fullImage || isThumbnail ? BoxFit.contain : BoxFit.fitWidth,
+        enableBlur: enableBlur,
+        hero: AdvancedImage.getHeroTag(),
+      );
+    } else {
+      image = AdvancedImage(
+        widget.images!.first,
+        openTitle: imageOpenTitle,
+        fit: fullImage || isThumbnail ? BoxFit.contain : BoxFit.fitWidth,
+        enableBlur: enableBlur,
+        hero: AdvancedImage.getHeroTag(),
+      );
+    }
 
     if (fullImage) {
       return image;

@@ -96,7 +96,7 @@ class _PostItemState extends State<PostItem> {
           originInstance: getNameHost(context, widget.item.user.name),
           id: widget.item.id,
           title: widget.item.title,
-          image: widget.item.image,
+          images: widget.item.images,
           link: widget.item.url != null ? Uri.parse(widget.item.url!) : null,
           body: widget.item.body,
           translation: _translation,
