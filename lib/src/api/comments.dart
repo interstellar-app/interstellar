@@ -132,11 +132,10 @@ class APIComments {
 
       case ServerSoftware.lemmy:
         const path = '/user';
-        final query = {
-          'person_id': userId.toString(),
-          'page': page,
-          'sort': lemmyCommentSortMap[sort],
-        };
+
+        var s = lemmyCommentSortMap[sort];
+        if (s == 'Top') s = 'TopAll';
+        final query = {'person_id': userId.toString(), 'page': page, 'sort': s};
 
         final response = await client.get(path, queryParams: query);
 
