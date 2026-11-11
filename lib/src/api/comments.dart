@@ -1,6 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/controller/controller.dart';
@@ -11,8 +9,6 @@ import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/selection_menu.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 enum CommentSort { hot, top, newest, active, oldest }
@@ -66,7 +62,7 @@ const Map<PostType, String> _postTypeMbinComment = {
 };
 
 class APIComments {
-  APIComments(this.client);
+  new(this.client);
 
   final ServerClient client;
 

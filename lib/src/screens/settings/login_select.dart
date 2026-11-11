@@ -68,7 +68,7 @@ final Map<String, List<(String, ServerSoftware)>> _recommendedInstances = {
 
 @RoutePage()
 class LoginSelectScreen extends StatefulWidget {
-  const LoginSelectScreen({super.key});
+  const new({super.key});
 
   @override
   State<LoginSelectScreen> createState() => _LoginSelectScreenState();

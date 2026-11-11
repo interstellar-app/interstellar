@@ -16,7 +16,7 @@ enum NotificationControlUpdateTargetType {
 }
 
 class APINotifications {
-  APINotifications(this.client);
+  new(this.client);
 
   final ServerClient client;
 

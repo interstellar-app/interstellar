@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class CommunityPicker extends StatefulWidget {
-  const CommunityPicker({
+  const new({
     required this.value,
     required this.onChange,
     this.microblogMode = false,
@@ -68,10 +68,10 @@ class _CommunityPickerState extends State<CommunityPicker> {
       optionsBuilder: (TextEditingValue textEditingValue) async {
         final exactFuture =
             (context.read<AppController>().api.community.getByName(
-                      textEditingValue.text,
-                    )
-                    as Future<DetailedCommunityModel?>)
-                .onError((error, stackTrace) => null);
+              textEditingValue.text,
+            ) as Future<DetailedCommunityModel?>).onError(
+              (error, stackTrace) => null,
+            );
 
         final searchFuture = context.read<AppController>().api.community.list(
           search: nullIfEmpty(textEditingValue.text),

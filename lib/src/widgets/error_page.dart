@@ -6,7 +6,7 @@ import 'package:oauth2/oauth2.dart';
 import 'package:provider/provider.dart';
 
 class OAuthErrorPage extends StatelessWidget {
-  const OAuthErrorPage({required this.error, super.key});
+  const new({required this.error, super.key});
 
   final AuthorizationException error;
 
@@ -46,7 +46,7 @@ class OAuthErrorPage extends StatelessWidget {
 }
 
 class RestrictedAuthErrorPage extends StatelessWidget {
-  const RestrictedAuthErrorPage({required this.error, super.key});
+  const new({required this.error, super.key});
 
   final RestrictedAuthException error;
 
@@ -73,11 +73,7 @@ class RestrictedAuthErrorPage extends StatelessWidget {
 }
 
 class FirstPageErrorIndicator extends StatelessWidget {
-  const FirstPageErrorIndicator({
-    required this.error,
-    required this.onTryAgain,
-    super.key,
-  });
+  const new({required this.error, required this.onTryAgain, super.key});
 
   final dynamic error;
   final VoidCallback onTryAgain;
@@ -124,11 +120,7 @@ class FirstPageErrorIndicator extends StatelessWidget {
 }
 
 class NewPageErrorIndicator extends StatelessWidget {
-  const NewPageErrorIndicator({
-    required this.error,
-    required this.onTryAgain,
-    super.key,
-  });
+  const new({required this.error, required this.onTryAgain, super.key});
 
   final dynamic error;
   final VoidCallback onTryAgain;
@@ -157,7 +149,7 @@ class NewPageErrorIndicator extends StatelessWidget {
 }
 
 class NoItemsFoundIndicator extends StatefulWidget {
-  const NoItemsFoundIndicator({required this.onTryAgain, super.key});
+  const new({required this.onTryAgain, super.key});
 
   final VoidCallback onTryAgain;
 

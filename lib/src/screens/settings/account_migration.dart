@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class AccountMigrationScreen extends StatefulWidget {
-  const AccountMigrationScreen({super.key});
+  const new({super.key});
 
   @override
   State<AccountMigrationScreen> createState() => _AccountMigrationScreenState();
@@ -270,9 +270,8 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
                       ),
                       ListTile(
                         title: Text(
-                          l(
-                            context,
-                          ).settings_accountMigration_step1_destination,
+                          l(context)
+                              .settings_accountMigration_step1_destination,
                         ),
                         subtitle: _destinationAccount == null
                             ? null

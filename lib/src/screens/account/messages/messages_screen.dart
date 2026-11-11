@@ -13,7 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class MessagesScreen extends StatefulWidget {
-  const MessagesScreen({super.key});
+  const new({super.key});
 
   @override
   State<MessagesScreen> createState() => _MessagesScreenState();

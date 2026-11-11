@@ -6,7 +6,7 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:interstellar/src/widgets/avatar.dart';
 
 class UserItemSimple extends StatelessWidget {
-  const UserItemSimple(
+  const new(
     this.user, {
     this.isOwner = false,
     this.trailingWidgets,

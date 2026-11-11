@@ -43,7 +43,7 @@ const Map<NotificationType, String> notificationTitle = {
 };
 
 class NotificationItem extends StatefulWidget {
-  const NotificationItem(this.item, this.onUpdate, {super.key});
+  const new(this.item, this.onUpdate, {super.key});
 
   final NotificationModel item;
   final void Function(NotificationModel) onUpdate;

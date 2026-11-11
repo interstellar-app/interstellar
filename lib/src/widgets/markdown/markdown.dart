@@ -15,7 +15,7 @@ import 'package:interstellar/src/widgets/video.dart';
 import 'package:provider/provider.dart';
 
 class Markdown extends StatelessWidget {
-  const Markdown(
+  const new(
     this.data,
     this.originInstance, {
     this.themeData,
@@ -33,16 +33,15 @@ class Markdown extends StatelessWidget {
     return mdf.MarkdownBody(
       data: data,
       styleSheet:
-          mdf.MarkdownStyleSheet.fromTheme(
-            themeData ?? Theme.of(context),
-          ).merge(
-            mdf.MarkdownStyleSheet(
-              blockquoteDecoration: BoxDecoration(
-                color: Colors.blue.shade500.withAlpha(50),
-                borderRadius: BorderRadius.circular(2),
+          mdf.MarkdownStyleSheet.fromTheme(themeData ?? Theme.of(context))
+              .merge(
+                mdf.MarkdownStyleSheet(
+                  blockquoteDecoration: BoxDecoration(
+                    color: Colors.blue.shade500.withAlpha(50),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
               ),
-            ),
-          ),
       onTapLink: (text, href, title) async {
         if (href != null) {
           openWebpageSecondary(context, Uri.parse(href));

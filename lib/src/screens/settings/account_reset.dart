@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class AccountResetScreen extends StatefulWidget {
-  const AccountResetScreen({super.key});
+  const new({super.key});
 
   @override
   State<AccountResetScreen> createState() => _AccountResetScreenState();
@@ -263,9 +263,8 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                       if (isAccountMbin)
                         CheckboxListTile(
                           title: Text(
-                            l(
-                              context,
-                            ).settings_accountReset_step2_resetUserFollows,
+                            l(context)
+                                .settings_accountReset_step2_resetUserFollows,
                           ),
                           value: _resetUserFollows.enabled,
                           onChanged: (value) => {
@@ -278,9 +277,8 @@ class _AccountResetScreenState extends State<AccountResetScreen> {
                       if (isAccountMbin)
                         CheckboxListTile(
                           title: Text(
-                            l(
-                              context,
-                            ).settings_accountReset_step2_resetUserBlocks,
+                            l(context)
+                                .settings_accountReset_step2_resetUserBlocks,
                           ),
                           value: _resetUserBlocks.enabled,
                           onChanged: (value) => {

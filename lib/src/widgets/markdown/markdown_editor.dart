@@ -19,7 +19,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class MarkdownEditor extends StatefulWidget {
-  const MarkdownEditor(
+  const new(
     this.controller, {
     required this.originInstance,
     required this.draftController,
@@ -201,9 +201,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                         decoration: BoxDecoration(
                                           border: Border(
                                             right: BorderSide(
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.outlineVariant,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outlineVariant,
                                             ),
                                           ),
                                         ),
@@ -243,9 +243,9 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                         decoration: BoxDecoration(
                                           border: Border(
                                             right: BorderSide(
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.outlineVariant,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outlineVariant,
                                             ),
                                           ),
                                         ),
@@ -345,9 +345,8 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                                                     .removeAll();
                                               },
                                         label: Text(
-                                          l(
-                                            context,
-                                          ).markdownEditor_drafts_discardAll,
+                                          l(context)
+                                              .markdownEditor_drafts_discardAll,
                                         ),
                                         icon: const Icon(
                                           Symbols.delete_forever_rounded,
@@ -581,7 +580,7 @@ List<_MarkdownEditorActionInfo> _actions(BuildContext context) => [
 ];
 
 class _MarkdownEditorActionInfo {
-  const _MarkdownEditorActionInfo({
+  const new({
     required this.action,
     required this.icon,
     required this.tooltip,
@@ -597,7 +596,7 @@ class _MarkdownEditorActionInfo {
 }
 
 abstract class _MarkdownEditorActionBase {
-  const _MarkdownEditorActionBase();
+  const new();
 
   Future<_MarkdownEditorData> run(_MarkdownEditorData input);
 
@@ -621,7 +620,7 @@ abstract class _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorData {
-  _MarkdownEditorData({
+  new({
     required this.text,
     required this.selectionStart,
     required this.selectionEnd,
@@ -634,7 +633,7 @@ class _MarkdownEditorData {
 }
 
 class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionReplace(this.chars);
+  const new(this.chars);
 
   final String chars;
 
@@ -655,7 +654,7 @@ class _MarkdownEditorActionReplace extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionInline(this.startChars, [String? endChars])
+  const new(this.startChars, [String? endChars])
     : endChars = endChars ?? startChars;
 
   final String startChars;
@@ -699,7 +698,7 @@ class _MarkdownEditorActionInline extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionBlock(this.startChars, [this.endChars = '']);
+  const new(this.startChars, [this.endChars = '']);
 
   final String startChars;
   final String endChars;
@@ -744,7 +743,7 @@ class _MarkdownEditorActionBlock extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionLink({required this.isImage});
+  const new({required this.isImage});
 
   final bool isImage;
 
@@ -805,7 +804,7 @@ class _MarkdownEditorActionLink extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionImage({required this.context});
+  const new({required this.context});
 
   final BuildContext context;
 
@@ -876,7 +875,7 @@ class _MarkdownEditorActionImage extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionInsertSection(this.sectionText);
+  const new(this.sectionText);
 
   final String sectionText;
 
@@ -924,7 +923,7 @@ class _MarkdownEditorActionInsertSection extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
-  const _MarkdownEditorActionEnter();
+  const new();
 
   @override
   Future<_MarkdownEditorData> run(_MarkdownEditorData input) async {
@@ -963,9 +962,8 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
     }
 
     // Numbered List
-    final numberedListMatch = RegExp(
-      r'(\d)+([.)]) ',
-    ).matchAsPrefix(line.selectionText);
+    final numberedListMatch = RegExp(r'(\d)+([.)]) ')
+        .matchAsPrefix(line.selectionText);
     if (numberedListMatch != null) {
       final currentNumber = numberedListMatch[1]!;
       final nextNumber = (int.parse(currentNumber) + 1).toString();
@@ -1006,7 +1004,7 @@ class _MarkdownEditorActionEnter extends _MarkdownEditorActionBase {
 }
 
 class _MarkdownEditorDraftItem extends StatefulWidget {
-  const _MarkdownEditorDraftItem({
+  const new({
     required this.draft,
     required this.onApply,
     required this.originInstance,
@@ -1128,7 +1126,7 @@ class __MarkdownEditorDraftItemState extends State<_MarkdownEditorDraftItem> {
 }
 
 class _MarkdownEditorConfigShareDialog extends StatefulWidget {
-  const _MarkdownEditorConfigShareDialog();
+  const new();
 
   @override
   State<_MarkdownEditorConfigShareDialog> createState() =>

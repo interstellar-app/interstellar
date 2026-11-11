@@ -10,7 +10,7 @@ part 'modlog.freezed.dart';
 
 @freezed
 abstract class ModlogItemModel with _$ModlogItemModel {
-  const factory ModlogItemModel({
+  const factory({
     required ModLogType type,
     required DateTime createdAt,
     required String? reason,
@@ -22,7 +22,7 @@ abstract class ModlogItemModel with _$ModlogItemModel {
     required DetailedUserModel? user,
   }) = _ModlogItemModel;
 
-  factory ModlogItemModel.fromMbin(JsonMap json) {
+  factory fromMbin(JsonMap json) {
     final type = ModLogType.fromMbin(json['type']! as String);
 
     return ModlogItemModel(
@@ -138,7 +138,7 @@ abstract class ModlogItemModel with _$ModlogItemModel {
     );
   }
 
-  factory ModlogItemModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
@@ -189,7 +189,7 @@ abstract class ModlogItemModel with _$ModlogItemModel {
     );
   }
 
-  factory ModlogItemModel.fromPiefed(
+  factory fromPiefed(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
@@ -247,19 +247,19 @@ abstract class ModlogItemModel with _$ModlogItemModel {
 
 @freezed
 abstract class ModlogListModel with _$ModlogListModel {
-  const factory ModlogListModel({
+  const factory({
     required List<ModlogItemModel> items,
     required String? nextPage,
   }) = _ModlogListModel;
 
-  factory ModlogListModel.fromMbin(JsonMap json) => ModlogListModel(
+  factory fromMbin(JsonMap json) => ModlogListModel(
     items: (json['items']! as List<dynamic>)
         .map((item) => ModlogItemModel.fromMbin(item as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory ModlogListModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
@@ -372,7 +372,7 @@ abstract class ModlogListModel with _$ModlogListModel {
     );
   }
 
-  factory ModlogListModel.fromPiefed(
+  factory fromPiefed(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {

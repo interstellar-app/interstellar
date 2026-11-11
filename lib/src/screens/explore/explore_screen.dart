@@ -19,12 +19,12 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ExploreTab extends ExploreScreen {
-  const ExploreTab({super.key, super.focusNode});
+  const new({super.key, super.focusNode});
 }
 
 @RoutePage()
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({
+  const new({
     this.mode,
     this.id,
     this.subOnly = false,
@@ -159,9 +159,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
       context,
       type,
     ).getOption(filter);
-    final currentFeedFilter = feedFilterSelection(
-      context,
-    ).getOption(feedFilter);
+    final currentFeedFilter = feedFilterSelection(context)
+        .getOption(feedFilter);
 
     final ac = context.watch<AppController>();
 

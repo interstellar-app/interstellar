@@ -99,7 +99,7 @@ enum ModLogType {
 }
 
 class APIModeration {
-  APIModeration(this.client);
+  new(this.client);
 
   final ServerClient client;
 

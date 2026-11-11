@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interstellar/src/controller/database/database.dart';
 
 class TagWidget extends StatelessWidget {
-  const TagWidget({required this.tag, super.key});
+  const new({required this.tag, super.key});
 
   final Tag tag;
 

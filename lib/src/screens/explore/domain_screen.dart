@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class DomainScreen extends StatefulWidget {
-  const DomainScreen(this.domainId, {super.key, this.initData, this.onUpdate});
+  const new(this.domainId, {super.key, this.initData, this.onUpdate});
 
   final int domainId;
   final DomainModel? initData;

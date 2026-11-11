@@ -8,7 +8,7 @@ import 'package:interstellar/src/utils/utils.dart';
 enum ReportStatus { any, approved, pending, rejected }
 
 class APICommunityModeration {
-  APICommunityModeration(this.client);
+  new(this.client);
 
   final ServerClient client;
 

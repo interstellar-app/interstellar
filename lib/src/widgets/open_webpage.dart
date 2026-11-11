@@ -98,7 +98,7 @@ void openWebpageSecondary(BuildContext context, Uri uri) => showDialog<String>(
 
 @RoutePage()
 class WebViewScreen extends StatelessWidget {
-  const WebViewScreen({required this.controller, super.key});
+  const new({required this.controller, super.key});
 
   final WebViewController controller;
 

@@ -369,16 +369,14 @@ class Shape4 extends i0.VersionedTable {
       columnsByName['source']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_9(
-  String aliasedName,
-) => i1.GeneratedColumn<String>(
-  'name',
-  aliasedName,
-  false,
-  type: i1.DriftSqlType.string,
-  $customConstraints:
-      'NOT NULL REFERENCES feed_inputs(name)ON UPDATE CASCADE ON DELETE CASCADE',
-);
+i1.GeneratedColumn<String> _column_9(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'name',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL REFERENCES feed_inputs(name)ON UPDATE CASCADE ON DELETE CASCADE',
+    );
 i1.GeneratedColumn<String> _column_10(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'server',

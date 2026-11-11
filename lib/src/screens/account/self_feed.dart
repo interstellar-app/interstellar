@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class SelfFeed extends StatefulWidget {
-  const SelfFeed({super.key, this.placeholder = false});
+  const new({super.key, this.placeholder = false});
 
   // This is so the generated route includes parameters so that a key can be passed.
   final bool placeholder;

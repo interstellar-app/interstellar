@@ -4,7 +4,7 @@ import 'package:interstellar/src/widgets/video.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class VideoMarkdownSyntax extends md.InlineSyntax {
-  VideoMarkdownSyntax() : super(r'!\[video\/mp4\]\((https:\/\/[^\s]+\.mp4)\)');
+  new() : super(r'!\[video\/mp4\]\((https:\/\/[^\s]+\.mp4)\)');
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -14,7 +14,7 @@ class VideoMarkdownSyntax extends md.InlineSyntax {
 }
 
 class YoutubeEmbedSyntax extends md.InlineSyntax {
-  YoutubeEmbedSyntax() : super(_youtubePattern);
+  new() : super(_youtubePattern);
 
   //from here https://stackoverflow.com/a/61033353
   static const _youtubePattern =
@@ -83,7 +83,7 @@ class YoutubeEmbedSyntax extends md.InlineSyntax {
 }
 
 class VideoMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  VideoMarkdownBuilder({this.enableBlur = false});
+  new({this.enableBlur = false});
 
   final bool enableBlur;
 

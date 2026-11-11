@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class FilterListsScreen extends StatefulWidget {
-  const FilterListsScreen({super.key});
+  const new({super.key});
 
   @override
   State<FilterListsScreen> createState() => _FilterListsScreenState();
@@ -119,7 +119,7 @@ class _FilterListsScreenState extends State<FilterListsScreen> {
 
 @RoutePage()
 class EditFilterListScreen extends StatefulWidget {
-  const EditFilterListScreen({
+  const new({
     @PathParam('filterList') required this.filterList,
     this.importFilterList,
     super.key,

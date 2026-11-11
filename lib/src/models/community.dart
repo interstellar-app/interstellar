@@ -14,39 +14,36 @@ part 'community.freezed.dart';
 
 @freezed
 abstract class DetailedCommunityListModel with _$DetailedCommunityListModel {
-  const factory DetailedCommunityListModel({
+  const factory({
     required List<DetailedCommunityModel> items,
     required String? nextPage,
   }) = _DetailedCommunityListModel;
 
-  factory DetailedCommunityListModel.fromMbin(JsonMap json) =>
-      DetailedCommunityListModel(
-        items: (json['items']! as List<dynamic>)
-            .map((item) => DetailedCommunityModel.fromMbin(item as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
-      );
+  factory fromMbin(JsonMap json) => DetailedCommunityListModel(
+    items: (json['items']! as List<dynamic>)
+        .map((item) => DetailedCommunityModel.fromMbin(item as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
+  );
 
-  factory DetailedCommunityListModel.fromLemmy(JsonMap json) =>
-      DetailedCommunityListModel(
-        items: (json['communities']! as List<dynamic>)
-            .map((item) => DetailedCommunityModel.fromLemmy(item as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+  factory fromLemmy(JsonMap json) => DetailedCommunityListModel(
+    items: (json['communities']! as List<dynamic>)
+        .map((item) => DetailedCommunityModel.fromLemmy(item as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 
-  factory DetailedCommunityListModel.fromPiefed(JsonMap json) =>
-      DetailedCommunityListModel(
-        items: (json['communities']! as List<dynamic>)
-            .map((item) => DetailedCommunityModel.fromPiefed(item as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+  factory fromPiefed(JsonMap json) => DetailedCommunityListModel(
+    items: (json['communities']! as List<dynamic>)
+        .map((item) => DetailedCommunityModel.fromPiefed(item as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed
 abstract class DetailedCommunityModel with _$DetailedCommunityModel {
-  const factory DetailedCommunityModel({
+  const factory({
     required int id,
     required String name,
     required String title,
@@ -68,7 +65,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     required String? apId,
   }) = _DetailedCommunityModel;
 
-  factory DetailedCommunityModel.fromMbin(JsonMap json) {
+  factory fromMbin(JsonMap json) {
     final community = DetailedCommunityModel(
       id: json['magazineId']! as int,
       name: json['name']! as String,
@@ -105,7 +102,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     return community;
   }
 
-  factory DetailedCommunityModel.fromLemmy(JsonMap json) {
+  factory fromLemmy(JsonMap json) {
     final communityView = json['community_view'] as JsonMap? ?? json;
     final lemmyCommunity = communityView['community']! as JsonMap;
     final lemmyCounts = communityView['counts']! as JsonMap;
@@ -146,7 +143,7 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
     return community;
   }
 
-  factory DetailedCommunityModel.fromPiefed(JsonMap json) {
+  factory fromPiefed(JsonMap json) {
     final communityView = json['community_view'] as JsonMap? ?? json;
     final piefedCommunity = communityView['community']! as JsonMap;
     final piefedCounts = communityView['counts']! as JsonMap;
@@ -206,70 +203,68 @@ abstract class DetailedCommunityModel with _$DetailedCommunityModel {
 
 @freezed
 abstract class CommunityModel with _$CommunityModel {
-  const factory CommunityModel({
+  const factory({
     required int id,
     required String name,
     required ImageModel? icon,
     required String? apId,
   }) = _CommunityModel;
 
-  factory CommunityModel.fromMbin(JsonMap json) => CommunityModel(
+  factory fromMbin(JsonMap json) => CommunityModel(
     id: json['magazineId']! as int,
     name: json['name']! as String,
     icon: mbinGetOptionalImage(json['icon'] as JsonMap?),
     apId: json['apProfileId'] as String?,
   );
 
-  factory CommunityModel.fromLemmy(JsonMap json) => CommunityModel(
+  factory fromLemmy(JsonMap json) => CommunityModel(
     id: json['id']! as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
     apId: json['actor_id']! as String,
   );
 
-  factory CommunityModel.fromPiefed(JsonMap json) => CommunityModel(
+  factory fromPiefed(JsonMap json) => CommunityModel(
     id: json['id']! as int,
     name: getLemmyPiefedActorName(json),
     icon: lemmyGetOptionalImage(json['icon'] as String?),
     apId: json['actor_id']! as String,
   );
 
-  factory CommunityModel.fromDetailedCommunity(
-    DetailedCommunityModel community,
-  ) => CommunityModel(
-    id: community.id,
-    name: community.name,
-    icon: community.icon,
-    apId: community.apId,
-  );
+  factory fromDetailedCommunity(DetailedCommunityModel community) =>
+      CommunityModel(
+        id: community.id,
+        name: community.name,
+        icon: community.icon,
+        apId: community.apId,
+      );
 }
 
 @freezed
 abstract class CommunityBanListModel with _$CommunityBanListModel {
-  const factory CommunityBanListModel({
+  const factory({
     required List<CommunityBanModel> items,
     required String? nextPage,
   }) = _CommunityBanListModel;
 
-  factory CommunityBanListModel.fromMbin(JsonMap json) => CommunityBanListModel(
+  factory fromMbin(JsonMap json) => CommunityBanListModel(
     items: (json['items']! as List<dynamic>)
         .map((item) => CommunityBanModel.fromMbin(item as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory CommunityBanListModel.fromPiefed(JsonMap json) =>
-      CommunityBanListModel(
-        items: (json['items']! as List<dynamic>)
-            .map((item) => CommunityBanModel.fromPiefed(item as JsonMap))
-            .toList(),
-        nextPage: json['next_page'] as String?,
-      );
+  factory fromPiefed(JsonMap json) => CommunityBanListModel(
+    items: (json['items']! as List<dynamic>)
+        .map((item) => CommunityBanModel.fromPiefed(item as JsonMap))
+        .toList(),
+    nextPage: json['next_page'] as String?,
+  );
 }
 
 @freezed
 abstract class CommunityBanModel with _$CommunityBanModel {
-  const factory CommunityBanModel({
+  const factory({
     required String? reason,
     required DateTime? expiresAt,
     required CommunityModel community,
@@ -278,7 +273,7 @@ abstract class CommunityBanModel with _$CommunityBanModel {
     required bool expired,
   }) = _CommunityBanModel;
 
-  factory CommunityBanModel.fromMbin(JsonMap json) => CommunityBanModel(
+  factory fromMbin(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expiresAt'] as String?),
     community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
@@ -287,7 +282,7 @@ abstract class CommunityBanModel with _$CommunityBanModel {
     expired: json['expired']! as bool,
   );
 
-  factory CommunityBanModel.fromLemmy(JsonMap json) {
+  factory fromLemmy(JsonMap json) {
     final expiration = json['expires'] != null
         ? DateTime.parse(json['expires']! as String)
         : null;
@@ -304,7 +299,7 @@ abstract class CommunityBanModel with _$CommunityBanModel {
     );
   }
 
-  factory CommunityBanModel.fromPiefed(JsonMap json) => CommunityBanModel(
+  factory fromPiefed(JsonMap json) => CommunityBanModel(
     reason: json['reason'] as String?,
     expiresAt: optionalDateTime(json['expires_at'] as String?),
     community: CommunityModel.fromPiefed(json['community']! as JsonMap),
@@ -316,20 +311,19 @@ abstract class CommunityBanModel with _$CommunityBanModel {
 
 @freezed
 abstract class CommunityReportListModel with _$CommunityReportListModel {
-  const factory CommunityReportListModel({
+  const factory({
     required List<CommunityReportModel> items,
     required String? nextPage,
   }) = _CommunityReportListModel;
 
-  factory CommunityReportListModel.fromMbin(JsonMap json) =>
-      CommunityReportListModel(
-        items: (json['items']! as List<dynamic>)
-            .map((item) => CommunityReportModel.fromMbin(item as JsonMap))
-            .toList(),
-        nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
-      );
+  factory fromMbin(JsonMap json) => CommunityReportListModel(
+    items: (json['items']! as List<dynamic>)
+        .map((item) => CommunityReportModel.fromMbin(item as JsonMap))
+        .toList(),
+    nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
+  );
 
-  factory CommunityReportListModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommunityReportListModel(
@@ -347,7 +341,7 @@ abstract class CommunityReportListModel with _$CommunityReportListModel {
 
 @freezed
 abstract class CommunityReportModel with _$CommunityReportModel {
-  const factory CommunityReportModel({
+  const factory({
     required int id,
     required CommunityModel? community,
     required UserModel? reportedBy,
@@ -362,7 +356,7 @@ abstract class CommunityReportModel with _$CommunityReportModel {
     required int? weight,
   }) = _CommunityReportModel;
 
-  factory CommunityReportModel.fromMbin(JsonMap json) {
+  factory fromMbin(JsonMap json) {
     final type = json['type'] as String?;
     final subjectPost = switch (type) {
       'entry_report' => PostModel.fromMbinEntry(json['subject']! as JsonMap),
@@ -402,7 +396,7 @@ abstract class CommunityReportModel with _$CommunityReportModel {
     );
   }
 
-  factory CommunityReportModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {

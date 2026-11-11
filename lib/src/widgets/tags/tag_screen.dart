@@ -13,7 +13,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:provider/provider.dart';
 
 class TagsList extends StatefulWidget {
-  const TagsList({
+  const new({
     super.key,
     this.activeTags,
     this.availableTags,
@@ -182,7 +182,7 @@ class _TagsListState extends State<TagsList> {
 
 @RoutePage()
 class TagUsersScreen extends StatefulWidget {
-  const TagUsersScreen(this.tag, {super.key});
+  const new(this.tag, {super.key});
 
   final Tag tag;
 
@@ -261,7 +261,7 @@ class TagUsersScreenState extends State<TagUsersScreen> {
 }
 
 class TagsFloatingButton extends StatelessWidget {
-  const TagsFloatingButton({required this.onUpdate, super.key});
+  const new({required this.onUpdate, super.key});
 
   final void Function(Tag) onUpdate;
 
@@ -335,7 +335,7 @@ class TagsFloatingButton extends StatelessWidget {
 
 @RoutePage()
 class TagsScreen extends StatefulWidget {
-  const TagsScreen({super.key});
+  const new({super.key});
 
   @override
   State<TagsScreen> createState() => _TagsScreenState();

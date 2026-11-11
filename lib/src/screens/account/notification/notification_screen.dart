@@ -13,7 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({super.key});
+  const new({super.key});
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -51,9 +51,8 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final currentNotificationFilter = notificationFilterSelect(
-      context,
-    ).getOption(filter);
+    final currentNotificationFilter = notificationFilterSelect(context)
+        .getOption(filter);
 
     return AdvancedPagedScrollView(
       controller: _pagingController,
@@ -76,9 +75,8 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                       ],
                     ),
                     onPressed: () async {
-                      final result = await notificationFilterSelect(
-                        context,
-                      ).askSelection(context, filter);
+                      final result = await notificationFilterSelect(context)
+                          .askSelection(context, filter);
 
                       if (result != null) {
                         setState(() {

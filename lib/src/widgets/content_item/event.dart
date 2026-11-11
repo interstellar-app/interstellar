@@ -6,7 +6,7 @@ import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:provider/provider.dart';
 
 class Event extends StatefulWidget {
-  const Event({required this.event, super.key});
+  const new({required this.event, super.key});
 
   final EventModel event;
 
@@ -36,9 +36,8 @@ class _EventState extends State<Event> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary
+                    .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Text(dateOnlyFormat(widget.event.start.toLocal())),
@@ -46,9 +45,8 @@ class _EventState extends State<Event> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary
+                    .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Text(timeOnlyFormat(widget.event.start.toLocal())),
@@ -57,9 +55,8 @@ class _EventState extends State<Event> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.primary
+                      .withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
@@ -69,9 +66,8 @@ class _EventState extends State<Event> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.primary
+                    .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Text(
@@ -87,9 +83,8 @@ class _EventState extends State<Event> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.primary
+                      .withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
@@ -102,9 +97,8 @@ class _EventState extends State<Event> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.5),
+              color: Theme.of(context).colorScheme.primary
+                  .withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Column(
@@ -139,9 +133,8 @@ class _EventState extends State<Event> {
                     children: [
                       Text(
                         widget.event.onlineUrl!.host,
-                        style: Theme.of(context).textTheme.bodyMedium!.apply(
-                          decoration: TextDecoration.underline,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium!
+                            .apply(decoration: TextDecoration.underline),
                         softWrap: false,
                         overflow: TextOverflow.fade,
                       ),

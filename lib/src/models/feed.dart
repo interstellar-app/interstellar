@@ -8,10 +8,9 @@ part 'feed.freezed.dart';
 
 @freezed
 abstract class FeedListModel with _$FeedListModel {
-  const factory FeedListModel({required List<FeedModel> items}) =
-      _FeedListModel;
+  const factory({required List<FeedModel> items}) = _FeedListModel;
 
-  factory FeedListModel.fromPiefed(JsonMap json) {
+  factory fromPiefed(JsonMap json) {
     final items =
         ((json['feeds'] as List<dynamic>?) ??
                 (json['topics']! as List<dynamic>))
@@ -36,7 +35,7 @@ abstract class FeedListModel with _$FeedListModel {
 
 @freezed
 abstract class FeedModel with _$FeedModel {
-  const factory FeedModel({
+  const factory({
     required int id,
     required int? userId,
     required String title,
@@ -60,7 +59,7 @@ abstract class FeedModel with _$FeedModel {
     required String? apId,
   }) = _FeedModel;
 
-  factory FeedModel.fromPiefed(JsonMap json) {
+  factory fromPiefed(JsonMap json) {
     return FeedModel(
       id: json['id']! as int,
       userId: json['user_id'] as int?,

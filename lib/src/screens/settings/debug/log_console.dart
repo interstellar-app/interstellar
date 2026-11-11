@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class LogConsole extends StatefulWidget {
-  const LogConsole({super.key});
+  const new({super.key});
 
   @override
   State<LogConsole> createState() => _LogConsoleState();
@@ -53,7 +53,7 @@ class _LogConsoleState extends State<LogConsole> {
           ),
           IconButton(
             onPressed: () {
-              _logFile?.writeAsString(
+              _logFile!.writeAsString(
                 '',
                 mode: FileMode.writeOnly,
                 flush: true,
@@ -66,13 +66,12 @@ class _LogConsoleState extends State<LogConsole> {
           ),
           IconButton(
             onPressed: () async {
-              final useBytes = PlatformIs.mobile;
               String? filePath;
               try {
-                filePath = await FilePicker.platform.saveFile(
+                filePath = (await FilePicker.saveFile(
                   fileName: 'interstellar_log.log',
-                  bytes: _logFile?.readAsBytesSync(),
-                );
+                  bytes: _logFile!.readAsBytesSync(),
+                ))?.path;
                 if (filePath == null) return;
               } catch (e) {
                 final dir = await getDownloadsDirectory();
@@ -81,10 +80,6 @@ class _LogConsoleState extends State<LogConsole> {
                 }
 
                 filePath = '${dir.path}/interstellar_log.log';
-              }
-
-              if (!useBytes) {
-                _logFile?.copy(filePath);
               }
             },
             icon: const Icon(Symbols.save_as_rounded),

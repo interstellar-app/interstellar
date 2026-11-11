@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class FeedActionsSettingsScreen extends StatelessWidget {
-  const FeedActionsSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

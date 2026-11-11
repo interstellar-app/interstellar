@@ -4,7 +4,7 @@ import 'package:interstellar/src/widgets/actions.dart';
 import 'package:provider/provider.dart';
 
 class FloatingMenu extends StatefulWidget {
-  const FloatingMenu({
+  const new({
     required this.tapAction,
     required this.holdAction,
     required this.menuActions,

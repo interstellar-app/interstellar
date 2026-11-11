@@ -22,7 +22,7 @@ enum OpenLinksIn { inAppBrowser, externalBrowser }
 @freezed
 abstract class ProfileRequired with _$ProfileRequired {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory ProfileRequired({
+  const factory({
     // If the autoSwitchAccount key is ever changed, be sure to update the AppController code that removes accounts, which references this key.
     required String? autoSwitchAccount,
     // Behavior settings
@@ -89,14 +89,11 @@ abstract class ProfileRequired with _$ProfileRequired {
     required Map<String, bool> filterLists,
     required bool showErrors,
   }) = _ProfileRequired;
-  const ProfileRequired._();
+  const new _();
 
-  factory ProfileRequired.fromJson(JsonMap json) =>
-      _$ProfileRequiredFromJson(json);
+  factory fromJson(JsonMap json) => _$ProfileRequiredFromJson(json);
 
-  factory ProfileRequired.fromOptional(
-    ProfileOptional? profile,
-  ) => ProfileRequired(
+  factory fromOptional(ProfileOptional? profile) => ProfileRequired(
     autoSwitchAccount: profile?.autoSwitchAccount,
     defaultCreateLanguage:
         profile?.defaultCreateLanguage ?? defaultProfile.defaultCreateLanguage,
@@ -287,7 +284,7 @@ abstract class ProfileOptional
     with _$ProfileOptional
     implements Insertable<ProfileOptional> {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory ProfileOptional({
+  const factory({
     required String name,
     required String? autoSwitchAccount,
     // Behavior settings
@@ -353,10 +350,9 @@ abstract class ProfileOptional
     required Map<String, bool>? filterLists,
     required bool? showErrors,
   }) = _ProfileOptional;
-  const ProfileOptional._();
+  const new _();
 
-  factory ProfileOptional.fromJson(JsonMap json) =>
-      _$ProfileOptionalFromJson(json);
+  factory fromJson(JsonMap json) => _$ProfileOptionalFromJson(json);
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -622,7 +618,7 @@ Object? _parseFeedDefaultCombinedSort(Map<dynamic, dynamic> json, String name) {
 }
 
 class FeedViewConverter implements JsonConverter<FeedView, String> {
-  const FeedViewConverter();
+  const new();
 
   @override
   FeedView fromJson(String json) {

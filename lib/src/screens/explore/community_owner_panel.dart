@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CommunityOwnerPanelScreen extends StatefulWidget {
-  const CommunityOwnerPanelScreen({
+  const new({
     @PathParam('communityId') required this.communityId,
     required this.initData,
     required this.onUpdate,
@@ -76,11 +76,7 @@ class _CommunityOwnerPanelScreenState extends State<CommunityOwnerPanelScreen> {
 }
 
 class CommunityOwnerPanelGeneral extends StatefulWidget {
-  const CommunityOwnerPanelGeneral({
-    required this.data,
-    required this.onUpdate,
-    super.key,
-  });
+  const new({required this.data, required this.onUpdate, super.key});
   // Data is null for community creation screen
   final DetailedCommunityModel? data;
   final void Function(DetailedCommunityModel) onUpdate;
@@ -221,11 +217,7 @@ class _CommunityOwnerPanelGeneralState
 }
 
 class CommunityOwnerPanelModerators extends StatefulWidget {
-  const CommunityOwnerPanelModerators({
-    required this.data,
-    required this.onUpdate,
-    super.key,
-  });
+  const new({required this.data, required this.onUpdate, super.key});
   final DetailedCommunityModel data;
   final void Function(DetailedCommunityModel) onUpdate;
 
@@ -369,11 +361,7 @@ class _CommunityOwnerPanelModeratorsState
 }
 
 class CommunityOwnerPanelDeletion extends StatefulWidget {
-  const CommunityOwnerPanelDeletion({
-    required this.data,
-    required this.onUpdate,
-    super.key,
-  });
+  const new({required this.data, required this.onUpdate, super.key});
   final DetailedCommunityModel data;
   final void Function(DetailedCommunityModel) onUpdate;
 
@@ -433,7 +421,7 @@ class _CommunityOwnerPanelDeletionState
 }
 
 class CommunityOwnerPanelDeletionDialog extends StatefulWidget {
-  const CommunityOwnerPanelDeletionDialog({required this.data, super.key});
+  const new({required this.data, super.key});
   final DetailedCommunityModel data;
 
   @override

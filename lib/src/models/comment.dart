@@ -12,12 +12,12 @@ part 'comment.freezed.dart';
 
 @freezed
 abstract class CommentListModel with _$CommentListModel {
-  const factory CommentListModel({
+  const factory({
     required List<CommentModel> items,
     required String? nextPage,
   }) = _CommentListModel;
 
-  factory CommentListModel.fromMbin(JsonMap json) => CommentListModel(
+  factory fromMbin(JsonMap json) => CommentListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => CommentModel.fromMbin(post as JsonMap))
         .toList(),
@@ -25,7 +25,7 @@ abstract class CommentListModel with _$CommentListModel {
   );
 
   // Lemmy comment list that needs to be converted to tree format. Used for post comments and comment replies.
-  factory CommentListModel.fromLemmyToTree(
+  factory fromLemmyToTree(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
@@ -43,7 +43,7 @@ abstract class CommentListModel with _$CommentListModel {
   );
 
   // Lemmy comment list that needs to be converted to flat format. Used for a list of user comments.
-  factory CommentListModel.fromLemmyToFlat(
+  factory fromLemmyToFlat(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
@@ -58,7 +58,7 @@ abstract class CommentListModel with _$CommentListModel {
     nextPage: json['next_page'] as String?,
   );
 
-  factory CommentListModel.fromPiefed(
+  factory fromPiefed(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
@@ -74,7 +74,7 @@ abstract class CommentListModel with _$CommentListModel {
   );
 
   // Piefed comment list that needs to be converted to tree format. Used for post comments and comment replies.
-  factory CommentListModel.fromPiefedToTree(
+  factory fromPiefedToTree(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
@@ -92,7 +92,7 @@ abstract class CommentListModel with _$CommentListModel {
   );
 
   // Piefed comment list that needs to be converted to flat format. Used for a list of user comments.
-  factory CommentListModel.fromPiefedToFlat(
+  factory fromPiefedToFlat(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => CommentListModel(
@@ -110,7 +110,7 @@ abstract class CommentListModel with _$CommentListModel {
 
 @freezed
 abstract class CommentModel with _$CommentModel {
-  const factory CommentModel({
+  const factory({
     required int id,
     required DetailedUserModel user,
     required CommunityModel community,
@@ -139,7 +139,7 @@ abstract class CommentModel with _$CommentModel {
     required List<EmojiReactionModel>? emojiReactions,
   }) = _CommentModel;
 
-  factory CommentModel.fromMbin(JsonMap json) => CommentModel(
+  factory fromMbin(JsonMap json) => CommentModel(
     id: json['commentId']! as int,
     user: DetailedUserModel.fromMbin(json['user']! as JsonMap),
     community: CommunityModel.fromMbin(json['magazine']! as JsonMap),
@@ -172,7 +172,7 @@ abstract class CommentModel with _$CommentModel {
     emojiReactions: null,
   );
 
-  factory CommentModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
     List<dynamic> possibleChildrenJson = const [],
@@ -245,7 +245,7 @@ abstract class CommentModel with _$CommentModel {
     );
   }
 
-  factory CommentModel.fromPiefed(
+  factory fromPiefed(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
     List<dynamic> possibleChildrenJson = const [],

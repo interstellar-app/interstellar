@@ -16,30 +16,31 @@ part 'post.freezed.dart';
 
 enum PostType { thread, microblog }
 
+// Values are mapped directly to enum names from JSON, must use underscores
+// and exact casing.
+// ignore: constant_identifier_names
 enum PostVisibility { visible, trashed, soft_deleted, private }
 
 @freezed
 abstract class PostListModel with _$PostListModel {
-  const factory PostListModel({
-    required List<PostModel> items,
-    required String? nextPage,
-  }) = _PostListModel;
+  const factory({required List<PostModel> items, required String? nextPage}) =
+      _PostListModel;
 
-  factory PostListModel.fromMbinEntries(JsonMap json) => PostListModel(
+  factory fromMbinEntries(JsonMap json) => PostListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => PostModel.fromMbinEntry(post as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory PostListModel.fromMbinPosts(JsonMap json) => PostListModel(
+  factory fromMbinPosts(JsonMap json) => PostListModel(
     items: (json['items']! as List<dynamic>)
         .map((post) => PostModel.fromMbinPost(post as JsonMap))
         .toList(),
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory PostListModel.fromMbinCombined(JsonMap json) => PostListModel(
+  factory fromMbinCombined(JsonMap json) => PostListModel(
     items: (json['items']! as List<dynamic>)
         .map((content) {
           if (content['entry'] != null) {
@@ -54,7 +55,7 @@ abstract class PostListModel with _$PostListModel {
     nextPage: mbinCalcNextPaginationPage(json['pagination']! as JsonMap),
   );
 
-  factory PostListModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => PostListModel(
@@ -70,7 +71,7 @@ abstract class PostListModel with _$PostListModel {
     nextPage: json['next_page'] as String?,
   );
 
-  factory PostListModel.fromPiefed(
+  factory fromPiefed(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) => PostListModel(
@@ -89,7 +90,7 @@ abstract class PostListModel with _$PostListModel {
 
 @freezed
 abstract class PostModel with _$PostModel {
-  const factory PostModel({
+  const factory({
     required PostType type,
     required int id,
     required DetailedUserModel user,
@@ -126,7 +127,7 @@ abstract class PostModel with _$PostModel {
     required List<EmojiReactionModel>? emojiReactions,
   }) = _PostModel;
 
-  factory PostModel.fromMbinEntry(JsonMap json) => PostModel(
+  factory fromMbinEntry(JsonMap json) => PostModel(
     type: PostType.thread,
     id: json['entryId']! as int,
     user: DetailedUserModel.fromMbin(json['user']! as JsonMap),
@@ -178,7 +179,7 @@ abstract class PostModel with _$PostModel {
     emojiReactions: null,
   );
 
-  factory PostModel.fromMbinPost(JsonMap json) => PostModel(
+  factory fromMbinPost(JsonMap json) => PostModel(
     type: PostType.microblog,
     id: json['postId']! as int,
     user: DetailedUserModel.fromMbin(json['user']! as JsonMap),
@@ -221,7 +222,7 @@ abstract class PostModel with _$PostModel {
     emojiReactions: null,
   );
 
-  factory PostModel.fromLemmy(
+  factory fromLemmy(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
@@ -233,9 +234,8 @@ abstract class PostModel with _$PostModel {
         (lemmyPost['url_content_type'] != null &&
             (lemmyPost['url_content_type']! as String).startsWith('image/')) ||
         (lemmyPost['url'] != null &&
-            (lookupMimeType(
-                  lemmyPost['url']! as String,
-                )?.startsWith('image/') ??
+            (lookupMimeType(lemmyPost['url']! as String)
+                    ?.startsWith('image/') ??
                 false));
 
     final imageDetails = json['image_details'] as JsonMap?;
@@ -311,7 +311,7 @@ abstract class PostModel with _$PostModel {
     );
   }
 
-  factory PostModel.fromPiefed(
+  factory fromPiefed(
     JsonMap json, {
     required List<(String, int)> langCodeIdPairs,
   }) {
@@ -323,9 +323,8 @@ abstract class PostModel with _$PostModel {
         (piefedPost['url_content_type'] != null &&
             (piefedPost['url_content_type']! as String).startsWith('image/')) ||
         (piefedPost['url'] != null &&
-            (lookupMimeType(
-                  piefedPost['url']! as String,
-                )?.startsWith('image/') ??
+            (lookupMimeType(piefedPost['url']! as String)
+                    ?.startsWith('image/') ??
                 false));
 
     final imageDetails = piefedPost['image_details'] as JsonMap?;

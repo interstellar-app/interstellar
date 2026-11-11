@@ -10,19 +10,13 @@ import 'package:logger/logger.dart';
 /// Next page key storage and item deduplication have been added.
 class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
     extends ValueNotifier<PagingState<PageKeyType, PageItemType>> {
-  AdvancedPagingController({
-    required Logger logger,
+  new({
+    required this._logger,
     required PageKeyType firstPageKey,
-    required PageItemIdType Function(PageItemType item) getItemId,
-    required Future<(List<PageItemType>, PageKeyType?)> Function(
-      PageKeyType pageKey,
-    )
-    fetchPage,
-  }) : _fetchPage = fetchPage,
-       _getItemId = getItemId,
-       _firstPage = firstPageKey,
+    required this._getItemId,
+    required this._fetchPage,
+  }) : _firstPage = firstPageKey,
        _nextPage = firstPageKey,
-       _logger = logger,
        super(PagingState<PageKeyType, PageItemType>());
 
   /// Used to detect and remove duplicate items.
@@ -188,11 +182,7 @@ class AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
 
 class AdvancedPagingListener<PageKeyType, PageItemType, PageItemIdType>
     extends StatelessWidget {
-  const AdvancedPagingListener({
-    required this.controller,
-    required this.builder,
-    super.key,
-  });
+  const new({required this.controller, required this.builder, super.key});
 
   final AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   controller;
@@ -219,11 +209,7 @@ class AdvancedPagingListener<PageKeyType, PageItemType, PageItemIdType>
 /// [PagedSliverList] based on the passed in [AdvancedPagingController].
 class AdvancedPagedSliverList<PageKeyType, PageItemType, PageItemIdType>
     extends StatelessWidget {
-  const AdvancedPagedSliverList({
-    required this.controller,
-    required this.itemBuilder,
-    super.key,
-  });
+  const new({required this.controller, required this.itemBuilder, super.key});
 
   final AdvancedPagingController<PageKeyType, PageItemType, PageItemIdType>
   controller;
@@ -253,7 +239,7 @@ class AdvancedPagedSliverList<PageKeyType, PageItemType, PageItemIdType>
 /// Use in place of [CustomScrollView]. A [RefreshIndicator] is built in.
 class AdvancedPagedScrollView<PageKeyType, PageItemType, PageItemIdType>
     extends StatelessWidget {
-  const AdvancedPagedScrollView({
+  const new({
     required this.controller,
     required this.itemBuilder,
     this.scrollController,

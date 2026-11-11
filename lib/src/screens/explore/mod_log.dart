@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ModLogCommunityScreen extends StatelessWidget {
-  const ModLogCommunityScreen({
+  const new({
     @PathParam('communityName') required this.communityName,
     required this.communityId,
     super.key,
@@ -33,7 +33,7 @@ class ModLogCommunityScreen extends StatelessWidget {
 
 @RoutePage()
 class ModLogUserScreen extends StatelessWidget {
-  const ModLogUserScreen({
+  const new({
     @PathParam('username') required this.username,
     required this.userId,
     super.key,
@@ -48,7 +48,7 @@ class ModLogUserScreen extends StatelessWidget {
 
 @RoutePage()
 class ModLogScreen extends StatefulWidget {
-  const ModLogScreen({super.key, this.communityId, this.userId});
+  const new({super.key, this.communityId, this.userId});
 
   final int? communityId;
   final int? userId;
@@ -58,38 +58,39 @@ class ModLogScreen extends StatefulWidget {
 }
 
 class _ModLogScreenState extends State<ModLogScreen> {
-  late final _pagingController = AdvancedPagingController<String, ModlogItemModel, int>(
-    logger: context.read<AppController>().logger,
-    firstPageKey: '',
-    getItemId: (item) => item.hashCode,
-    fetchPage: (pageKey) async {
-      final ac = context.read<AppController>();
+  late final _pagingController =
+      AdvancedPagingController<String, ModlogItemModel, int>(
+        logger: context.read<AppController>().logger,
+        firstPageKey: '',
+        getItemId: (item) => item.hashCode,
+        fetchPage: (pageKey) async {
+          final ac = context.read<AppController>();
 
-      final newPage = await ac.api.moderation.modLog(
-        communityId: widget.communityId,
-        userId: widget.userId,
-        type: _filter,
-        page: pageKey,
+          final newPage = await ac.api.moderation.modLog(
+            communityId: widget.communityId,
+            userId: widget.userId,
+            type: _filter,
+            page: pageKey,
+          );
+
+          final newItems = switch (ac.serverSoftware) {
+            ServerSoftware.mbin => newPage.items,
+            ServerSoftware.lemmy =>
+              _filter != ModLogType.all
+                  ? newPage.items.where((item) => item.type == _filter).toList()
+                  : newPage.items,
+            // Lemmy API returns both positive and negative mod action types for each filter type.
+            // e.g. passing PinnedPost to the API returns both pinned and unpinned actions.
+            // So we do a little extra filtering here to narrow it down further.
+            ServerSoftware.piefed =>
+              _filter != ModLogType.all
+                  ? newPage.items.where((item) => item.type == _filter).toList()
+                  : newPage.items,
+          };
+
+          return (newItems, newPage.nextPage);
+        },
       );
-
-      final newItems = switch (ac.serverSoftware) {
-        ServerSoftware.mbin => newPage.items,
-        ServerSoftware.lemmy =>
-          _filter != ModLogType.all
-              ? newPage.items.where((item) => item.type == _filter).toList()
-              : newPage.items,
-        // Lemmy API returns both positive and negative mod action types for each filter type.
-        // e.g. passing PinnedPost to the API returns both pinned and unpinned actions.
-        // So we do a little extra filtering here to narrow it down further.
-        ServerSoftware.piefed =>
-          _filter != ModLogType.all
-              ? newPage.items.where((item) => item.type == _filter).toList()
-              : newPage.items,
-      };
-
-      return (newItems, newPage.nextPage);
-    },
-  );
   ModLogType _filter = ModLogType.all;
 
   void Function()? _itemOnTap(ModlogItemModel item) => switch (item.type) {
@@ -254,9 +255,8 @@ class _ModLogScreenState extends State<ModLogScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              final filter = await modlogFilterType(
-                context,
-              ).askSelection(context, _filter);
+              final filter = await modlogFilterType(context)
+                  .askSelection(context, _filter);
               if (filter == null) return;
               setState(() {
                 _filter = filter;

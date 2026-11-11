@@ -38,7 +38,7 @@ enum UserFeedType { thread, microblog, comment, reply, follower, following }
 
 @RoutePage()
 class UserScreen extends StatefulWidget {
-  const UserScreen({
+  const new({
     @PathParam('username') required this.username,
     this.userId,
     super.key,
@@ -154,9 +154,8 @@ class _UserScreenState extends State<UserScreen> {
                 ],
               ),
               onPressed: () async {
-                final newSort = await feedSortSelect(
-                  context,
-                ).askSelection(context, _sort);
+                final newSort = await feedSortSelect(context)
+                    .askSelection(context, _sort);
 
                 if (newSort != null && newSort != _sort) {
                   setState(() {
@@ -201,9 +200,8 @@ class _UserScreenState extends State<UserScreen> {
                             user.avatar,
                             radius: 36,
                             borderRadius: 4,
-                            backgroundColor: Theme.of(
-                              context,
-                            ).scaffoldBackgroundColor,
+                            backgroundColor: Theme.of(context)
+                                .scaffoldBackgroundColor,
                           ),
                         ),
                         Positioned(
@@ -265,9 +263,9 @@ class _UserScreenState extends State<UserScreen> {
                                       style: ButtonStyle(
                                         foregroundColor: WidgetStatePropertyAll(
                                           user.isBlockedByUser ?? false
-                                              ? Theme.of(
-                                                  context,
-                                                ).colorScheme.error
+                                              ? Theme.of(context)
+                                                    .colorScheme
+                                                    .error
                                               : Theme.of(context).disabledColor,
                                         ),
                                       ),
@@ -504,7 +502,7 @@ class _UserScreenState extends State<UserScreen> {
 }
 
 class UserScreenBody extends StatefulWidget {
-  const UserScreenBody({
+  const new({
     required this.mode,
     required this.sort,
     super.key,

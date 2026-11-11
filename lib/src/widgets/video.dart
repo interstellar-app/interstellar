@@ -25,7 +25,7 @@ bool isSupportedYouTubeVideo(Uri link) {
 }
 
 class VideoPlayer extends StatefulWidget {
-  const VideoPlayer(this.uri, {super.key, this.enableBlur = false});
+  const new(this.uri, {super.key, this.enableBlur = false});
 
   final Uri uri;
   final bool enableBlur;
