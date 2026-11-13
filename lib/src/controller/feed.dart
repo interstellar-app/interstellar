@@ -54,7 +54,7 @@ abstract class Feed with _$Feed {
   }
 
   bool get serverFeed {
-    return server ?? false;
+    return server;
     // return inputs.every(
     //   (input) =>
     //       input.sourceType == FeedSource.feed ||
