@@ -119,8 +119,8 @@ class MentionWidget extends StatefulWidget {
   State<MentionWidget> createState() => MentionWidgetState();
 }
 
-Map<String, DetailedUserModel> userMentionCache = {};
-Map<String, DetailedCommunityModel> communityMentionCache = {};
+Map<String, DetailedUserModel?> userMentionCache = {};
+Map<String, DetailedCommunityModel?> communityMentionCache = {};
 
 class MentionWidgetState extends State<MentionWidget> {
   late String _displayName;
@@ -147,9 +147,9 @@ class MentionWidgetState extends State<MentionWidget> {
       _displayName = modifier + name;
     });
 
-    try {
-      if (modifier == '@') {
-        if (!userMentionCache.containsKey(cacheKey)) {
+    if (modifier == '@') {
+      if (!userMentionCache.containsKey(cacheKey)) {
+        try {
           userMentionCache[cacheKey] = await context
               .read<AppController>()
               .api
@@ -159,17 +159,25 @@ class MentionWidgetState extends State<MentionWidget> {
                     ? name
                     : '$name@$host',
               );
+        } catch (_) {
+          // User not found
+          userMentionCache[cacheKey] = null;
         }
-        final user = userMentionCache[cacheKey]!;
+      }
 
+      final user = userMentionCache[cacheKey];
+
+      if (user != null) {
         setState(() {
           _icon = user.avatar;
           _onClick = () => context.router.push(
             UserRoute(username: user.name, userId: user.id, initData: user),
           );
         });
-      } else if (modifier == '!') {
-        if (!communityMentionCache.containsKey(cacheKey)) {
+      }
+    } else if (modifier == '!') {
+      if (!communityMentionCache.containsKey(cacheKey)) {
+        try {
           communityMentionCache[cacheKey] = await context
               .read<AppController>()
               .api
@@ -179,9 +187,15 @@ class MentionWidgetState extends State<MentionWidget> {
                     ? name
                     : '$name@$host',
               );
+        } catch (_) {
+          // Community not found
+          communityMentionCache[cacheKey] = null;
         }
-        final community = communityMentionCache[cacheKey]!;
+      }
 
+      final community = communityMentionCache[cacheKey];
+
+      if (community != null) {
         setState(() {
           _icon = community.icon;
           _onClick = () => context.router.push(
@@ -193,8 +207,6 @@ class MentionWidgetState extends State<MentionWidget> {
           );
         });
       }
-    } catch (_) {
-      // User/Community not found
     }
   }
 
