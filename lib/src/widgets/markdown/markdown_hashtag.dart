@@ -7,7 +7,7 @@ import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class HashtagMarkdownSyntax extends md.InlineSyntax {
-  new() : super(_tagPattern);
+  new() : super(_tagPattern, startCharacter: '#'.codeUnitAt(0));
 
   /*
     This expression checks the following:
