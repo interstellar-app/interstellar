@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart' as mdf;
 import 'package:markdown/markdown.dart' as md;
 
 class SubscriptMarkdownSyntax extends md.InlineSyntax {
-  new() : super(r'~([^~\s]+)~');
+  new() : super(r'~([^~\s]+)~', startCharacter: '~'.codeUnitAt(0));
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -13,7 +13,7 @@ class SubscriptMarkdownSyntax extends md.InlineSyntax {
 }
 
 class SuperscriptMarkdownSyntax extends md.InlineSyntax {
-  new() : super(r'\^([^\s^]+)\^');
+  new() : super(r'\^([^\s^]+)\^', startCharacter: '^'.codeUnitAt(0));
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
