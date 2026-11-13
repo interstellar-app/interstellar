@@ -120,41 +120,43 @@ class _FeedSettingsScreenState extends State<FeedSettingsScreen> {
                     icon: const Icon(Symbols.delete_rounded),
                   ),
                   IconButton(
-                    onPressed: () async {
-                      final feed = ac.feeds[entry.key]!;
+                    onPressed: entry.value.serverFeed
+                        ? null
+                        : () async {
+                            final feed = ac.feeds[entry.key]!;
 
-                      final config = await ConfigShare.create(
-                        type: ConfigShareType.feed,
-                        name: entry.key,
-                        payload: feed.toJson(),
-                      );
+                            final config = await ConfigShare.create(
+                              type: ConfigShareType.feed,
+                              name: entry.key,
+                              payload: feed.toJson(),
+                            );
 
-                      if (!mounted) return;
-                      var communityName = mbinConfigsCommunityName;
-                      if (communityName.endsWith(ac.instanceHost)) {
-                        communityName = communityName.split('@').first;
-                      }
+                            if (!mounted) return;
+                            var communityName = mbinConfigsCommunityName;
+                            if (communityName.endsWith(ac.instanceHost)) {
+                              communityName = communityName.split('@').first;
+                            }
 
-                      DetailedCommunityModel? community;
-                      try {
-                        community = await ac.api.community.getByName(
-                          communityName,
-                        );
-                      } catch (e) {
-                        //
-                      }
+                            DetailedCommunityModel? community;
+                            try {
+                              community = await ac.api.community.getByName(
+                                communityName,
+                              );
+                            } catch (e) {
+                              //
+                            }
 
-                      if (!context.mounted) return;
+                            if (!context.mounted) return;
 
-                      await context.router.push(
-                        CreateRoute(
-                          initTitle: '[Feed] ${entry.key}',
-                          initBody:
-                              'Short description here...\n\n${config.toMarkdown()}',
-                          initCommunity: community,
-                        ),
-                      );
-                    },
+                            await context.router.push(
+                              CreateRoute(
+                                initTitle: '[Feed] ${entry.key}',
+                                initBody:
+                                    'Short description here...\n\n${config.toMarkdown()}',
+                                initCommunity: community,
+                              ),
+                            );
+                          },
                     icon: const Icon(Symbols.share_rounded),
                   ),
                 ],
