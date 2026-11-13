@@ -231,7 +231,7 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
 }
 
 class ImageGallery extends StatefulWidget {
-  const ImageGallery(
+  const new(
     this.images, {
     this.fit = BoxFit.contain,
     this.openTitle,
@@ -256,9 +256,22 @@ class _ImageGalleryState extends State<ImageGallery> {
   bool get _hasPrev => _currentIndex > 0;
   bool get _hasNext => _currentIndex < widget.images.length - 1;
 
+  void _switch(int index) {
+    if (index >= widget.images.length || index < 0) return;
+    setState(() => _currentIndex = index);
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return Stack(
+  Widget build(BuildContext context) => GestureDetector(
+    onHorizontalDragEnd: (details) {
+      print(details);
+      if (details.velocity.pixelsPerSecond.dx > 10) {
+        _switch(_currentIndex - 1);
+      } else if (details.velocity.pixelsPerSecond.dx < -10) {
+        _switch(_currentIndex + 1);
+      }
+    },
+    child: Stack(
       alignment: Alignment.center,
       children: [
         AnimatedSwitcher(
@@ -285,7 +298,7 @@ class _ImageGalleryState extends State<ImageGallery> {
             left: 8,
             child: IconButton(
               icon: const Icon(Symbols.arrow_left_rounded),
-              onPressed: () => setState(() => _currentIndex--),
+              onPressed: () => _switch(_currentIndex - 1),
             ),
           ),
         if (_hasNext)
@@ -293,10 +306,10 @@ class _ImageGalleryState extends State<ImageGallery> {
             right: 8,
             child: IconButton(
               icon: const Icon(Symbols.arrow_right_rounded),
-              onPressed: () => setState(() => _currentIndex++),
+              onPressed: () => _switch(_currentIndex + 1),
             ),
           ),
       ],
-    );
-  }
+    ),
+  );
 }
