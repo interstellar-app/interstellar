@@ -169,7 +169,7 @@ class _AccountMigrationScreenState extends State<AccountMigrationScreen> {
               denormalizeName(item, destAccountHost),
             );
             if (res.isFollowedByUser == false) {
-              await destAPI.users.follow(res.id, true);
+              await destAPI.users.follow(res, true);
             }
             _migrateUserFollows.complete.add(item);
           } catch (e) {

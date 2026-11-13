@@ -34,13 +34,13 @@ Future<void> showUserMenu(
 
   return ContextMenu(
     actions: [
-      if (!isMe && ac.serverSoftware == ServerSoftware.mbin)
+      if (!isMe && ac.serverSoftware != ServerSoftware.lemmy)
         ContextMenuAction(
           child: SubscriptionButton(
             isSubscribed: user.isFollowedByUser,
             subscriptionCount: user.followersCount,
             onSubscribe: (selected) async {
-              final newValue = await ac.api.users.follow(user.id, selected);
+              final newValue = await ac.api.users.follow(user, selected);
               if (update != null) {
                 update(newValue);
               }
