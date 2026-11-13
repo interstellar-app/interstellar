@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class TagEditorScreen extends StatefulWidget {
-  const TagEditorScreen({required this.tag, required this.onUpdate, super.key});
+  const new({required this.tag, required this.onUpdate, super.key});
 
   final Tag tag;
   final void Function(Tag?) onUpdate;

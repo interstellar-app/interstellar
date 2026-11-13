@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingTemplate extends StatelessWidget {
-  const LoadingTemplate({this.title, super.key});
+  const new({this.title, super.key});
 
   final Widget? title;
 

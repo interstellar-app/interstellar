@@ -19,10 +19,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class AppInstanceScreen extends StatelessWidget {
-  const AppInstanceScreen({
-    @PathParam('instance') required this.instance,
-    super.key,
-  });
+  const new({@PathParam('instance') required this.instance, super.key});
 
   final String instance;
 
@@ -34,7 +31,7 @@ class AppInstanceScreen extends StatelessWidget {
 
 @RoutePage()
 class AppHome extends StatefulWidget {
-  const AppHome({super.key});
+  const new({super.key});
 
   @override
   State<AppHome> createState() => _AppHomeState();

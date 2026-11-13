@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 final router = AppRouter();
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

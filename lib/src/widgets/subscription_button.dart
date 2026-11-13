@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionButton extends StatelessWidget {
-  const SubscriptionButton({
+  const new({
     required this.isSubscribed,
     required this.subscriptionCount,
     required this.onSubscribe,

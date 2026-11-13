@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 
 class PostComment extends StatefulWidget {
-  const PostComment(
+  const new(
     this.comment,
     this.onUpdate, {
     this.opUserId,
@@ -422,9 +422,7 @@ class _PostCommentState extends State<PostComment> {
                 decoration: BoxDecoration(
                   border: Border(
                     left: BorderSide(
-                      color:
-                          Colors.primaries[widget
-                              .level], //Theme.of(context).colorScheme.outlineVariant,
+                      color: Colors.primaries[widget.level], //Theme.of(context).colorScheme.outlineVariant,
                       width: 2,
                     ),
                   ),

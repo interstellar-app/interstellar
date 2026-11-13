@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({
+  const new({
     required this.shouldWrap,
     required this.parentBuilder,
     required this.child,

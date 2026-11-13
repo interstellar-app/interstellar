@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class FeedViewOrderSettingsScreen extends StatefulWidget {
-  const FeedViewOrderSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   State<FeedViewOrderSettingsScreen> createState() =>

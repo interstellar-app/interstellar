@@ -10,7 +10,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
 class RestrictedAuthException implements Exception {
-  RestrictedAuthException(this.message, this.uri);
+  new(this.message, this.uri);
 
   final String message;
 
@@ -27,11 +27,7 @@ class RestrictedAuthException implements Exception {
 }
 
 class ServerClient {
-  ServerClient({
-    required this.httpClient,
-    required this.software,
-    required this.domain,
-  });
+  new({required this.httpClient, required this.software, required this.domain});
 
   http.Client httpClient;
   ServerSoftware software;

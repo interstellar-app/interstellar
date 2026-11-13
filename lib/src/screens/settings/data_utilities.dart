@@ -5,7 +5,7 @@ import 'package:interstellar/src/utils/utils.dart';
 
 @RoutePage()
 class DataUtilitiesScreen extends StatelessWidget {
-  const DataUtilitiesScreen({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

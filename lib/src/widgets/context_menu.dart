@@ -6,7 +6,7 @@ import 'package:interstellar/src/widgets/open_webpage.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ContextMenuAction {
-  const ContextMenuAction({this.child, this.icon, this.onTap});
+  const new({this.child, this.icon, this.onTap});
 
   final Widget? child;
   final IconData? icon;
@@ -14,7 +14,7 @@ class ContextMenuAction {
 }
 
 class ContextMenuItem {
-  const ContextMenuItem({
+  const new({
     this.title,
     this.subtitle,
     this.child,
@@ -39,7 +39,7 @@ class ContextMenuItem {
 }
 
 class ContextMenu {
-  const ContextMenu({
+  const new({
     this.title,
     this.actions = const [],
     this.links = const [],

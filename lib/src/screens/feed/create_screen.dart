@@ -29,7 +29,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CreateScreen extends StatefulWidget {
-  const CreateScreen({
+  const new({
     this.crossPost,
     this.initCommunity,
     this.initTitle,
@@ -231,9 +231,8 @@ class _CreateScreenState extends State<CreateScreen> {
     Widget languagePickerWidget() => ListTile(
       title: Text(l(context).language),
       onTap: () async {
-        final newLang = await languageSelectionMenu(
-          context,
-        ).askSelection(context, _lang);
+        final newLang = await languageSelectionMenu(context)
+            .askSelection(context, _lang);
 
         if (newLang != null) {
           setState(() {
@@ -298,9 +297,8 @@ class _CreateScreenState extends State<CreateScreen> {
         ListTile(
           title: Text(l(context).pollDuration),
           onTap: () async {
-            final duration = await pollDuration(
-              context,
-            ).askSelection(context, _pollDuration);
+            final duration = await pollDuration(context)
+                .askSelection(context, _pollDuration);
             if (duration == null) return;
             setState(() {
               _pollDuration = duration;

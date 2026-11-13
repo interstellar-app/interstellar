@@ -3,7 +3,7 @@ import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/feed.dart';
 
 class APIFeed {
-  APIFeed(this.client);
+  new(this.client);
 
   final ServerClient client;
 

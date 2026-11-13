@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class FeedDefaultSettingsScreen extends StatelessWidget {
-  const FeedDefaultSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

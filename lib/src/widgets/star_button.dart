@@ -4,7 +4,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class StarButton extends StatelessWidget {
-  const StarButton(this.name, {super.key});
+  const new(this.name, {super.key});
 
   final String name;
 

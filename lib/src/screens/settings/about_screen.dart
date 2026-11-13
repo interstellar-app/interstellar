@@ -22,7 +22,7 @@ const _mbinConfigsCommunityLink = 'https://kbin.earth/m/interstellar_configs';
 
 @RoutePage()
 class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
+  const new({super.key});
 
   @override
   State<AboutScreen> createState() => _AboutScreenState();

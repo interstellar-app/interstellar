@@ -46,7 +46,7 @@ class ConfigShareMarkdownSyntax extends md.BlockSyntax {
 }
 
 class ConfigShareMarkdownBuilder extends mdf.MarkdownElementBuilder {
-  ConfigShareMarkdownBuilder();
+  new();
 
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
@@ -55,7 +55,7 @@ class ConfigShareMarkdownBuilder extends mdf.MarkdownElementBuilder {
 }
 
 class ConfigShareWidget extends StatefulWidget {
-  const ConfigShareWidget({required this.text, super.key});
+  const new({required this.text, super.key});
 
   final String text;
 

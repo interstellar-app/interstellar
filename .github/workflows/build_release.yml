@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Gather build info
         id: build_info
@@ -27,7 +27,7 @@ jobs:
 
       - name: Draft v${{ steps.build_info.outputs.INTERSTELLAR_VERSION }} release
         id: draft_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.build_info.outputs.INTERSTELLAR_VERSION }}
           draft: true
@@ -73,7 +73,7 @@ jobs:
     steps:
       - name: Install android dependencies
         if: matrix.target_os == 'android'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: '21'
           distribution: temurin
@@ -91,7 +91,7 @@ jobs:
         uses: ilammy/setup-nasm@v1
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -166,7 +166,7 @@ jobs:
 
       - name: Create setup exe for windows
         if: matrix.target_os == 'windows'
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.7
+        uses: Minionguyjpro/Inno-Setup-Action@v1
         with:
           path: scripts/build-windows-setup.iss
           options: /O+

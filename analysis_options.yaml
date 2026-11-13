@@ -7,6 +7,12 @@ formatter:
 analyzer:
   exclude:
     - lib/**.g.dart
+    - build/**
+    - android/**
+    - ios/**
+    - windows/**
+    - macos/**
+    - linux/**
 
   errors:
     # Needed for build runner annotations (i.e., freezed, json_serializable).
@@ -35,3 +41,5 @@ analyzer:
     unused_local_variable: ignore
     non_bool_condition: ignore
     invalid_assignment: ignore
+    avoid_types_on_closure_parameters: ignore
+    async_return_with_no_await: ignore

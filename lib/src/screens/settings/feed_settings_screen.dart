@@ -26,7 +26,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class FeedSettingsScreen extends StatefulWidget {
-  const FeedSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   State<FeedSettingsScreen> createState() => _FeedSettingsScreenState();
@@ -267,7 +267,7 @@ void newFeed(BuildContext context) {
 
 @RoutePage()
 class EditFeedScreen extends StatefulWidget {
-  const EditFeedScreen({
+  const new({
     @PathParam('feed') required this.feed,
     this.feedData,
     this.server = false,

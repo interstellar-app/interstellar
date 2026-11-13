@@ -15,7 +15,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class ContentReply extends StatefulWidget {
-  const ContentReply({
+  const new({
     required this.content,
     required this.onReply,
     required this.onComplete,
@@ -96,9 +96,8 @@ class _ContentReplyState extends State<ContentReply> {
                   ),
                 IconButton(
                   onPressed: () async {
-                    final newLang = await languageSelectionMenu(
-                      context,
-                    ).askSelection(context, _replyLanguage);
+                    final newLang = await languageSelectionMenu(context)
+                        .askSelection(context, _replyLanguage);
 
                     if (newLang != null) {
                       setState(() {
@@ -139,7 +138,7 @@ class _ContentReplyState extends State<ContentReply> {
 
 @RoutePage()
 class ContentReplyScreen extends StatelessWidget {
-  const ContentReplyScreen({
+  const new({
     required this.content,
     required this.onReply,
     required this.onComplete,
@@ -165,9 +164,8 @@ class ContentReplyScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          l(
-            context,
-          ).replying_toX(content.user?.name ?? content.contentTypeName),
+          l(context)
+              .replying_toX(content.user?.name ?? content.contentTypeName),
         ),
       ),
       body: CustomScrollView(

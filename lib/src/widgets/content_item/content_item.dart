@@ -56,7 +56,7 @@ enum PostMode {
 enum PostComponent { title, image, info, body, link, flairs }
 
 class ContentItem extends StatefulWidget {
-  const ContentItem({
+  const new({
     required this.originInstance,
     required this.id,
     required this.contentTypeName,
@@ -471,10 +471,9 @@ class _ContentItemState extends State<ContentItem> {
                       index == (components.nonNulls.length - 1)
                       ? component
                       : Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: component,
-                            )
-                            as Widget?,
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: component,
+                        ) as Widget?,
                 )
                 .toList();
 
@@ -1007,9 +1006,8 @@ class _ContentItemState extends State<ContentItem> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: Tooltip(
-                            message: l(
-                              context,
-                            ).commentsX(widget.numComments ?? 0),
+                            message: l(context)
+                                .commentsX(widget.numComments ?? 0),
                             triggerMode: TooltipTriggerMode.tap,
                             child: Row(
                               children: [

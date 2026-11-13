@@ -11,7 +11,7 @@ import 'package:interstellar/src/widgets/markdown/markdown.dart';
 import 'package:provider/provider.dart';
 
 class MessageThreadItem extends StatelessWidget {
-  const MessageThreadItem({
+  const new({
     required this.fromMyUser,
     required this.prevMessage,
     required this.currMessage,

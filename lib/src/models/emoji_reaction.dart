@@ -5,14 +5,14 @@ part 'emoji_reaction.freezed.dart';
 
 @freezed
 abstract class EmojiReactionModel with _$EmojiReactionModel {
-  const factory EmojiReactionModel({
+  const factory({
     required List<String> authors,
     required int count,
     required String token,
     required String url,
   }) = _EmojiReactionModel;
 
-  factory EmojiReactionModel.fromPieFed(JsonMap json) => EmojiReactionModel(
+  factory fromPieFed(JsonMap json) => EmojiReactionModel(
     authors: (json['authors']! as List<dynamic>).cast<String>(),
     count: json['count']! as int,
     token: json['token']! as String,

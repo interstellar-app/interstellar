@@ -7,20 +7,18 @@ import 'package:flutter/material.dart';
 // NestedScrollView.
 
 class SubordinateScrollController extends ScrollController {
-  SubordinateScrollController({
-    required ScrollController parent,
-    String? debugLabel,
-  }) : _parent = parent,
-       super(
-         initialScrollOffset: parent.initialScrollOffset,
-         keepScrollOffset: parent.keepScrollOffset,
-         debugLabel: switch ((parent.debugLabel, debugLabel)) {
-           (null, null) => null,
-           (null, String label) => label,
-           (String label, null) => '$label/sub',
-           (String parentLabel, String label) => '$parentLabel/$label',
-         },
-       );
+  new({required ScrollController parent, String? debugLabel})
+    : _parent = parent,
+      super(
+        initialScrollOffset: parent.initialScrollOffset,
+        keepScrollOffset: parent.keepScrollOffset,
+        debugLabel: switch ((parent.debugLabel, debugLabel)) {
+          (null, null) => null,
+          (null, String label) => label,
+          (String label, null) => '$label/sub',
+          (String parentLabel, String label) => '$parentLabel/$label',
+        },
+      );
 
   final ScrollController _parent;
   bool _isActive = false;

@@ -25,9 +25,9 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ThreadPage extends StatelessWidget {
-  const ThreadPage({
-    @PathParam('communityName') this.communityName,
+  const new({
     @PathParam('id') required this.postId,
+    @PathParam('communityName') this.communityName,
     super.key,
     this.initData,
     this.onUpdate,
@@ -52,9 +52,9 @@ class ThreadPage extends StatelessWidget {
 
 @RoutePage()
 class MicroblogPage extends StatelessWidget {
-  const MicroblogPage({
-    @PathParam('communityName') this.communityName,
+  const new({
     @PathParam('id') required this.postId,
+    @PathParam('communityName') this.communityName,
     super.key,
     this.initData,
     this.onUpdate,
@@ -110,7 +110,7 @@ Future<void> pushPostPage(
 
 // @RoutePage()
 class PostPage extends StatefulWidget {
-  const PostPage({
+  const new({
     this.postType,
     @PathParam('id') this.postId,
     this.initData,
@@ -425,9 +425,8 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentCommentSortOption = commentSortSelect(
-      context,
-    ).getOption(commentSort);
+    final currentCommentSortOption = commentSortSelect(context)
+        .getOption(commentSort);
 
     if (_data == null) {
       return const LoadingTemplate();
@@ -462,9 +461,8 @@ class _PostPageState extends State<PostPage> {
             padding: const EdgeInsets.only(right: 8),
             child: IconButton(
               onPressed: () async {
-                final newSort = await commentSortSelect(
-                  context,
-                ).askSelection(context, commentSort);
+                final newSort = await commentSortSelect(context)
+                    .askSelection(context, commentSort);
 
                 if (newSort != null && newSort != commentSort) {
                   setState(() {
@@ -570,9 +568,8 @@ class _PostPageState extends State<PostPage> {
                             .map(
                               (crossPost) => ContextMenuItem(
                                 title: crossPost.community.name,
-                                subtitle: l(
-                                  context,
-                                ).commentsX(crossPost.numComments),
+                                subtitle: l(context)
+                                    .commentsX(crossPost.numComments),
                                 onTap: () async => pushPostPage(
                                   context,
                                   communityName: crossPost.community.name,
@@ -648,7 +645,7 @@ class _PostPageState extends State<PostPage> {
 }
 
 class CommentSection extends StatefulWidget {
-  const CommentSection({
+  const new({
     required this.id,
     required this.postType,
     required this.sort,

@@ -1,5 +1,5 @@
 class Trie<T> {
-  Trie([Set<T>? ends, Map<int, Trie<T>>? children])
+  new([Set<T>? ends, Map<int, Trie<T>>? children])
     : ends = ends ?? <T>{},
       children = children ?? <int, Trie<T>>{};
 

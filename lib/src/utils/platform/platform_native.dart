@@ -6,7 +6,6 @@ import 'package:interstellar/src/utils/utils.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
-import 'package:flutter/services.dart';
 
 // get sqlite on native platforms.
 Future<CommonSqlite3> getSqlite() async {
@@ -19,16 +18,14 @@ Future<bool> downloadFromUri(
   Directory? defaultDir,
 }) async {
   final response = await http.get(uri);
-  // Whether to use bytes property or need to manually write file
-  final useBytes = PlatformIs.mobile;
 
-  String? filePath;
   if (defaultDir == null) {
+    String? filePath;
     try {
-      filePath = await FilePicker.platform.saveFile(
+      filePath = (await FilePicker.saveFile(
         fileName: filename,
-        bytes: useBytes ? response.bodyBytes : null,
-      );
+        bytes: response.bodyBytes,
+      ))?.path;
 
       if (filePath == null) return false;
     } catch (e) {
@@ -39,15 +36,15 @@ Future<bool> downloadFromUri(
       filePath = '${dir.path}/$filename';
     }
   } else {
-    filePath = '${defaultDir.path}/$filename';
-  }
+    final filePath = '${defaultDir.path}/$filename';
 
-  if (!useBytes || defaultDir != null) {
     final file = File(filePath);
     await file.writeAsBytes(response.bodyBytes);
+
     if (PlatformIs.android) {
       MediaScanner.loadMedia(path: filePath);
     }
   }
+
   return true;
 }

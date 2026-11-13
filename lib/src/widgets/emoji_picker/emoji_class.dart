@@ -3,7 +3,7 @@ import 'package:interstellar/src/utils/trie.dart';
 import 'package:interstellar/src/widgets/emoji_picker/emojis.g.dart';
 
 class Emoji {
-  const Emoji(this.unicode, this.label, this.group);
+  const new(this.unicode, this.label, this.group);
 
   final String unicode;
   final String label;

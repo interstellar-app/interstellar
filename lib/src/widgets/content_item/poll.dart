@@ -10,7 +10,7 @@ import 'package:interstellar/src/widgets/wrapper.dart';
 import 'package:provider/provider.dart';
 
 class Poll extends StatefulWidget {
-  const Poll({required this.poll, super.key});
+  const new({required this.poll, super.key});
 
   final PollModel poll;
 
@@ -99,9 +99,8 @@ class _PollState extends State<Poll> {
                       ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.5),
+                          color: Theme.of(context).colorScheme.primary
+                              .withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),

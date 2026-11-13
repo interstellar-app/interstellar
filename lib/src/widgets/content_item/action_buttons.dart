@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class ActionButtons extends StatelessWidget {
-  const ActionButtons({
+  const new({
     super.key,
     this.upVotes,
     this.downVotes,

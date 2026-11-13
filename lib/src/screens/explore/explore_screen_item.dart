@@ -25,13 +25,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class ExploreScreenItem extends StatelessWidget {
-  const ExploreScreenItem(
-    this.item,
-    this.onUpdate, {
-    super.key,
-    this.onTap,
-    this.button,
-  });
+  const new(this.item, this.onUpdate, {super.key, this.onTap, this.button});
 
   final dynamic item;
   final void Function(dynamic newValue) onUpdate;

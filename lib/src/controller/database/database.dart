@@ -41,7 +41,7 @@ const defaultAccount = '@$defaultInstance';
 
 class CredentialsConverter extends TypeConverter<Credentials, String>
     with JsonTypeConverter2<Credentials, String, String> {
-  const CredentialsConverter();
+  const new();
 
   @override
   Credentials fromSql(String fromDb) {
@@ -139,7 +139,7 @@ class ReadPostCache extends Table {
 }
 
 class FilterListConverter extends TypeConverter<Set<String>, String> {
-  const FilterListConverter();
+  const new();
 
   @override
   Set<String> fromSql(String fromDb) {
@@ -167,7 +167,7 @@ class FilterLists extends Table {
 }
 
 class StringListConverter extends TypeConverter<List<String>, String> {
-  const StringListConverter();
+  const new();
 
   @override
   List<String> fromSql(String fromDb) {
@@ -182,7 +182,7 @@ class StringListConverter extends TypeConverter<List<String>, String> {
 
 class FilterListActivationConverter
     extends TypeConverter<Map<String, bool>, String> {
-  const FilterListActivationConverter();
+  const new();
 
   @override
   Map<String, bool> fromSql(String fromDb) {
@@ -201,7 +201,7 @@ class FilterListActivationConverter
 
 class PostComponentConverter
     extends TypeConverter<List<PostComponent>, String> {
-  const PostComponentConverter();
+  const new();
 
   @override
   List<PostComponent> fromSql(String fromDb) {
@@ -217,7 +217,7 @@ class PostComponentConverter
 }
 
 class FeedViewListConverter extends TypeConverter<List<FeedView>, String> {
-  const FeedViewListConverter();
+  const new();
 
   @override
   List<FeedView> fromSql(String fromDb) {
@@ -233,7 +233,7 @@ class FeedViewListConverter extends TypeConverter<List<FeedView>, String> {
 }
 
 class FeedSourceListConverter extends TypeConverter<List<FeedSource>, String> {
-  const FeedSourceListConverter();
+  const new();
 
   @override
   List<FeedSource> fromSql(String fromDb) {
@@ -249,7 +249,7 @@ class FeedSourceListConverter extends TypeConverter<List<FeedSource>, String> {
 }
 
 class FeedSortListConverter extends TypeConverter<List<FeedSort>, String> {
-  const FeedSortListConverter();
+  const new();
 
   @override
   List<FeedSort> fromSql(String fromDb) {
@@ -405,7 +405,7 @@ class Drafts extends Table {
 }
 
 class ColorConverter extends TypeConverter<Color, int> {
-  const ColorConverter();
+  const new();
 
   @override
   Color fromSql(int fromDb) {
@@ -460,8 +460,7 @@ class UserTags extends Table {
   ],
 )
 class InterstellarDatabase extends _$InterstellarDatabase {
-  InterstellarDatabase([QueryExecutor? executor])
-    : super(executor ?? _openConnection());
+  new([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
   int get schemaVersion => 4;
@@ -631,9 +630,8 @@ Future<bool> migrateDatabase() async {
   }
 
   final feeds = Map.fromEntries(
-    (await feedStore.find(
-      db,
-    )).map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
+    (await feedStore.find(db))
+        .map((record) => MapEntry(record.key, Feed.fromJson(record.value))),
   );
   await database.transaction(() async {
     for (final entry in feeds.entries) {
@@ -702,9 +700,8 @@ Future<bool> migrateDatabase() async {
     }
   });
 
-  final drafts = (await draftsStore.find(
-    db,
-  )).map((d) => Draft.fromJson({...d.value, 'id': d.key}));
+  final drafts = (await draftsStore.find(db))
+      .map((d) => Draft.fromJson({...d.value, 'id': d.key}));
   for (final entry in drafts) {
     await database.into(database.drafts).insertOnConflictUpdate(entry);
   }

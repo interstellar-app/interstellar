@@ -190,11 +190,7 @@ int commented(PostModel lhs, PostModel rhs) {
 }
 
 class FeedInputState {
-  FeedInputState({
-    required this.title,
-    required this.source,
-    required this.sourceId,
-  });
+  new({required this.title, required this.source, required this.sourceId});
 
   final String title;
   final FeedSource source;
@@ -250,9 +246,9 @@ class FeedInputState {
 }
 
 class FeedAggregator {
-  const FeedAggregator({required this.name, required this.inputs});
+  const new({required this.name, required this.inputs});
 
-  factory FeedAggregator.fromSingleSource({
+  factory fromSingleSource({
     required String name,
     required FeedSource source,
     String? sourceId,

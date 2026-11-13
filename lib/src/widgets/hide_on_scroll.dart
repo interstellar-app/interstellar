@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class HideOnScroll extends StatefulWidget {
-  const HideOnScroll({
+  const new({
     required this.controller,
     required this.hiddenOffset,
     required this.child,

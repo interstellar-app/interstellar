@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class BookmarkListScreen extends StatefulWidget {
-  const BookmarkListScreen({super.key});
+  const new({super.key});
 
   @override
   State<BookmarkListScreen> createState() => _BookmarkListScreenState();
@@ -153,10 +153,7 @@ class _BookmarkListScreenState extends State<BookmarkListScreen> {
 
 @RoutePage()
 class BookmarksScreen extends StatefulWidget {
-  const BookmarksScreen({
-    super.key,
-    @PathParam('bookmarkList') this.bookmarkList,
-  });
+  const new({super.key, @PathParam('bookmarkList') this.bookmarkList});
 
   final String? bookmarkList;
 

@@ -6,7 +6,7 @@ import 'package:interstellar/src/widgets/avatar.dart';
 import 'package:provider/provider.dart';
 
 class MessageItem extends StatelessWidget {
-  const MessageItem(this.item, this.onUpdate, {this.onClick, super.key});
+  const new(this.item, this.onUpdate, {this.onClick, super.key});
 
   final MessageThreadModel item;
   final void Function(MessageThreadModel) onUpdate;

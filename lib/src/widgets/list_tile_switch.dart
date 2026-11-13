@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ListTileSwitch extends StatelessWidget {
-  const ListTileSwitch({
+  const new({
     required this.value,
     required this.onChanged,
     this.leading,

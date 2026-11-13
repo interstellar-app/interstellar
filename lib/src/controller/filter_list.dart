@@ -11,16 +11,16 @@ enum FilterListMatchMode { simple, wholeWords, regex }
 @freezed
 abstract class FilterList with _$FilterList implements Insertable<FilterList> {
   @JsonSerializable(explicitToJson: true, includeIfNull: false)
-  const factory FilterList({
+  const factory({
     required String name,
     required Set<String> phrases,
     required FilterListMatchMode matchMode,
     required bool caseSensitive,
     required bool showWithWarning,
   }) = _FilterList;
-  const FilterList._();
+  const new _();
 
-  factory FilterList.fromJson(JsonMap json) => _$FilterListFromJson(json);
+  factory fromJson(JsonMap json) => _$FilterListFromJson(json);
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {

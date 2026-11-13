@@ -7,20 +7,20 @@ part 'event.g.dart';
 
 @freezed
 abstract class LocationModel with _$LocationModel {
-  const factory LocationModel({
+  const factory({
     required String address,
     required String city,
     required String country,
   }) = _LocationModel;
 
-  factory LocationModel.fromJson(JsonMap json) => _$LocationModelFromJson(json);
+  factory fromJson(JsonMap json) => _$LocationModelFromJson(json);
 }
 
 enum JoinMode { free, restricted, external, invite }
 
 @freezed
 abstract class EventModel with _$EventModel {
-  const factory EventModel({
+  const factory({
     required int postId,
     required DateTime start,
     required DateTime? end,
@@ -39,7 +39,7 @@ abstract class EventModel with _$EventModel {
     required LocationModel? location,
   }) = _EventModel;
 
-  factory EventModel.fromPiefed(int postId, JsonMap json) => EventModel(
+  factory fromPiefed(int postId, JsonMap json) => EventModel(
     postId: postId,
     start: DateTime.parse(json['start']! as String),
     end: optionalDateTime(json['end'] as String?),

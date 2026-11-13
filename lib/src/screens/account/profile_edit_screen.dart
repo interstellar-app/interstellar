@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ProfileEditScreen extends StatefulWidget {
-  const ProfileEditScreen(this.user, this.onUpdate, {super.key});
+  const new(this.user, this.onUpdate, {super.key});
 
   final DetailedUserModel user;
   final void Function(DetailedUserModel) onUpdate;
@@ -185,9 +185,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                         avatarPresent ? widget.user.avatar : null,
                         radius: 36,
                         borderRadius: 4,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).scaffoldBackgroundColor,
+                        backgroundColor: Theme.of(context)
+                            .scaffoldBackgroundColor,
                         overrideImageProvider: _avatarFile == null
                             ? null
                             : FileImage(File(_avatarFile!.path)),
@@ -337,9 +336,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                           if (_settings!.showSubscribedCommunities != null)
                             SwitchListTile(
                               title: Text(
-                                l(
-                                  context,
-                                ).account_settings_showSubscribedCommunities,
+                                l(context)
+                                    .account_settings_showSubscribedCommunities,
                               ),
                               value: _settings!.showSubscribedCommunities!,
                               onChanged: (bool? value) {
@@ -352,9 +350,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                           if (_settings!.showSubscribedDomains != null)
                             SwitchListTile(
                               title: Text(
-                                l(
-                                  context,
-                                ).account_settings_showSubscribedDomains,
+                                l(context)
+                                    .account_settings_showSubscribedDomains,
                               ),
                               value: _settings!.showSubscribedDomains!,
                               onChanged: (bool? value) {
@@ -367,9 +364,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                           if (_settings!.showProfileSubscriptions != null)
                             SwitchListTile(
                               title: Text(
-                                l(
-                                  context,
-                                ).account_settings_showProfileSubscriptions,
+                                l(context)
+                                    .account_settings_showProfileSubscriptions,
                               ),
                               value: _settings!.showProfileSubscriptions!,
                               onChanged: (bool? value) {
@@ -382,9 +378,8 @@ class _ProfileEditScreen extends State<ProfileEditScreen> {
                           if (_settings!.showProfileFollowings != null)
                             SwitchListTile(
                               title: Text(
-                                l(
-                                  context,
-                                ).account_settings_showProfileFollowings,
+                                l(context)
+                                    .account_settings_showProfileFollowings,
                               ),
                               value: _settings!.showProfileFollowings!,
                               onChanged: (bool? value) {

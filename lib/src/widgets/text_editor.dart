@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextEditor extends StatelessWidget {
-  const TextEditor(
+  const new(
     this.controller, {
     this.keyboardType,
     this.label,

@@ -17,7 +17,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class AdvancedImage extends StatelessWidget {
-  const AdvancedImage(
+  const new(
     this.image, {
     super.key,
     this.fit = BoxFit.contain,
@@ -121,7 +121,7 @@ class AdvancedImage extends StatelessWidget {
 
 @RoutePage()
 class AdvancedImagePage extends StatefulWidget {
-  const AdvancedImagePage(
+  const new(
     this.image, {
     required this.title,
     super.key,
@@ -148,9 +148,8 @@ class _AdvancedImagePageState extends State<AdvancedImagePage> {
   Widget build(BuildContext context) {
     const shadows = <Shadow>[Shadow(blurRadius: 1, offset: Offset(0, 1))];
 
-    final titleStyle = Theme.of(
-      context,
-    ).textTheme.titleLarge!.copyWith(shadows: shadows);
+    final titleStyle = Theme.of(context).textTheme.titleLarge!
+        .copyWith(shadows: shadows);
 
     return Scaffold(
       extendBodyBehindAppBar: true,

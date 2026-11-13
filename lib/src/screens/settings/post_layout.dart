@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class PostLayoutSettingsScreen extends StatefulWidget {
-  const PostLayoutSettingsScreen({super.key});
+  const new({super.key});
 
   @override
   State<PostLayoutSettingsScreen> createState() => _PostLayoutSettingsScreen();

@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class DisplaySettingsScreen extends StatelessWidget {
-  const DisplaySettingsScreen({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +34,8 @@ class DisplaySettingsScreen extends StatelessWidget {
               getLanguageName(context, ac.profile.appLanguage, true),
             ),
             onTap: () async {
-              final langCode = await languageSelectionMenuAppSupported(
-                context,
-              ).askSelection(context, ac.selectedProfileValue.appLanguage);
+              final langCode = await languageSelectionMenuAppSupported(context)
+                  .askSelection(context, ac.selectedProfileValue.appLanguage);
 
               if (langCode == null) return;
 
@@ -52,9 +51,8 @@ class DisplaySettingsScreen extends StatelessWidget {
               themeModeSelect(context).getOption(ac.profile.themeMode).title,
             ),
             onTap: () async {
-              final themeMode = await themeModeSelect(
-                context,
-              ).askSelection(context, ac.selectedProfileValue.themeMode);
+              final themeMode = await themeModeSelect(context)
+                  .askSelection(context, ac.selectedProfileValue.themeMode);
 
               if (themeMode == null) return;
 
@@ -70,9 +68,8 @@ class DisplaySettingsScreen extends StatelessWidget {
               colorSchemeNameMap(context)[ac.profile.colorScheme]!,
             ),
             onTap: () async {
-              final colorScheme = await colorSchemeSelect(
-                context,
-              ).askSelection(context, ac.selectedProfileValue.colorScheme);
+              final colorScheme = await colorSchemeSelect(context)
+                  .askSelection(context, ac.selectedProfileValue.colorScheme);
 
               if (colorScheme == null) return;
 

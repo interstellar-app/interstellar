@@ -16,7 +16,7 @@ import 'package:interstellar/src/widgets/star_button.dart';
 import 'package:provider/provider.dart';
 
 class NavDrawPersistentState {
-  const NavDrawPersistentState({
+  const new({
     this.fetchTime = 0,
     this.initExpandedStars = false,
     this.initExpandedFeeds = false,
@@ -78,9 +78,8 @@ Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
       filter: ExploreFilter.subscribed,
     )).items;
     if (ac.serverSoftware == ServerSoftware.mbin) {
-      subbedUsers = (await ac.api.users.list(
-        filter: ExploreFilter.subscribed,
-      )).items;
+      subbedUsers = (await ac.api.users.list(filter: ExploreFilter.subscribed))
+          .items;
       subbedDomains = (await ac.api.domains.list(
         filter: ExploreFilter.subscribed,
       )).items;
@@ -101,7 +100,7 @@ Future<NavDrawPersistentState> fetchNavDrawerState(AppController ac) async {
 }
 
 class NavDrawer extends StatefulWidget {
-  const NavDrawer({super.key, this.drawerState, this.updateState});
+  const new({super.key, this.drawerState, this.updateState});
 
   final NavDrawPersistentState? drawerState;
   final Future<void> Function(NavDrawPersistentState?)? updateState;
