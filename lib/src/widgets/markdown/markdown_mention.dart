@@ -36,9 +36,12 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
     /u/jwr1
     @jwr1@kbin.earth
     @jwr1
+
+    There cannot be an additional ! symbol, an additional @ symbol, or a word
+    character preceding the match.
   */
   static const String _mentionPattern =
-      r'(?:^|\s)(?:(?:(?:https?:\/\/)?([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?\/([umc])\/@?|(@|!))([a-zA-Z0-9_]+)(?:@([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?';
+      r'(?<![!@\w])(?:(?:(?:https?:\/\/)?([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?\/([umc])\/@?|(@|!))([a-zA-Z0-9_]+)(?:@([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?';
 
   /*
     Should match the following patterns:
@@ -50,8 +53,6 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
       r'\[.*?\]\(\s*' + _mentionPattern + r'(?:\s*".*?")?\s*\)';
   static final _mdLinkPatternRegExp = RegExp(_mdLinkPattern, multiLine: true);
 
-  static final _borderRegExp = RegExp(r'[^a-z0-9@/\\]', caseSensitive: false);
-
   @override
   bool tryMatch(md.InlineParser parser, [int? startMatchPos]) {
     startMatchPos ??= parser.pos;
@@ -59,23 +60,9 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
     final isMarkdownLink =
         String.fromCharCode(parser.charAt(parser.pos)) == '[';
 
-    if (parser.pos > 0 && !isMarkdownLink) {
-      final precededBy = String.fromCharCode(parser.charAt(parser.pos - 1));
-      if (_borderRegExp.matchAsPrefix(precededBy) == null) {
-        return false;
-      }
-    }
-
     final match = (isMarkdownLink ? _mdLinkPatternRegExp : pattern)
         .matchAsPrefix(parser.source, startMatchPos);
     if (match == null) return false;
-
-    if (parser.source.length > match.end && !isMarkdownLink) {
-      final followedBy = String.fromCharCode(parser.charAt(match.end));
-      if (_borderRegExp.matchAsPrefix(followedBy) == null) {
-        return false;
-      }
-    }
 
     // Write any existing plain text up to this point.
     parser.writeText();

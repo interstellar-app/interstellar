@@ -4,7 +4,11 @@ import 'package:interstellar/src/widgets/video.dart';
 import 'package:markdown/markdown.dart' as md;
 
 class VideoMarkdownSyntax extends md.InlineSyntax {
-  new() : super(r'!\[video\/mp4\]\((https:\/\/[^\s]+\.mp4)\)');
+  new()
+    : super(
+        r'!\[video\/mp4\]\((https:\/\/[^\s]+\.mp4)\)',
+        startCharacter: '!'.codeUnitAt(0),
+      );
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
