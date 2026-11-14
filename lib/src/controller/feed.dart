@@ -29,7 +29,9 @@ abstract class Feed with _$Feed {
   }) = _Feed;
   const new _();
 
-  factory fromJson(JsonMap json) => _$FeedFromJson(json);
+  // Feeds shared in earlier app versions do not have the `server` property, so
+  // a default needs to be set in case the property is missing.
+  factory fromJson(JsonMap json) => _$FeedFromJson({'server': false, ...json});
 
   factory fromModel(FeedModel feed, String instanceHost) {
     return Feed(
