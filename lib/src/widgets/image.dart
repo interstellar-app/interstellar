@@ -264,7 +264,6 @@ class _ImageGalleryState extends State<ImageGallery> {
   @override
   Widget build(BuildContext context) => GestureDetector(
     onHorizontalDragEnd: (details) {
-      print(details);
       if (details.velocity.pixelsPerSecond.dx > 10) {
         _switch(_currentIndex - 1);
       } else if (details.velocity.pixelsPerSecond.dx < -10) {
