@@ -95,7 +95,7 @@ class _CreateScreenState extends State<CreateScreen> {
       }
       _bodyTextController.text = body;
 
-      final link = post.url ?? post.image?.src;
+      final link = post.url ?? post.images?.first.src;
       if (link != null) {
         _urlTextController.text = link;
         _defaultTab = 2;
