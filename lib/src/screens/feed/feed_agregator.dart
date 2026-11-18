@@ -5,10 +5,10 @@ import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/controller.dart';
 import 'package:interstellar/src/controller/feed.dart';
 import 'package:interstellar/src/controller/server.dart';
-import 'package:interstellar/src/models/post.dart';
+import 'package:interstellar/src/models/feed_item.dart';
 import 'package:interstellar/src/utils/utils.dart';
 
-double calcLemmyRanking(PostModel post, DateTime time) {
+double calcLemmyRanking(FeedItem post, DateTime time) {
   const scaleFactor = 10000;
   const gravity = 1.8;
   final score = (post.upvotes ?? 0) - (post.downvotes ?? 0);
@@ -18,25 +18,25 @@ double calcLemmyRanking(PostModel post, DateTime time) {
       pow((DateTime.now().difference(time).inHours) + 2, gravity);
 }
 
-int lemmyActive(PostModel lhs, PostModel rhs) {
+int lemmyActive(FeedItem lhs, FeedItem rhs) {
   return calcLemmyRanking(
     rhs,
     rhs.lastActive,
   ).compareTo(calcLemmyRanking(lhs, lhs.lastActive));
 }
 
-int lemmyHot(PostModel lhs, PostModel rhs) {
+int lemmyHot(FeedItem lhs, FeedItem rhs) {
   return calcLemmyRanking(
     rhs,
     rhs.createdAt,
   ).compareTo(calcLemmyRanking(lhs, lhs.createdAt));
 }
 
-int mbinActive(PostModel lhs, PostModel rhs) {
+int mbinActive(FeedItem lhs, FeedItem rhs) {
   return rhs.lastActive.compareTo(lhs.lastActive);
 }
 
-double calcMbinRanking(PostModel post) {
+double calcMbinRanking(FeedItem post) {
   const netscoreMultiplier = 4500;
   const commentMultiplier = 1500;
   // final commentUniqueMultiplier = 5000;
@@ -71,37 +71,37 @@ double calcMbinRanking(PostModel post) {
   return min(dateAdvantage + advantage, pow(2, 31) - 1);
 }
 
-int mbinHot(PostModel lhs, PostModel rhs) {
+int mbinHot(FeedItem lhs, FeedItem rhs) {
   return calcMbinRanking(rhs).compareTo(calcMbinRanking(lhs));
 }
 
-int top(PostModel lhs, PostModel rhs) {
+int top(FeedItem lhs, FeedItem rhs) {
   return ((rhs.upvotes ?? 0) - (rhs.downvotes ?? 0)).compareTo(
     (lhs.upvotes ?? 0) - (lhs.downvotes ?? 0),
   );
 }
 
-int controversial(PostModel lhs, PostModel rhs) {
+int controversial(FeedItem lhs, FeedItem rhs) {
   return top(lhs, rhs) * -1;
 }
 
-int newest(PostModel lhs, PostModel rhs) {
+int newest(FeedItem lhs, FeedItem rhs) {
   return rhs.createdAt.compareTo(lhs.createdAt);
 }
 
-int oldest(PostModel lhs, PostModel rhs) {
+int oldest(FeedItem lhs, FeedItem rhs) {
   return newest(lhs, rhs) * -1;
 }
 
-int commented(PostModel lhs, PostModel rhs) {
+int commented(FeedItem lhs, FeedItem rhs) {
   return rhs.numComments.compareTo(lhs.numComments);
 }
 
-(List<PostModel>, List<List<PostModel>>) merge(
+(List<FeedItem>, List<List<FeedItem>>) merge(
   ServerSoftware software,
-  List<List<PostModel>> inputs,
+  List<List<FeedItem>> inputs,
   FeedSort sort, {
-  List<PostModel>? previousRemainder,
+  List<FeedItem>? previousRemainder,
 }) {
   if (inputs.length < 2) {
     return (inputs.first, []);
@@ -152,18 +152,18 @@ int commented(PostModel lhs, PostModel rhs) {
     mutableInputs.add(previousRemainder);
   }
   // Create room for remainders from merge inputs
-  final remainder = List<List<PostModel>>.generate(
+  final remainder = List<List<FeedItem>>.generate(
     inputs.length + (previousRemainder != null ? 1 : 0),
     (index) => [],
   );
-  final posts = <PostModel>[];
+  final posts = <FeedItem>[];
 
   // Merge until one of the inputs (excluding previous remainders) is drained
   while (mutableInputs
       .sublist(0, remainderIndex)
       .every((input) => input.isNotEmpty)) {
     // Get first post of each input
-    final firsts = <(int, PostModel)>[];
+    final firsts = <(int, FeedItem)>[];
     for (final (index, input) in mutableInputs.indexed) {
       if (input.isNotEmpty) {
         firsts.add((index, input.first));
@@ -195,10 +195,10 @@ class FeedInputState {
   final String title;
   final FeedSource source;
   final String? sourceId;
-  List<PostModel> _leftover = [];
+  List<FeedItem> _leftover = [];
   String? _nextPage = '';
 
-  Future<(List<PostModel>, String?)> fetchPage(
+  Future<(List<FeedItem>, String?)> fetchPage(
     AppController ac,
     String pageKey,
     FeedView view,
@@ -217,7 +217,10 @@ class FeedInputState {
           sort: sort,
         );
         _nextPage = postListModel.nextPage;
-        return ([..._leftover, ...postListModel.items], postListModel.nextPage);
+        return (
+          [..._leftover, ...postListModel.items.map(FeedPost.new)],
+          postListModel.nextPage,
+        );
       case FeedView.microblog:
         final postListModel = await ac.api.microblogs.list(
           source,
@@ -226,14 +229,16 @@ class FeedInputState {
           sort: sort,
         );
         _nextPage = postListModel.nextPage;
-        return ([..._leftover, ...postListModel.items], postListModel.nextPage);
+        return (
+          [..._leftover, ...postListModel.items.map(FeedPost.new)],
+          postListModel.nextPage,
+        );
       case FeedView.combined:
-        final postListModel = await ac.api.threads.list(
+        final postListModel = await ac.api.threads.listCombined(
           source,
           sourceId: sourceId,
           page: nullIfEmpty(_nextPage!),
           sort: sort,
-          combined: true,
         );
         _nextPage = postListModel.nextPage;
         return ([..._leftover, ...postListModel.items], postListModel.nextPage);
@@ -281,13 +286,13 @@ class FeedAggregator {
     return FeedAggregator(name: name, inputs: inputs.nonNulls.toList());
   }
 
-  Future<(List<PostModel>, String?)> fetchPage(
+  Future<(List<FeedItem>, String?)> fetchPage(
     AppController ac,
     String pageKey,
     FeedView view,
     FeedSort sort,
   ) async {
-    if (inputs.isEmpty) return (<PostModel>[], null);
+    if (inputs.isEmpty) return (<FeedItem>[], null);
 
     final futures = inputs.map(
       (input) => input.fetchPage(ac, pageKey, view, sort),
@@ -320,8 +325,9 @@ class FeedAggregator {
         ? result
         : await Future.wait(
             result.map(
-              (item) async =>
-                  (await ac.isRead(item)) ? item.copyWith(read: true) : item,
+              (item) async => item.post != null && (await ac.isRead(item.post!))
+                  ? FeedPost(item.post!.copyWith(read: true))
+                  : item,
             ),
           );
 

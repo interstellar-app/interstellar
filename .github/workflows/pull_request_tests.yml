@@ -25,6 +25,9 @@ jobs:
         with:
           fail-on-warnings: true
 
+      - name: Run tests
+        run: flutter test
+
   test-android-build:
     name: Test android build
     runs-on: ubuntu-latest

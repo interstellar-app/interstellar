@@ -79,6 +79,10 @@ dependencies:
   unifiedpush_platform_interface: ^4.0.0
   unifiedpush_storage_interface: ^1.0.0
 
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
 flutter:
   uses-material-design: true
 

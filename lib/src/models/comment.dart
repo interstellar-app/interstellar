@@ -149,7 +149,7 @@ abstract class CommentModel with _$CommentModel {
     parentId: json['parentId'] as int?,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
     body: json['body'] as String?,
-    lang: json['lang']! as String,
+    lang: json['lang'] as String?,
     isLocked: false,
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,

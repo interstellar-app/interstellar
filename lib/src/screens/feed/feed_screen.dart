@@ -12,9 +12,11 @@ import 'package:interstellar/src/controller/router.gr.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/community.dart';
 import 'package:interstellar/src/models/feed.dart';
+import 'package:interstellar/src/models/feed_item.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/screens/feed/feed_agregator.dart';
 import 'package:interstellar/src/screens/feed/nav_drawer.dart';
+import 'package:interstellar/src/screens/feed/post_comment.dart';
 import 'package:interstellar/src/screens/feed/post_item.dart';
 import 'package:interstellar/src/screens/feed/post_page.dart';
 import 'package:interstellar/src/utils/breakpoints.dart';
@@ -809,10 +811,10 @@ class FeedScreenBody extends StatefulWidget {
 class _FeedScreenBodyState extends State<FeedScreenBody>
     with AutomaticKeepAliveClientMixin<FeedScreenBody> {
   late final _pagingController =
-      AdvancedPagingController<String, PostModel, (PostType, int)>(
+      AdvancedPagingController<String, FeedItem, FeedItemKey>(
         logger: context.read<AppController>().logger,
         firstPageKey: '',
-        getItemId: (item) => (item.type, item.id),
+        getItemId: (item) => item.key,
         fetchPage: (pageKey) async {
           if (pageKey.isEmpty) _filterListWarnings.clear();
 
@@ -825,7 +827,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
             (newItems, nextPageKey) = await _tryFetchPage(nextPageKey);
             emptyPageCount++;
           }
-          if (!mounted) return (<PostModel>[], null);
+          if (!mounted) return (<FeedItem>[], null);
           setState(() {
             _lastPageFilteredOut = newItems.isEmpty && nextPageKey != null;
           });
@@ -837,7 +839,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
   // Map of postId to FilterList names for posts that match lists that are marked as warnings.
   // If a post matches any FilterList that is not shown with warning, then the post is not shown at all.
-  final Map<(PostType, int), Set<String>> _filterListWarnings = {};
+  final Map<FeedItemKey, Set<String>> _filterListWarnings = {};
 
   int _lastVisibleIndex = 0;
   final _markAsReadDebounce = Debouncer(
@@ -869,8 +871,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
   @override
   bool get wantKeepAlive => true;
 
-  Future<(List<PostModel>, String?)> _tryFetchPage(String pageKey) async {
-    if (!mounted) return (<PostModel>[], null);
+  Future<(List<FeedItem>, String?)> _tryFetchPage(String pageKey) async {
+    if (!mounted) return (<FeedItem>[], null);
     final ac = context.read<AppController>();
 
     final page = await _aggregator.fetchPage(
@@ -894,13 +896,11 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
           if ((post.title != null && filterList.hasMatch(post.title!)) ||
               (post.body != null && filterList.hasMatch(post.body!))) {
             if (filterList.showWithWarning) {
-              if (!_filterListWarnings.containsKey((post.type, post.id))) {
-                _filterListWarnings[(post.type, post.id)] = {};
+              if (!_filterListWarnings.containsKey(post.key)) {
+                _filterListWarnings[post.key] = {};
               }
 
-              _filterListWarnings[(post.type, post.id)]!.add(
-                filterListEntry.key,
-              );
+              _filterListWarnings[post.key]!.add(filterListEntry.key);
             } else {
               return false;
             }
@@ -969,7 +969,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
             builder: (context, state, fetchNextPage) => PagedSliverList(
               state: state,
               fetchNextPage: fetchNextPage,
-              builderDelegate: PagedChildBuilderDelegate<PostModel>(
+              builderDelegate: PagedChildBuilderDelegate<FeedItem>(
                 firstPageErrorIndicatorBuilder: (context) =>
                     FirstPageErrorIndicator(
                       error: _pagingController.value.error,
@@ -988,19 +988,47 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     ? (context) =>
                           NoItemsFoundIndicator(onTryAgain: fetchNextPage)
                     : null,
-                itemBuilder: (context, item, index) {
+                itemBuilder: (context, feedItem, index) {
+                  final item = feedItem.post;
+                  if (item == null) {
+                    final comment = feedItem.comment!;
+                    return Padding(
+                      key: ValueKey(feedItem.key),
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                      child: PostComment(
+                        comment,
+                        (updated) => _pagingController.updateItem(
+                          feedItem,
+                          FeedComment(updated),
+                        ),
+                        showChildren: false,
+                        userCanModerate: widget.userCanModerate,
+                        filterListWarnings: _filterListWarnings[feedItem.key],
+                        onClick: () => context.router.push(
+                          PostCommentRoute(
+                            postType: comment.postType,
+                            commentId: comment.id,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   void onPostTap() {
                     pushPostPage(
                       context,
                       communityName: item.community.name,
                       initData: item,
                       userCanModerate: widget.userCanModerate,
-                      onUpdate: (newValue) =>
-                          _pagingController.updateItem(item, newValue),
+                      onUpdate: (newValue) => _pagingController.updateItem(
+                        feedItem,
+                        FeedPost(newValue),
+                      ),
                     );
                   }
 
                   return Wrapper(
+                    key: ValueKey(feedItem.key),
                     shouldWrap:
                         (ac.profile.markThreadsReadOnScroll &&
                             widget.view == FeedView.threads) ||
@@ -1008,7 +1036,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                             widget.view == FeedView.microblog),
                     parentBuilder: (child) {
                       return VisibilityDetector(
-                        key: Key(item.id.toString()),
+                        key: ValueKey(feedItem.key),
                         onVisibilityChanged: (VisibilityInfo info) {
                           if (index <= _lastVisibleIndex &&
                               info.visibleFraction == 0 &&
@@ -1019,7 +1047,8 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
 
                               final readPosts = <PostModel>[];
                               for (var i = index; i >= 0; i--) {
-                                final post = items[i];
+                                final post = items[i].post;
+                                if (post == null) continue;
                                 if (post.read || readPosts.contains(post)) {
                                   continue;
                                 }
@@ -1031,14 +1060,16 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                   true,
                                 );
 
-                                _pagingController.mapItems(
-                                  (oldItem) => postsMarkedAsRead.firstWhere(
-                                    (newItem) =>
-                                        (oldItem.type, oldItem.id) ==
-                                        (newItem.type, newItem.id),
-                                    orElse: () => oldItem,
-                                  ),
-                                );
+                                _pagingController.mapItems((oldItem) {
+                                  if (oldItem.post == null) return oldItem;
+                                  final updated = postsMarkedAsRead.firstWhere(
+                                    (p) =>
+                                        (p.type, p.id) ==
+                                        (oldItem.type, oldItem.id),
+                                    orElse: () => oldItem.post!,
+                                  );
+                                  return FeedPost(updated);
+                                });
                               }
                             });
                           }
@@ -1054,8 +1085,10 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                     },
                     child: PostItem(
                       item,
-                      (newValue) =>
-                          _pagingController.updateItem(item, newValue),
+                      (newValue) => _pagingController.updateItem(
+                        feedItem,
+                        FeedPost(newValue),
+                      ),
                       onTap: onPostTap,
                       isPreview: true,
                       onReply: whenLoggedIn(context, (
@@ -1073,8 +1106,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                           alt: alt,
                         );
                       }),
-                      filterListWarnings:
-                          _filterListWarnings[(item.type, item.id)],
+                      filterListWarnings: _filterListWarnings[feedItem.key],
                       userCanModerate: widget.userCanModerate,
                       isTopLevel: true,
                     ),
