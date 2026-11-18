@@ -26,7 +26,8 @@ sealed class FeedItem {
   String? get body => post?.body ?? comment?.body;
   CommunityModel get community => post?.community ?? comment!.community;
   DateTime get createdAt => post?.createdAt ?? comment!.createdAt;
-  DateTime get lastActive => post?.lastActive ?? comment!.createdAt;
+  DateTime get lastActive =>
+      post?.lastActive ?? comment!.lastActive ?? comment!.createdAt;
   int? get upvotes => post?.upvotes ?? comment?.upvotes;
   int? get downvotes => post?.downvotes ?? comment?.downvotes;
   int? get boosts => post?.boosts ?? comment?.boosts;
