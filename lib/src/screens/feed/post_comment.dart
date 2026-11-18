@@ -23,6 +23,7 @@ class PostComment extends StatefulWidget {
   const new(
     this.comment,
     this.onUpdate, {
+    this.filterListWarnings,
     this.opUserId,
     this.onClick,
     this.userCanModerate = false,
@@ -32,6 +33,7 @@ class PostComment extends StatefulWidget {
     super.key,
   });
 
+  final Set<String>? filterListWarnings;
   final CommentModel comment;
   final void Function(CommentModel) onUpdate;
   final int? opUserId;
@@ -93,6 +95,7 @@ class _PostCommentState extends State<PostComment> {
         widget.userCanModerate || (widget.comment.canAuthUserModerate ?? false);
 
     final contentItem = ContentItem(
+      filterListWarnings: widget.filterListWarnings,
       originInstance: getNameHost(context, widget.comment.user.name),
       id: widget.comment.id,
       images: widget.comment.image == null ? null : [widget.comment.image!],
