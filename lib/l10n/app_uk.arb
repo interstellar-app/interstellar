@@ -5,7 +5,7 @@
     "password": "Пароль",
     "login": "Авторизувати",
     "totpToken": "Токен TOTP (за потреби)",
-    "cancel": "Відмінивши",
+    "cancel": "Скасувати",
     "continue_": "Продовжувати",
     "remove": "Видаляти",
     "newUser": "Новий користувач",
@@ -52,7 +52,7 @@
     "subscriptions": "Підписка",
     "subscriptions_domain": "Підписки на домен",
     "stars_empty": "Тут порожньо; позначте зірочкою спільноту або користувача, щоб вони з'явилися тут.",
-    "stars": "Зірка",
+    "stars": "Обрані",
     "postDeleted": "Повідомлення видалено",
     "comment": "Коментар",
     "commentDeleted": "Коментар видалено",
@@ -72,7 +72,7 @@
         }
     },
     "messages": "Повідомлень",
-    "settings": "Настройка",
+    "settings": "Налаштування",
     "settings_themeMode": "Тематичний режим",
     "settings_themeMode_system": "Система",
     "settings_colorScheme_indigo": "Індиго",
@@ -87,7 +87,7 @@
     "settings_colorScheme_bahamaBlue": "Багамський синій",
     "settings_colorScheme_mallardGreen": "Зелена крижня",
     "settings_colorScheme_outerSpace": "Космічний простір",
-    "originalPoster_long": "Оригінальний плакат",
+    "originalPoster_long": "Автор(ка) допису",
     "originalPoster_short": "ОП",
     "pin": "Пін-код",
     "notSafeForWork_long": "Небезпечно Для Роботи",
@@ -119,7 +119,7 @@
     },
     "reason": "Причина",
     "moderate": "Помірний",
-    "submit": "Представивши",
+    "submit": "Надіслати",
     "alternativeSources": "Альтернативні джерела",
     "markdownEditor_heading": "Заголовок",
     "markdownEditor_italic": "Курсивний",
@@ -853,5 +853,6 @@
     "modlog_communityAdded": "Спільноту додано",
     "modlog_communityRemoved": "Спільноту видалено",
     "modlog_postLocked": "Публікацію заблоковано",
-    "modlog_postUnlocked": "Публікацію розблоковано"
+    "modlog_postUnlocked": "Публікацію розблоковано",
+    "description": "Опис"
 }
