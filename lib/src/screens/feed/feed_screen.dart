@@ -999,7 +999,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                         comment,
                         (updated) => _pagingController.updateItem(
                           feedItem,
-                          FeedComment(updated),
+                          FeedItem.comment(updated),
                         ),
                         showChildren: false,
                         userCanModerate: widget.userCanModerate,
@@ -1022,7 +1022,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                       userCanModerate: widget.userCanModerate,
                       onUpdate: (newValue) => _pagingController.updateItem(
                         feedItem,
-                        FeedPost(newValue),
+                        FeedItem.post(newValue),
                       ),
                     );
                   }
@@ -1068,7 +1068,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                                         (oldItem.type, oldItem.id),
                                     orElse: () => oldItem.post!,
                                   );
-                                  return FeedPost(updated);
+                                  return FeedItem.post(updated);
                                 });
                               }
                             });
@@ -1087,7 +1087,7 @@ class _FeedScreenBodyState extends State<FeedScreenBody>
                       item,
                       (newValue) => _pagingController.updateItem(
                         feedItem,
-                        FeedPost(newValue),
+                        FeedItem.post(newValue),
                       ),
                       onTap: onPostTap,
                       isPreview: true,

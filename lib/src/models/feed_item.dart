@@ -9,10 +9,13 @@ enum FeedItemKind { thread, microblog, threadComment, microblogReply }
 typedef FeedItemKey = (FeedItemKind, int);
 
 /// A feed item keeps its original model and action target.
-sealed class FeedItem {
-  const new();
-  PostModel? get post;
-  CommentModel? get comment;
+class FeedItem {
+  const new post(PostModel this.post) : comment = null;
+  const new comment(CommentModel this.comment) : post = null;
+
+  final PostModel? post;
+  final CommentModel? comment;
+
   PostType get type => post?.type ?? comment!.postType;
   int get id => post?.id ?? comment!.id;
   FeedItemKind get kind => switch ((type, comment != null)) {
@@ -36,26 +39,10 @@ sealed class FeedItem {
   bool get read => post?.read ?? false;
 }
 
-final class FeedPost extends FeedItem {
-  const new(this.post);
-  @override
-  final PostModel post;
-  @override
-  CommentModel? get comment => null;
-}
-
-final class FeedComment extends FeedItem {
-  const new(this.comment);
-  @override
-  final CommentModel comment;
-  @override
-  PostModel? get post => null;
-}
-
 class FeedPage {
   const new({required this.items, required this.nextPage});
   factory fromPosts(PostListModel page) => FeedPage(
-    items: page.items.map(FeedPost.new).toList(),
+    items: page.items.map(FeedItem.post).toList(),
     nextPage: page.nextPage,
   );
   factory fromMbinCombined(JsonMap json) {
@@ -64,21 +51,21 @@ class FeedPage {
       final content = raw as JsonMap;
       if (content['entry'] != null) {
         items.add(
-          FeedPost(PostModel.fromMbinEntry(content['entry']! as JsonMap)),
+          FeedItem.post(PostModel.fromMbinEntry(content['entry']! as JsonMap)),
         );
       } else if (content['post'] != null) {
         items.add(
-          FeedPost(PostModel.fromMbinPost(content['post']! as JsonMap)),
+          FeedItem.post(PostModel.fromMbinPost(content['post']! as JsonMap)),
         );
       } else if (content['entryComment'] != null) {
         items.add(
-          FeedComment(
+          FeedItem.comment(
             CommentModel.fromMbin(content['entryComment']! as JsonMap),
           ),
         );
       } else if (content['postComment'] != null) {
         items.add(
-          FeedComment(
+          FeedItem.comment(
             CommentModel.fromMbin(content['postComment']! as JsonMap),
           ),
         );

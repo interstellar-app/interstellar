@@ -218,7 +218,7 @@ class FeedInputState {
         );
         _nextPage = postListModel.nextPage;
         return (
-          [..._leftover, ...postListModel.items.map(FeedPost.new)],
+          [..._leftover, ...postListModel.items.map(FeedItem.post)],
           postListModel.nextPage,
         );
       case FeedView.microblog:
@@ -230,7 +230,7 @@ class FeedInputState {
         );
         _nextPage = postListModel.nextPage;
         return (
-          [..._leftover, ...postListModel.items.map(FeedPost.new)],
+          [..._leftover, ...postListModel.items.map(FeedItem.post)],
           postListModel.nextPage,
         );
       case FeedView.combined:
@@ -326,7 +326,7 @@ class FeedAggregator {
         : await Future.wait(
             result.map(
               (item) async => item.post != null && (await ac.isRead(item.post!))
-                  ? FeedPost(item.post!.copyWith(read: true))
+                  ? FeedItem.post(item.post!.copyWith(read: true))
                   : item,
             ),
           );
