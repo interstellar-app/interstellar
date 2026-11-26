@@ -183,10 +183,10 @@ class APIUsers {
     }
   }
 
-  Future<DetailedUserModel> follow(int userId, bool state) async {
+  Future<DetailedUserModel> follow(DetailedUserModel user, bool state) async {
     switch (client.software) {
       case ServerSoftware.mbin:
-        final path = '/users/$userId/${state ? 'follow' : 'unfollow'}';
+        final path = '/users/${user.id}/${state ? 'follow' : 'unfollow'}';
 
         final response = await client.put(path);
 
@@ -196,7 +196,14 @@ class APIUsers {
         throw Exception('User follow not allowed on lemmy');
 
       case ServerSoftware.piefed:
-        throw Exception('User follow not allowed on piefed');
+        final path = '/user/${state ? 'follow' : 'unfollow'}';
+
+        final response = await client.post(
+          path,
+          body: {'user_id': user.id.toString()},
+        );
+
+        return user;
     }
   }
 
