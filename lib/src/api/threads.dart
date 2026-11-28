@@ -4,6 +4,7 @@ import 'package:interstellar/src/api/client.dart';
 import 'package:interstellar/src/api/feed_source.dart';
 import 'package:interstellar/src/controller/server.dart';
 import 'package:interstellar/src/models/event.dart';
+import 'package:interstellar/src/models/feed_item.dart';
 import 'package:interstellar/src/models/post.dart';
 import 'package:interstellar/src/utils/models.dart';
 import 'package:interstellar/src/utils/utils.dart';
@@ -35,29 +36,58 @@ class APIThreads {
 
   final ServerClient client;
 
+  Future<FeedPage> listCombined(
+    FeedSource source, {
+    String? sourceId,
+    String? page,
+    FeedSort? sort,
+    bool includeBoosts = false,
+  }) async {
+    if (client.software != ServerSoftware.mbin ||
+        source == FeedSource.tag ||
+        source == FeedSource.domain) {
+      return FeedPage.fromPosts(
+        await list(source, sourceId: sourceId, page: page, sort: sort),
+      );
+    }
+    final path = switch (source) {
+      FeedSource.all || FeedSource.local => '/combined',
+      FeedSource.subscribed => '/combined/subscribed',
+      FeedSource.moderated => '/combined/moderated',
+      FeedSource.favorited => '/combined/favourited',
+      FeedSource.community => '/magazine/${sourceId!}/combined',
+      FeedSource.user => '/users/${sourceId!}/content',
+      _ => throw Exception('Unsupported Combined feed source'),
+    };
+    final response = await client.get(
+      path,
+      queryParams: {
+        'p': page,
+        'sort': mbinGetSort(sort)?.name,
+        'time': mbinGetSortTime(sort),
+        if (source == FeedSource.local) 'federation': 'local',
+        if (includeBoosts) 'includeBoosts': 'true',
+      },
+    );
+    return FeedPage.fromMbinCombined(response.bodyJson);
+  }
+
   Future<PostListModel> list(
     FeedSource source, {
     String? sourceId,
     String? page,
     FeedSort? sort,
-    bool combined = false,
-    bool includeBoosts = false,
   }) async {
     switch (client.software) {
       case ServerSoftware.mbin:
         final path = switch (source) {
-          FeedSource.all => '/${combined ? 'combined' : 'entries'}',
-          FeedSource.local => '/${combined ? 'combined' : 'entries'}',
-          FeedSource.subscribed =>
-            '/${combined ? 'combined' : 'entries'}/subscribed',
-          FeedSource.moderated =>
-            '/${combined ? 'combined' : 'entries'}/moderated',
-          FeedSource.favorited =>
-            '/${combined ? 'combined' : 'entries'}/favourited',
-          FeedSource.community =>
-            '/magazine/${sourceId!}/${combined ? 'combined' : 'entries'}',
-          FeedSource.user =>
-            '/users/${sourceId!}/${combined ? 'content' : 'entries'}',
+          FeedSource.all => '/entries',
+          FeedSource.local => '/entries',
+          FeedSource.subscribed => '/entries/subscribed',
+          FeedSource.moderated => '/entries/moderated',
+          FeedSource.favorited => '/entries/favourited',
+          FeedSource.community => '/magazine/${sourceId!}/entries',
+          FeedSource.user => '/users/${sourceId!}/entries',
           FeedSource.domain => '/domain/${sourceId!}/entries',
           FeedSource.feed => throw Exception(
             'Feeds source not allowed for mbin',
@@ -73,14 +103,10 @@ class APIThreads {
           if (source != FeedSource.tag) 'sort': mbinGetSort(sort)?.name,
           'time': mbinGetSortTime(sort),
           if (source == FeedSource.local) 'federation': 'local',
-          if (combined && includeBoosts) 'includeBoosts': 'true',
         };
 
         final response = await client.get(path, queryParams: query);
 
-        if (combined && source != FeedSource.tag) {
-          return PostListModel.fromMbinCombined(response.bodyJson);
-        }
         return PostListModel.fromMbinEntries(response.bodyJson);
 
       case ServerSoftware.lemmy:

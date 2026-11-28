@@ -137,6 +137,7 @@ abstract class CommentModel with _$CommentModel {
     required List<String>? bookmarks,
     required String? apId,
     required List<EmojiReactionModel>? emojiReactions,
+    DateTime? lastActive,
   }) = _CommentModel;
 
   factory fromMbin(JsonMap json) => CommentModel(
@@ -149,7 +150,7 @@ abstract class CommentModel with _$CommentModel {
     parentId: json['parentId'] as int?,
     image: mbinGetOptionalImage(json['image'] as JsonMap?),
     body: json['body'] as String?,
-    lang: json['lang']! as String,
+    lang: json['lang'] as String?,
     isLocked: false,
     upvotes: json['favourites'] as int?,
     downvotes: json['dv'] as int?,
@@ -159,6 +160,7 @@ abstract class CommentModel with _$CommentModel {
         : ((json['userVote'] as int?) == -1 ? -1 : 0),
     myBoost: (json['userVote'] as int?) == 1,
     createdAt: DateTime.parse(json['createdAt']! as String),
+    lastActive: optionalDateTime(json['lastActive'] as String?),
     editedAt: optionalDateTime(json['editedAt'] as String?),
     children: (json['children']! as List<dynamic>)
         .map((c) => CommentModel.fromMbin(c as JsonMap))
