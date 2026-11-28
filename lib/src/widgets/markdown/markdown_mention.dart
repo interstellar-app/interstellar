@@ -41,7 +41,7 @@ class MentionMarkdownSyntax extends md.InlineSyntax {
     character preceding the match.
   */
   static const String _mentionPattern =
-      r'(?<![!@\w])(?:(?:(?:https?:\/\/)?([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?\/([umc])\/@?|(@|!))([a-zA-Z0-9_]+)(?:@([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?';
+      r'(?<![!/@\w])(?:(?:(?:https?:\/\/)?([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?\/([umc])\/@?|(@|!))([a-zA-Z0-9_]+)(?:@([a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}))?\b(?![/@])';
 
   /*
     Should match the following patterns:
