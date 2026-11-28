@@ -13,7 +13,7 @@ Interstellar supports Android, iOS, Linux, and Windows.
 
 Available for Arch Linux via the AUR: [interstellar-bin](https://aur.archlinux.org/packages/interstellar-bin).
 
-Available for NixOS in `nixos-unstable`: [interstellar](https://search.nixos.org/packages?channel=unstable&show=interstellar&query=interstellar)
+Available for NixOS: [interstellar](https://search.nixos.org/packages?channel=unstable&show=interstellar&query=interstellar)
 
 See the [latest release](https://github.com/interstellar-app/interstellar/releases/latest) for more downloads (.APK, .AppImage, .exe, etc.).
 
@@ -38,7 +38,11 @@ You can ask questions, report bugs, make suggestions, etc., to any of the follow
 
 Interstellar uses [Flutter](https://flutter.dev) as its framework, so make sure you have the [Flutter SDK installed](https://docs.flutter.dev/get-started/install) before doing anything else. Then, run `flutter doctor -v` to see instructions for setting up different build platforms (e.g. android studio for APKs). While developing on Linux, you will also need to install `libmpv` from your distro. Once all that's done, use `dart run build_runner build -d` to build the generated code for models (this only needs to run once unless you modify one of the models). Finally, you can use `flutter run` to develop, and `flutter build {platform}` for release files.
 
-### Generating app icon
+### Development With Nix
+
+If you have the [Nix Package Manager](https://nixos.org) installed (and Flakes enabled), you may use the premade development environment. Simply run `nix develop`, and you will be dropped into a dev shell with all the system dependencies ready to go.
+
+### Generating App Icon
 
 The app icon is under the `assets/icons` folder, where the `logo.png` file is just the transparent one overlayed on the current background color `#423862`. This is generated with the [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) package, and all relevant configuration is in the `pubspec.yaml` file.
 

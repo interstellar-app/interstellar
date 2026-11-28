@@ -421,16 +421,10 @@ class ColorConverter extends TypeConverter<Color, int> {
 class Tags extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get tag => text().unique().withLength(min: 1)();
-  IntColumn get backgroundColor => integer()
-      .map(const ColorConverter())
-      .clientDefault(
-        () => const Color.from(alpha: 1, red: 1, green: 1, blue: 1).value32bit,
-      )();
-  IntColumn get textColor => integer()
-      .map(const ColorConverter())
-      .clientDefault(
-        () => const Color.from(alpha: 1, red: 0, green: 0, blue: 0).value32bit,
-      )();
+  IntColumn get backgroundColor =>
+      integer().map(const ColorConverter()).clientDefault(() => 0xFFFFFFFF)();
+  IntColumn get textColor =>
+      integer().map(const ColorConverter()).clientDefault(() => 0xFF000000)();
 }
 
 class UserTags extends Table {

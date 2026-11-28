@@ -7,7 +7,7 @@ version: 0.12.0+27
 
 environment:
   sdk: '>=3.13.0 <4.0.0'
-  flutter: 3.47.8
+  flutter: 3.50.1
 
 dependencies:
   flutter:
@@ -70,14 +70,17 @@ dependencies:
   very_good_analysis: ^11.0.0
   auto_route_generator: ^10.5.0
   auto_route: ^11.1.0
-  flutter_web_auth_2:
-    git:
-      url: https://github.com/interstellar-app/flutter_web_auth_2.git
-      path: flutter_web_auth_2
-      ref: b1af971b79160979320a4865e238dcaacf69b624
+  flutter_web_auth_2: ^6.1.0
   web: ^1.1.1
   unifiedpush_platform_interface: ^4.0.0
   unifiedpush_storage_interface: ^1.0.0
+
+dependency_overrides:
+  flutter_web_auth_2_desktop_webview:
+    git:
+      url: https://github.com/ThexXTURBOXx/flutter_web_auth_2
+      ref: 6.1.0
+      path: flutter_web_auth_2_desktop_webview_stub
 
 flutter:
   uses-material-design: true

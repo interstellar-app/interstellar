@@ -547,6 +547,7 @@ class AppController with ChangeNotifier {
                 callbackUrlScheme: PlatformIs.linux || PlatformIs.windows
                     ? oauthRedirectUri.toString()
                     : oauthRedirectUri.scheme,
+                options: const FlutterWebAuth2Options(useWebview: false),
               );
         if (res == null) {
           return;
